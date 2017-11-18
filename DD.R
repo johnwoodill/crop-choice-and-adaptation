@@ -4,7 +4,7 @@ library(ggthemes)
 library(systemfit)
 
 
-setwd("/run/media/john/1TB/SpiderOak/Projects/adaptation-along-the-envelope/")
+setwd("/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/")
 cropdat <- readRDS("data/full_ag_data.rds")
 cropdat <- filter(cropdat, year < 2010)
 cropdat$dday0_10 <- cropdat$dday0C - cropdat$dday10C
@@ -30,6 +30,7 @@ cropdat$prec_sq <- cropdat$prec^2
 
 #cropdat <- filter(cropdat, state == "wi")
 #cropdat
+
 # # Constant prices
 cropdat$corn_rprice <- mean(cropdat$corn_rprice, na.rm = TRUE)
 cropdat$cotton_rprice <- mean(cropdat$cotton_rprice, na.rm = TRUE)
@@ -52,19 +53,36 @@ cropdat$hay <- cropdat$hay_yield*cropdat$hay_rprice
 cropdat$wheat <- cropdat$wheat_yield*cropdat$wheat_rprice
 cropdat$soybean <- cropdat$soybean_yield*cropdat$soybean_rprice
 
+# Constant acres in revenue per acre
+cropdat$c_corn <- (cropdat$corn_grain_p/cropdat$avg_corn_a)*cropdat$corn_rprice
+cropdat$c_cotton <- (cropdat$cotton_p/cropdat$avg_cotton_a)*cropdat$cotton_rprice
+cropdat$c_hay <- (cropdat$hay_p/cropdat$avg_hay_a)*cropdat$hay_rprice
+cropdat$c_soybean <- (cropdat$soybean_p/cropdat$avg_soybean_a)*cropdat$soybean_rprice
+cropdat$c_wheat <- (cropdat$wheat_p/cropdat$avg_wheat_a)*cropdat$wheat_rprice
 
 
 cropdat$rev <- rowSums(cropdat[, c("corn", "cotton", "hay", "soybean", "wheat")], na.rm = TRUE)
+cropdat$c_rev <- rowSums(cropdat[, c("c_corn", "c_cotton", "c_hay", "c_soybean", "c_wheat")], na.rm = TRUE)
+
 cropdat$acres <- rowSums(cropdat[, c("corn_grain_a", "cotton_a", "hay_a", "soybean_a", "wheat_a")], na.rm = TRUE)
-head(cropdat$acres)
+cropdat$c_acres <- rowSums(cropdat[, c("avg_corn_a", "avg_cotton_a", "avg_hay_a", "avg_soybean_a", "avg_wheat_a")], na.rm = TRUE)
 
 cropdat$ln_rev <- log(1 + cropdat$rev)
-cropdat$ln_acres <- log(1 + cropdat$acres)
-cropdat$prec_sq <- cropdat$prec^2
+cropdat$c_ln_rev <- log(1 + cropdat$c_rev)
 
+cropdat$ln_acres <- log(1 + cropdat$acres)
+cropdat$c_ln_acres <- log(1 + cropdat$c_acres)
+
+# Set weights 1950-1980 Average Acres
+wdat <- cropdat %>% 
+  filter(year <= 1979) %>% 
+  group_by(fips) %>% 
+  summarise(w_acres = mean(acres, na.rm = TRUE),
+            w_corn_a = mean(corn_grain_a, na.rm = TRUE))
+
+cropdat <- left_join(cropdat, wdat, by = "fips")
 
 # Proportion of crop acres as total of harvested_farmland_a
-
 cropdat$corn_grain_a <- ifelse(is.na(cropdat$corn_grain_a), 0, cropdat$corn_grain_a)
 cropdat$cotton_a <- ifelse(is.na(cropdat$cotton_a), 0, cropdat$cotton_a)
 cropdat$hay_a <- ifelse(is.na(cropdat$hay_a), 0, cropdat$hay_a)
@@ -89,6 +107,7 @@ cropdat$p_cotton_a <- ifelse(is.infinite(cropdat$p_cotton_a), NA, cropdat$p_cott
 cropdat$p_hay_a <- ifelse(is.infinite(cropdat$p_hay_a), NA, cropdat$p_hay_a)
 cropdat$p_soybean_a <- ifelse(is.infinite(cropdat$p_soybean_a), NA, cropdat$p_soybean_a)
 cropdat$p_wheat_a <- ifelse(is.infinite(cropdat$p_wheat_a), NA, cropdat$p_wheat_a)
+
 
 
 # Find warmest counties
@@ -184,30 +203,28 @@ ggplot(moddat, aes(year, rev, color = factor(type))) +
         legend.title = element_blank()) 
   
 
-mod0 <- felm(ln_rev ~ tau + omega + tau + did, data = moddat, weights = moddat$acres)
+# Log revenue per acre regression
+
+mod0 <- felm(ln_rev ~ tau + omega + tau + did, data = moddat)
 summary(mod0)
 
-mod1 <- felm(ln_rev ~ state_trend + tau + omega + tau + did | fips | 0 | 0, data = moddat, weights = moddat$acres)
+mod1 <- felm(ln_rev ~ state_trend + tau + tau + did | fips | 0 | 0, data = moddat, weights = moddat$w_acres)
 summary(mod1)
 
-mod2 <- felm(ln_rev ~ state_trend + omega + tau + did  | fips | 0 | state, data = moddat, weights = moddat$acres)
+mod2 <- felm(ln_rev ~ state_trend + tau + did  | fips | 0 | state, data = moddat, weights = moddat$w_acres)
 summary(mod2)
 
 mod3 <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30C + prec + prec_sq + 
-               omega + tau + did  | 0 | 0 | 0, data = moddat, weights = moddat$acres)
+               omega + tau + did  | 0 | 0 | 0, data = moddat)
 summary(mod3)
 
 mod4 <- felm(ln_rev ~ state_trend + dday0_10 + dday10_30 + dday30C + prec + prec_sq + 
-               omega + tau + did  | fips | 0 | 0, data = moddat, weights = moddat$acres)
+               tau + did  | fips | 0 | 0, data = moddat, weights = moddat$w_acres)
 summary(mod4)
 
 mod5 <- felm(ln_rev ~ state_trend + dday0_10 + dday10_30 + dday30C + prec + prec_sq + 
-               tau + did  | fips | 0 | state, data = moddat, weights = moddat$acres)
+               tau + did  | fips | 0 | state, data = moddat, weights = moddat$w_acres)
 
-summary(mod5)
-
-summary(mod5, robust = TRUE) 
-cl(moddat, mod5, moddat$fips)
 summary(mod5)
 
 saveRDS(mod0, "models/dd_mod0.rds")
@@ -216,6 +233,40 @@ saveRDS(mod2, "models/dd_mod2.rds")
 saveRDS(mod3, "models/dd_mod3.rds")
 saveRDS(mod4, "models/dd_mod4.rds")
 saveRDS(mod5, "models/dd_mod5.rds")
+ 
+
+##################
+
+# Constant log revenue per acre regression
+
+cmod0 <- felm(c_ln_rev ~ tau + omega + tau + did, data = moddat)
+summary(cmod0)
+
+cmod1 <- felm(c_ln_rev ~ state_trend + tau + omega + tau + did | fips | 0 | 0, data = moddat, weights = moddat$w_acres)
+summary(cmod1)
+
+cmod2 <- felm(c_ln_rev ~ state_trend + omega + tau + did  | fips | 0 | state, data = moddat, weights = moddat$w_acres)
+summary(cmod2)
+
+cmod3 <- felm(c_ln_rev ~ dday0_10 + dday10_30 + dday30C + prec + prec_sq + 
+               omega + tau + did  | 0 | 0 | 0, data = moddat)
+summary(cmod3)
+
+cmod4 <- felm(c_ln_rev ~ state_trend + dday0_10 + dday10_30 + dday30C + prec + prec_sq + 
+               omega + tau + did  | fips | 0 | 0, data = moddat, weights = moddat$w_acres)
+summary(cmod4)
+
+cmod5 <- felm(c_ln_rev ~ state_trend + dday0_10 + dday10_30 + dday30C + prec + prec_sq + 
+               omega + tau + did  | fips | 0 | state, data = moddat, weights = moddat$w_acres)
+
+summary(cmod5)
+
+saveRDS(cmod0, "models/dd_cmod0.rds")
+saveRDS(cmod1, "models/dd_cmod1.rds")
+saveRDS(cmod2, "models/dd_cmod2.rds")
+saveRDS(cmod3, "models/dd_cmod3.rds")
+saveRDS(cmod4, "models/dd_cmod4.rds")
+saveRDS(cmod5, "models/dd_cmod5.rds")
  
 
 ##################
@@ -252,8 +303,10 @@ saveRDS(modf, "models/dd_modf.rds")
 
 # Individual crop changes
 
+moddat$w_corn_a <- ifelse(is.na(moddat$w_corn_a), 0, moddat$w_corn_a)
+
 mod1a <- felm(log(corn) ~ state_trend + dday0_10 + dday10_30 + dday30C + prec + prec_sq + 
-               omega + tau + did  | fips | 0 | state, data = moddat)
+               omega + tau + did  | fips | 0 | state, data = moddat, weights = moddat$w_corn_a)
 summary(mod1a) 
 
 mod2a <- felm(log(cotton) ~ state_trend + dday0_10 + dday10_30 + dday30C + prec + prec_sq + 
