@@ -139,7 +139,7 @@ star1 <- stargazer(mod0, mod1, mod2, mod3, mod4, mod5,
           apply.coef = multiply.100, apply.se = multiply.100,
           table.layout ="=dcm#-t-as=n",
           font.size = "footnotesize",
-          add.lines = list(c("Weights", "--", "Crop Acres", "Crop Acres", "--", "Crop Acres", "Crop Acres"),
+          add.lines = list(c("Weights", "--", "Acres", "Acres", "--", "Acres", "Acres"),
                            c("Fixed-effect", "--", "County", "County", "--", "County", "County"),
                            c("State-trend", "--", "Yes", "Yes", "--", "Yes", "Yes"),
                            c("Clusterd SE", "--", "--", "State", "", "--", "State")),
@@ -150,7 +150,7 @@ notes1 <- "\\raggedright \\\\ \\parbox{7in}{Note: Crop revenue is calculated as 
 field crops where revenue per acre equals yield (per acre lbs) times average state-level crop prices. 
 Dependent variables is the difference in the log of crop revenue per acre from 1950-1980 and 1980-2010 for those counties that warmed the most versus cooled the most. 
 Treatment indicates the top third counties that warmed the most witin state from 1950-1980 and 1980-2010. Estimates in 
-bold are statistically significant at least 95\\%. Coefficients have been multiplied by 100. }"
+bold are statistically significant at 95\\%. Coefficients have been multiplied by 100. }"
 
 loc1 <- which(star1 == "\\end{tabular} ") 
 top1 <- star1[1:loc1]
@@ -175,7 +175,7 @@ star2 <- stargazer(cmod0, cmod1, cmod2, cmod3, cmod4, cmod5,
           apply.coef = multiply.100, apply.se = multiply.100,
           table.layout ="=dcm#-t-as=n",
           font.size = "footnotesize",
-          add.lines = list(c("Weights", "--", "Crop Acres", "Crop Acres", "--", "Crop Acres", "Crop Acres"),
+          add.lines = list(c("Weights", "--", "Acres", "Acres", "--", "Acres", "Acres"),
                            c("Fixed-effect", "--", "County", "County", "--", "County", "County"),
                            c("State-trend", "--", "Yes", "Yes", "--", "Yes", "Yes"),
                            c("Clusterd SE", "--", "--", "State", "", "--", "State")),
@@ -185,7 +185,7 @@ notes2 <- "\\raggedright \\\\ \\parbox{7in}{Note: Crop revenue is calculated as 
 field crops where revenue per acre equals yield (per acre lbs) times average state-level crop prices. 
 Dependent variables is the difference in the log of crop revenue per acre from 1950-1980 and 1980-2010 for those counties that warmed the most versus cooled the most. 
 Treatment indicates the top third counties that warmed the most witin state from 1950-1980 and 1980-2010. Estimates in 
-bold are statistically significant at least 95\\%. Coefficients have been multiplied by 100. }"
+bold are statistically significant at 95\\%. Coefficients have been multiplied by 100. }"
 
 loc2 <- which(star2 == "\\end{tabular} ") 
 top2 <- star2[2:loc2]

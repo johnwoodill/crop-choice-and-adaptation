@@ -242,10 +242,10 @@ saveRDS(mod5, "models/dd_mod5.rds")
 cmod0 <- felm(c_ln_rev ~ tau + omega + tau + did, data = moddat)
 summary(cmod0)
 
-cmod1 <- felm(c_ln_rev ~ state_trend + tau + omega + tau + did | fips | 0 | 0, data = moddat, weights = moddat$w_acres)
+cmod1 <- felm(c_ln_rev ~ state_trend + tau + tau + did | fips | 0 | 0, data = moddat, weights = moddat$w_acres)
 summary(cmod1)
 
-cmod2 <- felm(c_ln_rev ~ state_trend + omega + tau + did  | fips | 0 | state, data = moddat, weights = moddat$w_acres)
+cmod2 <- felm(c_ln_rev ~ state_trend + tau + did  | fips | 0 | state, data = moddat, weights = moddat$w_acres)
 summary(cmod2)
 
 cmod3 <- felm(c_ln_rev ~ dday0_10 + dday10_30 + dday30C + prec + prec_sq + 
@@ -253,11 +253,11 @@ cmod3 <- felm(c_ln_rev ~ dday0_10 + dday10_30 + dday30C + prec + prec_sq +
 summary(cmod3)
 
 cmod4 <- felm(c_ln_rev ~ state_trend + dday0_10 + dday10_30 + dday30C + prec + prec_sq + 
-               omega + tau + did  | fips | 0 | 0, data = moddat, weights = moddat$w_acres)
+               tau + did  | fips | 0 | 0, data = moddat, weights = moddat$w_acres)
 summary(cmod4)
 
 cmod5 <- felm(c_ln_rev ~ state_trend + dday0_10 + dday10_30 + dday30C + prec + prec_sq + 
-               omega + tau + did  | fips | 0 | state, data = moddat, weights = moddat$w_acres)
+               tau + did  | fips | 0 | state, data = moddat, weights = moddat$w_acres)
 
 summary(cmod5)
 
@@ -488,39 +488,44 @@ bs.dd_reg <- function (dat, model, state_trend) {
   #                                                                                    nrow(moddat)/2, 
   #                                                                                    replace = TRUE))
   if(model == 1){
-  fit <- felm(ln_rev ~ omega + tau + did, data = moddat)
+  fit <- felm(ln_rev ~ omega + tau + did, data = moddat, weights = moddat$w_acres)
   return(coef(fit))
   }
   
   if(model == 2){
-  fit <- felm(ln_rev ~ omega + tau + did | state | 0 | state, data = moddat)
+  fit <- felm(ln_rev ~ omega + tau + did | state | 0 | state, data = moddat, weights = moddat$w_acres)
   return(coef(fit))
   }
   
   if(model == 3){
   fit <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30C + prec + prec_sq + 
-               omega + tau + did, data = moddat)
+               omega + tau + did, data = moddat, weights = moddat$w_acres)
   return(coef(fit))
   }
   
   if(model == 4){
   fit <- felm(ln_rev ~ state_trend + dday0_10 + dday10_30 + dday30C + prec + prec_sq + 
-               omega + tau + did | fips | 0 | 0, data = moddat)
+               omega + tau + did | fips | 0 | state, data = moddat, weights = moddat$w_acres)
   return(coef(fit))
   }
   
 }
  
-bs_mod1 <- lm(ln_rev ~ dday0_10 + dday10_30 + dday30C + prec + prec_sq + 
+bs_mod1 <- lm(ln_rev ~ state_trend + dday0_10 + dday10_30 + dday30C + prec + prec_sq + 
                omega + tau + did - 1, data = moddat)
 z1 <- t(replicate(1000, bs.dd_reg(moddat, 4, state_trend)))
 
+plot(density(z1[, 34]))
+mean(z1[, 34])
+
 for (i in 1:length(bs_mod1$coefficients)){
-  bs_mod1$coefficients[i] <- mean(z1[, i])
-  bs_mod1$se[i] <- sd(z1[, i])
+  bs_mod1$coefficients[i] <- mean(z1[, i], na.rm = TRUE)
+  bs_mod1$se[i] <- sd(z1[, i], na.rm = TRUE)
 }
 
 bs_mod1
+
+
 summary(bs_mod1)
  
  
