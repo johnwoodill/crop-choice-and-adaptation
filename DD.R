@@ -9,6 +9,8 @@ cropdat <- readRDS("data/full_ag_data.rds")
 cropdat <- filter(cropdat, year < 2010)
 cropdat$dday0_10 <- cropdat$dday0C - cropdat$dday10C
 cropdat$dday10_30 <- cropdat$dday10C - cropdat$dday30C
+cropdat$state <- factor(cropdat$state)
+cropdat$fips <- factor(cropdat$fips)
 
 dummyCreator <- function(invec, prefix = NULL) {
      L <- length(invec)
@@ -21,11 +23,11 @@ dummyCreator <- function(invec, prefix = NULL) {
 } 
 
 # Exposure weighted values equal zero
-cropdat$tavg <- cropdat$tavg - mean(cropdat$tavg, na.rm = TRUE)
-cropdat$dday0_10 <- cropdat$dday0_10 - mean(cropdat$dday0_10, na.rm = TRUE)
-cropdat$dday10_30 <- cropdat$dday10_30 - mean(cropdat$dday10_30, na.rm = TRUE)
-cropdat$dday30C <- cropdat$dday30C - mean(cropdat$dday30C, na.rm = TRUE)
-cropdat$prec <- cropdat$prec - mean(cropdat$prec, na.rm = TRUE)
+# cropdat$tavg <- cropdat$tavg - mean(cropdat$tavg, na.rm = TRUE)
+# cropdat$dday0_10 <- cropdat$dday0_10 - mean(cropdat$dday0_10, na.rm = TRUE)
+# cropdat$dday10_30 <- cropdat$dday10_30 - mean(cropdat$dday10_30, na.rm = TRUE)
+# cropdat$dday30C <- cropdat$dday30C - mean(cropdat$dday30C, na.rm = TRUE)
+# cropdat$prec <- cropdat$prec - mean(cropdat$prec, na.rm = TRUE)
 cropdat$prec_sq <- cropdat$prec^2
 
 #cropdat <- filter(cropdat, state == "wi")
@@ -88,7 +90,6 @@ cropdat$cotton_a <- ifelse(is.na(cropdat$cotton_a), 0, cropdat$cotton_a)
 cropdat$hay_a <- ifelse(is.na(cropdat$hay_a), 0, cropdat$hay_a)
 cropdat$wheat_a <- ifelse(is.na(cropdat$wheat_a), 0, cropdat$wheat_a)
 cropdat$soybean_a <- ifelse(is.na(cropdat$soybean_a), 0, cropdat$soybean_a)
-
 
 cropdat$p_corn_a <- cropdat$corn_grain_a/cropdat$acres
 cropdat$p_cotton_a <- cropdat$cotton_a/cropdat$acres
@@ -162,9 +163,12 @@ moddat$trend <- moddat$year - 1949
 # moddat$soybean <- ifelse(moddat$omega == 1, (moddat$soybean_p/moddat$avg_soybean_a)*moddat$soybean_rprice, moddat$soybean)
 # moddat$wheat <- ifelse(moddat$omega == 1, (moddat$wheat_p/moddat$avg_wheat_a)*moddat$wheat_rprice, moddat$wheat)
 
-
+# State-trend dummy variables
 state_trend <- dummyCreator(moddat$state, prefix = "state")
 state_trend <- state_trend*moddat$trend
+
+# County-fe dummy variables
+fips_dummy <- dummyCreator(moddat$fips, prefix = "fips")
 
 # Hand computer data
 a = sapply(subset(moddat, tau == 0 & omega == 0, select = rev), mean)
@@ -288,11 +292,11 @@ summary(mod3)
 
 mode <- felm(ln_acres ~ state_trend + dday0_10 + dday10_30 + dday30C + prec + prec_sq + 
                omega + tau + did  | fips | 0 | 0, data = moddat)
-summary(mod4)
+summary(mode)
 
 modf <- felm(ln_acres ~ state_trend + dday0_10 + dday10_30 + dday30C + prec + prec_sq + 
-               omega + tau + did  | fips | 0 | state, data = moddat)
-summary(mod5) 
+               tau + did  | fips | 0 | state, data = moddat)
+summary(modf) 
 
 saveRDS(moda, "models/dd_moda.rds")
 saveRDS(modb, "models/dd_modb.rds")
@@ -306,7 +310,7 @@ saveRDS(modf, "models/dd_modf.rds")
 moddat$w_corn_a <- ifelse(is.na(moddat$w_corn_a), 0, moddat$w_corn_a)
 
 mod1a <- felm(log(corn) ~ state_trend + dday0_10 + dday10_30 + dday30C + prec + prec_sq + 
-               omega + tau + did  | fips | 0 | state, data = moddat, weights = moddat$w_corn_a)
+               omega + tau + did  | fips | 0 | state, data = moddat, weights = moddat$w_acres)
 summary(mod1a) 
 
 mod2a <- felm(log(cotton) ~ state_trend + dday0_10 + dday10_30 + dday30C + prec + prec_sq + 
@@ -333,15 +337,6 @@ saveRDS(mod4a, "models/dd_mod4a.rds")
 saveRDS(mod5a, "models/dd_mod5a.rds")
 
 # Crop Shares
-
-# Convert to z-scores
-zcorn <- scale(moddat$p_corn_a, center = TRUE, scale = TRUE)
-zcotton <- scale(moddat$p_cotton_a, center = TRUE, scale = TRUE)
-zhay <- scale(moddat$p_hay_a, center = TRUE, scale = TRUE)
-zsoybean <- scale(moddat$p_soybean_a, center = TRUE, scale = TRUE)
-zwheat <- scale(moddat$p_wheat_a, center = TRUE, scale = TRUE)
-
-
 mod1b <- felm(p_corn_a ~ state_trend + dday0_10 + dday10_30 + dday30C + prec + prec_sq + 
                omega + tau + did  | fips | 0 | state, data = moddat)
 summary(mod1b) 
@@ -369,27 +364,118 @@ saveRDS(mod3b, "models/dd_mod3b.rds")
 saveRDS(mod4b, "models/dd_mod4b.rds")
 saveRDS(mod5b, "models/dd_mod5b.rds")
 
+# Crop shares convert to z-scores
+# zcorn <- scale(moddat$p_corn_a, center = TRUE, scale = TRUE) 
+# zcotton <- scale(moddat$p_cotton_a, center = TRUE, scale = TRUE)
+# zhay <- scale(moddat$p_hay_a, center = TRUE, scale = TRUE)
+# zsoybean <- scale(moddat$p_soybean_a, center = TRUE, scale = TRUE)
+# zwheat <- scale(moddat$p_wheat_a, center = TRUE, scale = TRUE)
 
 
-mod1b <- zcorn ~ state_trend + dday0_10 + dday10_30 + dday30C + prec + prec_sq + 
-               omega + tau + did
+mod1b <- felm(zcorn ~ state_trend + dday0_10 + dday10_30 + dday30C + prec + prec_sq | fips | 0 | state, data = moddat)
+summary(mod1b) 
 
-mod2b <- zcotton ~ state_trend + dday0_10 + dday10_30 + dday30C + prec + prec_sq + 
-               omega + tau + did
+mod2b <- felm(zcotton ~ state_trend + dday0_10 + dday10_30 + dday30C + prec + prec_sq | fips | 0 | state, data = moddat)
+summary(mod2b) 
 
-mod3b <- zhay ~ state_trend + dday0_10 + dday10_30 + dday30C + prec + prec_sq + 
-               omega + tau + did
+mod3b <- felm(zhay ~ state_trend + dday0_10 + dday10_30 + dday30C + prec + prec_sq | fips | 0 | state, data = moddat)
+summary(mod3b) 
 
-mod4b <- zsoybean ~ state_trend + dday0_10 + dday10_30 + dday30C + prec + prec_sq + 
-               omega + tau + did
 
-mod5b <- zwheat ~ state_trend + dday0_10 + dday10_30 + dday30C + prec + prec_sq + 
-               omega + tau + did
+mod4b <- felm(zsoybean ~ state_trend + dday0_10 + dday10_30 + dday30C + prec + prec_sq | fips | 0 | state, data = moddat)
+summary(mod4b) 
 
-mod <- systemfit(list(mod1b, mod2b, mod3b, mod4b), data = moddat, method = "SUR", 
-                 useMatrix = TRUE, solvetol = 1e-40)
+mod5b <- felm(zwheat ~ state_trend + dday0_10 + dday10_30 + dday30C + prec + prec_sq | fips | 0 | state, data = moddat)
+summary(mod5b) 
+
+tmod1 <- lm(ln_rev ~  dday0_10 + dday10_30 + dday30C + prec + prec_sq, data = moddat )
+tmod2 <- lm(tavg ~  dday0_10 + dday10_30 + dday30C + prec + prec_sq, data = moddat )
+tmod2 <- lm(p_cotton_a ~  dday0_10 + dday10_30 + dday30C + prec + prec_sq, data = moddat )
+tmod3 <- lm(p_hay_a ~  dday0_10 + dday10_30 + dday30C + prec + prec_sq, data = moddat )
+tmod4 <- lm(p_soybean_a ~  dday0_10 + dday10_30 + dday30C + prec + prec_sq, data = moddat )
+cor(resid(tmod1), resid(tmod2))
+
+
+mod1b <- zcorn ~  dday0_10 + dday10_30 + dday30C + prec + prec_sq - 1
+
+mod2b <- zcotton ~  dday0_10 + dday10_30 + dday30C + prec + prec_sq - 1
+
+mod3b <- zhay ~  dday0_10 + dday10_30 + dday30C + prec + prec_sq - 1
+
+mod4b <- zsoybean ~ dday0_10 + dday10_30 + dday30C + prec + prec_sq - 1 
+
+mod5b <- zwheat ~ dday0_10 + dday10_30 + dday30C + prec + prec_sq - 1
+
+
+
+mod1b <- p_corn_a ~  dday0_10 + dday10_30 + dday30C + prec + prec_sq - 1
+
+mod2b <- p_cotton_a ~  dday0_10 + dday10_30 + dday30C + prec + prec_sq -1
+
+mod3b <- p_hay_a ~  dday0_10 + dday10_30 + dday30C + prec + prec_sq -1
+
+mod4b <- p_soybean_a ~ dday0_10 + dday10_30 + dday30C + prec + prec_sq -1
+
+mod5b <- p_wheat_a ~ dday0_10 + dday10_30 + dday30C + prec + prec_sq -1
+
+restrict <- c("corn_dday0_10 + corn_dday10_30 + corn_dday30C + corn_prec + corn_prec_sq  +
+              cotton_dday0_10 + cotton_dday10_30 + cotton_dday30C + cotton_prec + cotton_prec_sq  +
+              hay_dday0_10 + hay_dday10_30 + hay_dday30C + hay_prec + hay_prec_sq  +
+              soybean_dday0_10 + soybean_dday10_30 + soybean_dday30C + soybean_prec + soybean_prec_sq +
+              wheat_dday0_10 + wheat_dday10_30 + wheat_dday30C + wheat_prec + wheat_prec_sq = 0")
+
+mod <- systemfit(list(corn = mod1b, 
+                      cotton = mod2b, 
+                      hay = mod3b, 
+                      soybean = mod4b,
+                      wheat = mod5b), data = moddat, method = "SUR",
+                 restrict.matrix = restrict)
+
+#, solvetol = 1e-40)
+
+sur_corn <- lm(p_corn_a ~  dday0_10 + dday10_30 + dday30C + prec + prec_sq - 1, data = moddat)
+sur_cotton <- lm(p_cotton_a ~  dday0_10 + dday10_30 + dday30C + prec + prec_sq - 1, data = moddat)
+sur_hay <- lm(p_hay_a ~  dday0_10 + dday10_30 + dday30C + prec + prec_sq - 1, data = moddat)
+sur_soybean <- lm(p_soybean_a ~  dday0_10 + dday10_30 + dday30C + prec + prec_sq - 1, data = moddat)
+sur_wheat <- lm(p_wheat_a ~  dday0_10 + dday10_30 + dday30C + prec + prec_sq - 1, data = moddat)
+
+sur_corn$coefficients <- mod$coefficients[1:5]
+sur_corn$se <- mod$se[1:5]
+names(sur_corn$coefficients) <- c("dday0_10", "dday10_30", "dday30C", "prec", "prec_sq")
+
+sur_cotton$coefficients <- mod$coefficients[6:10]
+sur_cotton$se <- mod$se[6:10]
+names(sur_cotton$coefficients) <- c("dday0_10", "dday10_30", "dday30C", "prec", "prec_sq")
+
+sur_hay$coefficients <- mod$coefficients[11:15]
+sur_hay$se <- mod$se[11:15]
+names(sur_hay$coefficients) <- c("dday0_10", "dday10_30", "dday30C", "prec", "prec_sq")
+
+sur_soybean$coefficients <- mod$coefficients[16:20]
+sur_soybean$se <- mod$se[16:20]
+names(sur_soybean$coefficients) <- c("dday0_10", "dday10_30", "dday30C", "prec", "prec_sq")
+
+sur_wheat$coefficients <- mod$coefficients[21:25]
+sur_wheat$se <- mod$se[21:25]
+names(sur_wheat$coefficients) <- c("dday0_10", "dday10_30", "dday30C", "prec", "prec_sq")
+summary(sur_wheat)
+
+saveRDS(sur_corn, "models/sur_corn.rds")
+saveRDS(sur_cotton, "models/sur_cotton.rds")
+saveRDS(sur_hay, "models/sur_hay.rds")
+saveRDS(sur_soybean, "models/sur_soybean.rds")
+saveRDS(sur_wheat, "models/sur_wheat.rds")
+
 
 summary(mod)
+sum(mod$coefficients)
+warnings()
+pmod <- predict(mod)
+pmod[, 5] <- 1 - rowSums(pmod)
+rowSums(pmod)
+which(rowSums(pmod) != 1)
+which(rowSums(pmod) < 0)
+
 mod$eq
 
 

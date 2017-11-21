@@ -26,6 +26,12 @@ cmod3 <- readRDS("models/dd_cmod3.rds")
 cmod4 <- readRDS("models/dd_cmod4.rds")
 cmod5 <- readRDS("models/dd_cmod5.rds")
 
+# SUR Panel estimates
+sur_corn <- readRDS("models/sur_corn.rds")
+sur_cotton <- readRDS("models/sur_cotton.rds")
+sur_hay <- readRDS("models/sur_hay.rds")
+sur_soybean <- readRDS("models/sur_soybean.rds")
+sur_wheat <- readRDS("models/sur_wheat.rds")
 
 # # 30-year Treatment log acres
 # moda <- readRDS("models/dd_moda.rds")
@@ -127,7 +133,7 @@ star1 <- stargazer(mod0, mod1, mod2, mod3, mod4, mod5,
                   style = "aer", digits = 2,
                   omit = c("fips", "year", "state"), 
                   omit.stat = c("ser", "f"),
-                  title = "Difference-in-Difference Regression Model explaining Crop Revenue per Acre", 
+                  title = "Difference-in-Difference Regression Model Explaining Crop Revenue per Acre", 
                   column.labels = c("Basic Model", "Basic Model", "Basic Model", 
                                     "Climate Model",  "Climate Model", "Climate Model"),
           dep.var.labels = c("Log(Crop Revenue per Acre)", "Log(Crop Revenue per Acre)", "Log(Crop Revenue per Acre)", "Log(Crop Revenue per Acre)",
@@ -142,11 +148,11 @@ star1 <- stargazer(mod0, mod1, mod2, mod3, mod4, mod5,
           add.lines = list(c("Weights", "--", "Acres", "Acres", "--", "Acres", "Acres"),
                            c("Fixed-effect", "--", "County", "County", "--", "County", "County"),
                            c("State-trend", "--", "Yes", "Yes", "--", "Yes", "Yes"),
-                           c("Clusterd SE", "--", "--", "State", "", "--", "State")),
+                           c("Clusterd SE", "--", "--", "State", "--", "--", "State")),
           notes.append = TRUE, notes.align = "l") 
 
 #star1
-notes1 <- "\\raggedright \\\\ \\parbox{7in}{Note: Crop revenue is calculated as the total sum of individual crop revenue for five 
+notes1 <- "\\parbox{7.5in}{Note: Crop revenue is calculated as the total sum of individual crop revenue for five 
 field crops where revenue per acre equals yield (per acre lbs) times average state-level crop prices. 
 Dependent variables is the difference in the log of crop revenue per acre from 1950-1980 and 1980-2010 for those counties that warmed the most versus cooled the most. 
 Treatment indicates the top third counties that warmed the most witin state from 1950-1980 and 1980-2010. Estimates in 
@@ -163,7 +169,7 @@ star2 <- stargazer(cmod0, cmod1, cmod2, cmod3, cmod4, cmod5,
                   style = "aer", digits = 2,
                   omit = c("fips", "year", "state"), 
                   omit.stat = c("ser", "f"),
-                  title = "Difference-in-Difference Regression Model explaining Crop Revenue per Acre (constant acres)", 
+                  title = "Difference-in-Difference Regression Model Explaining Crop Revenue per Acre (constant acres)", 
                   column.labels = c("Basic Model", "Basic Model", "Basic Model", 
                                     "Climate Model",  "Climate Model", "Climate Model"),
           dep.var.labels = c("Log(Crop Revenue per Acre)", "Log(Crop Revenue per Acre)", "Log(Crop Revenue per Acre)", "Log(Crop Revenue per Acre)",
@@ -178,10 +184,10 @@ star2 <- stargazer(cmod0, cmod1, cmod2, cmod3, cmod4, cmod5,
           add.lines = list(c("Weights", "--", "Acres", "Acres", "--", "Acres", "Acres"),
                            c("Fixed-effect", "--", "County", "County", "--", "County", "County"),
                            c("State-trend", "--", "Yes", "Yes", "--", "Yes", "Yes"),
-                           c("Clusterd SE", "--", "--", "State", "", "--", "State")),
+                           c("Clusterd SE", "--", "--", "State", "--", "--", "State")),
           notes.append = FALSE, notes.align = "l") 
 
-notes2 <- "\\raggedright \\\\ \\parbox{7in}{Note: Crop revenue is calculated as the total sum of individual crop revenue for five 
+notes2 <- "\\parbox{7.5in}{Note: Crop revenue is calculated as the total sum of individual crop revenue for five 
 field crops where revenue per acre equals yield (per acre lbs) times average state-level crop prices. 
 Dependent variables is the difference in the log of crop revenue per acre from 1950-1980 and 1980-2010 for those counties that warmed the most versus cooled the most. 
 Treatment indicates the top third counties that warmed the most witin state from 1950-1980 and 1980-2010. Estimates in 
@@ -192,6 +198,42 @@ top2 <- star2[2:loc2]
 bot2 <- star2[(loc2+1):length(star2)]
 star2 <- c(top2, "\\vspace{1ex} ", notes2, bot2)
 star2
+
+
+# SUR model results 
+star3 <- stargazer(sur_corn, sur_cotton, sur_hay, sur_soybean, sur_wheat,
+                   align = FALSE, no.space = FALSE, 
+                   style = "aer", digits = 2,
+                   omit = c("fips", "year"), 
+                   omit.stat = c("ser", "f"),
+                   title = "Seemingly Unrelated Regression (SUR) Model Explaining Crop Share", 
+                   #column.labels = c("Basic Model", "Basic Model", "Climate Model", "Climate Model", "Climate Model"),
+           dep.var.labels = c("Corn Share",  "Cotton Share", "Hay Share", "Soybean Share", "Wheat Share"),
+           covariate.labels = c("Degree Days (0-10C)", "Degree Days (10-30C)", "Degree Days (30C)", 
+                               "Precipitation", "Precipitation Squared"),
+           model.names = FALSE, omit.table.layout = "n",
+           apply.coef = multiply.100, apply.se = multiply.100,
+           table.layout ="=dcm#-t-as=n",
+           font.size = "footnotesize",
+           #add.lines = list(c("Mean of Dep Variable", "9.30", "8.05",  "9.64", "9.17", "9.18"),
+          #                  c("Fixed-effect", "State", "State", "State", "State", "State"),
+          #                  c("Clusterd SE", "State", "State", "State", "State", "State")),
+          notes.append = FALSE, notes.align = "l")
+star3
+
+notes3 <- "\\parbox{5.5in}{Note: Table reports SUR regression results where coefficients have been 
+restricted to sum to zero across models (sum of predicted values across models equal one). Crop share is calculated 
+as crop acres divided by sum of field crop acres in sample (corn, cotton, hay, soybean, and wheat). 
+Dependent variables is the proportion change in crop acres.
+Estimates in bold are statistically significant at 95\\%. 
+Coefficients have been multiplied by 100. }"
+
+loc3 <- which(star3 == "\\end{tabular} ") 
+top3 <- star3[1:loc3]
+bot3 <- star3[(loc3+1):length(star3)]
+star3 <- c(top3, "\\vspace{1ex} ", notes3, bot3)
+star3
+
 # star2 <- stargazer(moda, modb, modc, modd, mode, modf,
 #                    align = FALSE, no.space = FALSE,
 #                    style = "aer", digits = 2,
@@ -340,8 +382,8 @@ cat("\\documentclass[10pt]{article}\n\\usepackage{graphicx}\n\\usepackage{pdflsc
 cat(star1, file = "dd_adaptation_regression_tables.tex", sep = "\n", append = TRUE)
 cat("\\newpage", file = "dd_adaptation_regression_tables.tex", append = TRUE)
 cat(star2, file = "dd_adaptation_regression_tables.tex", sep = "\n", append = TRUE)
-#cat("\\newpage", file = "dd_adaptation_regression_tables.tex", append = TRUE)
-#cat(star3, file = "dd_adaptation_regression_tables.tex", sep = "\n", append = TRUE)
+cat("\\newpage", file = "dd_adaptation_regression_tables.tex", append = TRUE)
+cat(star3, file = "dd_adaptation_regression_tables.tex", sep = "\n", append = TRUE)
 #cat("\\newpage", file = "dd_adaptation_regression_tables.tex", append = TRUE)
 #cat(star4, file = "dd_adaptation_regression_tables.tex", sep = "\n", append = TRUE)
 cat("\\end{document}", file = "dd_adaptation_regression_tables.tex", append = TRUE)
