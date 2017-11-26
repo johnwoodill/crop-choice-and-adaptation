@@ -407,16 +407,24 @@ mod4b <- zsoybean ~ dday0_10 + dday10_30 + dday30C + prec + prec_sq - 1
 mod5b <- zwheat ~ dday0_10 + dday10_30 + dday30C + prec + prec_sq - 1
 
 
+# Demean for fixed effects
+femoddat <- as.data.frame(moddat)
+femoddat <- select(femoddat, dday0_10, dday10_30, dday30C, prec, prec_sq)
 
-mod1b <- p_corn_a ~  dday0_10 + dday10_30 + dday30C + prec + prec_sq - 1
+femoddat$fips <- factor(femoddat$fips)
+class(femoddat)
+femoddat <- demeanlist(femoddat, fl = moddat$fips)
+femoddat
 
-mod2b <- p_cotton_a ~  dday0_10 + dday10_30 + dday30C + prec + prec_sq -1
+mod1b <- p_corn_a ~  dday0_10 + dday10_30 + dday30C + prec + prec_sq 
 
-mod3b <- p_hay_a ~  dday0_10 + dday10_30 + dday30C + prec + prec_sq -1
+mod2b <- p_cotton_a ~  dday0_10 + dday10_30 + dday30C + prec + prec_sq 
 
-mod4b <- p_soybean_a ~ dday0_10 + dday10_30 + dday30C + prec + prec_sq -1
+mod3b <- p_hay_a ~  dday0_10 + dday10_30 + dday30C + prec + prec_sq
 
-mod5b <- p_wheat_a ~ dday0_10 + dday10_30 + dday30C + prec + prec_sq -1
+mod4b <- p_soybean_a ~ dday0_10 + dday10_30 + dday30C + prec + prec_sq
+
+mod5b <- p_wheat_a ~ dday0_10 + dday10_30 + dday30C + prec + prec_sq
 
 restrict <- c("corn_dday0_10 + corn_dday10_30 + corn_dday30C + corn_prec + corn_prec_sq  +
               cotton_dday0_10 + cotton_dday10_30 + cotton_dday30C + cotton_prec + cotton_prec_sq  +
@@ -428,16 +436,19 @@ mod <- systemfit(list(corn = mod1b,
                       cotton = mod2b, 
                       hay = mod3b, 
                       soybean = mod4b,
-                      wheat = mod5b), data = moddat, method = "SUR",
+                      wheat = mod5b), data = moddat, method = "SUR")
+
+
+,
                  restrict.matrix = restrict)
 
 #, solvetol = 1e-40)
 
-sur_corn <- lm(p_corn_a ~  dday0_10 + dday10_30 + dday30C + prec + prec_sq - 1, data = moddat)
-sur_cotton <- lm(p_cotton_a ~  dday0_10 + dday10_30 + dday30C + prec + prec_sq - 1, data = moddat)
-sur_hay <- lm(p_hay_a ~  dday0_10 + dday10_30 + dday30C + prec + prec_sq - 1, data = moddat)
-sur_soybean <- lm(p_soybean_a ~  dday0_10 + dday10_30 + dday30C + prec + prec_sq - 1, data = moddat)
-sur_wheat <- lm(p_wheat_a ~  dday0_10 + dday10_30 + dday30C + prec + prec_sq - 1, data = moddat)
+sur_corn <- lm(p_corn_a ~  dday0_10 + dday10_30 + dday30C + prec + prec_sq + factor(fips), data = moddat)
+sur_cotton <- lm(p_cotton_a ~  dday0_10 + dday10_30 + dday30C + prec + prec_sq + factor(fips), data = moddat)
+sur_hay <- lm(p_hay_a ~  dday0_10 + dday10_30 + dday30C + prec + prec_sq + factor(fips), data = moddat)
+sur_soybean <- lm(p_soybean_a ~  dday0_10 + dday10_30 + dday30C + prec + prec_sq + factor(fips), data = moddat)
+sur_wheat <- lm(p_wheat_a ~  dday0_10 + dday10_30 + dday30C + prec + prec_sq + factor(fips), data = moddat)
 
 sur_corn$coefficients <- mod$coefficients[1:5]
 sur_corn$se <- mod$se[1:5]

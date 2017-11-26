@@ -1,6 +1,7 @@
 library(stargazer)
 library(lfe)
 
+
 setwd("/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/")
 
 multiply.100 <- function(x) (x * 100)
@@ -10,165 +11,62 @@ adj_ln <- function(x){
   ((exp(x) - 1))
   }
 
-# 30-year Treatment log rev
-mod0 <- readRDS("models/dd_mod0.rds")
-mod1 <- readRDS("models/dd_mod1.rds")
-mod2 <- readRDS("models/dd_mod2.rds")
-mod3 <- readRDS("models/dd_mod3.rds")
-mod4 <- readRDS("models/dd_mod4.rds")
-mod5 <- readRDS("models/dd_mod5.rds")
+# Save models
+csmod0 <- readRDS("models/cs_rev.rds")
+csmod1 <- readRDS("models/cs_rev_fe.rds")
 
-# 30-year Treatment log rev with constant acres
-cmod0 <- readRDS("models/dd_cmod0.rds")
-cmod1 <- readRDS("models/dd_cmod1.rds")
-cmod2 <- readRDS("models/dd_cmod2.rds")
-cmod3 <- readRDS("models/dd_cmod3.rds")
-cmod4 <- readRDS("models/dd_cmod4.rds")
-cmod5 <- readRDS("models/dd_cmod5.rds")
+ldmod0 <- readRDS("models/ld_rev.rds")
+ldmod1 <- readRDS("models/ld_rev_fe.rds")
+
+pmod0 <- readRDS("models/p_rev.rds")
+pmod1 <- readRDS("models/p_rev_fe.rds")
 
 
-# # 30-year Treatment log acres
-# moda <- readRDS("models/dd_moda.rds")
-# modb <- readRDS("models/dd_modb.rds")
-# modc <- readRDS("models/dd_modc.rds")
-# modd <- readRDS("models/dd_modd.rds")
-# mode <- readRDS("models/dd_mode.rds")
-# modf <- readRDS("models/dd_modf.rds")
-# 
-# # 30-year Treatment Individual Crop Yields
-# mod1a <- readRDS("models/dd_mod1a.rds")
-# mod2a <- readRDS("models/dd_mod2a.rds")
-# mod3a <- readRDS("models/dd_mod3a.rds")
-# mod4a <- readRDS("models/dd_mod4a.rds")
-# mod5a <- readRDS("models/dd_mod5a.rds")
-# 
-# # 30-year Treatment Individual Crop Shares
-# mod1b <- readRDS("models/dd_mod1b.rds")
-# mod2b <- readRDS("models/dd_mod2b.rds")
-# mod3b <- readRDS("models/dd_mod3b.rds")
-# mod4b <- readRDS("models/dd_mod4b.rds")
-# mod5b <- readRDS("models/dd_mod5b.rds")
 
-# Bootstrapped Revenue Per Acre
-# bs_mod1 <- readRDS("models/bs_mod1.rds")
-# bs_mod2 <- readRDS("models/bs_mod2.rds")
-# bs_mod3 <- readRDS("models/bs_mod3.rds")
-# bs_mod4 <- readRDS("models/bs_mod4.rds")
-
-  # mod3$coefficients[c("dday0_10", "dday10_30", "dday30C", "prec", "prec_sq")] <- 
-  #   multiply.100(mod3$coefficients[c("dday0_10", "dday10_30", "dday30C", "prec", "prec_sq")])
-  # 
-  # mod4$coefficients[c("dday0_10", "dday10_30", "dday30C", "prec", "prec_sq")] <- 
-  # multiply.100(mod3$coefficients[c("dday0_10", "dday10_30", "dday30C", "prec", "prec_sq")])
-  
-
-  
-  mod0$coefficients[2:4] <- adj_ln(mod0$coefficients[2:4])
-  mod1$coefficients[2:4] <- adj_ln(mod1$coefficients[2:4])
-  mod2$coefficients[2:4] <- adj_ln(mod2$coefficients[2:4])
-  mod3$coefficients[7:9] <- adj_ln(mod3$coefficients[7:9])
-  mod4$coefficients[7:9] <- adj_ln(mod4$coefficients[7:9])
-  mod5$coefficients[7:9] <- adj_ln(mod5$coefficients[7:9])
-  
-  cmod0$coefficients[2:4] <- adj_ln(cmod0$coefficients[2:4])
-  cmod1$coefficients[2:4] <- adj_ln(cmod1$coefficients[2:4])
-  cmod2$coefficients[2:4] <- adj_ln(cmod2$coefficients[2:4])
-  cmod3$coefficients[7:9] <- adj_ln(cmod3$coefficients[7:9])
-  cmod4$coefficients[7:9] <- adj_ln(cmod4$coefficients[7:9])
-  cmod5$coefficients[7:9] <- adj_ln(cmod5$coefficients[7:9])
-  # 
-  # moda$coefficients[2:4] <- adj_ln(moda$coefficients[2:4])
-  # modb$coefficients[2:4] <- adj_ln(modb$coefficients[2:4])
-  # modc$coefficients[2:4] <- adj_ln(modc$coefficients[2:4])
-  # modd$coefficients[7:9] <- adj_ln(modd$coefficients[7:9])
-  # mode$coefficients[7:9] <- adj_ln(mode$coefficients[7:9])
-  # modf$coefficients[7:9] <- adj_ln(modf$coefficients[7:9])
-  # 
-  # moda$coefficients[2:4] <- adj_ln(moda$coefficients[2:4])
-  # modb$coefficients[2:4] <- adj_ln(modb$coefficients[2:4])
-  # modc$coefficients[2:4] <- adj_ln(modc$coefficients[2:4])
-  # modd$coefficients[7:9] <- adj_ln(modd$coefficients[7:9])
-  # mode$coefficients[7:9] <- adj_ln(mode$coefficients[7:9])
-  # modf$coefficients[7:9] <- adj_ln(modf$coefficients[7:9])
-  # 
-  # mod1a$coefficients[7:9] <- adj_ln(mod1a$coefficients[7:9])
-  # mod2a$coefficients[7:9] <- adj_ln(mod2a$coefficients[7:9])
-  # mod3a$coefficients[7:9] <- adj_ln(mod3a$coefficients[7:9])
-  # mod4a$coefficients[7:9] <- adj_ln(mod4a$coefficients[7:9])
-  # mod5a$coefficients[7:9] <- adj_ln(mod5a$coefficients[7:9])
-  # 
-  # mod1b$coefficients[7:9] <- adj_ln(mod1b$coefficients[7:9])
-  # mod2b$coefficients[7:9] <- adj_ln(mod2b$coefficients[7:9])
-  # mod3b$coefficients[7:9] <- adj_ln(mod3b$coefficients[7:9])
-  # mod4b$coefficients[7:9] <- adj_ln(mod4b$coefficients[7:9])
-  # mod5b$coefficients[7:9] <- adj_ln(mod5b$coefficients[7:9])
-  # 
-  # bs_mod1$coefficients[2:4] <- adj_ln(bs_mod1$coefficients[2:4])
-  # bs_mod2$coefficients[1:3] <- adj_ln(bs_mod2$coefficients[1:3])
-  # bs_mod3$coefficients[7:9] <- adj_ln(bs_mod3$coefficients[7:9])
-  # bs_mod4$coefficients[6:8] <- adj_ln(bs_mod4$coefficients[6:8])
-  
-  # 
-  # modc1$coefficients[7:9] <- adj_ln(modc1$coefficients[7:9])
-  # modco1$coefficients[7:9] <- adj_ln(modco1$coefficients[7:9])
-  # modh1$coefficients[7:9] <- adj_ln(modh1$coefficients[7:9])
-  # mods1$coefficients[7:9] <- adj_ln(mods1$coefficients[7:9])
-  # modw1$coefficients[7:9] <- adj_ln(modw1$coefficients[7:9])
-
-    # mod0$coefficients[c("tau", "omega", "did")] <- adj_ln(mod0$coefficients[c("tau", "omega", "did")])
-  # mod1$coefficients[c("tau", "omega", "did")] <- adj_ln(mod1$coefficients[c("tau", "omega", "did")])
-  # mod2$coefficients[c("tau", "omega", "did")] <- adj_ln(mod2$coefficients[c("tau", "omega", "did")])
-  # mod3$coefficients[c("tau", "omega", "did")] <- adj_ln(mod3$coefficients[c("tau", "omega", "did")])
-  # mod4$coefficients[c("tau", "omega", "did")] <- adj_ln(mod4$coefficients[c("tau", "omega", "did")])
-  # mod5$coefficients[c("tau", "omega", "did")] <- adj_ln(mod5$coefficients[c("tau", "omega", "did")])
-
-star1 <- stargazer(mod0, mod1, mod2, mod3, mod4, mod5,
+star1 <- stargazer(csmod0, csmod1, ldmod0, ldmod1, pmod0, pmod1,
                   align = FALSE, no.space = FALSE, 
                   style = "aer", digits = 2,
                   omit = c("fips", "year", "state"), 
                   omit.stat = c("ser", "f"),
-                  title = "Difference-in-Difference Regression Model explaining Crop Revenue per Acre", 
-                  column.labels = c("Basic Model", "Basic Model", "Basic Model", 
-                                    "Climate Model",  "Climate Model", "Climate Model"),
+                  title = "Regression Model explaining Crop Revenue per Acre", 
+                  column.labels = c("Cross-section", "Cross-section", "Long-difference", 
+                                    "Long-difference",  "Panel", "Panel"),
           dep.var.labels = c("Log(Crop Revenue per Acre)", "Log(Crop Revenue per Acre)", "Log(Crop Revenue per Acre)", "Log(Crop Revenue per Acre)",
                              "Log(Crop Revenue per Acre)", "Log(Crop Revenue per Acre)"), 
           covariate.labels = c("Degree Days (0-10C)", "Degree Days (10-30C)", "Degree Days (30C)", 
-                               "Precipitation", "Precipitation Squared", "Post - 0:1950-1980/1:1980-2010", 
-                               "Treat - 0:cooled/1:warmed the most", "Treatment-effect"),
+                               "Precipitation", "Precipitation Squared"),
           model.names = FALSE,  omit.table.layout = "n",
           apply.coef = multiply.100, apply.se = multiply.100,
           table.layout ="=dcm#-t-as=n",
           font.size = "footnotesize",
-          add.lines = list(c("Weights", "--", "Crop Acres", "Crop Acres", "--", "Crop Acres", "Crop Acres"),
-                           c("Fixed-effect", "--", "County", "County", "--", "County", "County"),
-                           c("State-trend", "--", "Yes", "Yes", "--", "Yes", "Yes"),
-                           c("Clusterd SE", "--", "--", "State", "", "--", "State")),
+          add.lines = list(c("Fixed-effect", "--", "State", "--", "State, Year", "--", "State, Year"),
+                           c("Clusterd SE", "--", "State", "--", "State", "--", "State")),
           notes.append = FALSE, notes.align = "l") 
 
-#star1
-
-star2 <- stargazer(cmod0, cmod1, cmod2, cmod3, cmod4, cmod5,
-                  align = FALSE, no.space = FALSE, 
-                  style = "aer", digits = 2,
-                  omit = c("fips", "year", "state"), 
-                  omit.stat = c("ser", "f"),
-                  title = "Difference-in-Difference Regression Model explaining Crop Revenue per Acre (constant acres)", 
-                  column.labels = c("Basic Model", "Basic Model", "Basic Model", 
-                                    "Climate Model",  "Climate Model", "Climate Model"),
-          dep.var.labels = c("Log(Crop Revenue per Acre)", "Log(Crop Revenue per Acre)", "Log(Crop Revenue per Acre)", "Log(Crop Revenue per Acre)",
-                             "Log(Crop Revenue per Acre)", "Log(Crop Revenue per Acre)"), 
-          covariate.labels = c("Degree Days (0-10C)", "Degree Days (10-30C)", "Degree Days (30C)", 
-                               "Precipitation", "Precipitation Squared", "Post - 0:1950-1980/1:1980-2010", 
-                               "Treat - 0:cooled/1:warmed the most", "Treatment-effect"),
-          model.names = FALSE,  omit.table.layout = "n",
-          apply.coef = multiply.100, apply.se = multiply.100,
-          table.layout ="=dcm#-t-as=n",
-          font.size = "footnotesize",
-          add.lines = list(c("Weights", "--", "Crop Acres", "Crop Acres", "--", "Crop Acres", "Crop Acres"),
-                           c("Fixed-effect", "--", "County", "County", "--", "County", "County"),
-                           c("State-trend", "--", "Yes", "Yes", "--", "Yes", "Yes"),
-                           c("Clusterd SE", "--", "--", "State", "", "--", "State")),
-          notes.append = FALSE, notes.align = "l") 
+# star1
+# 
+# star2 <- stargazer(cmod0, cmod1, cmod2, cmod3, cmod4, cmod5,
+#                   align = FALSE, no.space = FALSE, 
+#                   style = "aer", digits = 2,
+#                   omit = c("fips", "year", "state"), 
+#                   omit.stat = c("ser", "f"),
+#                   title = "Difference-in-Difference Regression Model explaining Crop Revenue per Acre (constant acres)", 
+#                   column.labels = c("Basic Model", "Basic Model", "Basic Model", 
+#                                     "Climate Model",  "Climate Model", "Climate Model"),
+#           dep.var.labels = c("Log(Crop Revenue per Acre)", "Log(Crop Revenue per Acre)", "Log(Crop Revenue per Acre)", "Log(Crop Revenue per Acre)",
+#                              "Log(Crop Revenue per Acre)", "Log(Crop Revenue per Acre)"), 
+#           covariate.labels = c("Degree Days (0-10C)", "Degree Days (10-30C)", "Degree Days (30C)", 
+#                                "Precipitation", "Precipitation Squared", "Post - 0:1950-1980/1:1980-2010", 
+#                                "Treat - 0:cooled/1:warmed the most", "Treatment-effect"),
+#           model.names = FALSE,  omit.table.layout = "n",
+#           apply.coef = multiply.100, apply.se = multiply.100,
+#           table.layout ="=dcm#-t-as=n",
+#           font.size = "footnotesize",
+#           add.lines = list(c("Weights", "--", "Crop Acres", "Crop Acres", "--", "Crop Acres", "Crop Acres"),
+#                            c("Fixed-effect", "--", "County", "County", "--", "County", "County"),
+#                            c("State-trend", "--", "Yes", "Yes", "--", "Yes", "Yes"),
+#                            c("Clusterd SE", "--", "--", "State", "", "--", "State")),
+#           notes.append = FALSE, notes.align = "l") 
 
 
 # star2 <- stargazer(moda, modb, modc, modd, mode, modf,
@@ -315,19 +213,19 @@ star2 <- stargazer(cmod0, cmod1, cmod2, cmod3, cmod4, cmod5,
 
 setwd("/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/tables")          
 {
-cat("\\documentclass[10pt]{article}\n\\usepackage{graphicx}\n\\usepackage{pdflscape}\n\\usepackage{dcolumn}\n\\usepackage[a4paper, total={8in, 10in}]{geometry}\n\\begin{document}", file = "dd_adaptation_regression_tables.tex")
-cat(star1, file = "dd_adaptation_regression_tables.tex", sep = "\n", append = TRUE)
-cat("\\newpage", file = "dd_adaptation_regression_tables.tex", append = TRUE)
-cat(star2, file = "dd_adaptation_regression_tables.tex", sep = "\n", append = TRUE)
+cat("\\documentclass[10pt]{article}\n\\usepackage{graphicx}\n\\usepackage{pdflscape}\n\\usepackage{dcolumn}\n\\usepackage[a4paper, total={8in, 10in}]{geometry}\n\\begin{document}", file = "rev_regression_tables.tex")
+cat(star1, file = "rev_regression_tables.tex", sep = "\n", append = TRUE)
+#cat("\\newpage", file = "dd_adaptation_regression_tables.tex", append = TRUE)
+#cat(star2, file = "dd_adaptation_regression_tables.tex", sep = "\n", append = TRUE)
 #cat("\\newpage", file = "dd_adaptation_regression_tables.tex", append = TRUE)
 #cat(star3, file = "dd_adaptation_regression_tables.tex", sep = "\n", append = TRUE)
 #cat("\\newpage", file = "dd_adaptation_regression_tables.tex", append = TRUE)
 #cat(star4, file = "dd_adaptation_regression_tables.tex", sep = "\n", append = TRUE)
-cat("\\end{document}", file = "dd_adaptation_regression_tables.tex", append = TRUE)
+cat("\\end{document}", file = "rev_regression_tables.tex", append = TRUE)
 # Compile pdf
-system("pdflatex dd_adaptation_regression_tables.tex")
+system("pdflatex rev_regression_tables.tex")
 
 }
 
-system("sed -r 's/([0-9\\.]+)\\$\\^\\{\\*{1,3}\\}\\$/\\\\textbf{\\1}/g' dd_adaptation_regression_tables.tex > new.tex") 
+#system("sed -r 's/([0-9\\.]+)\\$\\^\\{\\*{1,3}\\}\\$/\\\\textbf{\\1}/g' rev_regression_tables.tex > new.tex") 
                   

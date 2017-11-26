@@ -8,7 +8,7 @@ library(foreign)
 library(haven)
 library(zoo)
 
-setwd("/run/media/john/1TB/SpiderOak/Projects/adaptation-along-the-envelope/")
+setwd("/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/")
 
 
 # Function to extract data
@@ -139,8 +139,8 @@ hay <- read_csv("data/hay_1918-2008.csv")
 hay$state <- tolower(hay$state)
 hay$fips <- as.integer(hay$fips)
 
-wheat <- read_csv("data/wheat_1909-2007.csv")
-#wheat <- read_csv("data/wheat_1909-2007_spring.csv")
+#wheat <- read_csv("data/wheat_1909-2007.csv")
+wheat <- read_csv("data/wheat_1909-2007_spring.csv")
 wheat$state <- tolower(wheat$state)
 wheat$fips <- as.integer(wheat$fips)
 
@@ -172,19 +172,19 @@ cropdat <- left_join(cropdat, wheat, by = c("state", "fips", "year"))
 cropdat <- left_join(cropdat, soybean, by = c("state", "fips", "year"))
 
 # Get harvested cropland acres
-cropland <- read_csv("data/census_harv_cropland_a_1997-2012.csv")
-cropland$fips <- as.numeric(cropland$fips)
-cropland$state <- NULL
-head(cropland)
+# cropland <- read_csv("data/census_harv_cropland_a_1997-2012.csv")
+# cropland$fips <- as.numeric(cropland$fips)
+# cropland$state <- NULL
+# head(cropland)
 
 
 # # Merge historical Haines data
-hains_dat <- read_dta("data/DustBowl_All_base1910.dta")
-hains_dat <- select(hains_dat, year, fips, cropland_harvested)
-hains_dat$year <- as.integer(hains_dat$year)
-hains_dat$fips <- as.integer(hains_dat$fips)
-names(hains_dat) <- c("year", "fips", "harvested_cropland_a")
-head(hains_dat)
+# hains_dat <- read_dta("data/DustBowl_All_base1910.dta")
+# hains_dat <- select(hains_dat, year, fips, cropland_harvested)
+# hains_dat$year <- as.integer(hains_dat$year)
+# hains_dat$fips <- as.integer(hains_dat$fips)
+# names(hains_dat) <- c("year", "fips", "harvested_cropland_a")
+# head(hains_dat)
 
 # expand grid data
 fips <- unique(cropdat$fips)
@@ -194,20 +194,20 @@ mdat <- expand.grid(years, fips)
 names(mdat) <- c("year", "fips")
 
 # Merge historical with current census data
-mdat <- left_join(mdat, hains_dat, by = c("fips", "year")) %>% 
-  left_join(cropland, by = c("fips", "year")) %>% 
-  mutate(harvested_cropland_a = ifelse(is.na(harvested_cropland_a.x), harvested_cropland_a.y, harvested_cropland_a.x)) %>% 
-  select(-harvested_cropland_a.x, -harvested_cropland_a.y)
-
-mdatt <- mdat %>%   
-   group_by(fips) %>% 
-   arrange(year) %>% 
-   mutate(harvested_cropland_a = na.approx(harvested_cropland_a, na.rm = FALSE)) %>% 
-  ungroup()
-head(mdatt)
-
-cropdat <- left_join(cropdat, mdatt, by = c("fips", "year"))
-head(cropdat)
+# mdat <- left_join(mdat, hains_dat, by = c("fips", "year")) %>% 
+#   left_join(cropland, by = c("fips", "year")) %>% 
+#   mutate(harvested_cropland_a = ifelse(is.na(harvested_cropland_a.x), harvested_cropland_a.y, harvested_cropland_a.x)) %>% 
+#   select(-harvested_cropland_a.x, -harvested_cropland_a.y)
+# 
+# mdatt <- mdat %>%   
+#    group_by(fips) %>% 
+#    arrange(year) %>% 
+#    mutate(harvested_cropland_a = na.approx(harvested_cropland_a, na.rm = FALSE)) %>% 
+#   ungroup()
+# head(mdatt)
+# 
+# cropdat <- left_join(cropdat, mdatt, by = c("fips", "year"))
+# head(cropdat)
 
 # 
 # newdat <- select(dat, year, state, fips, corn_grain_a, corn_grain_y, 
@@ -277,8 +277,8 @@ head(cropdat)
  dd$year <- as.integer(dd$year)
  dd$fips <- as.integer(dd$fips)
  dd_dat <- left_join(dd, prec, by = c("fips", "year", "month"))
- dd_dat <- filter(dd_dat, month >= 3 & month <= 9)
- #dd_dat <- filter(dd_dat, month <= 5 | month >= 9)
+ dd_dat <- filter(dd_dat, month >= 3 & month <= 10)
+ 
  dd_dat$X1 <- NULL
  
  dd_dat <- dd_dat %>%
@@ -377,7 +377,7 @@ fulldat$wheat_nrev <- (fulldat$wheat_p*fulldat$wheat_nprice)/fulldat$wheat_a
 fulldat$soybean_nrev <- (fulldat$soybean_p*fulldat$soybean_nprice)/fulldat$soybean_a
 
 # Organize before degree day merge
-fulldat <- select(fulldat, year, state, fips, lat, long, gdp_price_def, harvested_cropland_a,
+fulldat <- select(fulldat, year, state, fips, lat, long, gdp_price_def, 
                   corn_grain_a, corn_grain_p, corn_yield, corn_nprice, corn_rprice, corn_rrev, corn_nrev,
                   cotton_a, cotton_p, cotton_yield, cotton_nprice, cotton_rprice, cotton_rrev, cotton_nrev,
                   hay_a, hay_p, hay_yield, hay_nprice, hay_rprice, hay_rrev, hay_nrev,
