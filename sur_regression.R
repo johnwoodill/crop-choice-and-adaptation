@@ -99,11 +99,11 @@ summary(mod1fee$fit)
 
 
 
+y <- select(csdat, p_corn_a, p_cotton_a, p_hay_a, p_soybean_a, p_wheat_a)
+X <- select(csdat, dday0_10, dday10_30, dday30C, prec, prec_sq)
 
-
-
-
-
+fm <- fmlogit(y, X, maxit = 1000)
+summary(fm)
 
 
 # Doesn't work stacking varaibles because of unbal panel not implemented
@@ -114,7 +114,7 @@ surdat <- gather(surdat, key = crops, value = value, -fips, -state, -dday0_10, -
 
 surdat <- pdata.frame(surdat, c("state"))
 
-mod <- systemfit(value ~ dday0_10 + dday10_30 + dday30C + prec -1, data = surdat, method = "SUR")
+mod <- systemfit(value ~ dday0_10 + dday10_30 + dday30C + prec, data = surdat, method = "SUR")
 summary(mod)
 
 # Demean for fixed effects
