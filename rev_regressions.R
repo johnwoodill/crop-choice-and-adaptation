@@ -10,29 +10,29 @@ pdat <- readRDS("data/panel_regression_data.rds")
 
 # Cross-section estimates
 csmod0 <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq | 0 | 0 | 0, 
-            data = csdat, weights = csdat$acres)
+            data = csdat, weights = csdat$w)
 summary(csmod0)
 
 csmod1 <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq | state | 0 | state, 
-            data = csdat, weights = csdat$acres)
+            data = csdat, weights = csdat$w)
 summary(csmod1)
 
 # Long-difference estimates
-ldmod0 <- felm(ln_rev_diff ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq | 0 | 0 | 0, 
-            data = lddat, weights = lddat$acres)
+ldmod0 <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq | 0 | 0 | 0, 
+            data = lddat, weights = lddat$w)
 summary(ldmod0)
 
-ldmod1 <- felm(ln_rev_diff ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq | state | 0 | state, 
-            data = lddat, weights = lddat$acres)
+ldmod1 <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq | state + decade| 0 | state, 
+            data = lddat, weights = lddat$w)
 summary(ldmod1)
 
 # Panel estimates
 pmod0 <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq | 0 | 0 | 0, 
-            data = pdat, weights = pdat$acres)
+            data = pdat, weights = pdat$w)
 summary(pmod0)
 
-pmod1 <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq | state + year | 0 | state, 
-            data = pdat, weights = pdat$acres)
+pmod1 <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq | fips + year | 0 | state, 
+            data = pdat, weights = pdat$w)
 
 summary(pmod1)
 

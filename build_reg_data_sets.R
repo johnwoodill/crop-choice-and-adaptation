@@ -47,8 +47,14 @@ cropdat$ln_rev <- log(1 + cropdat$rev)
 # Remove inf to na
 is.na(cropdat) <- do.call(cbind, lapply(cropdat, is.infinite))
 
+# Spline through acres to smooth out weights
+cropdat <- cropdat %>% 
+  group_by(fips) %>% 
+  arrange(year) %>% 
+  mutate(w = loess(acres ~ year)$fitted)
 
-#------------------------------------------------------------------------
+
+  #------------------------------------------------------------------------
 # Cross-section data setup
 csdat <- cropdat
 
@@ -65,7 +71,13 @@ csdat <- csdat %>%
             dday10C = mean(dday10C, na.rm = TRUE),
             dday30C = mean(dday30C, na.rm = TRUE),
             lat = mean(lat, na.rm = TRUE),
-            long = mean(long, na.rm = TRUE)) %>% 
+            long = mean(long, na.rm = TRUE),
+            w = mean(w, na.rm = TRUE),
+            corn_a = mean(corn_grain_a, na.rm = TRUE),
+            cotton_a = mean(cotton_a, na.rm = TRUE),
+            hay_a = mean(hay_a, na.rm = TRUE),
+            soybean_a = mean(soybean_a, na.rm = TRUE),
+            wheat_a = mean(wheat_a, na.rm = TRUE)) %>% 
   ungroup() 
 
 csdat$dday0_10 <- csdat$dday0C - csdat$dday10C
@@ -73,8 +85,16 @@ csdat$dday10_30 <- csdat$dday10C - csdat$dday30C
 csdat$dday30 <- csdat$dday30C
 csdat$prec_sq <- csdat$prec^2
 
+csdat$tacres <- rowSums(csdat[, c("corn_a", "cotton_a", "hay_a", "soybean_a", "wheat_a")], na.rm = TRUE)
+
+csdat$p_corn_a <- csdat$corn_a/csdat$tacres
+csdat$p_cotton_a <- csdat$cotton_a/csdat$tacres
+csdat$p_hay_a <- csdat$hay_a/csdat$tacres
+csdat$p_soybean_a <- csdat$soybean_a/csdat$tacres
+csdat$p_wheat_a <- csdat$wheat_a/csdat$tacres
+
 mod <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30C + prec + prec_sq | state | 0 | state, 
-            data = csdat, weights = csdat$acres)
+            data = csdat, weights = csdat$w)
 summary(mod)
 
 saveRDS(csdat, "data/cross_section_regression_data.rds")
@@ -83,11 +103,48 @@ saveRDS(csdat, "data/cross_section_regression_data.rds")
 # Long-difference
 
 lddat <- cropdat
+
+# Long-difference (Burke)
+# 
+# lddat1950 <- filter(cropdat, year >= 1950 & year <= 1959)
+# lddat1980 <- filter(cropdat, year >= 2000 & year <= 2009)
+# 
+
+# # 
+# lddat1950 <- lddat1950 %>%
+#   group_by(state, fips) %>%
+#   summarise(rev_1950 = mean(rev, na.rm = TRUE),
+#             ln_rev_1950 = mean(ln_rev, na.rm = TRUE),
+#             dday0C_1950 = mean(dday0C, na.rm = TRUE),
+#             dday10C_1950 = mean(dday10C, na.rm = TRUE),
+#             dday30C_1950 = mean(dday30C, na.rm = TRUE),
+#             prec_1950 = mean(prec, na.rm = TRUE))
+# 
+# lddat1980 <- lddat1980 %>%
+#   group_by(state, fips) %>%
+#   summarise(rev_1980 = mean(rev, na.rm = TRUE),
+#             ln_rev_1980 = mean(ln_rev, na.rm = TRUE),
+#             dday0C_1980 = mean(dday0C, na.rm = TRUE),
+#             dday10C_1980 = mean(dday10C, na.rm = TRUE),
+#             dday30C_1980 = mean(dday30C, na.rm = TRUE),
+#             prec_1980 = mean(prec, na.rm = TRUE))
+# 
+# # 30-year intervals (1980-1950 & 2009 - 1980)
+# 
+# lddat <- left_join(lddat1950, lddat1980, by = c("fips", "state"))
+# lddat <- left_join(lddat, ldweights, by = c("fips"))
+# 
+# lddat$ln_rev_diff <- log(1 + lddat$ln_rev_1980) - log(1 + lddat$ln_rev_1950)
+# lddat$dday0_10 <- (lddat$dday0C_1980 - lddat$dday10C_1980) - (lddat$dday0C_1950 - lddat$dday10C_1950)
+# lddat$dday10_30 <- (lddat$dday10C_1980 - lddat$dday30C_1980) - (lddat$dday10C_1950 - lddat$dday30C_1950)
+# lddat$dday0_30 <- (lddat$dday0C_1980 - lddat$dday30C_1980) - (lddat$dday0C_1950 - lddat$dday30C_1950)
+# lddat$dday30 <- (lddat$dday30C_1980 - lddat$dday30C_1950)
+# lddat$prec <- lddat$prec_1980 - lddat$prec_1950
+# lddat$prec_sq <-lddat$prec_1980^2 - lddat$prec_1950^2
+
+# Demean by decade
 lddat$decade <- substr(lddat$year, 3,3)
 lddat$decade <- ifelse(lddat$decade == 0, 10, lddat$decade)
-
-lddat1950 <- filter(cropdat, year >= 1950 & year <= 1959)
-lddat1980 <- filter(cropdat, year >= 2000 & year <= 2009)
 
 # lddat1960 <- filter(lddat, year >= 1960 & year < 1970)
 # lddat1970 <- filter(lddat, year >= 1970 & year < 1980)
@@ -95,76 +152,48 @@ lddat1980 <- filter(cropdat, year >= 2000 & year <= 2009)
 # lddat1990 <- filter(lddat, year >= 1990 & year < 2000)
 #lddat2000 <- filter(lddat, year >= 2000 & year < 2010)
 
-# mergdat <- data.frame()
-# for (i in unique(lddat$decade)){
-#   intdat <- filter(lddat, decade == i)
-#   intdat$ln_rev <- intdat$ln_rev - mean(intdat$ln_rev, na.rm = TRUE)
-#   intdat <- intdat %>%
-#   #group_by(decade) %>%
-#   #mutate(ln_rev = ln_rev - mean(ln_rev, na.rm = TRUE)) %>%
-#   #ungroup() %>%
-#   group_by(state, fips) %>%
-#   summarise(ln_rev = mean(ln_rev, na.rm = TRUE),
-#             dday0C = mean(dday0C, na.rm = TRUE),
-#             dday10C = mean(dday10C, na.rm = TRUE),
-#             dday30C = mean(dday30C, na.rm = TRUE),
-#             prec = mean(prec, na.rm = TRUE)) %>%
-#   ungroup()
-#   intdat$decade <- i
-#   mergdat <- rbind(mergdat, intdat)
-# }
-# head(mergdat)
-# lddat <- mergdat
+mergdat <- data.frame()
+for (i in unique(lddat$decade)){
+  intdat <- filter(lddat, decade == i)
+  intdat$ln_rev <- intdat$ln_rev - mean(intdat$ln_rev, na.rm = TRUE)
+  intdat <- intdat %>%
+  #group_by(decade) %>%
+  #mutate(ln_rev = ln_rev - mean(ln_rev, na.rm = TRUE)) %>%
+  #ungroup() %>%
+  group_by(state, fips) %>%
+  summarise(ln_rev = mean(ln_rev, na.rm = TRUE),
+            dday0C = mean(dday0C, na.rm = TRUE),
+            dday10C = mean(dday10C, na.rm = TRUE),
+            dday30C = mean(dday30C, na.rm = TRUE),
+            prec = mean(prec, na.rm = TRUE)) %>%
+  ungroup()
+  intdat$decade <- i
+  mergdat <- rbind(mergdat, intdat)
+}
+head(mergdat)
+lddat <- mergdat
 
-# 
-# 
-# # Weights (1950-2010 Average acres)
+# # # Weights (1950-2010 Average acres)
 ldweights <- cropdat %>%
   filter(year <= 1959) %>%
   group_by(fips, state) %>%
-  summarise(acres = mean(acres, na.rm = TRUE)) %>%
+  summarise(w = mean(acres, na.rm = TRUE)) %>%
 ungroup()
 ldweights$state <- NULL
-# lddat <- left_join(lddat, ldweights, by = "fips")
+lddat <- left_join(lddat, ldweights, by = "fips")
+
+
 # 
-lddat1950 <- lddat1950 %>%
-  group_by(state, fips) %>%
-  summarise(rev_1950 = mean(rev, na.rm = TRUE),
-            ln_rev_1950 = mean(ln_rev, na.rm = TRUE),
-            dday0C_1950 = mean(dday0C, na.rm = TRUE),
-            dday10C_1950 = mean(dday10C, na.rm = TRUE),
-            dday30C_1950 = mean(dday30C, na.rm = TRUE),
-            prec_1950 = mean(prec, na.rm = TRUE))
+# 
 
-lddat1980 <- lddat1980 %>%
-  group_by(state, fips) %>%
-  summarise(rev_1980 = mean(rev, na.rm = TRUE),
-            ln_rev_1980 = mean(ln_rev, na.rm = TRUE),
-            dday0C_1980 = mean(dday0C, na.rm = TRUE),
-            dday10C_1980 = mean(dday10C, na.rm = TRUE),
-            dday30C_1980 = mean(dday30C, na.rm = TRUE),
-            prec_1980 = mean(prec, na.rm = TRUE))
 
-# 30-year intervals (1980-1950 & 2009 - 1980)
+lddat$dday0_10 <- lddat$dday0C - lddat$dday10C
+lddat$dday10_30 <- lddat$dday10C - lddat$dday30C
+lddat$dday30 <- lddat$dday30C
+lddat$prec_sq <- lddat$prec^2
 
-lddat <- left_join(lddat1950, lddat1980, by = c("fips", "state"))
-lddat <- left_join(lddat, ldweights, by = c("fips"))
-
-lddat$ln_rev_diff <- log(1 + lddat$ln_rev_1980) - log(1 + lddat$ln_rev_1950)
-lddat$dday0_10 <- (lddat$dday0C_1980 - lddat$dday10C_1980) - (lddat$dday0C_1950 - lddat$dday10C_1950)
-lddat$dday10_30 <- (lddat$dday10C_1980 - lddat$dday30C_1980) - (lddat$dday10C_1950 - lddat$dday30C_1950)
-lddat$dday0_30 <- (lddat$dday0C_1980 - lddat$dday30C_1980) - (lddat$dday0C_1950 - lddat$dday30C_1950)
-lddat$dday30 <- (lddat$dday30C_1980 - lddat$dday30C_1950)
-lddat$prec <- lddat$prec_1980 - lddat$prec_1950
-lddat$prec_sq <-lddat$prec_1980^2 - lddat$prec_1950^2
-
-# lddat$dday0_10 <- lddat$dday0C - lddat$dday10C
-# lddat$dday10_30 <- lddat$dday10C - lddat$dday30C
-# lddat$dday30 <- lddat$dday30C
-# lddat$prec_sq <- lddat$prec^2
-
-mod <- felm(ln_rev_diff ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq | state | 0 | state, 
-            data = lddat, weights = lddat$acres)
+mod <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq | state + decade | 0 | state, 
+            data = lddat, weights = lddat$w)
 summary(mod)
 
 saveRDS(lddat, "data/long_difference_regression_data.rds")
@@ -182,11 +211,11 @@ pdat$dday30 <- pdat$dday30C
 pdat$prec_sq <- pdat$prec^2
 
 pdat <- pdat %>% 
-  group_by(fips) %>% 
-  mutate(acres = mean(acres, na.rm = TRUE))
+   group_by(fips) %>% 
+   mutate(w = mean(acres, na.rm = TRUE))
 
-mod <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq | state + year | 0 | state, 
-            data = pdat, weights = pdat$acres)
+mod <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq | fips + year | 0 | state, 
+            data = pdat, weights = pdat$w)
 summary(mod)
 
 
@@ -247,6 +276,8 @@ cs_dat <- function(x, prec){
 # Long-difference
 
 ld_dat <- function(x, prec) {
+  
+  
   lddat <- filter(x, year >= 1950 & year <= 2009)
   prec <- filter(prec, year >= 1950 & year <= 2009)
   lddat <- left_join(lddat, prec, by = c("fips", "year", "month"))
@@ -261,42 +292,77 @@ ld_dat <- function(x, prec) {
             dday10C = sum(dday10C, na.rm = TRUE),
             dday30C = sum(dday30C, na.rm = TRUE))
   
-  lddat1950 <- filter(lddat, year >= 1950 & year <= 1959)
-  lddat1980 <- filter(lddat, year >= 2000 & year <= 2009)
+  # Long-difference
+  # lddat1950 <- filter(lddat, year >= 1950 & year <= 1959)
+  # lddat1980 <- filter(lddat, year >= 2000 & year <= 2009)
+  # 
+  # lddat1950 <- lddat1950 %>%
+  #   group_by(fips) %>%
+  #   summarise(dday0C_1950 = mean(dday0C, na.rm = TRUE),
+  #             dday10C_1950 = mean(dday10C, na.rm = TRUE),
+  #             dday30C_1950 = mean(dday30C, na.rm = TRUE),
+  #             prec_1950 = mean(prec, na.rm = TRUE))
+  # 
+  # lddat1980 <- lddat1980 %>%
+  #   group_by(fips) %>%
+  #   summarise(dday0C_1980 = mean(dday0C, na.rm = TRUE),
+  #             dday10C_1980 = mean(dday10C, na.rm = TRUE),
+  #             dday30C_1980 = mean(dday30C, na.rm = TRUE),
+  #             prec_1980 = mean(prec, na.rm = TRUE))
+  # 
+  # lddat <- left_join(lddat1950, lddat1980, by = c("fips"))
+  # 
+  # ldweights <- cropdat %>%
+  #   filter(year <= 1959) %>%
+  #   group_by(fips) %>%
+  #   summarise(acres = mean(acres, na.rm = TRUE)) %>%
+  #   ungroup()
+  # ldweights$state <- NULL
+  # 
+  # lddat <- left_join(lddat, ldweights, by = c("fips"))
   
-  lddat1950 <- lddat1950 %>%
-    group_by(fips) %>%
-    summarise(dday0C_1950 = mean(dday0C, na.rm = TRUE),
-              dday10C_1950 = mean(dday10C, na.rm = TRUE),
-              dday30C_1950 = mean(dday30C, na.rm = TRUE),
-              prec_1950 = mean(prec, na.rm = TRUE))
+  # lddat$dday0_10 <- (lddat$dday0C_1980 - lddat$dday10C_1980) - (lddat$dday0C_1950 - lddat$dday10C_1950)
+  # lddat$dday10_30 <- (lddat$dday10C_1980 - lddat$dday30C_1980) - (lddat$dday10C_1950 - lddat$dday30C_1950)
+  # lddat$dday0_30 <- (lddat$dday0C_1980 - lddat$dday30C_1980) - (lddat$dday0C_1950 - lddat$dday30C_1950)
+  # lddat$dday30 <- (lddat$dday30C_1980 - lddat$dday30C_1950)
+  # lddat$prec <- lddat$prec_1980 - lddat$prec_1950
+  # lddat$prec_sq <-lddat$prec_1980^2 - lddat$prec_1950^2
   
-  lddat1980 <- lddat1980 %>%
-    group_by(fips) %>%
-    summarise(dday0C_1980 = mean(dday0C, na.rm = TRUE),
-              dday10C_1980 = mean(dday10C, na.rm = TRUE),
-              dday30C_1980 = mean(dday30C, na.rm = TRUE),
-              prec_1980 = mean(prec, na.rm = TRUE))
+  # Demean decade 
+  # Demean by decade
+  lddat$decade <- substr(lddat$year, 3,3)
+  lddat$decade <- ifelse(lddat$decade == 0, 10, lddat$decade)
   
-  lddat <- left_join(lddat1950, lddat1980, by = c("fips"))
-  
-  ldweights <- cropdat %>%
-    filter(year <= 1959) %>%
-    group_by(fips) %>%
-    summarise(acres = mean(acres, na.rm = TRUE)) %>%
-    ungroup()
-  ldweights$state <- NULL
+  # lddat1960 <- filter(lddat, year >= 1960 & year < 1970)
+  # lddat1970 <- filter(lddat, year >= 1970 & year < 1980)
+  # lddat1980 <- filter(lddat, year >= 1980 & year < 1990)
+  # lddat1990 <- filter(lddat, year >= 1990 & year < 2000)
+  #lddat2000 <- filter(lddat, year >= 2000 & year < 2010)
 
-  lddat <- left_join(lddat, ldweights, by = c("fips"))
+  mergdat <- data.frame()
+  for (i in unique(lddat$decade)){
+    intdat <- filter(lddat, decade == i)
+    intdat <- intdat %>%
+    #group_by(decade) %>%
+    #mutate(ln_rev = ln_rev - mean(ln_rev, na.rm = TRUE)) %>%
+    #ungroup() %>%
+    group_by(fips) %>%
+    summarise(dday0C = mean(dday0C, na.rm = TRUE),
+              dday10C = mean(dday10C, na.rm = TRUE),
+              dday30C = mean(dday30C, na.rm = TRUE),
+              prec = mean(prec, na.rm = TRUE)) %>%
+    ungroup()
+    intdat$decade <- i
+    
+    mergdat <- rbind(mergdat, intdat)
+  }
+  head(mergdat)
+  lddat <- mergdat
   
-  
-  
-  lddat$dday0_10 <- (lddat$dday0C_1980 - lddat$dday10C_1980) - (lddat$dday0C_1950 - lddat$dday10C_1950)
-  lddat$dday10_30 <- (lddat$dday10C_1980 - lddat$dday30C_1980) - (lddat$dday10C_1950 - lddat$dday30C_1950)
-  lddat$dday0_30 <- (lddat$dday0C_1980 - lddat$dday30C_1980) - (lddat$dday0C_1950 - lddat$dday30C_1950)
-  lddat$dday30 <- (lddat$dday30C_1980 - lddat$dday30C_1950)
-  lddat$prec <- lddat$prec_1980 - lddat$prec_1950
-  lddat$prec_sq <-lddat$prec_1980^2 - lddat$prec_1950^2
+  lddat$dday0_10 <- lddat$dday0C - lddat$dday10C
+  lddat$dday10_30 <- lddat$dday10C - lddat$dday30C
+  lddat$dday30 <- lddat$dday30C
+  lddat$prec_sq <- lddat$prec^2
   return(lddat) 
 }
 

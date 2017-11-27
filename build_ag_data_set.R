@@ -541,15 +541,20 @@ fulldat <- do.call(data.frame,lapply(fulldat, function(x) replace(x, is.infinite
 # test <- filter(bdd, cotton == 1943)
 # head(test)
 
-# Filter only counties with acres in at least all five crops
 
 
 
 data <- filter(fulldat, state %in% c("mt", "nd", "sd") | abs(long) <= 100)
 unique(data$state)
-data <- filter(data, year >= 1950 & year <= 2010)
-saveRDS(data, "data/full_ag_data.rds")
-source("map_of_counties.R")
+data <- filter(data, year >= 1950 & year <= 2009)
+
+# Keep only those counties with obs in 1950
+gr <- filter(data, year == 1950)
+gr <- select(gr, fips, corn_grain_a, cotton_a, hay_a, soybean_a, wheat_a)
+gr$sums <- rowSums(gr[, 2:6], na.rm = TRUE)
+gr <- filter(gr, sums > 0 & !is.na(sums))
+fipps <- unique(gr$fips)
+
 data <- filter(data, fips %in% fipss)
 
 
