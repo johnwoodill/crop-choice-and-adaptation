@@ -2,9 +2,11 @@ library(tidyverse)
 library(lfe)
 library(ggthemes)
 
+setwd("/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/")
+
 source("R/predictFelm.R")
 
-setwd("/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/")
+
 
 # Load models
 csmod1 <- readRDS("models/cs_rev_fe.rds")

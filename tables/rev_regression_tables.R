@@ -227,5 +227,5 @@ system("pdflatex rev_regression_tables.tex")
 
 }
 
-#system("sed -r 's/([0-9\\.]+)\\$\\^\\{\\*{1,3}\\}\\$/\\\\textbf{\\1}/g' rev_regression_tables.tex > new.tex") 
-                  
+system("sed -r 's/([0-9\\.]+)\\$\\^\\{\\*{1,3}\\}\\$/\\\\textbf{\\1}/g' rev_regression_tables.tex > new.tex") 
+system("pdflatex new.tex")      
