@@ -17,8 +17,6 @@ dummyCreator <- function(invec, prefix = NULL) {
 } 
 
 # Load regression data
-csdat <- readRDS("data/cross_section_regression_data.rds")
-lddat <- readRDS("data/long_difference_regression_data.rds")
 pdat <- readRDS("data/panel_regression_data.rds")
 
 dummystate <- dummyCreator(csdat$state, prefix = "state")
