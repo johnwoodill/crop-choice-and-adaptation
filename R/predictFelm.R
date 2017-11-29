@@ -2,7 +2,7 @@
 # newdata  : new prediction data
 
 # Custom predict funciton for Felm object models
-predictFelm <- function(felm.fit, newdata = NULL){
+predictFelm <- function(felm.fit, newdata = NULL, terms = NULL){
   felm.formula <- as.character(felm.fit$call[[2]])
   rhs          = felm.formula[3]
   last         = which(strsplit(rhs,"")[[1]]=="|")[1] - 1
@@ -40,9 +40,14 @@ predictFelm <- function(felm.fit, newdata = NULL){
     if (is.null(newdata)){
       newdata <- dat
     }
-  
+    
+    # Check for terms before predict
+    type_check <- ifelse(!is.null(terms), "terms", NULL)
+    
     # Predict
-    pred <- predict(lm.fit, newdata = newdata, se.fit = TRUE) 
+    pred <- predict(lm.fit, newdata = newdata, se.fit = TRUE, type = type_check, terms = terms)
+    
+    pred$fit <- rowSums(pred$fit)
     pred$res <- felm.fit$residuals
     
     
@@ -78,7 +83,7 @@ predictFelm <- function(felm.fit, newdata = NULL){
       } else {
         pred$effect <- as.numeric(rowSums(eff.dat[, grep("_effect", colnames(eff.dat))]))
       }
-      pred$res <- felm.fit$residuals
+      pred$res <- as.numeric(felm.fit$residuals)
       pred$pred_data <- eff.dat
       return(pred)  
 }

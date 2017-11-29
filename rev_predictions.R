@@ -6,8 +6,6 @@ setwd("/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/")
 
 source("R/predictFelm.R")
 
-
-
 # Load models
 csmod1 <- readRDS("models/cs_rev_fe.rds")
 ldmod1 <- readRDS("models/ld_rev_fe.rds")
