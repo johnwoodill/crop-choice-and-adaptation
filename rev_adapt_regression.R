@@ -117,6 +117,20 @@ regdat <- regdat %>%
          prec_five = mean(prec, na.rm = TRUE),
          prec_sq_five = prec_five^2)
 
+# Build trends
+regdat$trend <- regdat$year - 1949
+regdat$state <- factor(state)
+statenum <- data.frame(state = unique(regdat$state))
+arrange(statenum, state)
+statenum$statenum <- 1:26
+regdat <- left_join(regdat, statenum, by = "state")
+regdat$state_trend <- regdat$statenum*regdat$trend
+regdat$state_trend_sq <- (regdat$statenum*regdat$trend)^2
+regdat$state_trend_five <- regdat$state_trend*regdat$five
+regdat$state_trend_ten <- regdat$state_trend*regdat$ten
+regdat$state_trend_twenty <- regdat$state_trend*regdat$twenty
+regdat$state_trend_thirty <- regdat$state_trend*regdat$thirty
+
 #---------------------------------------------------------------------------------------------
 # Regressions
 
@@ -281,3 +295,34 @@ saveRDS(modten5, "models/modten5.rds")
 saveRDS(modtwenty5, "models/modtwenty5.rds")
 saveRDS(modthirty5, "models/modthirty5.rds")
 saveRDS(modsixty5, "models/modsixty5.rds")
+
+# Build up regression
+modthirty5a <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq, data = regdat, weights = regdat$w)
+summary(modthirty5a)
+
+modthirty5b <- felm(ln_rev ~ dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty,
+            data = regdat, weights = regdat$w)
+summary(modthirty5b)
+
+modthirty5c <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
+              dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty,
+            data = regdat, weights = regdat$w)
+summary(modthirty5c)
+
+modthirty5d <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
+              dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty
+            | state  | 0 | 0, 
+            data = regdat, weights = regdat$w)
+summary(modthirty5d)
+
+modthirty5e <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
+              dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty
+            | state + thirty | 0 | state, 
+            data = regdat, weights = regdat$w)
+summary(modthirty5e)
+
+saveRDS(modthirty5a, "models/modthirty5a.rds")
+saveRDS(modthirty5b, "models/modthirty5b.rds")
+saveRDS(modthirty5c, "models/modthirty5c.rds")
+saveRDS(modthirty5d, "models/modthirty5d.rds")
+saveRDS(modthirty5e, "models/modthirty5e.rds")

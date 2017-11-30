@@ -241,25 +241,38 @@ pdat <- data.frame(effect = rep(c("Weather-effect", "Climate-effect"), each = 30
                           ca0_ci, ca1_ci, ca2_ci, ca3_ci, ca4_ci, ca5_ci,
                            cb0_ci, cb1_ci, cb2_ci, cb3_ci, cb4_ci, cb5_ci,
                            cc0_ci, cc1_ci, cc2_ci, cc3_ci, cc4_ci, cc5_ci,
-                           cd0_ci, cd1_ci, cd2_ci, cd3_ci, cd4_ci, cd5_ci,
+                           0,0,0,0,0,0,
                            ce0_ci, ce1_ci, ce2_ci, ce3, ce4_ci, ce5_ci))
 pdat
-pdat <- filter(pdat, model != "60-year")
+#sixtypdat <- filter(pdat, model == "60-year")
+pdat <- filter(pdat, model != "60-year" | effect != "Weather-effect")
 pdat
 pdat <- pdat %>% 
   group_by(effect, model) %>% 
   mutate(change =  (sum - first(sum))/first(sum),
          change_min = ((sum - ci) - (first(sum) - first(ci)))/(first(sum) - first(ci)),
          change_max = ((sum + ci) - (first(sum) + first(ci)))/(first(sum) + first(ci)))
+# sixtypdat <- sixtypdat %>% 
+#   group_by(effect, model) %>% 
+#   mutate(change =  (sum - first(sum))/first(sum),
+#          change_min = ((sum - ci) - (first(sum) - first(ci)))/(first(sum) - first(ci)),
+#          change_max = ((sum + ci) - (first(sum) + first(ci)))/(first(sum) + first(ci)))
+
 pdat
 pdat$change <- pdat$change*100
 pdat$change_min <- pdat$change_min*100
 pdat$change_max <- pdat$change_max*100
 
-pdat$model <- factor(pdat$model, labels = c("5-year", "10-year", "20-year", "30-year"))
+# sixtypdat$change <- sixtypdat$change*100
+# sixtypdat$change_min <- sixtypdat$change_min*100
+# sixtypdat$change_max <- sixtypdat$change_max*100
+
+
+
+pdat$model <- factor(pdat$model, labels = c("5-year", "10-year", "20-year", "30-year", "60-year"))
 
 ggplot(pdat, aes(temp, change)) + 
-  geom_ribbon(aes(ymax = change_max, ymin = change_min, x = temp, fill = effect, group = effect), fill = "grey", alpha = 0.5 ) +
+  #geom_ribbon(aes(ymax = change_max, ymin = change_min, x = temp, fill = effect, group = effect), fill = "grey", alpha = 0.5 ) +
   geom_line(aes(color = effect)) +
   #geom_errorbar(aes(ymax = change_max, ymin = change_min, color = effect), width = .1) +
   theme_tufte(base_size = 12) +
@@ -268,14 +281,18 @@ ggplot(pdat, aes(temp, change)) +
   annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
   annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
   scale_x_continuous(breaks = 0:5, labels = c("+0C", "+1C", "+2C", "+3C", "+4C", "+5C")) +
-  theme(legend.position = c(.85,1), 
-       legend.justification = c("left", "top"), 
+  theme(legend.position = "top", 
+       #legend.justification = c("left", "top"), 
        legend.box.background = element_rect(colour = "grey"), 
        legend.title = element_blank(), legend.key = element_blank()) +
+  #theme(legend.position = c(.85,1), 
+  #     legend.justification = c("left", "top"), 
+  #     legend.box.background = element_rect(colour = "grey"), 
+  #     legend.title = element_blank(), legend.key = element_blank()) +
   facet_wrap(~model) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey")
   
-
+ggplot(sixtypdat, aes(temp, change)) + geom_line()
 #plot(c(c1, c2, c3, c4, c5))
 #plot(c(ld1, ld2, ld3, ld4, ld5))
 #plot(c(p1, p2, p3, p4, p5))
