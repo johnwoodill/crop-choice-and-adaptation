@@ -13,6 +13,7 @@ pmod3 <- readRDS("models/modtwenty5.rds")
 pmod4 <- readRDS("models/modthirty5.rds")
 pmod5 <- readRDS("models/modsixty5.rds")
 
+
 # Load changes in degree day data
 p1 <- readRDS("data/degree_day_changes/panel_adapt_regression_data_1C.rds")
 p2 <- readRDS("data/degree_day_changes/panel_adapt_regression_data_2C.rds")
