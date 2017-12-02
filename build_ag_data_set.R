@@ -545,18 +545,30 @@ fulldat <- do.call(data.frame,lapply(fulldat, function(x) replace(x, is.infinite
 
 
 data <- filter(fulldat, state %in% c("mt", "nd", "sd") | abs(long) <= 100)
-unique(data$state)
 data <- filter(data, year >= 1950 & year <= 2009)
 
-# Keep only those counties with obs in 1950
-gr <- filter(data, year == 1950)
-gr <- select(gr, fips, corn_grain_a, cotton_a, hay_a, soybean_a, wheat_a)
-gr$sums <- rowSums(gr[, 2:6], na.rm = TRUE)
-gr <- filter(gr, sums > 0 & !is.na(sums))
-fipps <- unique(gr$fips)
+# Keep only those counties with acres in 1950-2009
+data$acres <- rowSums(data[, c("corn_grain_a", "cotton_a", "hay_a", "soybean_a", "wheat_a")], na.rm = TRUE)
+check <- data %>% 
+  group_by(year, fips) %>% 
+  summarise(acres = mean(acres, na.rm = TRUE)) %>% 
+  filter(acres > 0 & !is.na(acres)) %>% 
+  group_by(fips) %>% 
+  summarise(nroww = n()) %>% 
+  filter(nroww == 60)
 
+head(check)
+fipss <- unique(check$fips)
 data <- filter(data, fips %in% fipss)
 
+# gr <- filter(data, year == 1950)
+# gr <- select(gr, fips, corn_grain_a, cotton_a, hay_a, soybean_a, wheat_a)
+# gr$sums <- rowSums(gr[, 2:6], na.rm = TRUE)
+# gr <- filter(gr, sums > 0 & !is.na(sums))
+# fipss <- unique(gr$fips)
+# data <- filter(data, fips %in% fipss)
+
+# 
 
 # dat <- data %>% 
 #   group_by(fips) %>% 
@@ -615,7 +627,139 @@ data <- filter(data, fips %in% fipss)
 # d$c.diff <- d$corn - d$cotton
 
 
-saveRDS(data, "data/full_ag_data.rds")
+
+
+# Build data set for regression estimates
+cropdat <- filter(data, year < 2010)
+  
+cropdat$corn_rprice <- mean(cropdat$corn_rprice, na.rm = TRUE)
+cropdat$cotton_rprice <- mean(cropdat$cotton_rprice, na.rm = TRUE)
+cropdat$hay_rprice <- mean(cropdat$hay_rprice, na.rm = TRUE)
+cropdat$wheat_rprice <- mean(cropdat$wheat_rprice, na.rm = TRUE)
+cropdat$soybean_rprice <- mean(cropdat$soybean_rprice, na.rm = TRUE)
+
+cropdat <- cropdat %>% 
+   group_by(fips) %>% 
+   mutate(avg_corn_a = mean(corn_grain_a, na.rm = TRUE),
+          avg_cotton_a = mean(cotton_a, na.rm = TRUE),
+          avg_hay_a = mean(hay_a, na.rm = TRUE),
+          avg_soybean_a = mean(soybean_a, na.rm = TRUE),
+          avg_wheat_a = mean(wheat_a, na.rm = TRUE))
+
+# Total Activity
+cropdat$corn <- cropdat$corn_yield*cropdat$corn_rprice
+cropdat$cotton <- cropdat$cotton_yield*cropdat$cotton_rprice
+cropdat$hay <- cropdat$hay_yield*cropdat$hay_rprice
+cropdat$wheat <- cropdat$wheat_yield*cropdat$wheat_rprice
+cropdat$soybean <- cropdat$soybean_yield*cropdat$soybean_rprice
+
+# Set acres to zero
+cropdat$corn_grain_a <- ifelse(is.na(cropdat$corn_grain_a), 0, cropdat$corn_grain_a)
+cropdat$cotton_a <- ifelse(is.na(cropdat$cotton_a), 0, cropdat$cotton_a)
+cropdat$hay_a <- ifelse(is.na(cropdat$hay_a), 0, cropdat$hay_a)
+cropdat$wheat_a <- ifelse(is.na(cropdat$wheat_a), 0, cropdat$wheat_a)
+cropdat$soybean_a <- ifelse(is.na(cropdat$soybean_a), 0, cropdat$soybean_a)
+
+# Variables
+cropdat$rev <- rowSums(cropdat[, c("corn", "cotton", "hay", "soybean", "wheat")], na.rm = TRUE)
+cropdat$acres <- rowSums(cropdat[, c("corn_grain_a", "cotton_a", "hay_a", "soybean_a", "wheat_a")], na.rm = TRUE)
+
+cropdat$rev <- ifelse(is.na(cropdat$rev), 0, cropdat$rev)
+
+cropdat$ln_rev <- log(1 + cropdat$rev)
+
+# Remove inf to na
+is.na(cropdat) <- do.call(cbind, lapply(cropdat, is.infinite))
+
+# Spline through acres to smooth out weights
+cropdat <- cropdat %>% 
+  group_by(fips) %>% 
+  arrange(year) %>% 
+  mutate(w = loess(acres ~ year)$fitted)
+cropdat$w <- ifelse(cropdat$w < 0 , 0, cropdat$w)
+
+cropdat$dday0_10 <- cropdat$dday0C - cropdat$dday10C
+cropdat$dday10_30 <- cropdat$dday10C - cropdat$dday30C
+cropdat$dday30 <- cropdat$dday30C
+cropdat$prec_sq <- cropdat$prec^2
+
+# 60 year intervals
+cropdat <- cropdat %>% 
+  group_by(fips) %>% 
+  mutate(dday0_10_sixty = mean(dday0_10, na.rm = TRUE),
+         dday10_30_sixty = mean(dday10_30, na.rm = TRUE),
+         dday30_sixty = mean(dday30, na.rm = TRUE),
+         prec_sixty = mean(prec, na.rm = TRUE),
+         prec_sq_sixty = prec^2)
+
+# 30 year intervals
+cropdat$thirty <- cropdat$year - (cropdat$year %% 30)
+
+cropdat <- cropdat %>% 
+  group_by(fips, thirty) %>% 
+  mutate(dday0_10_thirty = mean(dday0_10, na.rm = TRUE),
+         dday10_30_thirty = mean(dday10_30, na.rm = TRUE),
+         dday30_thirty = mean(dday30, na.rm = TRUE),
+         prec_thirty = mean(prec, na.rm = TRUE),
+         prec_sq_thirty = prec_thirty^2)
+
+# 20 year intervals
+cropdat$twenty <- 0
+cropdat$twenty <- ifelse(cropdat$year %in% seq(1950, 1969, 1), 1950, cropdat$twenty)
+cropdat$twenty <- ifelse(cropdat$year %in% seq(1970, 1989, 1), 1970, cropdat$twenty)
+cropdat$twenty <- ifelse(cropdat$year %in% seq(1990, 2009, 1), 1990, cropdat$twenty)
+
+cropdat <- cropdat %>% 
+  group_by(fips, twenty) %>% 
+  mutate(dday0_10_twenty = mean(dday0_10, na.rm = TRUE),
+         dday10_30_twenty = mean(dday10_30, na.rm = TRUE),
+         dday30_twenty = mean(dday30, na.rm = TRUE),
+         prec_twenty = mean(prec, na.rm = TRUE),
+         prec_sq_twenty = prec_twenty^2)
+
+# 10 year intervals
+cropdat$ten <- cropdat$year - (cropdat$year %% 10)
+
+cropdat <- cropdat %>% 
+  group_by(fips, ten) %>% 
+  mutate(dday0_10_ten = mean(dday0_10, na.rm = TRUE),
+         dday10_30_ten = mean(dday10_30, na.rm = TRUE),
+         dday30_ten = mean(dday30, na.rm = TRUE),
+         prec_ten = mean(prec, na.rm = TRUE),
+         prec_sq_ten = prec_ten^2)
+
+# 5 year intervals
+cropdat$five <- cropdat$year - (cropdat$year %% 5)
+
+cropdat <- cropdat %>% 
+  group_by(fips, five) %>% 
+  mutate(dday0_10_five = mean(dday0_10, na.rm = TRUE),
+         dday10_30_five = mean(dday10_30, na.rm = TRUE),
+         dday30_five = mean(dday30, na.rm = TRUE),
+         prec_five = mean(prec, na.rm = TRUE),
+         prec_sq_five = prec_five^2)
+
+# Build trends
+cropdat$trend <- cropdat$year - 1949
+cropdat$state <- factor(cropdat$state)
+statenum <- data.frame(state = unique(cropdat$state))
+statenum <- arrange(statenum, state)
+statenum$statenum <- 1:length(unique(cropdat$state))
+cropdat <- left_join(cropdat, statenum, by = "state")
+cropdat$state_trend <- cropdat$statenum*cropdat$trend
+cropdat$state_trend_sq <- (cropdat$statenum*cropdat$trend)^2
+cropdat$state_trend_five <- cropdat$state_trend*cropdat$five
+cropdat$state_trend_ten <- cropdat$state_trend*cropdat$ten
+cropdat$state_trend_twenty <- cropdat$state_trend*cropdat$twenty
+cropdat$state_trend_thirty <- cropdat$state_trend*cropdat$thirty
+
+cropdat$p_corn_a <- cropdat$corn_grain_a/cropdat$acres
+cropdat$p_cotton_a <- cropdat$cotton_a/cropdat$acres
+cropdat$p_hay_a <- cropdat$hay_a/cropdat$acres
+cropdat$p_soybean_a <- cropdat$soybean_a/cropdat$acres
+cropdat$p_wheat_a <- cropdat$wheat_a/cropdat$acres
+
+saveRDS(cropdat, "data/full_ag_data.rds")
 fulldat <- readRDS("data/full_ag_data.rds")
 
 

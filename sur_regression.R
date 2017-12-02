@@ -6,6 +6,8 @@ library(AER)
 
 setwd("/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/")
 
+source("R/predictFelm.R")
+
 dummyCreator <- function(invec, prefix = NULL) {
      L <- length(invec)
      ColNames <- sort(unique(invec))
@@ -16,43 +18,53 @@ dummyCreator <- function(invec, prefix = NULL) {
      M
 } 
 
-# Load regression data
-pdat <- readRDS("data/panel_regression_data.rds")
-
 dummystate <- dummyCreator(csdat$state, prefix = "state")
 
-mod1b <- p_corn_a ~ dday0_10 + dday10_30 + dday30C + prec + prec_sq + factor(state) - 1   
+# Crop data
+cropdat <- readRDS("data/full_ag_data.rds")
 
-mod2b <- p_cotton_a ~ dday0_10 + dday10_30 + dday30C + prec + prec_sq + factor(state)  - 1
 
-mod3b <- p_hay_a ~ dday0_10 + dday10_30 + dday30C + prec + prec_sq + factor(state)  - 1
+mod1 <- p_corn_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
+              dday0_10_five + dday10_30_five + dday30_five + prec_five + prec_sq_five +
+  factor(state) - 1   
 
-mod4b <- p_soybean_a ~ dday0_10 + dday10_30 + dday30C + prec + prec_sq + factor(state)  - 1
+mod2 <- p_cotton_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
+              dday0_10_five + dday10_30_five + dday30_five + prec_five + prec_sq_five +
+  factor(state)  - 1
 
-mod5b <- p_wheat_a ~ dday0_10 + dday10_30 + dday30C + prec + prec_sq + factor(state)  - 1
+mod3 <- p_hay_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
+              dday0_10_five + dday10_30_five + dday30_five + prec_five + prec_sq_five +
+  factor(state)  - 1
 
-mod <- systemfit(list(corn = mod1b, 
-                      cotton = mod2b, 
-                      hay = mod3b, 
-                      soybean = mod4b), data = csdat, method = "SUR")
+mod4 <- p_soybean_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
+              dday0_10_five + dday10_30_five + dday30_five + prec_five + 
+  prec_sq_five +factor(state)  - 1
+
+mod5 <- p_wheat_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
+              dday0_10_five + dday10_30_five + dday30_five + prec_five + 
+  prec_sq_five +factor(state)  - 1
+
+mod <- systemfit(list(corn = mod1, 
+                      cotton = mod2, 
+                      hay = mod3, 
+                      soybean = mod4), data = cropdat, method = "SUR")
 
 
 summary(mod)
 sum(mod$coefficients)
+length(mod$coefficients)
 
 # Build coefmatrix
-coefmat <- matrix(mod$coefficients, ncol = 31, nrow = 4, byrow = TRUE)
+coefmat <- matrix(mod$coefficients, ncol = 10, nrow = 4, byrow = TRUE)
 
 # Solve for 5th equation
 eq5 <- colSums(coefmat)
 coefmat <- rbind(coefmat, eq5)
 coefmat <- data.frame(coefmat)
-names(coefmat) <- names(mod$coefficients)[1:31]
+names(coefmat) <- names(mod$coefficients)[1:10]
 rownames(coefmat) <- c("Corn", "Cotton", "Hay", "Soybean", "Wheat")
-names(coefmat) <-
+coefmat
 
-
-summary(mod)
 sum(mod$coefficients)
 test <- predict(mod)[1]
 rowSums(test[, 1:5])

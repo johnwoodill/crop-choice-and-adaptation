@@ -292,7 +292,7 @@ ggplot(pdat, aes(temp, change)) +
   facet_wrap(~model) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey")
   
-ggplot(sixtypdat, aes(temp, change)) + geom_line()
+# ggplot(sixtypdat, aes(temp, change)) + geom_line()
 #plot(c(c1, c2, c3, c4, c5))
 #plot(c(ld1, ld2, ld3, ld4, ld5))
 #plot(c(p1, p2, p3, p4, p5))
