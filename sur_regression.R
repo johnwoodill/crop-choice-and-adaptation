@@ -9,13 +9,13 @@ setwd("/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/")
 
 setwd("/home/john/")
 # Crop data
-# cropdat <- readRDS("data/full_ag_data.rds")
+
 
 # Download from Dropbox
-download.file("https://www.dropbox.com/s/u0e0wah5jnmqtf9/full_ag_data.rds?raw=1", 
-              destfile = "full_ag_data.rds", method = "auto")
+# download.file("https://www.dropbox.com/s/u0e0wah5jnmqtf9/full_ag_data.rds?raw=1", 
+#               destfile = "full_ag_data.rds", method = "auto")
 
-cropdat <- readRDS("/home/john/full_ag_data.rds")
+cropdat <- readRDS("data/full_ag_data.rds")
 
 coefnames <- c("corn_dday0_10","corn_dday10_30", "corn_dday30",           
 "corn_prec", "corn_prec_sq", "corn_dday0_10_five",    
@@ -35,19 +35,19 @@ coefnames <- c("corn_dday0_10","corn_dday10_30", "corn_dday30",
 # Skeleton Model
 # Models
 skmod1 <- rnorm(nrow(cropdat), 100, 10) ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-              dday0_10_five + dday10_30_five + dday30_five + prec_five + prec_sq_five + factor(state) - 1   
+              dday0_10_five + dday10_30_five + dday30_five + prec_five + prec_sq_five + - 1   
 
 skmod2 <- rnorm(nrow(cropdat), 100, 10) ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-              dday0_10_five + dday10_30_five + dday30_five + prec_five + prec_sq_five  + factor(state) - 1
+              dday0_10_five + dday10_30_five + dday30_five + prec_five + prec_sq_five   - 1
 
 skmod3 <- rnorm(nrow(cropdat), 100, 10) ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-              dday0_10_five + dday10_30_five + dday30_five + prec_five + prec_sq_five  + factor(state) - 1
+              dday0_10_five + dday10_30_five + dday30_five + prec_five + prec_sq_five   - 1
 
 skmod4 <- rnorm(nrow(cropdat), 100, 10) ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-              dday0_10_five + dday10_30_five + dday30_five + prec_five + prec_sq_five  + factor(state) - 1
+              dday0_10_five + dday10_30_five + dday30_five + prec_five + prec_sq_five  - 1
 
 skmod5 <- rnorm(nrow(cropdat), 100, 10) ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-              dday0_10_five + dday10_30_five + dday30_five + prec_five + prec_sq_five  + factor(state) - 1
+              dday0_10_five + dday10_30_five + dday30_five + prec_five + prec_sq_five   - 1
 
 skelmod <- systemfit(list(corn = skmod1, 
                       cotton = skmod2, 

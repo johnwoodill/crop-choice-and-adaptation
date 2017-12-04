@@ -2,63 +2,55 @@ library(tidyverse)
 library(systemfit)
 
 
-setwd("/home/john/")
+# setwd("/home/johnw/")
 
 # Download from Dropbox
-download.file("https://www.dropbox.com/s/u0e0wah5jnmqtf9/full_ag_data.rds?raw=1", 
-              destfile = "full_ag_data.rds", method = "auto")
+# download.file("https://www.dropbox.com/s/u0e0wah5jnmqtf9/full_ag_data.rds?raw=1", 
+#               destfile = "full_ag_data.rds", method = "auto")
 
 cropdat <- readRDS("full_ag_data.rds")
 
-coefnames <- c("corn_dday0_10","corn_dday10_30", "corn_dday30",           
-"corn_prec", "corn_prec_sq", "corn_dday0_10_five",    
-"corn_dday10_30_five", "corn_dday30_five", "corn_prec_five",        
-"corn_prec_sq_five", "cotton_dday0_10", "cotton_dday10_30",      
-"cotton_dday30", "cotton_prec", "cotton_prec_sq",        
-"cotton_dday0_10_five", "cotton_dday10_30_five", "cotton_dday30_five",    
-"cotton_prec_five", "cotton_prec_sq_five", "hay_dday0_10",          
-"hay_dday10_30", "hay_dday30", "hay_prec",              
-"hay_prec_sq", "hay_dday0_10_five", "hay_dday10_30_five",    
-"hay_dday30_five", "hay_prec_five", "hay_prec_sq_five",      
-"soybean_dday0_10", "soybean_dday10_30", "soybean_dday30",        
-"soybean_prec", "soybean_prec_sq", "soybean_dday0_10_five", 
-"soybean_dday10_30_five", "soybean_dday30_five", "soybean_prec_five",     
-"soybean_prec_sq_five" )
+# coefnames <- c("corn_dday0_10","corn_dday10_30", "corn_dday30",           
+# "corn_prec", "corn_prec_sq", "corn_dday0_10_thirty",    
+# "corn_dday10_30_thirty", "corn_dday30_thirty", "corn_prec_thirty",        
+# "corn_prec_sq_thirty", "cotton_dday0_10", "cotton_dday10_30",      
+# "cotton_dday30", "cotton_prec", "cotton_prec_sq",        
+# "cotton_dday0_10_thirty", "cotton_dday10_30_thirty", "cotton_dday30_thirty",    
+# "cotton_prec_thirty", "cotton_prec_sq_thirty", "hay_dday0_10",          
+# "hay_dday10_30", "hay_dday30", "hay_prec",              
+# "hay_prec_sq", "hay_dday0_10_thirty", "hay_dday10_30_thirty",    
+# "hay_dday30_thirty", "hay_prec_thirty", "hay_prec_sq_thirty",      
+# "soybean_dday0_10", "soybean_dday10_30", "soybean_dday30",        
+# "soybean_prec", "soybean_prec_sq", "soybean_dday0_10_thirty", 
+# "soybean_dday10_30_thirty", "soybean_dday30_thirty", "soybean_prec_thirty",     
+# "soybean_prec_sq_thirty" )
 
 # Models
 mod1 <- z_corn_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-              dday0_10_five + dday10_30_five + dday30_five + prec_five + prec_sq_five + 
-  factor(state) + factor(state_trend_sq) - 1   
+              dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty - 1   
 
 mod2 <- z_cotton_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-              dday0_10_five + dday10_30_five + dday30_five + prec_five + prec_sq_five  + 
-  factor(state) + factor(state_trend_sq)  - 1
+              dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty - 1
 
 mod3 <- z_hay_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-              dday0_10_five + dday10_30_five + dday30_five + prec_five + prec_sq_five  + 
-  factor(state) + factor(state_trend_sq)  - 1
+              dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty - 1
 
 mod4 <- z_soybean_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-              dday0_10_five + dday10_30_five + dday30_five + prec_five + prec_sq_five  + 
-  factor(state) + factor(state_trend_sq)  - 1
+              dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty - 1
 
 # Boot-strapping regression to get coefficients and standard errors
+cropdat <- as.data.frame(cropdat)
 outdat <- data.frame()
-
-for (i in 1:10){
   
+sur_bs <- function(x){
   bsdat <- cropdat
-  bsdat$dday0_10 <- sample(bsdat$dday0_10, nrow(bsdat), replace = TRUE)
-  bsdat$dday10_30 <- sample(bsdat$dday10_30, nrow(bsdat), replace = TRUE)
-  bsdat$dday30 <- sample(bsdat$dday30, nrow(bsdat), replace = TRUE)
-  bsdat$prec <- sample(bsdat$prec, nrow(bsdat), replace = TRUE)
-  bsdat$prec_sq <- sample(bsdat$prec_sq, nrow(bsdat), replace = TRUE)
-  bsdat$dday0_10_five <- sample(bsdat$dday0_10_five, nrow(bsdat), replace = TRUE)
-  bsdat$dday10_30_five <- sample(bsdat$dday10_30_five, nrow(bsdat), replace = TRUE)
-  bsdat$dday30_five <- sample(bsdat$dday30_five, nrow(bsdat), replace = TRUE)
-  bsdat$prec_five <- sample(bsdat$prec_five, nrow(bsdat), replace = TRUE)
-  bsdat$prec_sq_five <- sample(bsdat$prec_sq_five, nrow(bsdat), replace = TRUE)
-  
+  bdat <- data.frame()
+  for (j in unique(bsdat$thirty)){
+    drawdat <- filter(bsdat, thirty == j)
+    sampdat <- sample_n(drawdat, nrow(drawdat), replace = TRUE)
+    bdat <- rbind(bdat, sampdat)
+  }
+  bsdat <- bdat  
   # Convert to z-scores for linear regression
 
   # First estimate between zero and 1
@@ -93,7 +85,7 @@ for (i in 1:10){
 
 
 
-mod <- systemfit(list(corn = mod1, 
+  mod <- systemfit(list(corn = mod1, 
                       cotton = mod2, 
                       hay = mod3, 
                       soybean = mod4), data = bsdat, method = "SUR")
@@ -111,11 +103,35 @@ coefmat <- as.data.frame(matrix(mod$coefficients, ncol = ncoef4, nrow = 4, byrow
 eq5 <- as.data.frame(colSums(coefmat)*-1)
 coefmat <- rbind(coefmat, t(eq5))
 rownames(coefmat) <- NULL
-rownames(coefmat) <- c("Corn", "Cotton", "Hay", "Soybean", "Wheat")
+# rownames(coefmat) <- c("Corn", "Cotton", "Hay", "Soybean", "Wheat")
 names(coefmat) <- names(mod$coefficients)[1:ncoef4]
 coefmat
 names(coefmat) <- substring(names(coefmat), 6)
-coefmat$run <- i
-outdat <- rbind(outdat, coefmat)
-print(i)
+coefmat$run <- x
+coefmat$crop <- c("Corn", "Cotton", "Hay", "Soybean", "Wheat")
+# outdat <- rbind(outdat, coefmat)
+filename <- paste0("sur_thirty_", x, ".rds")
+saveRDS(coefmat, paste0("/home/john/", filename))
+# sink("/home/john/log.txt", append=TRUE)
+# cat(paste("Starting iteration",x,"\n"))  
+message(paste0("Process: (",x, ") complete"))
+return(coefmat)
+
+#print(x)
 }
+# d <- sur_bs(cropdat)
+
+i <- 1:2
+
+library(parallel)
+cl <- makeCluster(2)
+clusterExport(cl, c("cropdat"))
+clusterExport(cl, c("mod1", "mod2", "mod3", "mod4"))
+# clusterEvalQ(cl, "/home/john/output.txt")
+clusterCall(cl, function() library(systemfit))
+clusterCall(cl, function() library(dplyr))
+d <- parLapply(cl, X = i, fun = sur_bs)
+stopCluster(cl)
+
+sur_thirty <- do.call("rbind", d)
+
