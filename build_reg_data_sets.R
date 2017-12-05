@@ -6,55 +6,7 @@ setwd("/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/")
 # Crop data
 cropdat <- readRDS("data/full_ag_data.rds")
 
-cropdat <- filter(cropdat, year < 2010)
-  
-cropdat$corn_rprice <- mean(cropdat$corn_rprice, na.rm = TRUE)
-cropdat$cotton_rprice <- mean(cropdat$cotton_rprice, na.rm = TRUE)
-cropdat$hay_rprice <- mean(cropdat$hay_rprice, na.rm = TRUE)
-cropdat$wheat_rprice <- mean(cropdat$wheat_rprice, na.rm = TRUE)
-cropdat$soybean_rprice <- mean(cropdat$soybean_rprice, na.rm = TRUE)
-
-cropdat <- cropdat %>% 
-   group_by(fips) %>% 
-   mutate(avg_corn_a = mean(corn_grain_a, na.rm = TRUE),
-          avg_cotton_a = mean(cotton_a, na.rm = TRUE),
-          avg_hay_a = mean(hay_a, na.rm = TRUE),
-          avg_soybean_a = mean(soybean_a, na.rm = TRUE),
-          avg_wheat_a = mean(wheat_a, na.rm = TRUE))
-
-# Total Activity
-cropdat$corn <- cropdat$corn_yield*cropdat$corn_rprice
-cropdat$cotton <- cropdat$cotton_yield*cropdat$cotton_rprice
-cropdat$hay <- cropdat$hay_yield*cropdat$hay_rprice
-cropdat$wheat <- cropdat$wheat_yield*cropdat$wheat_rprice
-cropdat$soybean <- cropdat$soybean_yield*cropdat$soybean_rprice
-
-# Set acres to zero
-cropdat$corn_grain_a <- ifelse(is.na(cropdat$corn_grain_a), 0, cropdat$corn_grain_a)
-cropdat$cotton_a <- ifelse(is.na(cropdat$cotton_a), 0, cropdat$cotton_a)
-cropdat$hay_a <- ifelse(is.na(cropdat$hay_a), 0, cropdat$hay_a)
-cropdat$wheat_a <- ifelse(is.na(cropdat$wheat_a), 0, cropdat$wheat_a)
-cropdat$soybean_a <- ifelse(is.na(cropdat$soybean_a), 0, cropdat$soybean_a)
-
-# Variables
-cropdat$rev <- rowSums(cropdat[, c("corn", "cotton", "hay", "soybean", "wheat")], na.rm = TRUE)
-cropdat$acres <- rowSums(cropdat[, c("corn_grain_a", "cotton_a", "hay_a", "soybean_a", "wheat_a")], na.rm = TRUE)
-
-cropdat$rev <- ifelse(is.na(cropdat$rev), 0, cropdat$rev)
-
-cropdat$ln_rev <- log(1 + cropdat$rev)
-
-# Remove inf to na
-is.na(cropdat) <- do.call(cbind, lapply(cropdat, is.infinite))
-
-# Spline through acres to smooth out weights
-cropdat <- cropdat %>% 
-  group_by(fips) %>% 
-  arrange(year) %>% 
-  mutate(w = loess(acres ~ year)$fitted)
-
-
-  #------------------------------------------------------------------------
+#------------------------------------------------------------------------
 # Cross-section data setup
 csdat <- cropdat
 
@@ -242,56 +194,56 @@ cropdat$acres <- rowSums(cropdat[, c("corn_grain_a", "cotton_a", "hay_a", "soybe
 cropdat <- select(cropdat, year, fips, state, acres)
 
 # Cross-sectional data
-cs_dat <- function(x, prec){
-  csdat <- filter(x, year >= 1950 & year <= 2009)
-  prec <- filter(prec, year >= 1950 & year <= 2009)
-  csdat <- left_join(csdat, prec, by = c("fips", "year", "month"))
-  csdat <- filter(csdat, fips %in% unique(cropdat$fips))
-
-  csdat <- csdat %>%
-    filter(month >= 3 & month <= 10) %>%
-    group_by(fips, year) %>%
-    summarise(tavg = mean(tavg, na.rm = TRUE),
-            prec = sum(prec, na.rm = TRUE),
-            dday0C = sum(dday0C, na.rm = TRUE),
-            dday10C = sum(dday10C, na.rm = TRUE),
-            dday30C = sum(dday30C, na.rm = TRUE)) %>% 
-    left_join(cropdat, by = c("fips", "year")) %>% 
-    group_by(fips) %>%
-    summarise(tavg = mean(tavg, na.rm = TRUE),
-            prec = mean(prec, na.rm = TRUE),
-            dday0C = mean(dday0C, na.rm = TRUE),
-            dday10C = mean(dday10C, na.rm = TRUE),
-            dday30C = mean(dday30C, na.rm = TRUE),
-            acres = mean(acres, na.rm = TRUE)) %>%
-  ungroup()
-
-  csdat$dday0_10 <- csdat$dday0C - csdat$dday10C
-  csdat$dday10_30 <- csdat$dday10C - csdat$dday30C
-  csdat$dday30 <- csdat$dday30C
-  csdat$prec_sq <- csdat$prec^2
-  return(csdat)
-  }
+# cs_dat <- function(x, prec){
+#   csdat <- filter(x, year >= 1950 & year <= 2009)
+#   prec <- filter(prec, year >= 1950 & year <= 2009)
+#   csdat <- left_join(csdat, prec, by = c("fips", "year", "month"))
+#   csdat <- filter(csdat, fips %in% unique(cropdat$fips))
+# 
+#   csdat <- csdat %>%
+#     filter(month >= 3 & month <= 10) %>%
+#     group_by(fips, year) %>%
+#     summarise(tavg = mean(tavg, na.rm = TRUE),
+#             prec = sum(prec, na.rm = TRUE),
+#             dday0C = sum(dday0C, na.rm = TRUE),
+#             dday10C = sum(dday10C, na.rm = TRUE),
+#             dday30C = sum(dday30C, na.rm = TRUE)) %>% 
+#     left_join(cropdat, by = c("fips", "year")) %>% 
+#     group_by(fips) %>%
+#     summarise(tavg = mean(tavg, na.rm = TRUE),
+#             prec = mean(prec, na.rm = TRUE),
+#             dday0C = mean(dday0C, na.rm = TRUE),
+#             dday10C = mean(dday10C, na.rm = TRUE),
+#             dday30C = mean(dday30C, na.rm = TRUE),
+#             acres = mean(acres, na.rm = TRUE)) %>%
+#   ungroup()
+# 
+#   csdat$dday0_10 <- csdat$dday0C - csdat$dday10C
+#   csdat$dday10_30 <- csdat$dday10C - csdat$dday30C
+#   csdat$dday30 <- csdat$dday30C
+#   csdat$prec_sq <- csdat$prec^2
+#   return(csdat)
+#   }
 
 # Long-difference
 
-ld_dat <- function(x, prec) {
-  
-  
-  lddat <- filter(x, year >= 1950 & year <= 2009)
-  prec <- filter(prec, year >= 1950 & year <= 2009)
-  lddat <- left_join(lddat, prec, by = c("fips", "year", "month"))
-  lddat <- filter(lddat, fips %in% unique(cropdat$fips))
-                  
-  lddat <- lddat %>%
-    filter(month >= 3 & month <= 10) %>%
-    group_by(fips, year) %>%
-    summarise(tavg = mean(tavg, na.rm = TRUE),
-            prec = sum(prec, na.rm = TRUE),
-            dday0C = sum(dday0C, na.rm = TRUE),
-            dday10C = sum(dday10C, na.rm = TRUE),
-            dday30C = sum(dday30C, na.rm = TRUE))
-  
+# ld_dat <- function(x, prec) {
+#   
+#   
+#   lddat <- filter(x, year >= 1950 & year <= 2009)
+#   prec <- filter(prec, year >= 1950 & year <= 2009)
+#   lddat <- left_join(lddat, prec, by = c("fips", "year", "month"))
+#   lddat <- filter(lddat, fips %in% unique(cropdat$fips))
+#                   
+#   lddat <- lddat %>%
+#     filter(month >= 3 & month <= 10) %>%
+#     group_by(fips, year) %>%
+#     summarise(tavg = mean(tavg, na.rm = TRUE),
+#             prec = sum(prec, na.rm = TRUE),
+#             dday0C = sum(dday0C, na.rm = TRUE),
+#             dday10C = sum(dday10C, na.rm = TRUE),
+#             dday30C = sum(dday30C, na.rm = TRUE))
+#   
   # Long-difference
   # lddat1950 <- filter(lddat, year >= 1950 & year <= 1959)
   # lddat1980 <- filter(lddat, year >= 2000 & year <= 2009)
@@ -330,41 +282,41 @@ ld_dat <- function(x, prec) {
   
   # Demean decade 
   # Demean by decade
-  lddat$decade <- substr(lddat$year, 3,3)
-  lddat$decade <- ifelse(lddat$decade == 0, 10, lddat$decade)
-  
-  # lddat1960 <- filter(lddat, year >= 1960 & year < 1970)
-  # lddat1970 <- filter(lddat, year >= 1970 & year < 1980)
-  # lddat1980 <- filter(lddat, year >= 1980 & year < 1990)
-  # lddat1990 <- filter(lddat, year >= 1990 & year < 2000)
-  #lddat2000 <- filter(lddat, year >= 2000 & year < 2010)
-
-  mergdat <- data.frame()
-  for (i in unique(lddat$decade)){
-    intdat <- filter(lddat, decade == i)
-    intdat <- intdat %>%
-    #group_by(decade) %>%
-    #mutate(ln_rev = ln_rev - mean(ln_rev, na.rm = TRUE)) %>%
-    #ungroup() %>%
-    group_by(fips) %>%
-    summarise(dday0C = mean(dday0C, na.rm = TRUE),
-              dday10C = mean(dday10C, na.rm = TRUE),
-              dday30C = mean(dday30C, na.rm = TRUE),
-              prec = mean(prec, na.rm = TRUE)) %>%
-    ungroup()
-    intdat$decade <- i
-    
-    mergdat <- rbind(mergdat, intdat)
-  }
-  head(mergdat)
-  lddat <- mergdat
-  
-  lddat$dday0_10 <- lddat$dday0C - lddat$dday10C
-  lddat$dday10_30 <- lddat$dday10C - lddat$dday30C
-  lddat$dday30 <- lddat$dday30C
-  lddat$prec_sq <- lddat$prec^2
-  return(lddat) 
-}
+#   lddat$decade <- substr(lddat$year, 3,3)
+#   lddat$decade <- ifelse(lddat$decade == 0, 10, lddat$decade)
+#   
+#   # lddat1960 <- filter(lddat, year >= 1960 & year < 1970)
+#   # lddat1970 <- filter(lddat, year >= 1970 & year < 1980)
+#   # lddat1980 <- filter(lddat, year >= 1980 & year < 1990)
+#   # lddat1990 <- filter(lddat, year >= 1990 & year < 2000)
+#   #lddat2000 <- filter(lddat, year >= 2000 & year < 2010)
+# 
+#   mergdat <- data.frame()
+#   for (i in unique(lddat$decade)){
+#     intdat <- filter(lddat, decade == i)
+#     intdat <- intdat %>%
+#     #group_by(decade) %>%
+#     #mutate(ln_rev = ln_rev - mean(ln_rev, na.rm = TRUE)) %>%
+#     #ungroup() %>%
+#     group_by(fips) %>%
+#     summarise(dday0C = mean(dday0C, na.rm = TRUE),
+#               dday10C = mean(dday10C, na.rm = TRUE),
+#               dday30C = mean(dday30C, na.rm = TRUE),
+#               prec = mean(prec, na.rm = TRUE)) %>%
+#     ungroup()
+#     intdat$decade <- i
+#     
+#     mergdat <- rbind(mergdat, intdat)
+#   }
+#   head(mergdat)
+#   lddat <- mergdat
+#   
+#   lddat$dday0_10 <- lddat$dday0C - lddat$dday10C
+#   lddat$dday10_30 <- lddat$dday10C - lddat$dday30C
+#   lddat$dday30 <- lddat$dday30C
+#   lddat$prec_sq <- lddat$prec^2
+#   return(lddat) 
+# }
 
 
 # Panel
@@ -398,17 +350,17 @@ p_dat <- function(x, prec){
 }
 
 # Clean up data for new temp data
-cs1 <- cs_dat(dd1c, prec)
-cs2 <- cs_dat(dd2c, prec)
-cs3 <- cs_dat(dd3c, prec)
-cs4 <- cs_dat(dd4c, prec)
-cs5 <- cs_dat(dd5c, prec)
-
-ld1 <- ld_dat(dd1c, prec)
-ld2 <- ld_dat(dd2c, prec)
-ld3 <- ld_dat(dd3c, prec)
-ld4 <- ld_dat(dd4c, prec)
-ld5 <- ld_dat(dd5c, prec)
+# cs1 <- cs_dat(dd1c, prec)
+# cs2 <- cs_dat(dd2c, prec)
+# cs3 <- cs_dat(dd3c, prec)
+# cs4 <- cs_dat(dd4c, prec)
+# cs5 <- cs_dat(dd5c, prec)
+# 
+# ld1 <- ld_dat(dd1c, prec)
+# ld2 <- ld_dat(dd2c, prec)
+# ld3 <- ld_dat(dd3c, prec)
+# ld4 <- ld_dat(dd4c, prec)
+# ld5 <- ld_dat(dd5c, prec)
 
 p1 <- p_dat(dd1c, prec)
 p2 <- p_dat(dd2c, prec)
@@ -416,17 +368,17 @@ p3 <- p_dat(dd3c, prec)
 p4 <- p_dat(dd4c, prec)
 p5 <- p_dat(dd5c, prec)
 
-saveRDS(cs1, "data/degree_day_changes/cross_section_regression_data_1C.rds")
-saveRDS(cs2, "data/degree_day_changes/cross_section_regression_data_2C.rds")
-saveRDS(cs3, "data/degree_day_changes/cross_section_regression_data_3C.rds")
-saveRDS(cs4, "data/degree_day_changes/cross_section_regression_data_4C.rds")
-saveRDS(cs5, "data/degree_day_changes/cross_section_regression_data_5C.rds")
-
-saveRDS(ld1, "data/degree_day_changes/diff_regression_data_1C.rds")
-saveRDS(ld2, "data/degree_day_changes/diff_regression_data_2C.rds")
-saveRDS(ld3, "data/degree_day_changes/diff_regression_data_3C.rds")
-saveRDS(ld4, "data/degree_day_changes/diff_regression_data_4C.rds")
-saveRDS(ld5, "data/degree_day_changes/diff_regression_data_5C.rds")
+# saveRDS(cs1, "data/degree_day_changes/cross_section_regression_data_1C.rds")
+# saveRDS(cs2, "data/degree_day_changes/cross_section_regression_data_2C.rds")
+# saveRDS(cs3, "data/degree_day_changes/cross_section_regression_data_3C.rds")
+# saveRDS(cs4, "data/degree_day_changes/cross_section_regression_data_4C.rds")
+# saveRDS(cs5, "data/degree_day_changes/cross_section_regression_data_5C.rds")
+# 
+# saveRDS(ld1, "data/degree_day_changes/diff_regression_data_1C.rds")
+# saveRDS(ld2, "data/degree_day_changes/diff_regression_data_2C.rds")
+# saveRDS(ld3, "data/degree_day_changes/diff_regression_data_3C.rds")
+# saveRDS(ld4, "data/degree_day_changes/diff_regression_data_4C.rds")
+# saveRDS(ld5, "data/degree_day_changes/diff_regression_data_5C.rds")
 
 saveRDS(p1, "data/degree_day_changes/panel_regression_data_1C.rds")
 saveRDS(p2, "data/degree_day_changes/panel_regression_data_2C.rds")

@@ -106,8 +106,14 @@ p_dat <- function(x, prec){
            prec_five = mean(prec, na.rm = TRUE),
            prec_sq_five = prec_five^2)
   
+  pdat$trend <- pdat$year - 1949
+  pdat <- as.data.frame(pdat)
+  state_trends <- as.data.frame(dummyCreator(pdat$state, "trend2"))
+  state_trends$trend_sq <- pdat$trend^2
+  state_trends <- state_trends[, 1:25]*state_trends$trend_sq
+  pdat <- cbind(pdat, state_trends)
     
-    return(pdat)
+  return(pdat)
   
 }
 

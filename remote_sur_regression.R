@@ -1,14 +1,14 @@
 library(tidyverse)
 library(systemfit)
 
-
-# setwd("/home/johnw/")
+set.seed(12345)
+setwd("/home/johnw/Projects/adaptation-and-crop-choice/")
 
 # Download from Dropbox
-# download.file("https://www.dropbox.com/s/u0e0wah5jnmqtf9/full_ag_data.rds?raw=1", 
-#               destfile = "full_ag_data.rds", method = "auto")
+download.file("https://www.dropbox.com/s/u0e0wah5jnmqtf9/full_ag_data.rds?raw=1", 
+              destfile = "data/full_ag_data.rds", method = "auto")
 
-cropdat <- readRDS("full_ag_data.rds")
+cropdat <- readRDS("data/full_ag_data.rds")
 
 # coefnames <- c("corn_dday0_10","corn_dday10_30", "corn_dday30",           
 # "corn_prec", "corn_prec_sq", "corn_dday0_10_thirty",    
@@ -27,17 +27,42 @@ cropdat <- readRDS("full_ag_data.rds")
 
 # Models
 mod1 <- z_corn_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-              dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty - 1   
+              dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty +
+  factor(state) + factor(thirty) +trend2_al +trend2_ar + trend2_de +trend2_ga + trend2_ia  +         
+              trend2_il +trend2_in + trend2_ks + trend2_ky + trend2_md + trend2_mi +         
+              trend2_mn+ trend2_mo + trend2_ms +  trend2_mt + trend2_nc + trend2_nd +         
+              trend2_ne +trend2_oh + trend2_ok +  trend2_sc + trend2_sd + trend2_tn +         
+              trend2_va + trend2_wi - 1   
 
 mod2 <- z_cotton_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-              dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty - 1
+              dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty +
+  factor(state) + factor(thirty) + trend2_al +trend2_ar + trend2_de +trend2_ga + trend2_ia  +         
+              trend2_il +trend2_in + trend2_ks + trend2_ky + trend2_md + trend2_mi +         
+              trend2_mn+ trend2_mo + trend2_ms +  trend2_mt + trend2_nc + trend2_nd +         
+              trend2_ne +trend2_oh + trend2_ok +  trend2_sc + trend2_sd + trend2_tn +         
+              trend2_va + trend2_wi - 1 
 
 mod3 <- z_hay_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-              dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty - 1
+              dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty +
+  factor(state) + factor(thirty) +trend2_al +trend2_ar + trend2_de +trend2_ga + trend2_ia  +         
+              trend2_il +trend2_in + trend2_ks + trend2_ky + trend2_md + trend2_mi +         
+              trend2_mn+ trend2_mo + trend2_ms +  trend2_mt + trend2_nc + trend2_nd +         
+              trend2_ne +trend2_oh + trend2_ok +  trend2_sc + trend2_sd + trend2_tn +         
+              trend2_va + trend2_wi - 1 
 
 mod4 <- z_soybean_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-              dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty - 1
+              dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty +
+  factor(state) + factor(thirty) +trend2_al +trend2_ar + trend2_de +trend2_ga + trend2_ia  +         
+              trend2_il +trend2_in + trend2_ks + trend2_ky + trend2_md + trend2_mi +         
+              trend2_mn+ trend2_mo + trend2_ms +  trend2_mt + trend2_nc + trend2_nd +         
+              trend2_ne +trend2_oh + trend2_ok +  trend2_sc + trend2_sd + trend2_tn +         
+              trend2_va + trend2_wi - 1 
 
+# Boot-strapping regression to get coefficients and standard errors
+outdat <- data.frame()
+# for (i in 1:10){}
+  
+  
 # Boot-strapping regression to get coefficients and standard errors
 cropdat <- as.data.frame(cropdat)
 outdat <- data.frame()
@@ -45,11 +70,18 @@ outdat <- data.frame()
 sur_bs <- function(x){
   bsdat <- cropdat
   bdat <- data.frame()
-  for (j in unique(bsdat$thirty)){
-    drawdat <- filter(bsdat, thirty == j)
-    sampdat <- sample_n(drawdat, nrow(drawdat), replace = TRUE)
-    bdat <- rbind(bdat, sampdat)
-  }
+  
+  # Resample based on group
+  bdat <- bsdat %>%
+    group_by(state, year) %>%
+    sample_frac(1, replace = TRUE)
+  
+
+  
+  # head(bdat)
+  # unique(bdat$thirty)
+  # sort(unique(bdat$state_trend_sq))
+  # min(unique(bdat$state_trend_sq))
   bsdat <- bdat  
   # Convert to z-scores for linear regression
 
@@ -91,47 +123,46 @@ sur_bs <- function(x){
                       soybean = mod4), data = bsdat, method = "SUR")
 
 
-
-# (n) coefficients
-ncoef <- length(mod$coefficients)
-ncoef4 <- length(mod$coefficients)/4
-
-# Build coefmatrix
-coefmat <- as.data.frame(matrix(mod$coefficients, ncol = ncoef4, nrow = 4, byrow = TRUE))
-
-# Solve for 5th equation
-eq5 <- as.data.frame(colSums(coefmat)*-1)
-coefmat <- rbind(coefmat, t(eq5))
-rownames(coefmat) <- NULL
-# rownames(coefmat) <- c("Corn", "Cotton", "Hay", "Soybean", "Wheat")
-names(coefmat) <- names(mod$coefficients)[1:ncoef4]
-coefmat
-names(coefmat) <- substring(names(coefmat), 6)
-coefmat$run <- x
-coefmat$crop <- c("Corn", "Cotton", "Hay", "Soybean", "Wheat")
-# outdat <- rbind(outdat, coefmat)
-filename <- paste0("sur_thirty_", x, ".rds")
-saveRDS(coefmat, paste0("/home/john/", filename))
-# sink("/home/john/log.txt", append=TRUE)
-# cat(paste("Starting iteration",x,"\n"))  
-message(paste0("Process: (",x, ") complete"))
-return(coefmat)
-
-#print(x)
+  
+  # (n) coefficients
+  ncoef <- length(mod$coefficients)
+  ncoef4 <- length(mod$coefficients)/4
+  
+  # Build coefmatrix
+  coefmat <- as.data.frame(matrix(mod$coefficients, ncol = ncoef4, nrow = 4, byrow = TRUE))
+  
+  # Solve for 5th equation
+  eq5 <- as.data.frame(colSums(coefmat)*-1)
+  coefmat <- rbind(coefmat, t(eq5))
+  rownames(coefmat) <- NULL
+  # rownames(coefmat) <- c("Corn", "Cotton", "Hay", "Soybean", "Wheat")
+  names(coefmat) <- names(mod$coefficients)[1:ncoef4]
+  coefmat
+  names(coefmat) <- substring(names(coefmat), 6)
+  coefmat$run <- x
+  coefmat$crop <- c("Corn", "Cotton", "Hay", "Soybean", "Wheat")
+  coefmat$crop_mean <- c(corn_m, cotton_m, hay_m, soybean_m, wheat_m)
+  coefmat$crop_sd <- c(corn_sd, cotton_sd, hay_sd, soybean_sd, wheat_sd)
+  filename <- paste0("sur_thirty_", x, ".rds")
+  saveRDS(coefmat, paste0("data/thirty/", filename))
+  return(coefmat)
 }
 # d <- sur_bs(cropdat)
 
-i <- 1:2
+# b <- boot(cropdat, sur_bs, 10)
+
+i <- 1:2000
 
 library(parallel)
-cl <- makeCluster(2)
+cl <- makeCluster(7)
 clusterExport(cl, c("cropdat"))
 clusterExport(cl, c("mod1", "mod2", "mod3", "mod4"))
-# clusterEvalQ(cl, "/home/john/output.txt")
 clusterCall(cl, function() library(systemfit))
 clusterCall(cl, function() library(dplyr))
 d <- parLapply(cl, X = i, fun = sur_bs)
 stopCluster(cl)
 
-sur_thirty <- do.call("rbind", d)
-
+# sur_thirty <- do.call("rbind", d)
+# sur_thirty
+# 
+# saveRDS(blist, "data/sur_thirty.rds")

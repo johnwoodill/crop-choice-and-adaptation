@@ -759,6 +759,14 @@ cropdat$p_hay_a <- cropdat$hay_a/cropdat$acres
 cropdat$p_soybean_a <- cropdat$soybean_a/cropdat$acres
 cropdat$p_wheat_a <- cropdat$wheat_a/cropdat$acres
 
+cropdat <- as.data.frame(cropdat)
+
+state_trends <- as.data.frame(dummyCreator(cropdat$state, "trend2"))
+state_trends$trend_sq <- cropdat$trend^2
+state_trends <- state_trends[, 1:25]*state_trends$trend_sq
+cropdat <- cbind(cropdat, state_trends)
+
+
 saveRDS(cropdat, "data/full_ag_data.rds")
 fulldat <- readRDS("data/full_ag_data.rds")
 
