@@ -1,11 +1,18 @@
 library(tidyverse)
 library(ggthemes)
 
-modsixty5 <- readRDS("models/modsixty5.rds")
-modthirty5 <- readRDS("models/modthirty5.rds")
-modtwenty5 <- readRDS("models/modtwenty5.rds")
-modten5 <- readRDS("models/modten5.rds")
-modfive5 <- readRDS("models/modfive5.rds")
+# modsixty5 <- readRDS("models/modsixty5.rds")
+# modthirty5 <- readRDS("models/modthirty5.rds")
+# modtwenty5 <- readRDS("models/modtwenty5.rds")
+# modten5 <- readRDS("models/modten5.rds")
+# modfive5 <- readRDS("models/modfive5.rds")
+
+
+modfive5 <- readRDS("models/modfive_1.rds")
+modten5 <- readRDS("models/modten_1.rds")
+modtwenty5 <- readRDS("models/modtwenty_1.rds")
+modthirty5 <- readRDS("models/modthirty_1.rds")
+modsixty5 <- readRDS("models/modsixty_1.rds")
 
 # Build data frame for plot
 
