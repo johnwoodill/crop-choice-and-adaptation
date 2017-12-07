@@ -253,36 +253,157 @@ ce3_ci <- sum(c5_3p$se.fit)*1.96
 ce4_ci <- sum(c5_4p$se.fit)*1.96
 ce5_ci <- sum(c5_5p$se.fit)*1.96
 
+#-----------------------------------------------------------------
+# Total Effect
+
+t1_0p <- predictFelm(pmod1)
+t1_1p <- predictFelm(pmod1, newdata = p1)
+t1_2p <- predictFelm(pmod1, newdata = p2)
+t1_3p <- predictFelm(pmod1, newdata = p3)
+t1_4p <- predictFelm(pmod1, newdata = p4)
+t1_5p <- predictFelm(pmod1, newdata = p5)
+
+t2_0p <- predictFelm(pmod2)
+t2_1p <- predictFelm(pmod2, newdata = p1)
+t2_2p <- predictFelm(pmod2, newdata = p2)
+t2_3p <- predictFelm(pmod2, newdata = p3)
+t2_4p <- predictFelm(pmod2, newdata = p4)
+t2_5p <- predictFelm(pmod2, newdata = p5)
+
+t3_0p <- predictFelm(pmod3)
+t3_1p <- predictFelm(pmod3, newdata = p1)
+t3_2p <- predictFelm(pmod3, newdata = p2)
+t3_3p <- predictFelm(pmod3, newdata = p3)
+t3_4p <- predictFelm(pmod3, newdata = p4)
+t3_5p <- predictFelm(pmod3, newdata = p5)
+
+t4_0p <- predictFelm(pmod4)
+t4_1p <- predictFelm(pmod4, newdata = p1)
+t4_2p <- predictFelm(pmod4, newdata = p2)
+t4_3p <- predictFelm(pmod4, newdata = p3)
+t4_4p <- predictFelm(pmod4, newdata = p4)
+t4_5p <- predictFelm(pmod4, newdata = p5)
+
+t5_0p <- predictFelm(pmod5)
+t5_1p <- predictFelm(pmod5, newdata = p1)
+t5_2p <- predictFelm(pmod5, newdata = p2)
+t5_3p <- predictFelm(pmod5, newdata = p3)
+t5_4p <- predictFelm(pmod5, newdata = p4)
+t5_5p <- predictFelm(pmod5, newdata = p5)
+
+# Total predicted revenue per acre
+ta0 <- sum(exp(t1_0p$fit + t1_0p$res + t1_0p$effect))
+ta1 <- sum(exp(t1_1p$fit + t1_1p$res + t1_1p$effect)) 
+ta2 <- sum(exp(t1_2p$fit + t1_2p$res + t1_2p$effect)) 
+ta3 <- sum(exp(t1_3p$fit + t1_3p$res + t1_3p$effect)) 
+ta4 <- sum(exp(t1_4p$fit + t1_4p$res + t1_4p$effect)) 
+ta5 <- sum(exp(t1_5p$fit + t1_5p$res + t1_5p$effect))
+
+tb0 <- sum(exp(t2_0p$fit + t2_0p$res + t2_0p$effect))
+tb1 <- sum(exp(t2_1p$fit + t2_1p$res + t2_1p$effect)) 
+tb2 <- sum(exp(t2_2p$fit + t2_2p$res + t2_2p$effect)) 
+tb3 <- sum(exp(t2_3p$fit + t2_3p$res + t2_3p$effect)) 
+tb4 <- sum(exp(t2_4p$fit + t2_4p$res + t2_4p$effect)) 
+tb5 <- sum(exp(t2_5p$fit + t2_5p$res + t2_5p$effect))
+
+tc0 <- sum(exp(t3_0p$fit + t3_0p$res + t3_0p$effect))
+tc1 <- sum(exp(t3_1p$fit + t3_1p$res + t3_1p$effect)) 
+tc2 <- sum(exp(t3_2p$fit + t3_2p$res + t3_2p$effect)) 
+tc3 <- sum(exp(t3_3p$fit + t3_3p$res + t3_3p$effect)) 
+tc4 <- sum(exp(t3_4p$fit + t3_4p$res + t3_4p$effect)) 
+tc5 <- sum(exp(t3_5p$fit + t3_5p$res + t3_5p$effect))
+
+td0 <- sum(exp(t4_0p$fit + t4_0p$res + t4_0p$effect))
+td1 <- sum(exp(t4_1p$fit + t4_1p$res + t4_1p$effect)) 
+td2 <- sum(exp(t4_2p$fit + t4_2p$res + t4_2p$effect)) 
+td3 <- sum(exp(t4_3p$fit + t4_3p$res + t4_3p$effect)) 
+td4 <- sum(exp(t4_4p$fit + t4_4p$res + t4_4p$effect)) 
+td5 <- sum(exp(t4_5p$fit + t4_5p$res + t4_5p$effect))
+
+te0 <- sum(exp(t5_0p$fit + t5_0p$res + t5_0p$effect))
+te1 <- sum(exp(t5_1p$fit + t5_1p$res + t5_1p$effect)) 
+te2 <- sum(exp(t5_2p$fit + t5_2p$res + t5_2p$effect)) 
+te3 <- sum(exp(t5_3p$fit + t5_3p$res + t5_3p$effect)) 
+te4 <- sum(exp(t5_4p$fit + t5_4p$res + t5_4p$effect)) 
+te5 <- sum(exp(t5_5p$fit + t5_5p$res + t5_5p$effect))
+
+# Get standard errors of sum
+ta0_ci <- sum(t1_0p$se.fit)*1.96
+ta1_ci <- sum(t1_1p$se.fit)*1.96
+ta2_ci <- sum(t1_2p$se.fit)*1.96
+ta3_ci <- sum(t1_3p$se.fit)*1.96
+ta4_ci <- sum(t1_4p$se.fit)*1.96
+ta5_ci <- sum(t1_5p$se.fit)*1.96
+
+tb0_ci <- sum(t2_0p$se.fit)*1.96
+tb1_ci <- sum(t2_1p$se.fit)*1.96
+tb2_ci <- sum(t2_2p$se.fit)*1.96
+tb3_ci <- sum(t2_3p$se.fit)*1.96
+tb4_ci <- sum(t2_4p$se.fit)*1.96
+tb5_ci <- sum(t2_5p$se.fit)*1.96
+
+tc0_ci <- sum(t3_0p$se.fit)*1.96
+tc1_ci <- sum(t3_1p$se.fit)*1.96
+tc2_ci <- sum(t3_2p$se.fit)*1.96
+tc3_ci <- sum(t3_3p$se.fit)*1.96
+tc4_ci <- sum(t3_4p$se.fit)*1.96
+tc5_ci <- sum(t3_5p$se.fit)*1.96
+
+td0_ci <- sum(t4_0p$se.fit)*1.96
+td1_ci <- sum(t4_1p$se.fit)*1.96
+td2_ci <- sum(t4_2p$se.fit)*1.96
+td3_ci <- sum(t4_3p$se.fit)*1.96
+td4_ci <- sum(t4_4p$se.fit)*1.96
+td5_ci <- sum(t4_5p$se.fit)*1.96
+
+te0_ci <- sum(t5_0p$se.fit)*1.96
+te1_ci <- sum(t5_1p$se.fit)*1.96
+te2_ci <- sum(t5_2p$se.fit)*1.96
+te3_ci <- sum(t5_3p$se.fit)*1.96
+te4_ci <- sum(t5_4p$se.fit)*1.96
+te5_ci <- sum(t5_5p$se.fit)*1.96
 
 
 
-pdat <- data.frame(effect = rep(c("Weather-effect", "Climate-effect"), each = 30),
-                   model = rep(c("5-year", "10-year", "20-year", "30-year", "60-year"), 2, each = 6),
-                   temp = rep(c(0, 1, 2, 3, 4, 5), 10),
-                   sum = c(wa0, wa1, wa2, wa3, wa4, wa5,
+pdat <- data.frame(effect = rep(c("Weather-effect", "Climate-effect", "Total-effect"), each = 30),
+                   model = rep(c("5-year", "10-year", "20-year", "30-year", "60-year"), 3, each = 6),
+                   temp = rep(c(0, 1, 2, 3, 4, 5), 15),
+                   sum = c(wa0, wa1, wa2, wa3, wa4, wa5, # Weather effect
                            wb0, wb1, wb2, wb3, wb4, wb5,
                            wc0, wc1, wc2, wc3, wc4, wc5,
                            wd0, wd1, wd2, wd3, wd4, wd5,
-                           ce0, ce1, ce2, ce3, ce4, ce5, # Same
+                           ce0, ce1, ce2, ce3, ce4, ce5, #Climate effect Same
                            ca0, ca1, ca2, ca3, ca4, ca5,
                            cb0, cb1, cb2, cb3, cb4, cb5,
                            cc0, cc1, cc2, cc3, cc4, cc5,
                            cd0, cd1, cd2, cd3, cd4, cd5,
+                           ce0, ce1, ce2, ce3, ce4, ce5, # Same
+                           ta0, ta1, ta2, ta3, ta4, ta5,
+                           tb0, tb1, tb2, tb3, tb4, tb5,
+                           tc0, tc1, tc2, tc3, tc4, tc5,
+                           td0, td1, td2, td3, td4, td5,
                            ce0, ce1, ce2, ce3, ce4, ce5), # Same
                    ci = c(wa0_ci, wa1_ci, wa2_ci, wa3_ci, wa4_ci, wa5_ci,
                            wb0_ci, wb1_ci, wb2_ci, wb3_ci, wb4_ci, wb5_ci,
                            wc0_ci, wc1_ci, wc2_ci, wc3_ci, wc4_ci, wc5_ci,
                            wd0_ci, wd1_ci, wd2_ci, wd3_ci, wd4_ci, wd5_ci,
                            ce0_ci, ce1_ci, ce2_ci, ce3, ce4_ci, ce5_ci,
-                          ca0_ci, ca1_ci, ca2_ci, ca3_ci, ca4_ci, ca5_ci,
+                           ca0_ci, ca1_ci, ca2_ci, ca3_ci, ca4_ci, ca5_ci,
                            cb0_ci, cb1_ci, cb2_ci, cb3_ci, cb4_ci, cb5_ci,
                            cc0_ci, cc1_ci, cc2_ci, cc3_ci, cc4_ci, cc5_ci,
-                           0,0,0,0,0,0,
+                           cd0_ci, cd1_ci, cd2_ci, cd3_ci, cd4_ci, cd5_ci,
+                           ce0_ci, ce1_ci, ce2_ci, ce3, ce4_ci, ce5_ci,
+                           ta0_ci, ta1_ci, ta2_ci, ta3_ci, ta4_ci, ta5_ci,
+                           tb0_ci, tb1_ci, tb2_ci, tb3_ci, tb4_ci, tb5_ci,
+                           tc0_ci, tc1_ci, tc2_ci, tc3_ci, tc4_ci, tc5_ci,
+                           td0_ci, td1_ci, td2_ci, td3_ci, td4_ci, td5_ci,
                            ce0_ci, ce1_ci, ce2_ci, ce3, ce4_ci, ce5_ci))
 pdat
 #sixtypdat <- filter(pdat, model == "60-year")
-pdat <- filter(pdat, model != "60-year" | effect != "Weather-effect")
+pdat <- filter(pdat, model != "60-year" | effect != "Weather-effect" & effect != "Total-effect")
 pdat
+
+pdat$effect <- factor(pdat$effect, levels = c("Weather-effect", "Climate-effect", "Total-effect"))
 pdat <- pdat %>% 
   group_by(effect, model) %>% 
   mutate(change =  (sum - first(sum))/first(sum),

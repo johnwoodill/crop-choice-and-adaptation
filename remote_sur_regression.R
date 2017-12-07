@@ -26,37 +26,54 @@ cropdat <- readRDS("data/full_ag_data.rds")
 # "soybean_prec_sq_thirty" )
 
 # Models
+# mod1 <- z_corn_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
+#               dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty +
+#   factor(fips) + factor(thirty) +trend2_al +trend2_ar + trend2_de +trend2_ga + trend2_ia  +         
+#               trend2_il +trend2_in + trend2_ks + trend2_ky + trend2_md + trend2_mi +         
+#               trend2_mn+ trend2_mo + trend2_ms +  trend2_mt + trend2_nc + trend2_nd +         
+#               trend2_ne +trend2_oh + trend2_ok +  trend2_sc + trend2_sd + trend2_tn +         
+#               trend2_va + trend2_wi - 1   
+# 
+# mod2 <- z_cotton_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
+#               dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty +
+#   factor(fips) + factor(thirty) + trend2_al +trend2_ar + trend2_de +trend2_ga + trend2_ia  +         
+#               trend2_il +trend2_in + trend2_ks + trend2_ky + trend2_md + trend2_mi +         
+#               trend2_mn+ trend2_mo + trend2_ms +  trend2_mt + trend2_nc + trend2_nd +         
+#               trend2_ne +trend2_oh + trend2_ok +  trend2_sc + trend2_sd + trend2_tn +         
+#               trend2_va + trend2_wi - 1 
+# 
+# mod3 <- z_hay_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
+#               dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty +
+#   factor(fips) + factor(thirty) +trend2_al +trend2_ar + trend2_de +trend2_ga + trend2_ia  +         
+#               trend2_il +trend2_in + trend2_ks + trend2_ky + trend2_md + trend2_mi +         
+#               trend2_mn+ trend2_mo + trend2_ms +  trend2_mt + trend2_nc + trend2_nd +         
+#               trend2_ne +trend2_oh + trend2_ok +  trend2_sc + trend2_sd + trend2_tn +         
+#               trend2_va + trend2_wi - 1 
+# 
+# mod4 <- z_soybean_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
+#               dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty +
+#   factor(fips) + factor(thirty) +trend2_al +trend2_ar + trend2_de +trend2_ga + trend2_ia  +         
+#               trend2_il +trend2_in + trend2_ks + trend2_ky + trend2_md + trend2_mi +         
+#               trend2_mn+ trend2_mo + trend2_ms +  trend2_mt + trend2_nc + trend2_nd +         
+#               trend2_ne +trend2_oh + trend2_ok +  trend2_sc + trend2_sd + trend2_tn +         
+#               trend2_va + trend2_wi - 1 
+
+
 mod1 <- z_corn_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
               dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty +
-  factor(state) + factor(thirty) +trend2_al +trend2_ar + trend2_de +trend2_ga + trend2_ia  +         
-              trend2_il +trend2_in + trend2_ks + trend2_ky + trend2_md + trend2_mi +         
-              trend2_mn+ trend2_mo + trend2_ms +  trend2_mt + trend2_nc + trend2_nd +         
-              trend2_ne +trend2_oh + trend2_ok +  trend2_sc + trend2_sd + trend2_tn +         
-              trend2_va + trend2_wi - 1   
+  factor(fips) + factor(thirty) - 1   
 
 mod2 <- z_cotton_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
               dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty +
-  factor(state) + factor(thirty) + trend2_al +trend2_ar + trend2_de +trend2_ga + trend2_ia  +         
-              trend2_il +trend2_in + trend2_ks + trend2_ky + trend2_md + trend2_mi +         
-              trend2_mn+ trend2_mo + trend2_ms +  trend2_mt + trend2_nc + trend2_nd +         
-              trend2_ne +trend2_oh + trend2_ok +  trend2_sc + trend2_sd + trend2_tn +         
-              trend2_va + trend2_wi - 1 
+  factor(fips) + factor(thirty) - 1 
 
 mod3 <- z_hay_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
               dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty +
-  factor(state) + factor(thirty) +trend2_al +trend2_ar + trend2_de +trend2_ga + trend2_ia  +         
-              trend2_il +trend2_in + trend2_ks + trend2_ky + trend2_md + trend2_mi +         
-              trend2_mn+ trend2_mo + trend2_ms +  trend2_mt + trend2_nc + trend2_nd +         
-              trend2_ne +trend2_oh + trend2_ok +  trend2_sc + trend2_sd + trend2_tn +         
-              trend2_va + trend2_wi - 1 
+  factor(fips) + factor(thirty) - 1 
 
 mod4 <- z_soybean_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
               dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty +
-  factor(state) + factor(thirty) +trend2_al +trend2_ar + trend2_de +trend2_ga + trend2_ia  +         
-              trend2_il +trend2_in + trend2_ks + trend2_ky + trend2_md + trend2_mi +         
-              trend2_mn+ trend2_mo + trend2_ms +  trend2_mt + trend2_nc + trend2_nd +         
-              trend2_ne +trend2_oh + trend2_ok +  trend2_sc + trend2_sd + trend2_tn +         
-              trend2_va + trend2_wi - 1 
+  factor(fips) + factor(thirty) - 1 
 
 # Boot-strapping regression to get coefficients and standard errors
 outdat <- data.frame()
@@ -73,8 +90,9 @@ sur_bs <- function(x){
   
   # Resample based on group
   bdat <- bsdat %>%
-    group_by(state, year) %>%
-    sample_frac(1, replace = TRUE)
+    group_by(fips) %>%
+    sample_n(50, replace = FALSE)
+    # sample_frac(1, replace = TRUE)
   
 
   

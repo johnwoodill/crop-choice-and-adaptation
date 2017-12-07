@@ -42,12 +42,20 @@ predictFelm <- function(felm.fit, newdata = NULL, terms = NULL){
     }
     
     # Check for terms before predict
-    type_check <- ifelse(!is.null(terms), "terms", NULL)
+    # type_check <- ifelse(!is.null(terms), "terms", NULL)
     
     # Predict
-    pred <- predict(lm.fit, newdata = newdata, se.fit = TRUE, type = type_check, terms = terms)
+  
+    if(!is.null(terms)){
+      pred <- predict(lm.fit, newdata = newdata, se.fit = TRUE, type = "terms", terms = terms)
+      pred$fit <- rowSums(pred$fit)
+    }
+  
+    if(is.null(terms)){
+      pred <- predict(lm.fit, newdata = newdata, se.fit = TRUE)
+    }
+      
     
-    pred$fit <- rowSums(pred$fit)
     pred$res <- felm.fit$residuals
     
     
