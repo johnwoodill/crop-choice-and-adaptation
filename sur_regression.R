@@ -7,7 +7,6 @@ library(AER)
 setwd("/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/")
 
 
-setwd("/home/john/")
 # Crop data
 
 
@@ -17,50 +16,50 @@ setwd("/home/john/")
 
 cropdat <- readRDS("data/full_ag_data.rds")
 
-coefnames <- c("corn_dday0_10","corn_dday10_30", "corn_dday30",           
-"corn_prec", "corn_prec_sq", "corn_dday0_10_five",    
-"corn_dday10_30_five", "corn_dday30_five", "corn_prec_five",        
-"corn_prec_sq_five", "cotton_dday0_10", "cotton_dday10_30",      
-"cotton_dday30", "cotton_prec", "cotton_prec_sq",        
-"cotton_dday0_10_five", "cotton_dday10_30_five", "cotton_dday30_five",    
-"cotton_prec_five", "cotton_prec_sq_five", "hay_dday0_10",          
-"hay_dday10_30", "hay_dday30", "hay_prec",              
-"hay_prec_sq", "hay_dday0_10_five", "hay_dday10_30_five",    
-"hay_dday30_five", "hay_prec_five", "hay_prec_sq_five",      
-"soybean_dday0_10", "soybean_dday10_30", "soybean_dday30",        
-"soybean_prec", "soybean_prec_sq", "soybean_dday0_10_five", 
-"soybean_dday10_30_five", "soybean_dday30_five", "soybean_prec_five",     
-"soybean_prec_sq_five" )
+# coefnames <- c("corn_dday0_10","corn_dday10_30", "corn_dday30",           
+# "corn_prec", "corn_prec_sq", "corn_dday0_10_five",    
+# "corn_dday10_30_five", "corn_dday30_five", "corn_prec_five",        
+# "corn_prec_sq_five", "cotton_dday0_10", "cotton_dday10_30",      
+# "cotton_dday30", "cotton_prec", "cotton_prec_sq",        
+# "cotton_dday0_10_five", "cotton_dday10_30_five", "cotton_dday30_five",    
+# "cotton_prec_five", "cotton_prec_sq_five", "hay_dday0_10",          
+# "hay_dday10_30", "hay_dday30", "hay_prec",              
+# "hay_prec_sq", "hay_dday0_10_five", "hay_dday10_30_five",    
+# "hay_dday30_five", "hay_prec_five", "hay_prec_sq_five",      
+# "soybean_dday0_10", "soybean_dday10_30", "soybean_dday30",        
+# "soybean_prec", "soybean_prec_sq", "soybean_dday0_10_five", 
+# "soybean_dday10_30_five", "soybean_dday30_five", "soybean_prec_five",     
+# "soybean_prec_sq_five" )
 
 # Skeleton Model
 # Models
-skmod1 <- rnorm(nrow(cropdat), 100, 10) ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-              dday0_10_five + dday10_30_five + dday30_five + prec_five + prec_sq_five + - 1   
-
-skmod2 <- rnorm(nrow(cropdat), 100, 10) ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-              dday0_10_five + dday10_30_five + dday30_five + prec_five + prec_sq_five   - 1
-
-skmod3 <- rnorm(nrow(cropdat), 100, 10) ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-              dday0_10_five + dday10_30_five + dday30_five + prec_five + prec_sq_five   - 1
-
-skmod4 <- rnorm(nrow(cropdat), 100, 10) ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-              dday0_10_five + dday10_30_five + dday30_five + prec_five + prec_sq_five  - 1
-
-skmod5 <- rnorm(nrow(cropdat), 100, 10) ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-              dday0_10_five + dday10_30_five + dday30_five + prec_five + prec_sq_five   - 1
-
-skelmod <- systemfit(list(corn = skmod1, 
-                      cotton = skmod2, 
-                      hay = skmod3, 
-                      soybean = skmod4,
-                      wheat = skmod5), data = cropdat, method = "SUR")
-
-skelmod$coefficients
-
-modmat <- model.matrix(~dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-              dday0_10_five + dday10_30_five + dday30_five + prec_five + prec_sq_five  + 
-                factor(state) - 1, data = cropdat)
-modmat
+# skmod1 <- rnorm(nrow(cropdat), 100, 10) ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
+#               dday0_10_five + dday10_30_five + dday30_five + prec_five + prec_sq_five + - 1   
+# 
+# skmod2 <- rnorm(nrow(cropdat), 100, 10) ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
+#               dday0_10_five + dday10_30_five + dday30_five + prec_five + prec_sq_five   - 1
+# 
+# skmod3 <- rnorm(nrow(cropdat), 100, 10) ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
+#               dday0_10_five + dday10_30_five + dday30_five + prec_five + prec_sq_five   - 1
+# 
+# skmod4 <- rnorm(nrow(cropdat), 100, 10) ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
+#               dday0_10_five + dday10_30_five + dday30_five + prec_five + prec_sq_five  - 1
+# 
+# skmod5 <- rnorm(nrow(cropdat), 100, 10) ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
+#               dday0_10_five + dday10_30_five + dday30_five + prec_five + prec_sq_five   - 1
+# 
+# skelmod <- systemfit(list(corn = skmod1, 
+#                       cotton = skmod2, 
+#                       hay = skmod3, 
+#                       soybean = skmod4,
+#                       wheat = skmod5), data = cropdat, method = "SUR")
+# 
+# skelmod$coefficients
+# 
+# modmat <- model.matrix(~dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
+#               dday0_10_five + dday10_30_five + dday30_five + prec_five + prec_sq_five  + 
+#                 factor(state) - 1, data = cropdat)
+# modmat
 
 # Convert to z-scores for linear regression
 
@@ -72,48 +71,65 @@ cropdat$p_soybean_a <- (cropdat$p_soybean_a + .01)/1.02
 cropdat$p_wheat_a <- (cropdat$p_wheat_a + .01)/1.02
 
 # Get mean and sd to convert back
-corn_m <- mean(cropdat$p_corn_a, na.rm = TRUE)
-corn_sd <- sd(cropdat$p_corn_a, na.rm = TRUE)
-
-cotton_m <- mean(cropdat$p_cotton_a, na.rm = TRUE)
-cotton_sd <- sd(cropdat$p_cotton_a, na.rm = TRUE)
-
-hay_m <- mean(cropdat$p_hay_a, na.rm = TRUE)
-hay_sd <- sd(cropdat$p_hay_a, na.rm = TRUE)
-
-soybean_m <- mean(cropdat$p_soybean_a, na.rm = TRUE)
-soybean_sd <- sd(cropdat$p_soybean_a, na.rm = TRUE)
-
-wheat_m <- mean(cropdat$p_wheat_a, na.rm = TRUE)
-wheat_sd <- sd(cropdat$p_wheat_a, na.rm = TRUE)
+# corn_m <- mean(cropdat$p_corn_a, na.rm = TRUE)
+# corn_sd <- sd(cropdat$p_corn_a, na.rm = TRUE)
+# 
+# cotton_m <- mean(cropdat$p_cotton_a, na.rm = TRUE)
+# cotton_sd <- sd(cropdat$p_cotton_a, na.rm = TRUE)
+# 
+# hay_m <- mean(cropdat$p_hay_a, na.rm = TRUE)
+# hay_sd <- sd(cropdat$p_hay_a, na.rm = TRUE)
+# 
+# soybean_m <- mean(cropdat$p_soybean_a, na.rm = TRUE)
+# soybean_sd <- sd(cropdat$p_soybean_a, na.rm = TRUE)
+# 
+# wheat_m <- mean(cropdat$p_wheat_a, na.rm = TRUE)
+# wheat_sd <- sd(cropdat$p_wheat_a, na.rm = TRUE)
 
 
 # Calc z-scores
-cropdat$z_corn_a <- (cropdat$p_corn_a - mean(cropdat$p_corn_a, na.rm = TRUE))/sd(cropdat$p_corn_a, na.rm = TRUE)
-cropdat$z_cotton_a <- (cropdat$p_cotton_a - mean(cropdat$p_cotton_a, na.rm = TRUE))/sd(cropdat$p_cotton_a, na.rm = TRUE)
-cropdat$z_hay_a <- (cropdat$p_hay_a - mean(cropdat$p_hay_a, na.rm = TRUE))/sd(cropdat$p_hay_a, na.rm = TRUE)
-cropdat$z_soybean_a <- (cropdat$p_soybean_a - mean(cropdat$p_soybean_a, na.rm = TRUE))/sd(cropdat$p_soybean_a, na.rm = TRUE)
-cropdat$z_wheat_a <- (cropdat$p_wheat_a - mean(cropdat$p_wheat_a, na.rm = TRUE))/sd(cropdat$p_wheat_a, na.rm = TRUE)
+cropdat$z_corn_a <- qnorm(cropdat$p_corn_a)
+cropdat$z_cotton_a <- qnorm(cropdat$p_cotton_a)
+cropdat$z_hay_a <- qnorm(cropdat$p_hay_a)
+cropdat$z_soybean_a <- qnorm(cropdat$p_soybean_a)
+cropdat$z_wheat_a <- qnorm(cropdat$p_wheat_a)
 
 # Models
+  
 mod1 <- z_corn_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-              dday0_10_five + dday10_30_five + dday30_five + prec_five + prec_sq_five + factor(state) - 1   
+              dday0_10_five + dday10_30_five + dday30_five + prec_five + prec_sq_five - 1   
 
 mod2 <- z_cotton_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-              dday0_10_five + dday10_30_five + dday30_five + prec_five + prec_sq_five  + factor(state) - 1
+              dday0_10_five + dday10_30_five + dday30_five + prec_five + prec_sq_five - 1
 
 mod3 <- z_hay_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-              dday0_10_five + dday10_30_five + dday30_five + prec_five + prec_sq_five  + factor(state) - 1
+              dday0_10_five + dday10_30_five + dday30_five + prec_five + prec_sq_five  - 1
 
 mod4 <- z_soybean_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-              dday0_10_five + dday10_30_five + dday30_five + prec_five + prec_sq_five  + factor(state) - 1
+              dday0_10_five + dday10_30_five + dday30_five + prec_five + prec_sq_five  - 1
 
+mod5 <- z_wheat_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
+              dday0_10_five + dday10_30_five + dday30_five + prec_five + prec_sq_five  - 1
+
+# restrict <- c("corn_dday0_10 + corn_dday10_30 + corn_dday30 + corn_prec + corn_prec_sq + 
+#               corn_dday0_10_five + corn_dday10_30_five + corn_dday30_five + corn_prec_five + corn_prec_sq_five +
+#               cotton_dday0_10 + cotton_dday10_30 + cotton_dday30 + cotton_prec + cotton_prec_sq + 
+#               cotton_dday0_10_five + cotton_dday10_30_five + cotton_dday30_five + cotton_prec_five + cotton_prec_sq_five +
+#               hay_dday0_10 + hay_dday10_30 + hay_dday30 + hay_prec + hay_prec_sq + 
+#               hay_dday0_10_five + hay_dday10_30_five + hay_dday30_five + hay_prec_five + hay_prec_sq_five +
+#               soybean_dday0_10 + soybean_dday10_30 + soybean_dday30 + soybean_prec + soybean_prec_sq + 
+#               soybean_dday0_10_five + soybean_dday10_30_five + soybean_dday30_five + soybean_prec_five + soybean_prec_sq_five +
+#               wheat_dday0_10 + wheat_dday10_30 + wheat_dday30 + wheat_prec + wheat_prec_sq + 
+#               wheat_dday0_10_five + wheat_dday10_30_five + wheat_dday30_five + wheat_prec_five + wheat_prec_sq_five = 0")
 
 mod <- systemfit(list(corn = mod1, 
                       cotton = mod2, 
                       hay = mod3, 
-                      soybean = mod4), data = cropdat, method = "SUR")
+                      soybean = mod4,
+                      wheat = mod5), data = cropdat, method = "SUR")
 
+summary(mod)
+mod$coefCov
 mod$coefficients
 sum(mod$coefficients)
 
