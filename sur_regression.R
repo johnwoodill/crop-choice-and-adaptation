@@ -70,6 +70,14 @@ cropdat$p_hay_a <- (cropdat$p_hay_a + .01)/1.02
 cropdat$p_soybean_a <- (cropdat$p_soybean_a + .01)/1.02
 cropdat$p_wheat_a <- (cropdat$p_wheat_a + .01)/1.02
 
+
+
+range(cropdat$p_corn_a)
+range(cropdat$p_cotton_a)
+range(cropdat$p_hay_a)
+range(cropdat$p_soybean_a)
+range(cropdat$p_wheat_a)
+
 # Get mean and sd to convert back
 # corn_m <- mean(cropdat$p_corn_a, na.rm = TRUE)
 # corn_sd <- sd(cropdat$p_corn_a, na.rm = TRUE)
@@ -111,22 +119,22 @@ mod4 <- z_soybean_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
 mod5 <- z_wheat_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
               dday0_10_five + dday10_30_five + dday30_five + prec_five + prec_sq_five  - 1
 
-# restrict <- c("corn_dday0_10 + corn_dday10_30 + corn_dday30 + corn_prec + corn_prec_sq + 
-#               corn_dday0_10_five + corn_dday10_30_five + corn_dday30_five + corn_prec_five + corn_prec_sq_five +
-#               cotton_dday0_10 + cotton_dday10_30 + cotton_dday30 + cotton_prec + cotton_prec_sq + 
-#               cotton_dday0_10_five + cotton_dday10_30_five + cotton_dday30_five + cotton_prec_five + cotton_prec_sq_five +
-#               hay_dday0_10 + hay_dday10_30 + hay_dday30 + hay_prec + hay_prec_sq + 
-#               hay_dday0_10_five + hay_dday10_30_five + hay_dday30_five + hay_prec_five + hay_prec_sq_five +
-#               soybean_dday0_10 + soybean_dday10_30 + soybean_dday30 + soybean_prec + soybean_prec_sq + 
-#               soybean_dday0_10_five + soybean_dday10_30_five + soybean_dday30_five + soybean_prec_five + soybean_prec_sq_five +
-#               wheat_dday0_10 + wheat_dday10_30 + wheat_dday30 + wheat_prec + wheat_prec_sq + 
-#               wheat_dday0_10_five + wheat_dday10_30_five + wheat_dday30_five + wheat_prec_five + wheat_prec_sq_five = 0")
+restrict <- c("corn_dday0_10 + corn_dday10_30 + corn_dday30 + corn_prec + corn_prec_sq +
+              corn_dday0_10_five + corn_dday10_30_five + corn_dday30_five + corn_prec_five + corn_prec_sq_five +
+              cotton_dday0_10 + cotton_dday10_30 + cotton_dday30 + cotton_prec + cotton_prec_sq +
+              cotton_dday0_10_five + cotton_dday10_30_five + cotton_dday30_five + cotton_prec_five + cotton_prec_sq_five +
+              hay_dday0_10 + hay_dday10_30 + hay_dday30 + hay_prec + hay_prec_sq +
+              hay_dday0_10_five + hay_dday10_30_five + hay_dday30_five + hay_prec_five + hay_prec_sq_five +
+              soybean_dday0_10 + soybean_dday10_30 + soybean_dday30 + soybean_prec + soybean_prec_sq +
+              soybean_dday0_10_five + soybean_dday10_30_five + soybean_dday30_five + soybean_prec_five + soybean_prec_sq_five +
+              wheat_dday0_10 + wheat_dday10_30 + wheat_dday30 + wheat_prec + wheat_prec_sq +
+              wheat_dday0_10_five + wheat_dday10_30_five + wheat_dday30_five + wheat_prec_five + wheat_prec_sq_five = 0")
 
 mod <- systemfit(list(corn = mod1, 
                       cotton = mod2, 
                       hay = mod3, 
                       soybean = mod4,
-                      wheat = mod5), data = cropdat, method = "SUR")
+                      wheat = mod5), data = cropdat, method = "SUR", restrict.matrix = restrict)
 
 summary(mod)
 mod$coefCov
