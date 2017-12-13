@@ -85,91 +85,50 @@ p5 <- readRDS("data/degree_day_changes/panel_adapt_regression_data_5C.rds")
 # rowSums(out)
 # range(rowSums(out))
 
-pten0 <- predict(sur_ten)
+pten0 <- predict(sur_ten$eq[[1]], type = c("terms"), terms = c("corn_dday0_10"))
+pten0
+predict.lm(sur_ten$eq[[1]])
+
 pten1 <- predict(sur_ten, newdata = p1)
 pten2 <- predict(sur_ten, newdata = p2)
 pten3 <- predict(sur_ten, newdata = p3)
 pten4 <- predict(sur_ten, newdata = p4)
 pten5 <- predict(sur_ten, newdata = p5)
 
-pten0$wheat.pred <- 1 - rowSums(pten0)
-pten1$wheat.pred <- 1 - rowSums(pten1)
-pten2$wheat.pred <- 1 - rowSums(pten2)
-pten3$wheat.pred <- 1 - rowSums(pten3)
-pten4$wheat.pred <- 1 - rowSums(pten4)
-pten5$wheat.pred <- 1 - rowSums(pten5)
+pten0$corn.pred <- pnorm(pten0$corn.pred + resid(sur_ten)[[1]])*1.02 - 0.01
+pten1$corn.pred <- pnorm(pten1$corn.pred + resid(sur_ten)[[1]])*1.02 - 0.01
+pten2$corn.pred <- pnorm(pten2$corn.pred + resid(sur_ten)[[1]])*1.02 - 0.01
+pten3$corn.pred <- pnorm(pten3$corn.pred + resid(sur_ten)[[1]])*1.02 - 0.01
+pten4$corn.pred <- pnorm(pten4$corn.pred + resid(sur_ten)[[1]])*1.02 - 0.01
+pten5$corn.pred <- pnorm(pten5$corn.pred + resid(sur_ten)[[1]])*1.02 - 0.01
 
-pten0$corn.pred <- pten0$corn.pred + resid(sur_ten)[1]
-pten1$corn.pred <- pten1$corn.pred + resid(sur_ten)[1]
-pten2$corn.pred <- pten2$corn.pred + resid(sur_ten)[1]
-pten3$corn.pred <- pten3$corn.pred + resid(sur_ten)[1]
-pten4$corn.pred <- pten4$corn.pred + resid(sur_ten)[1]
-pten5$corn.pred <- pten5$corn.pred + resid(sur_ten)[1]
+pten0$cotton.pred <- pnorm(pten0$cotton.pred + resid(sur_ten)[[2]])*1.02 - 0.01
+pten1$cotton.pred <- pnorm(pten1$cotton.pred + resid(sur_ten)[[2]])*1.02 - 0.01
+pten2$cotton.pred <- pnorm(pten2$cotton.pred + resid(sur_ten)[[2]])*1.02 - 0.01
+pten3$cotton.pred <- pnorm(pten3$cotton.pred + resid(sur_ten)[[2]])*1.02 - 0.01
+pten4$cotton.pred <- pnorm(pten4$cotton.pred + resid(sur_ten)[[2]])*1.02 - 0.01
+pten5$cotton.pred <- pnorm(pten5$cotton.pred + resid(sur_ten)[[2]])*1.02 - 0.01
 
-pten0$cotton.pred <- pten0$cotton.pred + resid(sur_ten)[2]
-pten1$cotton.pred <- pten1$cotton.pred + resid(sur_ten)[2]
-pten2$cotton.pred <- pten2$cotton.pred + resid(sur_ten)[2]
-pten3$cotton.pred <- pten3$cotton.pred + resid(sur_ten)[2]
-pten4$cotton.pred <- pten4$cotton.pred + resid(sur_ten)[2]
-pten5$cotton.pred <- pten5$cotton.pred + resid(sur_ten)[2]
+pten0$hay.pred <- pnorm(pten0$hay.pred + resid(sur_ten)[[3]])*1.02 - 0.01
+pten1$hay.pred <- pnorm(pten1$hay.pred + resid(sur_ten)[[3]])*1.02 - 0.01
+pten2$hay.pred <- pnorm(pten2$hay.pred + resid(sur_ten)[[3]])*1.02 - 0.01
+pten3$hay.pred <- pnorm(pten3$hay.pred + resid(sur_ten)[[3]])*1.02 - 0.01
+pten4$hay.pred <- pnorm(pten4$hay.pred + resid(sur_ten)[[3]])*1.02 - 0.01
+pten5$hay.pred <- pnorm(pten5$hay.pred + resid(sur_ten)[[3]])*1.02 - 0.01
 
-pten0$hay.pred <- pten0$hay.pred + resid(sur_ten)[3]
-pten1$hay.pred <- pten1$hay.pred + resid(sur_ten)[3]
-pten2$hay.pred <- pten2$hay.pred + resid(sur_ten)[3]
-pten3$hay.pred <- pten3$hay.pred + resid(sur_ten)[3]
-pten4$hay.pred <- pten4$hay.pred + resid(sur_ten)[3]
-pten5$hay.pred <- pten5$hay.pred + resid(sur_ten)[3]
+pten0$soybean.pred <- pnorm(pten0$soybean.pred + resid(sur_ten)[[4]])*1.02 - 0.01
+pten1$soybean.pred <- pnorm(pten1$soybean.pred + resid(sur_ten)[[4]])*1.02 - 0.01
+pten2$soybean.pred <- pnorm(pten2$soybean.pred + resid(sur_ten)[[4]])*1.02 - 0.01
+pten3$soybean.pred <- pnorm(pten3$soybean.pred + resid(sur_ten)[[4]])*1.02 - 0.01
+pten4$soybean.pred <- pnorm(pten4$soybean.pred + resid(sur_ten)[[4]])*1.02 - 0.01
+pten5$soybean.pred <- pnorm(pten5$soybean.pred + resid(sur_ten)[[4]])*1.02 - 0.01
 
-pten0$soybean.pred <- pten0$soybean.pred + resid(sur_ten)[4]
-pten1$soybean.pred <- pten1$soybean.pred + resid(sur_ten)[4]
-pten2$soybean.pred <- pten2$soybean.pred + resid(sur_ten)[4]
-pten3$soybean.pred <- pten3$soybean.pred + resid(sur_ten)[4]
-pten4$soybean.pred <- pten4$soybean.pred + resid(sur_ten)[4]
-pten5$soybean.pred <- pten5$soybean.pred + resid(sur_ten)[4]
-
-wheat_res <- rowSums(resid(sur_ten))*-1
-
-pten0$wheat.pred <- pten0$wheat.pred + wheat_res
-pten1$wheat.pred <- pten1$wheat.pred + wheat_res
-pten2$wheat.pred <- pten2$wheat.pred + wheat_res
-pten3$wheat.pred <- pten3$wheat.pred + wheat_res
-pten4$wheat.pred <- pten4$wheat.pred + wheat_res
-pten5$wheat.pred <- pten5$wheat.pred + wheat_res
-
-pten0$corn.pred <- (pten0$corn.pred*sd(cropdat$p_corn_a, na.rm = TRUE)) + mean(cropdat$p_corn_a, na.rm = TRUE)
-pten1$corn.pred <- (pten1$corn.pred*sd(cropdat$p_corn_a, na.rm = TRUE)) + mean(cropdat$p_corn_a, na.rm = TRUE)
-pten2$corn.pred <- (pten2$corn.pred*sd(cropdat$p_corn_a, na.rm = TRUE)) + mean(cropdat$p_corn_a, na.rm = TRUE)
-pten3$corn.pred <- (pten3$corn.pred*sd(cropdat$p_corn_a, na.rm = TRUE)) + mean(cropdat$p_corn_a, na.rm = TRUE)
-pten4$corn.pred <- (pten4$corn.pred*sd(cropdat$p_corn_a, na.rm = TRUE)) + mean(cropdat$p_corn_a, na.rm = TRUE)
-pten5$corn.pred <- (pten5$corn.pred*sd(cropdat$p_corn_a, na.rm = TRUE)) + mean(cropdat$p_corn_a, na.rm = TRUE)
-
-pten0$cotton.pred <- (pten0$cotton.pred*sd(cropdat$p_cotton_a, na.rm = TRUE)) + mean(cropdat$p_cotton_a, na.rm = TRUE)
-pten1$cotton.pred <- (pten1$cotton.pred*sd(cropdat$p_cotton_a, na.rm = TRUE)) + mean(cropdat$p_cotton_a, na.rm = TRUE)
-pten2$cotton.pred <- (pten2$cotton.pred*sd(cropdat$p_cotton_a, na.rm = TRUE)) + mean(cropdat$p_cotton_a, na.rm = TRUE)
-pten3$cotton.pred <- (pten3$cotton.pred*sd(cropdat$p_cotton_a, na.rm = TRUE)) + mean(cropdat$p_cotton_a, na.rm = TRUE)
-pten4$cotton.pred <- (pten4$cotton.pred*sd(cropdat$p_cotton_a, na.rm = TRUE)) + mean(cropdat$p_cotton_a, na.rm = TRUE)
-pten5$cotton.pred <- (pten5$cotton.pred*sd(cropdat$p_cotton_a, na.rm = TRUE)) + mean(cropdat$p_cotton_a, na.rm = TRUE)
-
-pten0$hay.pred <- (pten0$hay.pred*sd(cropdat$p_hay_a, na.rm = TRUE)) + mean(cropdat$p_hay_a, na.rm = TRUE)
-pten1$hay.pred <- (pten1$hay.pred*sd(cropdat$p_hay_a, na.rm = TRUE)) + mean(cropdat$p_hay_a, na.rm = TRUE)
-pten2$hay.pred <- (pten2$hay.pred*sd(cropdat$p_hay_a, na.rm = TRUE)) + mean(cropdat$p_hay_a, na.rm = TRUE)
-pten3$hay.pred <- (pten3$hay.pred*sd(cropdat$p_hay_a, na.rm = TRUE)) + mean(cropdat$p_hay_a, na.rm = TRUE)
-pten4$hay.pred <- (pten4$hay.pred*sd(cropdat$p_hay_a, na.rm = TRUE)) + mean(cropdat$p_hay_a, na.rm = TRUE)
-pten5$hay.pred <- (pten5$hay.pred*sd(cropdat$p_hay_a, na.rm = TRUE)) + mean(cropdat$p_hay_a, na.rm = TRUE)
-
-pten0$soybean.pred <- (pten0$soybean.pred*sd(cropdat$p_soybean_a, na.rm = TRUE)) + mean(cropdat$p_soybean_a, na.rm = TRUE)
-pten1$soybean.pred <- (pten1$soybean.pred*sd(cropdat$p_soybean_a, na.rm = TRUE)) + mean(cropdat$p_soybean_a, na.rm = TRUE)
-pten2$soybean.pred <- (pten2$soybean.pred*sd(cropdat$p_soybean_a, na.rm = TRUE)) + mean(cropdat$p_soybean_a, na.rm = TRUE)
-pten3$soybean.pred <- (pten3$soybean.pred*sd(cropdat$p_soybean_a, na.rm = TRUE)) + mean(cropdat$p_soybean_a, na.rm = TRUE)
-pten4$soybean.pred <- (pten4$soybean.pred*sd(cropdat$p_soybean_a, na.rm = TRUE)) + mean(cropdat$p_soybean_a, na.rm = TRUE)
-pten5$soybean.pred <- (pten5$soybean.pred*sd(cropdat$p_soybean_a, na.rm = TRUE)) + mean(cropdat$p_soybean_a, na.rm = TRUE)
-
-pten0$wheat.pred <- (pten0$wheat.pred*sd(cropdat$p_wheat_a, na.rm = TRUE)) + mean(cropdat$p_wheat_a, na.rm = TRUE)
-pten1$wheat.pred <- (pten1$wheat.pred*sd(cropdat$p_wheat_a, na.rm = TRUE)) + mean(cropdat$p_wheat_a, na.rm = TRUE)
-pten2$wheat.pred <- (pten2$wheat.pred*sd(cropdat$p_wheat_a, na.rm = TRUE)) + mean(cropdat$p_wheat_a, na.rm = TRUE)
-pten3$wheat.pred <- (pten3$wheat.pred*sd(cropdat$p_wheat_a, na.rm = TRUE)) + mean(cropdat$p_wheat_a, na.rm = TRUE)
-pten4$wheat.pred <- (pten4$wheat.pred*sd(cropdat$p_wheat_a, na.rm = TRUE)) + mean(cropdat$p_wheat_a, na.rm = TRUE)
-pten5$wheat.pred <- (pten5$wheat.pred*sd(cropdat$p_wheat_a, na.rm = TRUE)) + mean(cropdat$p_wheat_a, na.rm = TRUE)
+pten0$wheat.pred <- pnorm(pten0$wheat.pred + resid(sur_ten)[[5]])*1.02 - 0.01
+pten1$wheat.pred <- pnorm(pten1$wheat.pred + resid(sur_ten)[[5]])*1.02 - 0.01
+pten2$wheat.pred <- pnorm(pten2$wheat.pred + resid(sur_ten)[[5]])*1.02 - 0.01
+pten3$wheat.pred <- pnorm(pten3$wheat.pred + resid(sur_ten)[[5]])*1.02 - 0.01
+pten4$wheat.pred <- pnorm(pten4$wheat.pred + resid(sur_ten)[[5]])*1.02 - 0.01
+pten5$wheat.pred <- pnorm(pten5$wheat.pred + resid(sur_ten)[[5]])*1.02 - 0.01
 
 pten0_corn <- sum(pten0$corn.pred)
 pten1_corn <- sum(pten1$corn.pred)
