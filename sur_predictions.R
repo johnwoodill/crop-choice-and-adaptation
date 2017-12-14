@@ -1,10 +1,15 @@
 library(tidyverse)
 library(lfe)
 library(systemfit)
+library(ggthemes)
 
 setwd("/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/")
 
+source("R/predictSUR.R")
+source("R/predictSUR.clean.R")
+
 cropdat <- readRDS("data/full_ag_data.rds")
+
 
 # Get SUR out files
 # sur_five <- readRDS("data/sur_out_five.rds")
@@ -41,146 +46,182 @@ p3 <- readRDS("data/degree_day_changes/panel_adapt_regression_data_3C.rds")
 p4 <- readRDS("data/degree_day_changes/panel_adapt_regression_data_4C.rds")
 p5 <- readRDS("data/degree_day_changes/panel_adapt_regression_data_5C.rds")
 
+newdata_list <- list(p0 = cropdat,
+                     p1 = p1,
+                     p2 = p2,
+                     p3 = p3,
+                     p4 = p4,
+                     p5 = p5)
 
-# # 
-# # corn_thirty <- sur_thirty[1, ]
-# # cotton_thirty <- sur_thirty[2, ]
-# # hay_thirty <- sur_thirty[3, ]
-# # soybean_thirty <- sur_thirty[4, ]
-# # wheat_thirty <- sur_thirty[5, ]
-# # 
-# # out1 <- mod_matrix %*% t(corn_thirty)
-# # out2 <- mod_matrix %*% t(cotton_thirty)
-# # out3 <- mod_matrix %*% t(hay_thirty)
-# # out4 <- mod_matrix %*% t(soybean_thirty)
-# # out5 <- mod_matrix %*% t(wheat_thirty)
-# 
-# range(out1)
-# out1 <- (out1*sd(cropdat$p_corn_a, na.rm = TRUE)) + mean(cropdat$p_corn_a, na.rm = TRUE)
-# out1 <- (out1*1.02) - 0.01
-# range(out1)
-# 
-# range(out2)
-# out2 <- (out2*sd(cropdat$p_cotton_a, na.rm = TRUE)) + mean(cropdat$p_cotton_a, na.rm = TRUE)
-# out2 <- (out2*1.02) - 0.01
-# range(out2)
-# 
-# range(out3)
-# out3 <- (out3*sd(cropdat$p_hay_a, na.rm = TRUE)) + mean(cropdat$p_hay_a, na.rm = TRUE)
-# out3 <- (out3*1.02) - 0.01
-# range(out3)
-# 
-# range(out4)
-# out4 <- (out4*sd(cropdat$p_soybean_a, na.rm = TRUE)) + mean(cropdat$p_soybean_a, na.rm = TRUE)
-# out4 <- (out4*1.02) - 0.01
-# range(out4)
-# 
-# range(out5)
-# out5 <- (out5*sd(cropdat$p_wheat_a, na.rm = TRUE)) + mean(cropdat$p_wheat_a, na.rm = TRUE)
-# out5 <- (out5*1.02) - 0.01
-# range(out5)
-# 
-# 
-# out <- cbind(out1, out2, out3, out4, out5)
-# rowSums(out)
-# range(rowSums(out))
+#-------------------------------------
+# Five-year
 
-pten0 <- predict(sur_ten$eq[[1]], type = c("terms"), terms = c("corn_dday0_10"))
-pten0
-predict.lm(sur_ten$eq[[1]])
+# Weather-effect predictions
+weather_terms = c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq", "factor(state)", 
+                  "factor(five)", "trend2_al", "trend2_ar", "trend2_de", "trend2_ga", "trend2_ia", 
+                  "trend2_il", "trend2_in", "trend2_ks", "trend2_ky", "trend2_md", "trend2_mi", 
+                  "trend2_mn", "trend2_mo", "trend2_ms", "trend2_mt", "trend2_nc", "trend2_nd", 
+                  "trend2_ne", "trend2_oh", "trend2_ok", "trend2_sc", "trend2_sd", "trend2_tn", 
+                  "trend2_va", "trend2_wi")
 
-pten1 <- predict(sur_ten, newdata = p1)
-pten2 <- predict(sur_ten, newdata = p2)
-pten3 <- predict(sur_ten, newdata = p3)
-pten4 <- predict(sur_ten, newdata = p4)
-pten5 <- predict(sur_ten, newdata = p5)
+# Climate-effect predictions
+climate_terms = c("dday0_10_five", "dday10_30_five", "dday30_five", "prec_five", "prec_sq_five", 
+                  "factor(state)", "factor(five)", "trend2_al", "trend2_ar", "trend2_de", 
+                  "trend2_ga", "trend2_ia", "trend2_il", "trend2_in", "trend2_ks", "trend2_ky", 
+                  "trend2_md", "trend2_mi", "trend2_mn", "trend2_mo", "trend2_ms", "trend2_mt", 
+                  "trend2_nc", "trend2_nd", "trend2_ne", "trend2_oh", "trend2_ok", "trend2_sc", 
+                  "trend2_sd", "trend2_tn", "trend2_va", "trend2_wi")
 
-pten0$corn.pred <- pnorm(pten0$corn.pred + resid(sur_ten)[[1]])*1.02 - 0.01
-pten1$corn.pred <- pnorm(pten1$corn.pred + resid(sur_ten)[[1]])*1.02 - 0.01
-pten2$corn.pred <- pnorm(pten2$corn.pred + resid(sur_ten)[[1]])*1.02 - 0.01
-pten3$corn.pred <- pnorm(pten3$corn.pred + resid(sur_ten)[[1]])*1.02 - 0.01
-pten4$corn.pred <- pnorm(pten4$corn.pred + resid(sur_ten)[[1]])*1.02 - 0.01
-pten5$corn.pred <- pnorm(pten5$corn.pred + resid(sur_ten)[[1]])*1.02 - 0.01
+wfive <- predictSURSUR.clean(sur_five, newdata_list = newdata_list, terms = weather_terms, type = "5-year", effect = "Weather-effect")
+cfive <- predictSURSUR.clean(sur_five, newdata_list = newdata_list, terms = climate_terms, type = "5-year", effect = "Climate-effect")
+tfive <- predictSURSUR.clean(sur_five, newdata_list = newdata_list, type = "5-year", effect = "Total-effect")
+#-------------------------------------
+# Ten-year
 
-pten0$cotton.pred <- pnorm(pten0$cotton.pred + resid(sur_ten)[[2]])*1.02 - 0.01
-pten1$cotton.pred <- pnorm(pten1$cotton.pred + resid(sur_ten)[[2]])*1.02 - 0.01
-pten2$cotton.pred <- pnorm(pten2$cotton.pred + resid(sur_ten)[[2]])*1.02 - 0.01
-pten3$cotton.pred <- pnorm(pten3$cotton.pred + resid(sur_ten)[[2]])*1.02 - 0.01
-pten4$cotton.pred <- pnorm(pten4$cotton.pred + resid(sur_ten)[[2]])*1.02 - 0.01
-pten5$cotton.pred <- pnorm(pten5$cotton.pred + resid(sur_ten)[[2]])*1.02 - 0.01
+# Weather-effect predictions
+weather_terms = c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq", "factor(state)", 
+                  "factor(ten)", "trend2_al", "trend2_ar", "trend2_de", "trend2_ga", "trend2_ia", 
+                  "trend2_il", "trend2_in", "trend2_ks", "trend2_ky", "trend2_md", "trend2_mi", 
+                  "trend2_mn", "trend2_mo", "trend2_ms", "trend2_mt", "trend2_nc", "trend2_nd", 
+                  "trend2_ne", "trend2_oh", "trend2_ok", "trend2_sc", "trend2_sd", "trend2_tn", 
+                  "trend2_va", "trend2_wi")
 
-pten0$hay.pred <- pnorm(pten0$hay.pred + resid(sur_ten)[[3]])*1.02 - 0.01
-pten1$hay.pred <- pnorm(pten1$hay.pred + resid(sur_ten)[[3]])*1.02 - 0.01
-pten2$hay.pred <- pnorm(pten2$hay.pred + resid(sur_ten)[[3]])*1.02 - 0.01
-pten3$hay.pred <- pnorm(pten3$hay.pred + resid(sur_ten)[[3]])*1.02 - 0.01
-pten4$hay.pred <- pnorm(pten4$hay.pred + resid(sur_ten)[[3]])*1.02 - 0.01
-pten5$hay.pred <- pnorm(pten5$hay.pred + resid(sur_ten)[[3]])*1.02 - 0.01
+# Climate-effect predictions
+climate_terms = c("dday0_10_ten", "dday10_30_ten", "dday30_ten", "prec_ten", "prec_sq_ten", 
+                  "factor(state)", "factor(ten)", "trend2_al", "trend2_ar", "trend2_de", 
+                  "trend2_ga", "trend2_ia", "trend2_il", "trend2_in", "trend2_ks", "trend2_ky", 
+                  "trend2_md", "trend2_mi", "trend2_mn", "trend2_mo", "trend2_ms", "trend2_mt", 
+                  "trend2_nc", "trend2_nd", "trend2_ne", "trend2_oh", "trend2_ok", "trend2_sc", 
+                  "trend2_sd", "trend2_tn", "trend2_va", "trend2_wi")
 
-pten0$soybean.pred <- pnorm(pten0$soybean.pred + resid(sur_ten)[[4]])*1.02 - 0.01
-pten1$soybean.pred <- pnorm(pten1$soybean.pred + resid(sur_ten)[[4]])*1.02 - 0.01
-pten2$soybean.pred <- pnorm(pten2$soybean.pred + resid(sur_ten)[[4]])*1.02 - 0.01
-pten3$soybean.pred <- pnorm(pten3$soybean.pred + resid(sur_ten)[[4]])*1.02 - 0.01
-pten4$soybean.pred <- pnorm(pten4$soybean.pred + resid(sur_ten)[[4]])*1.02 - 0.01
-pten5$soybean.pred <- pnorm(pten5$soybean.pred + resid(sur_ten)[[4]])*1.02 - 0.01
+wten <- predictSURSUR.clean(sur_ten, newdata_list = newdata_list, terms = weather_terms, type = "10-year", effect = "Weather-effect")
+cten <- predictSURSUR.clean(sur_ten, newdata_list = newdata_list, terms = climate_terms, type = "10-year", effect = "Climate-effect")
+tten <- predictSURSUR.clean(sur_ten, newdata_list = newdata_list, type = "10-year", effect = "Total-effect")
 
-pten0$wheat.pred <- pnorm(pten0$wheat.pred + resid(sur_ten)[[5]])*1.02 - 0.01
-pten1$wheat.pred <- pnorm(pten1$wheat.pred + resid(sur_ten)[[5]])*1.02 - 0.01
-pten2$wheat.pred <- pnorm(pten2$wheat.pred + resid(sur_ten)[[5]])*1.02 - 0.01
-pten3$wheat.pred <- pnorm(pten3$wheat.pred + resid(sur_ten)[[5]])*1.02 - 0.01
-pten4$wheat.pred <- pnorm(pten4$wheat.pred + resid(sur_ten)[[5]])*1.02 - 0.01
-pten5$wheat.pred <- pnorm(pten5$wheat.pred + resid(sur_ten)[[5]])*1.02 - 0.01
+#-------------------------------------
+# Twenty-year
 
-pten0_corn <- sum(pten0$corn.pred)
-pten1_corn <- sum(pten1$corn.pred)
-pten2_corn <- sum(pten2$corn.pred)
-pten3_corn <- sum(pten3$corn.pred)
-pten4_corn <- sum(pten4$corn.pred)
-pten5_corn <- sum(pten5$corn.pred)
+# Weather-effect predictions
+weather_terms = c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq", "factor(state)", 
+                  "factor(twenty)", "trend2_al", "trend2_ar", "trend2_de", "trend2_ga", "trend2_ia", 
+                  "trend2_il", "trend2_in", "trend2_ks", "trend2_ky", "trend2_md", "trend2_mi", 
+                  "trend2_mn", "trend2_mo", "trend2_ms", "trend2_mt", "trend2_nc", "trend2_nd", 
+                  "trend2_ne", "trend2_oh", "trend2_ok", "trend2_sc", "trend2_sd", "trend2_tn", 
+                  "trend2_va", "trend2_wi")
 
-pten0_cotton <- sum(pten0$cotton.pred)
-pten1_cotton <- sum(pten1$cotton.pred)
-pten2_cotton <- sum(pten2$cotton.pred)
-pten3_cotton <- sum(pten3$cotton.pred)
-pten4_cotton <- sum(pten4$cotton.pred)
-pten5_cotton <- sum(pten5$cotton.pred)
+# Climate-effect predictions
+climate_terms = c("dday0_10_twenty", "dday10_30_twenty", "dday30_twenty", "prec_twenty", "prec_sq_twenty", 
+                  "factor(state)", "factor(twenty)", "trend2_al", "trend2_ar", "trend2_de", 
+                  "trend2_ga", "trend2_ia", "trend2_il", "trend2_in", "trend2_ks", "trend2_ky", 
+                  "trend2_md", "trend2_mi", "trend2_mn", "trend2_mo", "trend2_ms", "trend2_mt", 
+                  "trend2_nc", "trend2_nd", "trend2_ne", "trend2_oh", "trend2_ok", "trend2_sc", 
+                  "trend2_sd", "trend2_tn", "trend2_va", "trend2_wi")
 
-pten0_hay <- sum(pten0$hay.pred)
-pten1_hay <- sum(pten1$hay.pred)
-pten2_hay <- sum(pten2$hay.pred)
-pten3_hay <- sum(pten3$hay.pred)
-pten4_hay <- sum(pten4$hay.pred)
-pten5_hay <- sum(pten5$hay.pred)
+wtwenty <- predictSURSUR.clean(sur_twenty, newdata_list = newdata_list, terms = weather_terms, type = "20-year", effect = "Weather-effect")
+ctwenty <- predictSURSUR.clean(sur_twenty, newdata_list = newdata_list, terms = climate_terms, type = "20-year", effect = "Climate-effect")
+ttwenty <- predictSURSUR.clean(sur_twenty, newdata_list = newdata_list, type = "20-year", effect = "Total-effect")
 
-pten0_soybean <- sum(pten0$soybean.pred)
-pten1_soybean <- sum(pten1$soybean.pred)
-pten2_soybean <- sum(pten2$soybean.pred)
-pten3_soybean <- sum(pten3$soybean.pred)
-pten4_soybean <- sum(pten4$soybean.pred)
-pten5_soybean <- sum(pten5$soybean.pred)
+#-------------------------------------
+# Thirty-year
 
-pten0_wheat <- sum(pten0$wheat.pred)
-pten1_wheat <- sum(pten1$wheat.pred)
-pten2_wheat <- sum(pten2$wheat.pred)
-pten3_wheat <- sum(pten3$wheat.pred)
-pten4_wheat <- sum(pten4$wheat.pred)
-pten5_wheat <- sum(pten5$wheat.pred)
+# Weather-effect predictions
+weather_terms = c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq", "factor(state)", 
+                  "factor(thirty)", "trend2_al", "trend2_ar", "trend2_de", "trend2_ga", "trend2_ia", 
+                  "trend2_il", "trend2_in", "trend2_ks", "trend2_ky", "trend2_md", "trend2_mi", 
+                  "trend2_mn", "trend2_mo", "trend2_ms", "trend2_mt", "trend2_nc", "trend2_nd", 
+                  "trend2_ne", "trend2_oh", "trend2_ok", "trend2_sc", "trend2_sd", "trend2_tn", 
+                  "trend2_va", "trend2_wi")
 
-pdat <- data.frame(temp = rep(c(0,1, 2, 3, 4, 5), 5),
-                   crop = rep(c("Corn", "Cotton", "Hay", "Soybean", "Wheat"), each = 6),
-                   sum = c(pten0_corn, pten1_corn, pten2_corn, pten3_corn, pten4_corn, pten5_corn,
-                           pten0_cotton, pten1_cotton, pten2_cotton, pten3_cotton, pten4_cotton, pten5_cotton,
-                           pten0_hay, pten1_hay, pten2_hay, pten3_hay, pten4_hay, pten5_hay,
-                           pten0_soybean, pten1_soybean, pten2_soybean, pten3_soybean, pten4_soybean, pten5_soybean,
-                           pten0_wheat, pten1_wheat, pten2_wheat, pten3_wheat, pten4_wheat, pten5_wheat))
+# Climate-effect predictions
+climate_terms = c("dday0_10_thirty", "dday10_30_thirty", "dday30_thirty", "prec_thirty", "prec_sq_thirty", 
+                  "factor(state)", "factor(thirty)", "trend2_al", "trend2_ar", "trend2_de", 
+                  "trend2_ga", "trend2_ia", "trend2_il", "trend2_in", "trend2_ks", "trend2_ky", 
+                  "trend2_md", "trend2_mi", "trend2_mn", "trend2_mo", "trend2_ms", "trend2_mt", 
+                  "trend2_nc", "trend2_nd", "trend2_ne", "trend2_oh", "trend2_ok", "trend2_sc", 
+                  "trend2_sd", "trend2_tn", "trend2_va", "trend2_wi")
 
-pdat
+wthirty <- predictSURSUR.clean(sur_thirty, newdata_list = newdata_list, terms = weather_terms, type = "30-year", effect = "Weather-effect")
+cthirty <- predictSURSUR.clean(sur_thirty, newdata_list = newdata_list, terms = climate_terms, type = "30-year", effect = "Climate-effect")
+tthirty <- predictSURSUR.clean(sur_thirty, newdata_list = newdata_list, type = "30-year", effect = "Total-effect")
+
+#-------------------------------------
+# Sixty-year
+
+# Climate-effect predictions
+climate_terms = c("dday0_10_sixty", "dday10_30_sixty", "dday30_sixty", "prec_sixty", "prec_sq_sixty", 
+                  "factor(state)")
+
+csixty <- predictSURSUR.clean(sur_sixty, newdata_list = newdata_list, terms = climate_terms, type = "60-year", effect = "Climate-effect")
+
+
+
+pdat <- rbind(wfive, cfive, tfive,
+              wten, cten, tten,
+              wtwenty, ctwenty, ttwenty,
+              wthirty, cthirty, tthirty,
+              csixty)
 
 pdat <- pdat %>% 
-  group_by(crop) %>% 
+  group_by(crop, type, effect) %>% 
   mutate(change = (sum - first(sum))/first(sum))
 pdat
 pdat$change <- 100*pdat$change
 
-ggplot(pdat, aes(temp, change)) + geom_line() + geom_point() + facet_wrap(~crop, scales = "free")
+saveRDS(pdat, "data/sur_predictions.rds")
 
-ggplot(pdat, aes(temp, sum, color = crop)) + geom_line() + geom_point()
+ggplot(pdat, aes(temp, change, color = effect)) + 
+  geom_line() + 
+  geom_point() + 
+  #geom_errorbar(aes(ymax = change_max, ymin = change_min, color = effect), width = .1) +
+  theme_tufte(base_size = 12) +
+  ylab("% Change in Crop Acres") +
+  xlab("Change in Temperature (C)") +
+  annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
+  annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
+  scale_x_continuous(breaks = 0:5, labels = c("+0C", "+1C", "+2C", "+3C", "+4C", "+5C")) +
+  theme(legend.position = "top", 
+       #legend.justification = c("left", "top"), 
+       legend.box.background = element_rect(colour = "grey"), 
+       legend.title = element_blank(), legend.key = element_blank()) +
+  #theme(legend.position = c(.85,1), 
+  #     legend.justification = c("left", "top"), 
+  #     legend.box.background = element_rect(colour = "grey"), 
+  #     legend.title = element_blank(), legend.key = element_blank()) +
+  facet_wrap(type~crop, scales = "free") +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey")
+
+ppdat <- pdat %>% 
+  filter(effect == "Climate-effect") %>% 
+  group_by(temp, type, effect) %>% 
+  summarise(total = sum(sum)) %>%
+  group_by(type, effect) %>% 
+  mutate(change = (total - first(total))/first(total))
+ppdat$change <- ppdat$change*100
+ppdat
+
+ggplot(ppdat, aes(temp, change, color = type)) + 
+  geom_line() + 
+  geom_point() + 
+  facet_wrap(~effect, ncol = 3) +
+  theme_tufte(base_size = 12) +
+  ylab("% Change in Total Crop Acres") +
+  xlab("Change in Temperature (C)") +
+  annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
+  annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
+  scale_x_continuous(breaks = 0:5, labels = c("+0C", "+1C", "+2C", "+3C", "+4C", "+5C")) +
+  theme(legend.position = "top", 
+       #legend.justification = c("left", "top"), 
+       legend.box.background = element_rect(colour = "grey"), 
+       legend.title = element_blank(), legend.key = element_blank()) +
+  #theme(legend.position = c(.85,1), 
+  #     legend.justification = c("left", "top"), 
+  #     legend.box.background = element_rect(colour = "grey"), 
+  #     legend.title = element_blank(), legend.key = element_blank()) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey")
+
+
+
+
+
+
+

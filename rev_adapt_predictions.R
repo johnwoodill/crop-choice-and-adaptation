@@ -400,7 +400,7 @@ pdat <- data.frame(effect = rep(c("Weather-effect", "Climate-effect", "Total-eff
                            ce0_ci, ce1_ci, ce2_ci, ce3, ce4_ci, ce5_ci))
 pdat
 #sixtypdat <- filter(pdat, model == "60-year")
-pdat <- filter(pdat, model != "60-year" | effect != "Weather-effect" & effect != "Total-effect")
+# pdat <- filter(pdat, model != "60-year" | effect != "Weather-effect" & effect != "Total-effect")
 pdat
 
 pdat$effect <- factor(pdat$effect, levels = c("Weather-effect", "Climate-effect", "Total-effect"))
@@ -427,6 +427,8 @@ pdat$change_max <- pdat$change_max*100
 
 
 pdat$model <- factor(pdat$model, labels = c("5-year", "10-year", "20-year", "30-year", "60-year"))
+
+saveRDS(pdat, "data/rev_predictions.rds")
 
 ggplot(pdat, aes(temp, change)) + 
   #geom_ribbon(aes(ymax = change_max, ymin = change_min, x = temp, fill = effect, group = effect), fill = "grey", alpha = 0.5 ) +

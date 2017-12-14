@@ -25,39 +25,33 @@ predictSUR <- function(systemfit.mod, newdata, terms = NULL, intercept = FALSE){
       if(intercept == FALSE) eqlist[[j]] <- update(eqlist[[j]], ~. - 1)
   }}
   
-  # Get model.matrix for each equation
+  # Get model.matrix and coefficients for cross-x
   modmat <- list()
+  coefmat <- list()
+  retdat <- list()
   for(k in 1:neq){
     inmod <- model.matrix(eqlist[[k]], data = newdata)
     # inmod <- inmod[, 2:ncol(inmod)]
     modmat[[k]] <- inmod
-  }
-  
-  # Set terms
-  terms <- colnames(modmat[[1]])
-  
-  # Get coefficients
-  coefmat <- list()
-  for(l in 1:neq){
-    coefmat[[l]] <- systemfit.mod$eq[[l]][["coefficients"]] 
-  }
-  
-  # Remove coefficients not in model matrix
-  for(m in 1:neq){
-    locterms <- which(names(coefmat[[m]]) %in% terms)
-    coefmat[[m]] <- coefmat[[m]][locterms]
-  }
-  
-  # Return predict values
-  retdat <- list()
-  for(nn in 1:neq){
-    dim(modmat[[nn]])
-    dim(as.matrix(coefmat[[nn]]))
-    head(modmat[[nn]])
-    head(as.matrix(coefmat[[nn]]))
-    as.matrix(coefmat[[nn]])
-    colnames(modmat[[nn]])
-    indat <- modmat[[nn]] %*% as.matrix(coefmat[[nn]])
+    
+    # Set terms
+    terms <- colnames(modmat[[1]])
+    
+    # Get coefficients
+    coefmat[[k]] <- systemfit.mod$eq[[k]][["coefficients"]] 
+      
+    # Remove coefficients not in model matrix
+    locterms <- which(names(coefmat[[k]]) %in% terms)
+    coefmat[[k]] <- coefmat[[k]][locterms]
+      
+    # Return predict values
+    dim(modmat[[k]])
+    dim(as.matrix(coefmat[[k]]))
+    head(modmat[[k]])
+    head(as.matrix(coefmat[[k]]))
+    as.matrix(coefmat[[k]])
+    colnames(modmat[[k]])
+    indat <- modmat[[k]] %*% as.matrix(coefmat[[k]])
     retdat <- c(retdat, list(indat))
   }
   
@@ -69,23 +63,21 @@ predictSUR <- function(systemfit.mod, newdata, terms = NULL, intercept = FALSE){
     names(retdat)[p] <- paste0(systemfit.mod$eq[[p]][["eqnLabel"]], "_predict")
   }
   
-
-  head(retdat)
-  message(paste0("Predicted coefficients: ", paste0(terms, collapse = ", ")))
+  # message(paste0("Predicted coefficients: ", paste0(terms, collapse = ", ")))
   return(retdat)
 }  
   
-# a <- predict(sur_thirty)
-# b <- predictSUR(sur_thirty, newdata = cropdat, terms = c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq", "dday0_10_thirty", 
-# "dday10_30_thirty", "dday30_thirty", "prec_thirty", "prec_sq_thirty", "factor(state)", "factor(thirty)", 
-# "trend2_al", "trend2_ar", "trend2_de", "trend2_ga", "trend2_ia", "trend2_il", "trend2_in", "trend2_ks", "trend2_ky", 
-# "trend2_md", "trend2_mi", "trend2_mn", "trend2_mo", "trend2_ms", "trend2_mt", "trend2_nc", "trend2_nd", "trend2_ne", 
-# "trend2_oh", "trend2_ok", "trend2_sc", "trend2_sd", "trend2_tn", "trend2_va", "trend2_wi"))
-# 
-# 
-# head(a)
-# head(b)
-
+ # a <- predict(sur_thirty)
+ # b <- predictSUR(sur_thirty, newdata = cropdat, terms = c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq", "dday0_10_thirty", 
+ # "dday10_30_thirty", "dday30_thirty", "prec_thirty", "prec_sq_thirty", "factor(state)", "factor(thirty)", 
+ # "trend2_al", "trend2_ar", "trend2_de", "trend2_ga", "trend2_ia", "trend2_il", "trend2_in", "trend2_ks", "trend2_ky", 
+ # "trend2_md", "trend2_mi", "trend2_mn", "trend2_mo", "trend2_ms", "trend2_mt", "trend2_nc", "trend2_nd", "trend2_ne", 
+ # "trend2_oh", "trend2_ok", "trend2_sc", "trend2_sd", "trend2_tn", "trend2_va", "trend2_wi"))
+ # 
+# c <- predictSUR(sur_thirty, newdata = cropdat) 
+#  head(a)
+#  head(b)
+# head(c)
 
 
 
