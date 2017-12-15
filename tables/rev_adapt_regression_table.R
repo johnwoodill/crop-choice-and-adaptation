@@ -55,7 +55,7 @@ star1 <- stargazer(base1, base2, base3, base4, thirty1,
                   omit = c("fips", "year", "state", "trend"),
                   omit.stat = c("ser", "f"),
                   title = "Regression Model explaining Crop Revenue per Acre",
-                  column.labels = c("Weather", "Climate", "Weather-Climate (30-year)", "Weather-Climate (30-year)",  
+                  column.labels = c("Weather", "Climate (30-year)", "Weather-Climate (30-year)", "Weather-Climate (30-year)",  
                                     "Weather-Climate (30-year)"),
           dep.var.labels = c("Log(Crop Revenue per Acre)", "Log(Crop Revenue per Acre)", "Log(Crop Revenue per Acre)",
                              "Log(Crop Revenue per Acre)", "Log(Crop Revenue per Acre)"),
@@ -71,6 +71,17 @@ star1 <- stargazer(base1, base2, base3, base4, thirty1,
                            c("Quad. State-trend", "--", "--", "--", "Yes", "Yes"),
                            c("Clusterd SE", "--", "--", "--", "State", "State")),
           notes.append = FALSE, notes.align = "l")
+
+
+loc <- which(star1 == "\\end{tabular} ")
+star1 <- star1[1:loc]
+star1notes <- paste("\\parbox{7.5in}{Notes: Table reports regression coefficients for log revenue per acre using weather (year-to-year) and climate (average of interval) degree day and precipitation variables from 1950-2010. Revenue per acre is calculated by summing production (lbs) per acre times average crop price from 1950-2010 for five main field crops (corn, cotton, hay, soybean, and wheat). Climate variables are averaged over two thirty year periods (1950-1980 and 1980-2010). Regression estimates are weighted by total county-level crop acres (smoothed using a spline). Estimates in \\textbf{bold} are statistically significant at 95\\%. Coefficients have been multiplied by 100.}")
+
+star1 <- c(star1, star1notes)
+star1 <- c(star1, "\\end{table}")
+star1
+
+
 
 # star2 <- stargazer(mod4a, mod4b, mod4c, mod4d, mod4e, 
 #                   align = FALSE, no.space = FALSE, 
@@ -92,6 +103,9 @@ star1 <- stargazer(base1, base2, base3, base4, thirty1,
 #           add.lines = list(c("Fixed-effect", "--", "--", "--", "State", "State, Year Interval"),
 #                            c("Clusterd SE", "--", "--", "--", "--", "State")),
 #           notes.append = FALSE, notes.align = "l") 
+
+
+
 
 
 setwd("/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/tables")          

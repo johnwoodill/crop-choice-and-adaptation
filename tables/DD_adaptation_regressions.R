@@ -315,19 +315,19 @@ star2 <- stargazer(cmod0, cmod1, cmod2, cmod3, cmod4, cmod5,
 
 setwd("/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/tables")          
 {
-cat("\\documentclass[10pt]{article}\n\\usepackage{graphicx}\n\\usepackage{pdflscape}\n\\usepackage{dcolumn}\n\\usepackage[a4paper, total={8in, 10in}]{geometry}\n\\begin{document}", file = "dd_adaptation_regression_tables.tex")
-cat(star1, file = "dd_adaptation_regression_tables.tex", sep = "\n", append = TRUE)
-cat("\\newpage", file = "dd_adaptation_regression_tables.tex", append = TRUE)
-cat(star2, file = "dd_adaptation_regression_tables.tex", sep = "\n", append = TRUE)
+cat("\\documentclass[10pt]{article}\n\\usepackage{graphicx}\n\\usepackage{pdflscape}\n\\usepackage{dcolumn}\n\\usepackage[a4paper, total={8in, 10in}]{geometry}\n\\begin{document}", file = "DD_adaptation_regression_tables.tex")
+cat(star1, file = "DD_adaptation_regression_tables.tex", sep = "\n", append = TRUE)
+cat("\\newpage", file = "DD_adaptation_regression_tables.tex", append = TRUE)
+cat(star2, file = "DD_adaptation_regression_tables.tex", sep = "\n", append = TRUE)
 #cat("\\newpage", file = "dd_adaptation_regression_tables.tex", append = TRUE)
 #cat(star3, file = "dd_adaptation_regression_tables.tex", sep = "\n", append = TRUE)
 #cat("\\newpage", file = "dd_adaptation_regression_tables.tex", append = TRUE)
 #cat(star4, file = "dd_adaptation_regression_tables.tex", sep = "\n", append = TRUE)
-cat("\\end{document}", file = "dd_adaptation_regression_tables.tex", append = TRUE)
+cat("\\end{document}", file = "DD_adaptation_regression_tables.tex", append = TRUE)
 # Compile pdf
-system("pdflatex dd_adaptation_regression_tables.tex")
+system("pdflatex DD_adaptation_regression_tables.tex")
 
 }
 
-system("sed -r 's/([0-9\\.]+)\\$\\^\\{\\*{1,3}\\}\\$/\\\\textbf{\\1}/g' dd_adaptation_regression_tables.tex > new.tex") 
-                  
+system("sed -r 's/([0-9\\.]+)\\$\\^\\{\\*{1,3}\\}\\$/\\\\textbf{\\1}/g' dd_adaptation_regression_tables.tex > DD_adaptation_regression_tables_out.tex") 
+system("pdflatex DD_adaptation_regression_tables_out.tex")

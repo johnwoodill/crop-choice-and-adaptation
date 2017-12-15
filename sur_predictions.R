@@ -72,9 +72,9 @@ climate_terms = c("dday0_10_five", "dday10_30_five", "dday30_five", "prec_five",
                   "trend2_nc", "trend2_nd", "trend2_ne", "trend2_oh", "trend2_ok", "trend2_sc", 
                   "trend2_sd", "trend2_tn", "trend2_va", "trend2_wi")
 
-wfive <- predictSURSUR.clean(sur_five, newdata_list = newdata_list, terms = weather_terms, type = "5-year", effect = "Weather-effect")
-cfive <- predictSURSUR.clean(sur_five, newdata_list = newdata_list, terms = climate_terms, type = "5-year", effect = "Climate-effect")
-tfive <- predictSURSUR.clean(sur_five, newdata_list = newdata_list, type = "5-year", effect = "Total-effect")
+wfive <- predictSUR.clean(sur_five, newdata_list = newdata_list, terms = weather_terms, type = "5-year", effect = "Weather-effect")
+cfive <- predictSUR.clean(sur_five, newdata_list = newdata_list, terms = climate_terms, type = "5-year", effect = "Climate-effect")
+tfive <- predictSUR.clean(sur_five, newdata_list = newdata_list, type = "5-year", effect = "Total-effect")
 #-------------------------------------
 # Ten-year
 
@@ -94,9 +94,9 @@ climate_terms = c("dday0_10_ten", "dday10_30_ten", "dday30_ten", "prec_ten", "pr
                   "trend2_nc", "trend2_nd", "trend2_ne", "trend2_oh", "trend2_ok", "trend2_sc", 
                   "trend2_sd", "trend2_tn", "trend2_va", "trend2_wi")
 
-wten <- predictSURSUR.clean(sur_ten, newdata_list = newdata_list, terms = weather_terms, type = "10-year", effect = "Weather-effect")
-cten <- predictSURSUR.clean(sur_ten, newdata_list = newdata_list, terms = climate_terms, type = "10-year", effect = "Climate-effect")
-tten <- predictSURSUR.clean(sur_ten, newdata_list = newdata_list, type = "10-year", effect = "Total-effect")
+wten <- predictSUR.clean(sur_ten, newdata_list = newdata_list, terms = weather_terms, type = "10-year", effect = "Weather-effect")
+cten <- predictSUR.clean(sur_ten, newdata_list = newdata_list, terms = climate_terms, type = "10-year", effect = "Climate-effect")
+tten <- predictSUR.clean(sur_ten, newdata_list = newdata_list, type = "10-year", effect = "Total-effect")
 
 #-------------------------------------
 # Twenty-year
@@ -117,9 +117,9 @@ climate_terms = c("dday0_10_twenty", "dday10_30_twenty", "dday30_twenty", "prec_
                   "trend2_nc", "trend2_nd", "trend2_ne", "trend2_oh", "trend2_ok", "trend2_sc", 
                   "trend2_sd", "trend2_tn", "trend2_va", "trend2_wi")
 
-wtwenty <- predictSURSUR.clean(sur_twenty, newdata_list = newdata_list, terms = weather_terms, type = "20-year", effect = "Weather-effect")
-ctwenty <- predictSURSUR.clean(sur_twenty, newdata_list = newdata_list, terms = climate_terms, type = "20-year", effect = "Climate-effect")
-ttwenty <- predictSURSUR.clean(sur_twenty, newdata_list = newdata_list, type = "20-year", effect = "Total-effect")
+wtwenty <- predictSUR.clean(sur_twenty, newdata_list = newdata_list, terms = weather_terms, type = "20-year", effect = "Weather-effect")
+ctwenty <- predictSUR.clean(sur_twenty, newdata_list = newdata_list, terms = climate_terms, type = "20-year", effect = "Climate-effect")
+ttwenty <- predictSUR.clean(sur_twenty, newdata_list = newdata_list, type = "20-year", effect = "Total-effect")
 
 #-------------------------------------
 # Thirty-year
@@ -140,9 +140,9 @@ climate_terms = c("dday0_10_thirty", "dday10_30_thirty", "dday30_thirty", "prec_
                   "trend2_nc", "trend2_nd", "trend2_ne", "trend2_oh", "trend2_ok", "trend2_sc", 
                   "trend2_sd", "trend2_tn", "trend2_va", "trend2_wi")
 
-wthirty <- predictSURSUR.clean(sur_thirty, newdata_list = newdata_list, terms = weather_terms, type = "30-year", effect = "Weather-effect")
-cthirty <- predictSURSUR.clean(sur_thirty, newdata_list = newdata_list, terms = climate_terms, type = "30-year", effect = "Climate-effect")
-tthirty <- predictSURSUR.clean(sur_thirty, newdata_list = newdata_list, type = "30-year", effect = "Total-effect")
+wthirty <- predictSUR.clean(sur_thirty, newdata_list = newdata_list, terms = weather_terms, type = "30-year", effect = "Weather-effect")
+cthirty <- predictSUR.clean(sur_thirty, newdata_list = newdata_list, terms = climate_terms, type = "30-year", effect = "Climate-effect")
+tthirty <- predictSUR.clean(sur_thirty, newdata_list = newdata_list, type = "30-year", effect = "Total-effect")
 
 #-------------------------------------
 # Sixty-year
@@ -151,7 +151,7 @@ tthirty <- predictSURSUR.clean(sur_thirty, newdata_list = newdata_list, type = "
 climate_terms = c("dday0_10_sixty", "dday10_30_sixty", "dday30_sixty", "prec_sixty", "prec_sq_sixty", 
                   "factor(state)")
 
-csixty <- predictSURSUR.clean(sur_sixty, newdata_list = newdata_list, terms = climate_terms, type = "60-year", effect = "Climate-effect")
+csixty <- predictSUR.clean(sur_sixty, newdata_list = newdata_list, terms = climate_terms, type = "60-year", effect = "Climate-effect")
 
 
 
@@ -174,7 +174,7 @@ ggplot(pdat, aes(temp, change, color = effect)) +
   geom_point() + 
   #geom_errorbar(aes(ymax = change_max, ymin = change_min, color = effect), width = .1) +
   theme_tufte(base_size = 12) +
-  ylab("% Change in Crop Acres") +
+  ylab("Change in Proportion of Crop Acres") +
   xlab("Change in Temperature (C)") +
   annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
   annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
@@ -191,7 +191,7 @@ ggplot(pdat, aes(temp, change, color = effect)) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey")
 
 ppdat <- pdat %>% 
-  filter(effect == "Climate-effect") %>% 
+  # filter(effect == "Climate-effect") %>% 
   group_by(temp, type, effect) %>% 
   summarise(total = sum(sum)) %>%
   group_by(type, effect) %>% 
@@ -201,10 +201,10 @@ ppdat
 
 ggplot(ppdat, aes(temp, change, color = type)) + 
   geom_line() + 
-  geom_point() + 
+  geom_point(size = 0.5) + 
   facet_wrap(~effect, ncol = 3) +
   theme_tufte(base_size = 12) +
-  ylab("% Change in Total Crop Acres") +
+  ylab("Change in Proportion of Total Crop Acres") +
   xlab("Change in Temperature (C)") +
   annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
   annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +

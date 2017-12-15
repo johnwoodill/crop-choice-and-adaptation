@@ -1,10 +1,10 @@
-mod = sur_five
-newdata_list = newdata_list
-terms = weather_terms
-type = "Five-year"
-effect = "Weather-effect"
+# mod = sur_five
+# newdata_list = newdata_list
+# terms = weather_terms
+# type = "Five-year"
+# effect = "Weather-effect"
 
-predictSURSUR.clean <- function(mod, newdata_list, terms = NULL, type, effect){
+predictSUR.clean <- function(mod, newdata_list, terms = NULL, type, effect){
   
   p0 <- newdata_list[[1]]
   p1 <- newdata_list[[2]]

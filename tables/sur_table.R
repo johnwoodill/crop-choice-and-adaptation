@@ -2,7 +2,7 @@ library(tidyverse)
 library(lmtest)
 library(stargazer)
 library(lfe)
-
+library(systemfit)
 
 setwd("/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/")
 
@@ -20,6 +20,7 @@ sur_five <- readRDS("models/sur_model_five.rds")
 sur_ten <- readRDS("models/sur_model_ten.rds")
 sur_twenty <- readRDS("models/sur_model_twenty.rds")
 sur_thirty <- readRDS("models/sur_model_thirty.rds")
+sur_sixty <- readRDS("models/sur_model_sixty.rds")
 
 skelmod <- lm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
                dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty - 1,
@@ -28,7 +29,7 @@ ncoef <- length(sur_thirty$coefficients)
 ncoef/5
 
 modsum_thirty <- summary(sur_thirty)
-modsum$coefficients[1, 2]
+modsum_thirty$coefficients[1, 2]
 
 star1 <- stargazer(skelmod, skelmod, skelmod, skelmod, skelmod,
                   align = FALSE, no.space = FALSE,

@@ -37,7 +37,10 @@ c_acres <- mean(cropdat$acres, na.rm = TRUE)
 # cdat
 
 # cdat <- pdat
-cdat <- filter(pdat, effect == "Total-effect")
+cdat <- as.data.frame(filter(pdat, effect == "Total-effect"))
+newcdat <- as.data.frame(filter(pdat, effect == "Climate-effect"))
+newcdat <- filter(newcdat, type == "60-year")
+cdat <- rbind(cdat, newcdat)
 
 cdat$effect <- "w/o Adaptation"
 cdat$a_sum <- c_acres
@@ -73,12 +76,12 @@ pdat$change <- pdat$change*100
 pdat
 pdat <- rbind(pdat, cdat)
 
-pdat$effect <- factor(pdat$effect, levels = c("w/o Adaptation", "Weather-effect", "Climate-effect", "Total-effect"))
+pdat$effect <- factor(pdat$effect, levels = c("Weather-effect", "Climate-effect", "Total-effect", "w/o Adaptation"))
 
 ggplot(pdat, aes(temp, change, color = effect)) + 
   geom_point(size = 1, alpha = 0.5) + 
   geom_line() + 
-  facet_wrap(~type) +
+  facet_wrap(~type, ) +
   theme_tufte(base_size = 12) +
   ylab("% Change in Total Revenue") +
   xlab("Change in Temperature (C)") +
