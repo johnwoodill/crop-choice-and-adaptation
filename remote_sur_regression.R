@@ -60,20 +60,24 @@ cropdat <- readRDS("data/full_ag_data.rds")
 
 
 mod1 <- z_corn_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-              dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty +
-  factor(fips) + factor(thirty) - 1   
+              dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty
+
 
 mod2 <- z_cotton_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-              dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty +
-  factor(fips) + factor(thirty) - 1 
+              dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty 
+ 
 
 mod3 <- z_hay_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-              dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty +
-  factor(fips) + factor(thirty) - 1 
+              dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty
+
 
 mod4 <- z_soybean_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-              dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty +
-  factor(fips) + factor(thirty) - 1 
+              dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty 
+
+
+mod5 <- z_wheat_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
+              dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty 
+
 
 # Boot-strapping regression to get coefficients and standard errors
 outdat <- data.frame()
@@ -138,9 +142,12 @@ sur_bs <- function(x){
   mod <- systemfit(list(corn = mod1, 
                       cotton = mod2, 
                       hay = mod3, 
-                      soybean = mod4), data = bsdat, method = "SUR")
+                      soybean = mod4,
+                      wheat = mod5), data = cropdat, method = "SUR", )
 
 
+  summary(mod)
+  sum(mod$coefficients)
   
   # (n) coefficients
   ncoef <- length(mod$coefficients)

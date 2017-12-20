@@ -646,12 +646,26 @@ cropdat <- cropdat %>%
           avg_soybean_a = mean(soybean_a, na.rm = TRUE),
           avg_wheat_a = mean(wheat_a, na.rm = TRUE))
 
+# Set revenue equal to zero if NA
+cropdat$corn_yield <- ifelse(is.na(cropdat$corn_yield), 0, cropdat$corn_yield)
+cropdat$cotton_yield <- ifelse(is.na(cropdat$cotton_yield), 0, cropdat$cotton_yield)
+cropdat$hay_yield <- ifelse(is.na(cropdat$hay_yield), 0, cropdat$hay_yield)
+cropdat$soybean_yield <- ifelse(is.na(cropdat$soybean_yield), 0, cropdat$soybean_yield)
+cropdat$wheat_yield <- ifelse(is.na(cropdat$wheat_yield), 0, cropdat$wheat_yield)
+
 # Total Activity
 cropdat$corn <- cropdat$corn_yield*cropdat$corn_rprice
 cropdat$cotton <- cropdat$cotton_yield*cropdat$cotton_rprice
 cropdat$hay <- cropdat$hay_yield*cropdat$hay_rprice
 cropdat$wheat <- cropdat$wheat_yield*cropdat$wheat_rprice
 cropdat$soybean <- cropdat$soybean_yield*cropdat$soybean_rprice
+
+# Log crop revenue
+cropdat$ln_rev_corn <- log(1 + cropdat$corn)
+cropdat$ln_rev_cotton <- log(1 + cropdat$cotton)
+cropdat$ln_rev_hay <- log(1 + cropdat$hay)
+cropdat$ln_rev_soybean <- log(1 + cropdat$soybean)
+cropdat$ln_rev_wheat <- log(1 + cropdat$wheat)
 
 # Set acres to zero
 cropdat$corn_grain_a <- ifelse(is.na(cropdat$corn_grain_a), 0, cropdat$corn_grain_a)
@@ -664,8 +678,6 @@ cropdat$soybean_a <- ifelse(is.na(cropdat$soybean_a), 0, cropdat$soybean_a)
 cropdat$rev <- rowSums(cropdat[, c("corn", "cotton", "hay", "soybean", "wheat")], na.rm = TRUE)
 cropdat$acres <- rowSums(cropdat[, c("corn_grain_a", "cotton_a", "hay_a", "soybean_a", "wheat_a")], na.rm = TRUE)
 
-cropdat$rev <- ifelse(is.na(cropdat$rev), 0, cropdat$rev)
-
 cropdat$ln_rev <- log(1 + cropdat$rev)
 
 # Remove inf to na
@@ -675,8 +687,19 @@ is.na(cropdat) <- do.call(cbind, lapply(cropdat, is.infinite))
 cropdat <- cropdat %>% 
   group_by(fips) %>% 
   arrange(year) %>% 
-  mutate(w = loess(acres ~ year)$fitted)
+  mutate(w = loess(acres ~ year)$fitted,
+         corn_w = loess(corn_grain_a ~ year)$fitted,
+         cotton_w = loess(cotton_a ~ year)$fitted,
+         hay_w = loess(hay_a ~ year)$fitted,
+         soybean_w = loess(soybean_a ~ year)$fitted,
+         wheat_w = loess(wheat_a ~ year)$fitted)
+
 cropdat$w <- ifelse(cropdat$w < 0 , 0, cropdat$w)
+cropdat$corn_w <- ifelse(cropdat$corn_w < 0 , 0, cropdat$corn_w)
+cropdat$cotton_w <- ifelse(cropdat$cotton_w < 0 , 0, cropdat$cotton_w)
+cropdat$hay_w <- ifelse(cropdat$hay_w < 0 , 0, cropdat$hay_w)
+cropdat$soybean_w <- ifelse(cropdat$soybean_w < 0 , 0, cropdat$soybean_w)
+cropdat$wheat_w <- ifelse(cropdat$wheat_w < 0 , 0, cropdat$wheat_w)
 
 cropdat$dday0_10 <- cropdat$dday0C - cropdat$dday10C
 cropdat$dday10_30 <- cropdat$dday10C - cropdat$dday30C
@@ -758,6 +781,20 @@ cropdat$p_cotton_a <- cropdat$cotton_a/cropdat$acres
 cropdat$p_hay_a <- cropdat$hay_a/cropdat$acres
 cropdat$p_soybean_a <- cropdat$soybean_a/cropdat$acres
 cropdat$p_wheat_a <- cropdat$wheat_a/cropdat$acres
+
+# First estimate between zero and 1
+cropdat$p_corn_a <- (cropdat$p_corn_a + .0001)/1.0002
+cropdat$p_cotton_a <- (cropdat$p_cotton_a + .0001)/1.0002
+cropdat$p_hay_a <- (cropdat$p_hay_a + .0001)/1.0002
+cropdat$p_soybean_a <- (cropdat$p_soybean_a + .0001)/1.0002
+cropdat$p_wheat_a <- (cropdat$p_wheat_a + .0001)/1.0002
+
+# Calc z-scores
+cropdat$z_corn_a <- qnorm(cropdat$p_corn_a)
+cropdat$z_cotton_a <- qnorm(cropdat$p_cotton_a)
+cropdat$z_hay_a <- qnorm(cropdat$p_hay_a)
+cropdat$z_soybean_a <- qnorm(cropdat$p_soybean_a)
+cropdat$z_wheat_a <- qnorm(cropdat$p_wheat_a)
 
 cropdat <- as.data.frame(cropdat)
 

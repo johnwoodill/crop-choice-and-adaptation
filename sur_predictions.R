@@ -10,6 +10,21 @@ source("R/predictSUR.clean.R")
 
 cropdat <- readRDS("data/full_ag_data.rds")
 
+# First estimate between zero and 1
+cropdat$p_corn_a <- (cropdat$p_corn_a + .0001)/1.0002
+cropdat$p_cotton_a <- (cropdat$p_cotton_a + .0001)/1.0002
+cropdat$p_hay_a <- (cropdat$p_hay_a + .0001)/1.0002
+cropdat$p_soybean_a <- (cropdat$p_soybean_a + .0001)/1.0002
+cropdat$p_wheat_a <- (cropdat$p_wheat_a + .0001)/1.0002
+
+
+# Calc z-scores
+cropdat$z_corn_a <- qnorm(cropdat$p_corn_a)
+cropdat$z_cotton_a <- qnorm(cropdat$p_cotton_a)
+cropdat$z_hay_a <- qnorm(cropdat$p_hay_a)
+cropdat$z_soybean_a <- qnorm(cropdat$p_soybean_a)
+cropdat$z_wheat_a <- qnorm(cropdat$p_wheat_a)
+
 
 # Get SUR out files
 # sur_five <- readRDS("data/sur_out_five.rds")
@@ -40,25 +55,119 @@ sur_sixty <- readRDS("models/sur_model_sixty.rds")
 #                trend2_ne +trend2_oh + trend2_ok +  trend2_sc + trend2_sd + trend2_tn +         
 #                trend2_va + trend2_wi - 1, data = cropdat)
 
+p0 <- cropdat
 p1 <- readRDS("data/degree_day_changes/panel_adapt_regression_data_1C.rds")
 p2 <- readRDS("data/degree_day_changes/panel_adapt_regression_data_2C.rds")
 p3 <- readRDS("data/degree_day_changes/panel_adapt_regression_data_3C.rds")
 p4 <- readRDS("data/degree_day_changes/panel_adapt_regression_data_4C.rds")
 p5 <- readRDS("data/degree_day_changes/panel_adapt_regression_data_5C.rds")
 
-newdata_list <- list(p0 = cropdat,
+p0 <- select(p0, names(p1))
+
+newdata_list <- list(p0 = p0,
                      p1 = p1,
                      p2 = p2,
                      p3 = p3,
                      p4 = p4,
                      p5 = p5)
 
+
+
+p0_five <- demeanlist(p0, fl = list(fips = factor(cropdat$fips),
+                                         five = factor(cropdat$five)))
+p0_five_means <- demeanlist(p0, fl = list(fips = factor(cropdat$fips),
+                                         five = factor(cropdat$five)), means = TRUE)
+p1_five <- p1 - p0_five_means
+p2_five <- p2 - p0_five_means
+p3_five <- p3 - p0_five_means
+p4_five <- p4 - p0_five_means
+p5_five <- p5 - p0_five_means
+
+newdata_list_five <- list(p0 = p0_five,
+                     p1 = p1_five,
+                     p2 = p2_five,
+                     p3 = p3_five,
+                     p4 = p4_five,
+                     p5 = p5_five)
+
+
+p0_ten <- demeanlist(p0, fl = list(fips = factor(cropdat$fips),
+                                         ten = factor(cropdat$ten)))
+p0_ten_means <- demeanlist(p0, fl = list(fips = factor(cropdat$fips),
+                                         ten = factor(cropdat$ten)), means = TRUE)
+
+p1_ten <- p1 - p0_ten_means
+p2_ten <- p2 - p0_ten_means
+p3_ten <- p3 - p0_ten_means
+p4_ten <- p4 - p0_ten_means
+p5_ten <- p5 - p0_ten_means
+
+newdata_list_ten <- list(p0 = p0_ten,
+                     p1 = p1_ten,
+                     p2 = p2_ten,
+                     p3 = p3_ten,
+                     p4 = p4_ten,
+                     p5 = p5_ten)
+
+p0_twenty <- demeanlist(p0, fl = list(fips = factor(cropdat$fips),
+                                         twenty = factor(cropdat$twenty)))
+p0_twenty_means <- demeanlist(p0, fl = list(fips = factor(cropdat$fips),
+                                         twenty = factor(cropdat$twenty)), means = TRUE)
+
+p1_twenty <- p1 - p0_twenty_means
+p2_twenty <- p2 - p0_twenty_means
+p3_twenty <- p3 - p0_twenty_means
+p4_twenty <- p4 - p0_twenty_means
+p5_twenty <- p5 - p0_twenty_means
+
+newdata_list_twenty <- list(p0 = p0_twenty,
+                     p1 = p1_twenty,
+                     p2 = p2_twenty,
+                     p3 = p3_twenty,
+                     p4 = p4_twenty,
+                     p5 = p5_twenty)
+
+p0_thirty <- demeanlist(p0, fl = list(fips = factor(cropdat$fips),
+                                         thirty = factor(cropdat$thirty)))
+p0_thirty_means <- demeanlist(p0, fl = list(fips = factor(cropdat$fips),
+                                         thirty = factor(cropdat$thirty)), means = TRUE)
+
+p1_thirty <- p1 - p0_thirty_means
+p2_thirty <- p2 - p0_thirty_means
+p3_thirty <- p3 - p0_thirty_means
+p4_thirty <- p4 - p0_thirty_means
+p5_thirty <- p5 - p0_thirty_means
+
+newdata_list_thirty <- list(p0 = p0_thirty,
+                     p1 = p1_thirty,
+                     p2 = p2_thirty,
+                     p3 = p3_thirty,
+                     p4 = p4_thirty,
+                     p5 = p5_thirty)
+
+p0_sixty <- demeanlist(p0, fl = list(state = factor(cropdat$state)))
+p0_sixty_means <- demeanlist(p0, fl = list(state = factor(cropdat$state)), means = TRUE)
+
+p1_sixty <- p1 - p0_sixty_means
+p2_sixty <- p2 - p0_sixty_means
+p3_sixty <- p3 - p0_sixty_means
+p4_sixty <- p4 - p0_sixty_means
+p5_sixty <- p5 - p0_sixty_means
+
+newdata_list_sixty <- list(p0 = p0_sixty,
+                     p1 = p1_sixty,
+                     p2 = p2_sixty,
+                     p3 = p3_sixty,
+                     p4 = p4_sixty,
+                     p5 = p5_sixty)
+
+
 #-------------------------------------
 # Five-year
 
 # Weather-effect predictions
-weather_terms = c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq", "factor(state)", 
-                  "factor(five)", "trend2_al", "trend2_ar", "trend2_de", "trend2_ga", "trend2_ia", 
+weather_terms = c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq", 
+                  "trend2_al", "trend2_ar", "trend2_de", "trend2_ga", "trend2_ia", 
                   "trend2_il", "trend2_in", "trend2_ks", "trend2_ky", "trend2_md", "trend2_mi", 
                   "trend2_mn", "trend2_mo", "trend2_ms", "trend2_mt", "trend2_nc", "trend2_nd", 
                   "trend2_ne", "trend2_oh", "trend2_ok", "trend2_sc", "trend2_sd", "trend2_tn", 
@@ -66,21 +175,21 @@ weather_terms = c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq", "factor(
 
 # Climate-effect predictions
 climate_terms = c("dday0_10_five", "dday10_30_five", "dday30_five", "prec_five", "prec_sq_five", 
-                  "factor(state)", "factor(five)", "trend2_al", "trend2_ar", "trend2_de", 
+                  "trend2_al", "trend2_ar", "trend2_de", 
                   "trend2_ga", "trend2_ia", "trend2_il", "trend2_in", "trend2_ks", "trend2_ky", 
                   "trend2_md", "trend2_mi", "trend2_mn", "trend2_mo", "trend2_ms", "trend2_mt", 
                   "trend2_nc", "trend2_nd", "trend2_ne", "trend2_oh", "trend2_ok", "trend2_sc", 
                   "trend2_sd", "trend2_tn", "trend2_va", "trend2_wi")
 
-wfive <- predictSUR.clean(sur_five, newdata_list = newdata_list, terms = weather_terms, type = "5-year", effect = "Weather-effect")
-cfive <- predictSUR.clean(sur_five, newdata_list = newdata_list, terms = climate_terms, type = "5-year", effect = "Climate-effect")
-tfive <- predictSUR.clean(sur_five, newdata_list = newdata_list, type = "5-year", effect = "Total-effect")
+wfive <- predictSUR.clean(sur_five, newdata_list = newdata_list_five, terms = weather_terms, type = "5-year", effect = "Weather-effect")
+cfive <- predictSUR.clean(sur_five, newdata_list = newdata_list_five, terms = climate_terms, type = "5-year", effect = "Climate-effect")
+tfive <- predictSUR.clean(sur_five, newdata_list = newdata_list_five, type = "5-year", effect = "Total-effect", terms = NULL)
+
 #-------------------------------------
 # Ten-year
 
 # Weather-effect predictions
-weather_terms = c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq", "factor(state)", 
-                  "factor(ten)", "trend2_al", "trend2_ar", "trend2_de", "trend2_ga", "trend2_ia", 
+weather_terms = c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq", "trend2_al", "trend2_ar", "trend2_de", "trend2_ga", "trend2_ia", 
                   "trend2_il", "trend2_in", "trend2_ks", "trend2_ky", "trend2_md", "trend2_mi", 
                   "trend2_mn", "trend2_mo", "trend2_ms", "trend2_mt", "trend2_nc", "trend2_nd", 
                   "trend2_ne", "trend2_oh", "trend2_ok", "trend2_sc", "trend2_sd", "trend2_tn", 
@@ -88,22 +197,22 @@ weather_terms = c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq", "factor(
 
 # Climate-effect predictions
 climate_terms = c("dday0_10_ten", "dday10_30_ten", "dday30_ten", "prec_ten", "prec_sq_ten", 
-                  "factor(state)", "factor(ten)", "trend2_al", "trend2_ar", "trend2_de", 
+                  "trend2_al", "trend2_ar", "trend2_de", 
                   "trend2_ga", "trend2_ia", "trend2_il", "trend2_in", "trend2_ks", "trend2_ky", 
                   "trend2_md", "trend2_mi", "trend2_mn", "trend2_mo", "trend2_ms", "trend2_mt", 
                   "trend2_nc", "trend2_nd", "trend2_ne", "trend2_oh", "trend2_ok", "trend2_sc", 
                   "trend2_sd", "trend2_tn", "trend2_va", "trend2_wi")
 
-wten <- predictSUR.clean(sur_ten, newdata_list = newdata_list, terms = weather_terms, type = "10-year", effect = "Weather-effect")
-cten <- predictSUR.clean(sur_ten, newdata_list = newdata_list, terms = climate_terms, type = "10-year", effect = "Climate-effect")
-tten <- predictSUR.clean(sur_ten, newdata_list = newdata_list, type = "10-year", effect = "Total-effect")
+wten <- predictSUR.clean(sur_ten, newdata_list = newdata_list_ten, terms = weather_terms, type = "10-year", effect = "Weather-effect")
+cten <- predictSUR.clean(sur_ten, newdata_list = newdata_list_ten, terms = climate_terms, type = "10-year", effect = "Climate-effect")
+tten <- predictSUR.clean(sur_ten, newdata_list = newdata_list_ten, type = "10-year", effect = "Total-effect")
 
 #-------------------------------------
 # Twenty-year
 
 # Weather-effect predictions
-weather_terms = c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq", "factor(state)", 
-                  "factor(twenty)", "trend2_al", "trend2_ar", "trend2_de", "trend2_ga", "trend2_ia", 
+weather_terms = c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq",
+                  "trend2_al", "trend2_ar", "trend2_de", "trend2_ga", "trend2_ia", 
                   "trend2_il", "trend2_in", "trend2_ks", "trend2_ky", "trend2_md", "trend2_mi", 
                   "trend2_mn", "trend2_mo", "trend2_ms", "trend2_mt", "trend2_nc", "trend2_nd", 
                   "trend2_ne", "trend2_oh", "trend2_ok", "trend2_sc", "trend2_sd", "trend2_tn", 
@@ -111,22 +220,22 @@ weather_terms = c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq", "factor(
 
 # Climate-effect predictions
 climate_terms = c("dday0_10_twenty", "dday10_30_twenty", "dday30_twenty", "prec_twenty", "prec_sq_twenty", 
-                  "factor(state)", "factor(twenty)", "trend2_al", "trend2_ar", "trend2_de", 
+                  "trend2_al", "trend2_ar", "trend2_de", 
                   "trend2_ga", "trend2_ia", "trend2_il", "trend2_in", "trend2_ks", "trend2_ky", 
                   "trend2_md", "trend2_mi", "trend2_mn", "trend2_mo", "trend2_ms", "trend2_mt", 
                   "trend2_nc", "trend2_nd", "trend2_ne", "trend2_oh", "trend2_ok", "trend2_sc", 
                   "trend2_sd", "trend2_tn", "trend2_va", "trend2_wi")
 
-wtwenty <- predictSUR.clean(sur_twenty, newdata_list = newdata_list, terms = weather_terms, type = "20-year", effect = "Weather-effect")
-ctwenty <- predictSUR.clean(sur_twenty, newdata_list = newdata_list, terms = climate_terms, type = "20-year", effect = "Climate-effect")
-ttwenty <- predictSUR.clean(sur_twenty, newdata_list = newdata_list, type = "20-year", effect = "Total-effect")
+wtwenty <- predictSUR.clean(sur_twenty, newdata_list = newdata_list_twenty, terms = weather_terms, type = "20-year", effect = "Weather-effect")
+ctwenty <- predictSUR.clean(sur_twenty, newdata_list = newdata_list_twenty, terms = climate_terms, type = "20-year", effect = "Climate-effect")
+ttwenty <- predictSUR.clean(sur_twenty, newdata_list = newdata_list_twenty, type = "20-year", effect = "Total-effect")
 
 #-------------------------------------
 # Thirty-year
 
 # Weather-effect predictions
-weather_terms = c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq", "factor(state)", 
-                  "factor(thirty)", "trend2_al", "trend2_ar", "trend2_de", "trend2_ga", "trend2_ia", 
+weather_terms = c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq", 
+                  "trend2_al", "trend2_ar", "trend2_de", "trend2_ga", "trend2_ia", 
                   "trend2_il", "trend2_in", "trend2_ks", "trend2_ky", "trend2_md", "trend2_mi", 
                   "trend2_mn", "trend2_mo", "trend2_ms", "trend2_mt", "trend2_nc", "trend2_nd", 
                   "trend2_ne", "trend2_oh", "trend2_ok", "trend2_sc", "trend2_sd", "trend2_tn", 
@@ -134,24 +243,23 @@ weather_terms = c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq", "factor(
 
 # Climate-effect predictions
 climate_terms = c("dday0_10_thirty", "dday10_30_thirty", "dday30_thirty", "prec_thirty", "prec_sq_thirty", 
-                  "factor(state)", "factor(thirty)", "trend2_al", "trend2_ar", "trend2_de", 
+                  "trend2_al", "trend2_ar", "trend2_de", 
                   "trend2_ga", "trend2_ia", "trend2_il", "trend2_in", "trend2_ks", "trend2_ky", 
                   "trend2_md", "trend2_mi", "trend2_mn", "trend2_mo", "trend2_ms", "trend2_mt", 
                   "trend2_nc", "trend2_nd", "trend2_ne", "trend2_oh", "trend2_ok", "trend2_sc", 
                   "trend2_sd", "trend2_tn", "trend2_va", "trend2_wi")
 
-wthirty <- predictSUR.clean(sur_thirty, newdata_list = newdata_list, terms = weather_terms, type = "30-year", effect = "Weather-effect")
-cthirty <- predictSUR.clean(sur_thirty, newdata_list = newdata_list, terms = climate_terms, type = "30-year", effect = "Climate-effect")
-tthirty <- predictSUR.clean(sur_thirty, newdata_list = newdata_list, type = "30-year", effect = "Total-effect")
+wthirty <- predictSUR.clean(sur_thirty, newdata_list = newdata_list_thirty, terms = weather_terms, type = "30-year", effect = "Weather-effect")
+cthirty <- predictSUR.clean(sur_thirty, newdata_list = newdata_list_thirty, terms = climate_terms, type = "30-year", effect = "Climate-effect")
+tthirty <- predictSUR.clean(sur_thirty, newdata_list = newdata_list_thirty, type = "30-year", effect = "Total-effect")
 
 #-------------------------------------
 # Sixty-year
 
 # Climate-effect predictions
-climate_terms = c("dday0_10_sixty", "dday10_30_sixty", "dday30_sixty", "prec_sixty", "prec_sq_sixty", 
-                  "factor(state)")
+climate_terms = c("dday0_10_sixty", "dday10_30_sixty", "dday30_sixty", "prec_sixty", "prec_sq_sixty")
 
-csixty <- predictSUR.clean(sur_sixty, newdata_list = newdata_list, terms = climate_terms, type = "60-year", effect = "Climate-effect")
+csixty <- predictSUR.clean(sur_sixty, newdata_list = newdata_list_sixty, terms = climate_terms, type = "60-year", effect = "Climate-effect")
 
 
 

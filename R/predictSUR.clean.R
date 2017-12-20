@@ -1,8 +1,8 @@
 # mod = sur_five
 # newdata_list = newdata_list
-# terms = weather_terms
+# terms = climate_terms
 # type = "Five-year"
-# effect = "Weather-effect"
+# effect = "Climate-effect"
 
 predictSUR.clean <- function(mod, newdata_list, terms = NULL, type, effect){
   
@@ -20,40 +20,40 @@ predictSUR.clean <- function(mod, newdata_list, terms = NULL, type, effect){
   indat4 <- predictSUR(mod, newdata = p4, terms = terms)
   indat5 <- predictSUR(mod, newdata = p5, terms = terms)
   
-  indat0$corn.pred <- pnorm(indat0$corn_predict + resid(mod)[[1]])*1.0002 - 0.0001
-  indat1$corn.pred <- pnorm(indat1$corn_predict + resid(mod)[[1]])*1.0002 - 0.0001
-  indat2$corn.pred <- pnorm(indat2$corn_predict + resid(mod)[[1]])*1.0002 - 0.0001
-  indat3$corn.pred <- pnorm(indat3$corn_predict + resid(mod)[[1]])*1.0002 - 0.0001
-  indat4$corn.pred <- pnorm(indat4$corn_predict + resid(mod)[[1]])*1.0002 - 0.0001
-  indat5$corn.pred <- pnorm(indat5$corn_predict + resid(mod)[[1]])*1.0002 - 0.0001
+  indat0$corn.pred <- pnorm(indat0$corn_predict + resid(mod)[[1]] + mod$effects$corn.effect)*1.0002 - 0.0001
+  indat1$corn.pred <- pnorm(indat1$corn_predict + resid(mod)[[1]] + mod$effects$corn.effect)*1.0002 - 0.0001
+  indat2$corn.pred <- pnorm(indat2$corn_predict + resid(mod)[[1]] + mod$effects$corn.effect)*1.0002 - 0.0001
+  indat3$corn.pred <- pnorm(indat3$corn_predict + resid(mod)[[1]] + mod$effects$corn.effect)*1.0002 - 0.0001
+  indat4$corn.pred <- pnorm(indat4$corn_predict + resid(mod)[[1]] + mod$effects$corn.effect)*1.0002 - 0.0001
+  indat5$corn.pred <- pnorm(indat5$corn_predict + resid(mod)[[1]] + mod$effects$corn.effect)*1.0002 - 0.0001
   
-  indat0$cotton.pred <- pnorm(indat0$cotton_predict + resid(mod)[[2]])*1.0002 - 0.0001
-  indat1$cotton.pred <- pnorm(indat1$cotton_predict + resid(mod)[[2]])*1.0002 - 0.0001
-  indat2$cotton.pred <- pnorm(indat2$cotton_predict + resid(mod)[[2]])*1.0002 - 0.0001
-  indat3$cotton.pred <- pnorm(indat3$cotton_predict + resid(mod)[[2]])*1.0002 - 0.0001
-  indat4$cotton.pred <- pnorm(indat4$cotton_predict + resid(mod)[[2]])*1.0002 - 0.0001
-  indat5$cotton.pred <- pnorm(indat5$cotton_predict + resid(mod)[[2]])*1.0002 - 0.0001
+  indat0$cotton.pred <- pnorm(indat0$cotton_predict + resid(mod)[[2]] + mod$effects$cotton.effect)*1.0002 - 0.0001
+  indat1$cotton.pred <- pnorm(indat1$cotton_predict + resid(mod)[[2]] + mod$effects$cotton.effect)*1.0002 - 0.0001
+  indat2$cotton.pred <- pnorm(indat2$cotton_predict + resid(mod)[[2]] + mod$effects$cotton.effect)*1.0002 - 0.0001
+  indat3$cotton.pred <- pnorm(indat3$cotton_predict + resid(mod)[[2]] + mod$effects$cotton.effect)*1.0002 - 0.0001
+  indat4$cotton.pred <- pnorm(indat4$cotton_predict + resid(mod)[[2]] + mod$effects$cotton.effect)*1.0002 - 0.0001
+  indat5$cotton.pred <- pnorm(indat5$cotton_predict + resid(mod)[[2]] + mod$effects$cotton.effect)*1.0002 - 0.0001
   
-  indat0$hay.pred <- pnorm(indat0$hay_predict + resid(mod)[[3]])*1.0002 - 0.0001
-  indat1$hay.pred <- pnorm(indat1$hay_predict + resid(mod)[[3]])*1.0002 - 0.0001
-  indat2$hay.pred <- pnorm(indat2$hay_predict + resid(mod)[[3]])*1.0002 - 0.0001
-  indat3$hay.pred <- pnorm(indat3$hay_predict + resid(mod)[[3]])*1.0002 - 0.0001
-  indat4$hay.pred <- pnorm(indat4$hay_predict + resid(mod)[[3]])*1.0002 - 0.0001
-  indat5$hay.pred <- pnorm(indat5$hay_predict + resid(mod)[[3]])*1.0002 - 0.0001
+  indat0$hay.pred <- pnorm(indat0$hay_predict + resid(mod)[[3]] + mod$effects$hay.effect)*1.0002 - 0.0001
+  indat1$hay.pred <- pnorm(indat1$hay_predict + resid(mod)[[3]] + mod$effects$hay.effect)*1.0002 - 0.0001
+  indat2$hay.pred <- pnorm(indat2$hay_predict + resid(mod)[[3]] + mod$effects$hay.effect)*1.0002 - 0.0001
+  indat3$hay.pred <- pnorm(indat3$hay_predict + resid(mod)[[3]] + mod$effects$hay.effect)*1.0002 - 0.0001
+  indat4$hay.pred <- pnorm(indat4$hay_predict + resid(mod)[[3]] + mod$effects$hay.effect)*1.0002 - 0.0001
+  indat5$hay.pred <- pnorm(indat5$hay_predict + resid(mod)[[3]] + mod$effects$hay.effect)*1.0002 - 0.0001
   
-  indat0$soybean.pred <- pnorm(indat0$soybean_predict + resid(mod)[[4]])*1.0002 - 0.0001
-  indat1$soybean.pred <- pnorm(indat1$soybean_predict + resid(mod)[[4]])*1.0002 - 0.0001
-  indat2$soybean.pred <- pnorm(indat2$soybean_predict + resid(mod)[[4]])*1.0002 - 0.0001
-  indat3$soybean.pred <- pnorm(indat3$soybean_predict + resid(mod)[[4]])*1.0002 - 0.0001
-  indat4$soybean.pred <- pnorm(indat4$soybean_predict + resid(mod)[[4]])*1.0002 - 0.0001
-  indat5$soybean.pred <- pnorm(indat5$soybean_predict + resid(mod)[[4]])*1.0002 - 0.0001
+  indat0$soybean.pred <- pnorm(indat0$soybean_predict + resid(mod)[[4]] + mod$effects$soybean.effect)*1.0002 - 0.0001
+  indat1$soybean.pred <- pnorm(indat1$soybean_predict + resid(mod)[[4]] + mod$effects$soybean.effect)*1.0002 - 0.0001
+  indat2$soybean.pred <- pnorm(indat2$soybean_predict + resid(mod)[[4]] + mod$effects$soybean.effect)*1.0002 - 0.0001
+  indat3$soybean.pred <- pnorm(indat3$soybean_predict + resid(mod)[[4]] + mod$effects$soybean.effect)*1.0002 - 0.0001
+  indat4$soybean.pred <- pnorm(indat4$soybean_predict + resid(mod)[[4]] + mod$effects$soybean.effect)*1.0002 - 0.0001
+  indat5$soybean.pred <- pnorm(indat5$soybean_predict + resid(mod)[[4]] + mod$effects$soybean.effect)*1.0002 - 0.0001
   
-  indat0$wheat.pred <- pnorm(indat0$wheat_predict + resid(mod)[[5]])*1.0002 - 0.0001
-  indat1$wheat.pred <- pnorm(indat1$wheat_predict + resid(mod)[[5]])*1.0002 - 0.0001
-  indat2$wheat.pred <- pnorm(indat2$wheat_predict + resid(mod)[[5]])*1.0002 - 0.0001
-  indat3$wheat.pred <- pnorm(indat3$wheat_predict + resid(mod)[[5]])*1.0002 - 0.0001
-  indat4$wheat.pred <- pnorm(indat4$wheat_predict + resid(mod)[[5]])*1.0002 - 0.0001
-  indat5$wheat.pred <- pnorm(indat5$wheat_predict + resid(mod)[[5]])*1.0002 - 0.0001
+  indat0$wheat.pred <- pnorm(indat0$wheat_predict + resid(mod)[[5]] + mod$effects$wheat.effect)*1.0002 - 0.0001
+  indat1$wheat.pred <- pnorm(indat1$wheat_predict + resid(mod)[[5]] + mod$effects$wheat.effect)*1.0002 - 0.0001
+  indat2$wheat.pred <- pnorm(indat2$wheat_predict + resid(mod)[[5]] + mod$effects$wheat.effect)*1.0002 - 0.0001
+  indat3$wheat.pred <- pnorm(indat3$wheat_predict + resid(mod)[[5]] + mod$effects$wheat.effect)*1.0002 - 0.0001
+  indat4$wheat.pred <- pnorm(indat4$wheat_predict + resid(mod)[[5]] + mod$effects$wheat.effect)*1.0002 - 0.0001
+  indat5$wheat.pred <- pnorm(indat5$wheat_predict + resid(mod)[[5]] + mod$effects$wheat.effect)*1.0002 - 0.0001
   
   indat0_corn <- sum(indat0$corn.pred)
   indat1_corn <- sum(indat1$corn.pred)

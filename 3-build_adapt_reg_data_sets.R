@@ -3,6 +3,16 @@ library(lfe)
 
 setwd("/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/")
 
+dummyCreator <- function(invec, prefix = NULL) {
+     L <- length(invec)
+     ColNames <- sort(unique(invec))
+     M <- matrix(0L, ncol = length(ColNames), nrow = L,
+                 dimnames = list(NULL, ColNames))
+     M[cbind(seq_len(L), match(invec, ColNames))] <- 1L
+     if (!is.null(prefix)) colnames(M) <- paste(prefix, colnames(M), sep = "_")
+     M
+} 
+
 # Crop data
 cropdat <- readRDS("data/full_ag_data.rds")
 
@@ -112,7 +122,17 @@ p_dat <- function(x, prec){
   state_trends$trend_sq <- pdat$trend^2
   state_trends <- state_trends[, 1:25]*state_trends$trend_sq
   pdat <- cbind(pdat, state_trends)
-    
+  pdat <- select(pdat, dday0_10, dday10_30, dday30, prec, prec_sq, 
+                 dday0_10_five, dday10_30_five, dday30_five, prec_five, prec_sq_five,
+                 dday0_10_ten, dday10_30_ten, dday30_ten, prec_ten, prec_sq_ten,
+                 dday0_10_twenty, dday10_30_twenty, dday30_twenty, prec_twenty, prec_sq_twenty,
+                 dday0_10_thirty, dday10_30_thirty, dday30_thirty, prec_thirty, prec_sq_thirty,
+                dday0_10_sixty, dday10_30_sixty, dday30_sixty, prec_sixty, prec_sq_sixty,
+                  trend2_al, trend2_ar, trend2_de, trend2_ga, trend2_ia, 
+                  trend2_il, trend2_in, trend2_ks, trend2_ky, trend2_md, trend2_mi, 
+                  trend2_mn, trend2_mo, trend2_ms, trend2_mt, trend2_nc, trend2_nd, 
+                  trend2_ne, trend2_oh, trend2_ok, trend2_sc, trend2_sd, trend2_tn, 
+                  trend2_va, trend2_wi)
   return(pdat)
   
 }
