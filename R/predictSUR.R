@@ -4,55 +4,109 @@
 # terms <- NULL
 # terms <- c("dday0_10", "dday10_30")
 
-predictSUR <- function(systemfit.mod, newdata, terms = NULL, intercept = FALSE){
+predictSUR <- function(systemfit.mod, newdata, var.terms = NULL, cons.terms = NULL, intercept = FALSE){
   
   # n equations from system
   neq <- length(systemfit.mod$eq)
   
   # Get formula for each equation
   eqlist <- list()
-  if(is.null(terms)){
+  if(is.null(var.terms)){
     for (i in 1:neq){
       eqlist[[i]] <- as.formula(paste0("~", paste0(systemfit.mod[["eq"]][[i]][["terms"]][[3]]))[2])
       if(intercept == FALSE) eqlist[[i]] <- update(eqlist[[i]], ~. - 1)
   }}
   
-  # Get formula with terms
-  if(!is.null(terms)){
+  # Get formula with var.terms
+  if(!is.null(var.terms)){
     eqlist <- list()
     for (j in 1:neq){
-      eqlist[[j]] <- as.formula(paste0("~", paste0(terms, collapse = " + ")))
+      eqlist[[j]] <- as.formula(paste0("~", paste0(var.terms, collapse = " + ")))
       if(intercept == FALSE) eqlist[[j]] <- update(eqlist[[j]], ~. - 1)
+    }}
+  
+  # Get formula with cons.terms
+  if(!is.null(cons.terms)){
+    ceqlist <- list()
+    for (j in 1:neq){
+      ceqlist[[j]] <- as.formula(paste0("~", paste0(cons.terms, collapse = " + ")))
+      if(intercept == FALSE) ceqlist[[j]] <- update(ceqlist[[j]], ~. - 1)
   }}
   
-  # Get model.matrix and coefficients for cross-x
+  # Get model.matrix and coefficients 
   modmat <- list()
+  cmodmat <- list()
   coefmat <- list()
+  ccoefmat <- list()
   retdat <- list()
+  
   for(k in 1:neq){
-    inmod <- model.matrix(eqlist[[k]], data = newdata)
-    # inmod <- inmod[, 2:ncol(inmod)]
-    modmat[[k]] <- inmod
-    
-    # Set terms
-    terms <- colnames(modmat[[1]])
-    
-    # Get coefficients
-    coefmat[[k]] <- systemfit.mod$eq[[k]][["coefficients"]] 
+
+    if (is.null(var.terms) & is.null(cons.terms)){
+      inmod <- model.matrix(eqlist[[k]], data = newdata)
+  
+      modmat[[k]] <- inmod
       
-    # Remove coefficients not in model matrix
-    locterms <- which(names(coefmat[[k]]) %in% terms)
-    coefmat[[k]] <- coefmat[[k]][locterms]
+      # Set terms
+      var.terms <- colnames(modmat[[1]])
       
-    # Return predict values
-    dim(modmat[[k]])
-    dim(as.matrix(coefmat[[k]]))
-    head(modmat[[k]])
-    head(as.matrix(coefmat[[k]]))
-    as.matrix(coefmat[[k]])
-    colnames(modmat[[k]])
-    indat <- modmat[[k]] %*% as.matrix(coefmat[[k]])
-    retdat <- c(retdat, list(indat))
+      # Get coefficients
+      coefmat[[k]] <- systemfit.mod$eq[[k]][["coefficients"]] 
+        
+      # Remove coefficients not in model matrix
+      locterms <- which(names(coefmat[[k]]) %in% var.terms)
+      coefmat[[k]] <- coefmat[[k]][locterms]
+      
+      # Return predict values
+      dim(modmat[[k]])
+      dim(as.matrix(coefmat[[k]]))
+      head(modmat[[k]])
+      head(as.matrix(coefmat[[k]]))
+      as.matrix(coefmat[[k]])
+      colnames(modmat[[k]])
+      indat <- modmat[[k]] %*% as.matrix(coefmat[[k]])
+      retdat <- c(retdat, list(indat))
+    }
+        
+    if (!is.null(var.terms) & !is.null(cons.terms)){
+      inmod <- model.matrix(eqlist[[k]], data = newdata)
+      cinmod <- as.data.frame(model.matrix(ceqlist[[k]], data = newdata))
+  
+      cinmod <- cinmod %>% 
+        mutate_all(mean)
+      
+      modmat[[k]] <- inmod
+      cmodmat[[k]] <- as.matrix(cinmod)
+      
+      # Set terms
+      var.terms <- colnames(modmat[[1]])
+      cons.terms <- colnames(cmodmat[[1]])
+      
+      # Get coefficients
+      coefmat[[k]] <- systemfit.mod$eq[[k]][["coefficients"]] 
+      ccoefmat[[k]] <- systemfit.mod$eq[[k]][["coefficients"]] 
+        
+      # Remove coefficients not in model matrix
+      locterms <- which(names(coefmat[[k]]) %in% var.terms)
+      coefmat[[k]] <- coefmat[[k]][locterms]
+      
+      # Remove coefficients not cons.terms
+      locterms <- which(names(ccoefmat[[k]]) %in% cons.terms)
+      ccoefmat[[k]] <- ccoefmat[[k]][locterms]
+        
+      
+      # Return predict values
+      #dim(modmat[[k]])
+      #dim(as.matrix(coefmat[[k]]))
+      #head(modmat[[k]])
+      #head(as.matrix(coefmat[[k]]))
+      #as.matrix(coefmat[[k]])
+      #colnames(modmat[[k]])
+      indat <- modmat[[k]] %*% as.matrix(coefmat[[k]])
+      cindat <- cmodmat[[k]] %*% as.matrix(ccoefmat[[k]])
+      indat <- rowSums(cbind(indat, cindat))
+      retdat <- c(retdat, list(indat))
+    }
   }
   
   # Convert list to data.frame

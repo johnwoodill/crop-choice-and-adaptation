@@ -2,7 +2,7 @@
 # newdata  : new prediction data
 
 # Custom predict funciton for Felm object models
-predictFelm <- function(felm.fit, newdata = NULL, terms = NULL){
+predictFelm <- function(felm.fit, newdata = NULL, var.terms = NULL, cons.terms = NULL){
   felm.formula <- as.character(felm.fit$call[[2]])
   rhs          = felm.formula[3]
   last         = which(strsplit(rhs,"")[[1]]=="|")[1] - 1
@@ -41,17 +41,32 @@ predictFelm <- function(felm.fit, newdata = NULL, terms = NULL){
       newdata <- dat
     }
     
-    # Check for terms before predict
-    # type_check <- ifelse(!is.null(terms), "terms", NULL)
-    
-    # Predict
+    # predictions for cons.terms
+    if(!is.null(cons.terms)){
+      cterms <- select(newdata, cons.terms)
+      cterms <- cterms %>% 
+        mutate_all(mean)
+      clm.fit <- update(lm.fit, paste0("~ - 1 +", paste(cons.terms, collapse = " +" )))
+      cpred <- predict(clm.fit, newdata = cterms)
+      }
+    #head(cpred)
+    #head(cterms)
   
-    if(!is.null(terms)){
-      pred <- predict(lm.fit, newdata = newdata, se.fit = TRUE, type = "terms", terms = terms)
+    # Predict with var.terms and no cons.terms
+    if(!is.null(var.terms) & is.null(cons.terms)){
+      pred <- predict(lm.fit, newdata = newdata, se.fit = TRUE, type = "terms", terms = var.terms)
       pred$fit <- rowSums(pred$fit)
     }
   
-    if(is.null(terms)){
+    # Predict with var.terms and cons.terms
+    if(!is.null(var.terms) & !is.null(cons.terms)){
+      pred <- predict(lm.fit, newdata = newdata, se.fit = TRUE, type = "terms", terms = var.terms)
+      pred$fit <- cbind(pred$fit, cpred)
+      pred$fit <- rowSums(pred$fit)
+    }
+
+    
+    if(is.null(var.terms)){
       pred <- predict(lm.fit, newdata = newdata, se.fit = TRUE)
     }
       

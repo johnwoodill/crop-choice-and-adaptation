@@ -6,33 +6,14 @@ setwd("/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/")
 
 
 # Crop data
-
-# Download from Dropbox
-# download.file("https://www.dropbox.com/s/u0e0wah5jnmqtf9/full_ag_data.rds?raw=1", 
-#               destfile = "full_ag_data.rds", method = "auto")
-
 cropdat <- readRDS("data/full_ag_data.rds")
-
-# First estimate between zero and 1
-cropdat$p_corn_a <- (cropdat$p_corn_a + .0001)/1.0002
-cropdat$p_cotton_a <- (cropdat$p_cotton_a + .0001)/1.0002
-cropdat$p_hay_a <- (cropdat$p_hay_a + .0001)/1.0002
-cropdat$p_soybean_a <- (cropdat$p_soybean_a + .0001)/1.0002
-cropdat$p_wheat_a <- (cropdat$p_wheat_a + .0001)/1.0002
-
-
-# Calc z-scores
-cropdat$z_corn_a <- qnorm(cropdat$p_corn_a)
-cropdat$z_cotton_a <- qnorm(cropdat$p_cotton_a)
-cropdat$z_hay_a <- qnorm(cropdat$p_hay_a)
-cropdat$z_soybean_a <- qnorm(cropdat$p_soybean_a)
-cropdat$z_wheat_a <- qnorm(cropdat$p_wheat_a)
-
 cropdat <- as.data.frame(cropdat)
 cropdat$fips <- factor(cropdat$fips)
+cropdat$state <- factor(cropdat$state)
+cropdat$five <- factor(cropdat$five)
+cropdat$ten <- factor(cropdat$ten)
+cropdat$twenty <- factor(cropdat$twenty)
 cropdat$thirty <- factor(cropdat$thirty)
-
-
 
 
 # five-year
@@ -47,10 +28,10 @@ testdat <- select(cropdat, z_corn_a, z_cotton_a, z_hay_a, z_soybean_a, z_wheat_a
                 trend2_va , trend2_wi)
 
 cropdat_dm <- demeanlist(testdat, fl = list(fips = factor(cropdat$fips),
-                                      five = factor(cropdat$five)))
+                                            five = factor(cropdat$five)))
 
 cropdat_means <- demeanlist(testdat, fl = list(fips = factor(cropdat$fips),
-                                      five = factor(cropdat$five)), means = TRUE)
+                                              five = factor(cropdat$five)), means = TRUE)
 
 mod1 <- z_corn_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
               dday0_10_five + dday10_30_five + dday30_five + prec_five + prec_sq_five +
@@ -532,50 +513,14 @@ mod$effects <- list(corn.effect = cropdat_means$z_corn_a,
 saveRDS(mod, "models/sur_model_thirty.rds")
 
 
-
-
-
-
-library(systemfit)
-library(tidyverse)
-library(lfe)
-
-setwd("/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/")
-
-
-# Crop data
-
-# Download from Dropbox
-# download.file("https://www.dropbox.com/s/u0e0wah5jnmqtf9/full_ag_data.rds?raw=1", 
-#               destfile = "full_ag_data.rds", method = "auto")
-
-cropdat <- readRDS("data/full_ag_data.rds")
-
-# First estimate between zero and 1
-cropdat$p_corn_a <- (cropdat$p_corn_a + .0001)/1.0002
-cropdat$p_cotton_a <- (cropdat$p_cotton_a + .0001)/1.0002
-cropdat$p_hay_a <- (cropdat$p_hay_a + .0001)/1.0002
-cropdat$p_soybean_a <- (cropdat$p_soybean_a + .0001)/1.0002
-cropdat$p_wheat_a <- (cropdat$p_wheat_a + .0001)/1.0002
-
-
-# Calc z-scores
-cropdat$z_corn_a <- qnorm(cropdat$p_corn_a)
-cropdat$z_cotton_a <- qnorm(cropdat$p_cotton_a)
-cropdat$z_hay_a <- qnorm(cropdat$p_hay_a)
-cropdat$z_soybean_a <- qnorm(cropdat$p_soybean_a)
-cropdat$z_wheat_a <- qnorm(cropdat$p_wheat_a)
-
-cropdat <- as.data.frame(cropdat)
-cropdat$fips <- factor(cropdat$fips)
-#cropdat$sixty <- factor(cropdat$sixty)
-
 testdat <- select(cropdat, z_corn_a, z_cotton_a, z_hay_a, z_soybean_a, z_wheat_a, 
                 dday0_10_sixty , dday10_30_sixty , dday30_sixty , prec_sixty , prec_sq_sixty)
 
 cropdat_dm <- demeanlist(testdat, fl = list(state = cropdat$state))
 
 cropdat_means <- demeanlist(testdat, fl = list(state = cropdat$state), means = TRUE)
+
+
 
 mod1 <- z_corn_a ~ dday0_10_sixty + dday10_30_sixty + dday30_sixty + prec_sixty + prec_sq_sixty - 1
 

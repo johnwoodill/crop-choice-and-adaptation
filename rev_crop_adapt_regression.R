@@ -194,7 +194,7 @@ modtwenty_soybean <- felm(ln_rev_soybean ~ dday0_10 + dday10_30 + dday30 + prec 
               trend2_ne +trend2_oh + trend2_ok +  trend2_sc + trend2_sd + trend2_tn +         
               trend2_va + trend2_wi
             | fips + twenty | 0 | state, 
-            data = regdat, weights = (1 + regdat$soybean_w), psdef = FALSE)
+            data = regdat, weights = (regdat$soybean_w), psdef = FALSE)
 
 summary(modtwenty_soybean)
 

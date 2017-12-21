@@ -776,6 +776,7 @@ cropdat$state_trend_ten <- cropdat$state_trend*cropdat$ten
 cropdat$state_trend_twenty <- cropdat$state_trend*cropdat$twenty
 cropdat$state_trend_thirty <- cropdat$state_trend*cropdat$thirty
 
+# Crop acres as percentage of total
 cropdat$p_corn_a <- cropdat$corn_grain_a/cropdat$acres
 cropdat$p_cotton_a <- cropdat$cotton_a/cropdat$acres
 cropdat$p_hay_a <- cropdat$hay_a/cropdat$acres

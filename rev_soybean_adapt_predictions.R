@@ -21,6 +21,13 @@ p3 <- readRDS("data/degree_day_changes/panel_adapt_regression_data_3C.rds")
 p4 <- readRDS("data/degree_day_changes/panel_adapt_regression_data_4C.rds")
 p5 <- readRDS("data/degree_day_changes/panel_adapt_regression_data_5C.rds")
 
+
+cons.terms_w <- c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq")
+cons.terms_c_five <- c("dday0_10_five", "dday10_30_five", "dday30_five", "prec_five", "prec_sq_five")
+cons.terms_c_ten <- c("dday0_10_ten", "dday10_30_ten", "dday30_ten", "prec_ten", "prec_sq_ten")
+cons.terms_c_twenty <- c("dday0_10_twenty", "dday10_30_twenty", "dday30_twenty", "prec_twenty", "prec_sq_twenty")
+cons.terms_c_thirty <- c("dday0_10_thirty", "dday10_30_thirty", "dday30_thirty", "prec_thirty", "prec_sq_thirty")
+
 w_terms <- c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq",
               "trend2_al" ,"trend2_ar" , "trend2_de" ,"trend2_ga" , "trend2_ia"  ,         
               "trend2_il" ,"trend2_in" , "trend2_ks" , "trend2_ky" , "trend2_md" , "trend2_mi" ,         
@@ -28,34 +35,36 @@ w_terms <- c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq",
               "trend2_ne" ,"trend2_oh" , "trend2_ok" ,  "trend2_sc" , "trend2_sd" , "trend2_tn" ,         
               "trend2_va" , "trend2_wi")
 
+
+
 # Get predictions for weather conditional on climate (restrict terms to weather)
-w1_0p <- predictFelm(pmod1, terms = w_terms)
-w1_1p <- predictFelm(pmod1, newdata = p1, terms = w_terms)
-w1_2p <- predictFelm(pmod1, newdata = p2, terms = w_terms)
-w1_3p <- predictFelm(pmod1, newdata = p3, terms = w_terms)
-w1_4p <- predictFelm(pmod1, newdata = p4, terms = w_terms)
-w1_5p <- predictFelm(pmod1, newdata = p5, terms = w_terms)
+w1_0p <- predictFelm(pmod1, var.terms= w_terms, cons.terms = cons.terms_c_five)
+w1_1p <- predictFelm(pmod1, newdata = p1, var.terms= w_terms, cons.terms = cons.terms_c_five)
+w1_2p <- predictFelm(pmod1, newdata = p2, var.terms= w_terms, cons.terms = cons.terms_c_five)
+w1_3p <- predictFelm(pmod1, newdata = p3, var.terms= w_terms, cons.terms = cons.terms_c_five)
+w1_4p <- predictFelm(pmod1, newdata = p4, var.terms= w_terms, cons.terms = cons.terms_c_five)
+w1_5p <- predictFelm(pmod1, newdata = p5, var.terms= w_terms, cons.terms = cons.terms_c_five)
 
-w2_0p <- predictFelm(pmod2, terms = w_terms)
-w2_1p <- predictFelm(pmod2, newdata = p1, terms = w_terms)
-w2_2p <- predictFelm(pmod2, newdata = p2, terms = w_terms)
-w2_3p <- predictFelm(pmod2, newdata = p3, terms = w_terms)
-w2_4p <- predictFelm(pmod2, newdata = p4, terms = w_terms)
-w2_5p <- predictFelm(pmod2, newdata = p5, terms = w_terms)
+w2_0p <- predictFelm(pmod2, var.terms= w_terms, cons.terms = cons.terms_c_ten)
+w2_1p <- predictFelm(pmod2, newdata = p1, var.terms= w_terms, cons.terms = cons.terms_c_ten)
+w2_2p <- predictFelm(pmod2, newdata = p2, var.terms= w_terms, cons.terms = cons.terms_c_ten)
+w2_3p <- predictFelm(pmod2, newdata = p3, var.terms= w_terms, cons.terms = cons.terms_c_ten)
+w2_4p <- predictFelm(pmod2, newdata = p4, var.terms= w_terms, cons.terms = cons.terms_c_ten)
+w2_5p <- predictFelm(pmod2, newdata = p5, var.terms= w_terms, cons.terms = cons.terms_c_ten)
 
-w3_0p <- predictFelm(pmod3, terms = w_terms)
-w3_1p <- predictFelm(pmod3, newdata = p1, terms = w_terms)
-w3_2p <- predictFelm(pmod3, newdata = p2, terms = w_terms)
-w3_3p <- predictFelm(pmod3, newdata = p3, terms = w_terms)
-w3_4p <- predictFelm(pmod3, newdata = p4, terms = w_terms)
-w3_5p <- predictFelm(pmod3, newdata = p5, terms = w_terms)
+w3_0p <- predictFelm(pmod3, var.terms= w_terms, cons.terms = cons.terms_c_twenty)
+w3_1p <- predictFelm(pmod3, newdata = p1, var.terms= w_terms, cons.terms = cons.terms_c_twenty)
+w3_2p <- predictFelm(pmod3, newdata = p2, var.terms= w_terms, cons.terms = cons.terms_c_twenty)
+w3_3p <- predictFelm(pmod3, newdata = p3, var.terms= w_terms, cons.terms = cons.terms_c_twenty)
+w3_4p <- predictFelm(pmod3, newdata = p4, var.terms= w_terms, cons.terms = cons.terms_c_twenty)
+w3_5p <- predictFelm(pmod3, newdata = p5, var.terms= w_terms, cons.terms = cons.terms_c_twenty)
 
-w4_0p <- predictFelm(pmod4, terms = w_terms)
-w4_1p <- predictFelm(pmod4, newdata = p1, terms = w_terms)
-w4_2p <- predictFelm(pmod4, newdata = p2, terms = w_terms)
-w4_3p <- predictFelm(pmod4, newdata = p3, terms = w_terms)
-w4_4p <- predictFelm(pmod4, newdata = p4, terms = w_terms)
-w4_5p <- predictFelm(pmod4, newdata = p5, terms = w_terms)
+w4_0p <- predictFelm(pmod4, var.terms= w_terms, cons.terms = cons.terms_c_thirty)
+w4_1p <- predictFelm(pmod4, newdata = p1, var.terms= w_terms, cons.terms = cons.terms_c_thirty)
+w4_2p <- predictFelm(pmod4, newdata = p2, var.terms= w_terms, cons.terms = cons.terms_c_thirty)
+w4_3p <- predictFelm(pmod4, newdata = p3, var.terms= w_terms, cons.terms = cons.terms_c_thirty)
+w4_4p <- predictFelm(pmod4, newdata = p4, var.terms= w_terms, cons.terms = cons.terms_c_thirty)
+w4_5p <- predictFelm(pmod4, newdata = p5, var.terms= w_terms, cons.terms = cons.terms_c_thirty)
 
 # Total predicted revenue per acre
 wa0 <- sum(exp(w1_0p$fit + w1_0p$res + w1_0p$effect) - 1)
@@ -146,40 +155,40 @@ c_terms_thirty <- c("dday0_10_thirty", "dday10_30_thirty", "dday30_thirty", "pre
 c_terms_sixty <- c("dday0_10_sixty", "dday10_30_sixty", "dday30_sixty", "prec_sixty", "prec_sq_sixty")
 
 # Get predictions for climate conditional on weather (restrict terms to climate)
-c1_0p <- predictFelm(pmod1, terms = c_terms_five)
-c1_1p <- predictFelm(pmod1, newdata = p1, terms = c_terms_five)
-c1_2p <- predictFelm(pmod1, newdata = p2, terms = c_terms_five)
-c1_3p <- predictFelm(pmod1, newdata = p3, terms = c_terms_five)
-c1_4p <- predictFelm(pmod1, newdata = p4, terms = c_terms_five)
-c1_5p <- predictFelm(pmod1, newdata = p5, terms = c_terms_five)
+c1_0p <- predictFelm(pmod1, var.terms= c_terms_five, cons.terms = cons.terms_w)
+c1_1p <- predictFelm(pmod1, newdata = p1, var.terms= c_terms_five, cons.terms = cons.terms_w)
+c1_2p <- predictFelm(pmod1, newdata = p2, var.terms= c_terms_five, cons.terms = cons.terms_w)
+c1_3p <- predictFelm(pmod1, newdata = p3, var.terms= c_terms_five, cons.terms = cons.terms_w)
+c1_4p <- predictFelm(pmod1, newdata = p4, var.terms= c_terms_five, cons.terms = cons.terms_w)
+c1_5p <- predictFelm(pmod1, newdata = p5, var.terms= c_terms_five, cons.terms = cons.terms_w)
 
-c2_0p <- predictFelm(pmod2, terms = c_terms_ten)
-c2_1p <- predictFelm(pmod2, newdata = p1, terms = c_terms_ten)
-c2_2p <- predictFelm(pmod2, newdata = p2, terms = c_terms_ten)
-c2_3p <- predictFelm(pmod2, newdata = p3, terms = c_terms_ten)
-c2_4p <- predictFelm(pmod2, newdata = p4, terms = c_terms_ten)
-c2_5p <- predictFelm(pmod2, newdata = p5, terms = c_terms_ten)
+c2_0p <- predictFelm(pmod2, var.terms= c_terms_ten, cons.terms = cons.terms_w)
+c2_1p <- predictFelm(pmod2, newdata = p1, var.terms= c_terms_ten, cons.terms = cons.terms_w)
+c2_2p <- predictFelm(pmod2, newdata = p2, var.terms= c_terms_ten, cons.terms = cons.terms_w)
+c2_3p <- predictFelm(pmod2, newdata = p3, var.terms= c_terms_ten, cons.terms = cons.terms_w)
+c2_4p <- predictFelm(pmod2, newdata = p4, var.terms= c_terms_ten, cons.terms = cons.terms_w)
+c2_5p <- predictFelm(pmod2, newdata = p5, var.terms= c_terms_ten, cons.terms = cons.terms_w)
 
-c3_0p <- predictFelm(pmod3, terms = c_terms_twenty)
-c3_1p <- predictFelm(pmod3, newdata = p1, terms = c_terms_twenty)
-c3_2p <- predictFelm(pmod3, newdata = p2, terms = c_terms_twenty)
-c3_3p <- predictFelm(pmod3, newdata = p3, terms = c_terms_twenty)
-c3_4p <- predictFelm(pmod3, newdata = p4, terms = c_terms_twenty)
-c3_5p <- predictFelm(pmod3, newdata = p5, terms = c_terms_twenty)
+c3_0p <- predictFelm(pmod3, var.terms= c_terms_twenty, cons.terms = cons.terms_w)
+c3_1p <- predictFelm(pmod3, newdata = p1, var.terms= c_terms_twenty, cons.terms = cons.terms_w)
+c3_2p <- predictFelm(pmod3, newdata = p2, var.terms= c_terms_twenty, cons.terms = cons.terms_w)
+c3_3p <- predictFelm(pmod3, newdata = p3, var.terms= c_terms_twenty, cons.terms = cons.terms_w)
+c3_4p <- predictFelm(pmod3, newdata = p4, var.terms= c_terms_twenty, cons.terms = cons.terms_w)
+c3_5p <- predictFelm(pmod3, newdata = p5, var.terms= c_terms_twenty, cons.terms = cons.terms_w)
 
-c4_0p <- predictFelm(pmod4, terms = c_terms_thirty)
-c4_1p <- predictFelm(pmod4, newdata = p1, terms = c_terms_thirty)
-c4_2p <- predictFelm(pmod4, newdata = p2, terms = c_terms_thirty)
-c4_3p <- predictFelm(pmod4, newdata = p3, terms = c_terms_thirty)
-c4_4p <- predictFelm(pmod4, newdata = p4, terms = c_terms_thirty)
-c4_5p <- predictFelm(pmod4, newdata = p5, terms = c_terms_thirty)
+c4_0p <- predictFelm(pmod4, var.terms= c_terms_thirty, cons.terms = cons.terms_w)
+c4_1p <- predictFelm(pmod4, newdata = p1, var.terms= c_terms_thirty, cons.terms = cons.terms_w)
+c4_2p <- predictFelm(pmod4, newdata = p2, var.terms= c_terms_thirty, cons.terms = cons.terms_w)
+c4_3p <- predictFelm(pmod4, newdata = p3, var.terms= c_terms_thirty, cons.terms = cons.terms_w)
+c4_4p <- predictFelm(pmod4, newdata = p4, var.terms= c_terms_thirty, cons.terms = cons.terms_w)
+c4_5p <- predictFelm(pmod4, newdata = p5, var.terms= c_terms_thirty, cons.terms = cons.terms_w)
 
-c5_0p <- predictFelm(pmod5, terms = c_terms_sixty)
-c5_1p <- predictFelm(pmod5, newdata = p1, terms = c_terms_sixty)
-c5_2p <- predictFelm(pmod5, newdata = p2, terms = c_terms_sixty)
-c5_3p <- predictFelm(pmod5, newdata = p3, terms = c_terms_sixty)
-c5_4p <- predictFelm(pmod5, newdata = p4, terms = c_terms_sixty)
-c5_5p <- predictFelm(pmod5, newdata = p5, terms = c_terms_sixty)
+c5_0p <- predictFelm(pmod5, var.terms= c_terms_sixty)
+c5_1p <- predictFelm(pmod5, newdata = p1, var.terms= c_terms_sixty)
+c5_2p <- predictFelm(pmod5, newdata = p2, var.terms= c_terms_sixty)
+c5_3p <- predictFelm(pmod5, newdata = p3, var.terms= c_terms_sixty)
+c5_4p <- predictFelm(pmod5, newdata = p4, var.terms= c_terms_sixty)
+c5_5p <- predictFelm(pmod5, newdata = p5, var.terms= c_terms_sixty)
 
 # Total predicted revenue per acre
 ca0 <- sum(exp(c1_0p$fit + c1_0p$res + c1_0p$effect) - 1)
@@ -366,7 +375,7 @@ te5_ci <- sum(t5_5p$se.fit)*1.96
 
 
 pdat <- data.frame(effect = rep(c("Weather-effect", "Climate-effect", "Total-effect"), each = 30),
-                   model = rep(c("5-year", "10-year", "20-year", "30-year", "60-year"), 3, each = 6),
+                   type = rep(c("5-year", "10-year", "20-year", "30-year", "60-year"), 3, each = 6),
                    temp = rep(c(0, 1, 2, 3, 4, 5), 15),
                    sum = c(wa0, wa1, wa2, wa3, wa4, wa5, # Weather effect
                            wb0, wb1, wb2, wb3, wb4, wb5,
@@ -399,18 +408,18 @@ pdat <- data.frame(effect = rep(c("Weather-effect", "Climate-effect", "Total-eff
                            td0_ci, td1_ci, td2_ci, td3_ci, td4_ci, td5_ci,
                            ce0_ci, ce1_ci, ce2_ci, ce3, ce4_ci, ce5_ci))
 pdat
-#sixtypdat <- filter(pdat, model == "60-year")
-# pdat <- filter(pdat, model != "60-year" | effect != "Weather-effect" & effect != "Total-effect")
+#sixtypdat <- filter(pdat, type == "60-year")
+# pdat <- filter(pdat, type != "60-year" | effect != "Weather-effect" & effect != "Total-effect")
 pdat
 
 pdat$effect <- factor(pdat$effect, levels = c("Weather-effect", "Climate-effect", "Total-effect"))
 pdat <- pdat %>% 
-  group_by(effect, model) %>% 
+  group_by(effect, type) %>% 
   mutate(change =  (sum - first(sum))/first(sum),
          change_min = ((sum - ci) - (first(sum) - first(ci)))/(first(sum) - first(ci)),
          change_max = ((sum + ci) - (first(sum) + first(ci)))/(first(sum) + first(ci)))
 # sixtypdat <- sixtypdat %>% 
-#   group_by(effect, model) %>% 
+#   group_by(effect, type) %>% 
 #   mutate(change =  (sum - first(sum))/first(sum),
 #          change_min = ((sum - ci) - (first(sum) - first(ci)))/(first(sum) - first(ci)),
 #          change_max = ((sum + ci) - (first(sum) + first(ci)))/(first(sum) + first(ci)))
@@ -426,9 +435,11 @@ pdat$change_max <- pdat$change_max*100
 
 
 
-pdat$model <- factor(pdat$model, labels = c("5-year", "10-year", "20-year", "30-year", "60-year"))
+pdat$type <- factor(pdat$type, labels = c("5-year", "10-year", "20-year", "30-year", "60-year"))
 
-saveRDS(pdat, "data/rev_predictions.rds")
+pdat <- filter(pdat, type != "60-year" | (effect != "Weather-effect" & effect != "Total-effect"))
+
+saveRDS(pdat, "data/rev_soybean_predictions.rds")
 
 ggplot(pdat, aes(temp, change)) + 
   #geom_ribbon(aes(ymax = change_max, ymin = change_min, x = temp, fill = effect, group = effect), fill = "grey", alpha = 0.5 ) +
@@ -449,7 +460,7 @@ ggplot(pdat, aes(temp, change)) +
   #     legend.justification = c("left", "top"), 
   #     legend.box.background = element_rect(colour = "grey"), 
   #     legend.title = element_blank(), legend.key = element_blank()) +
-  facet_wrap(~model, scales = "free") +
+  facet_wrap(~type, scales = "free") +
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey")
   
 # ggplot(sixtypdat, aes(temp, change)) + geom_line()
