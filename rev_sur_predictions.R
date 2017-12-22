@@ -60,7 +60,7 @@ pdat <- data.frame(temp = scorn$temp,
            rswheat = swheat$sum*rwheat$sum)
 
 # No crop switching data
-pdat <- filter(pdat, effect == "Total-effect")
+# pdat <- filter(pdat, effect == "Total-effect")
 
 pdat$total <- rowSums(pdat[, 4:8])
 head(pdat)

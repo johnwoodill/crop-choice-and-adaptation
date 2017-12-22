@@ -10,6 +10,15 @@ library(zoo)
 
 setwd("/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/")
 
+dummyCreator <- function(invec, prefix = NULL) {
+     L <- length(invec)
+     ColNames <- sort(unique(invec))
+     M <- matrix(0L, ncol = length(ColNames), nrow = L,
+                 dimnames = list(NULL, ColNames))
+     M[cbind(seq_len(L), match(invec, ColNames))] <- 1L
+     if (!is.null(prefix)) colnames(M) <- paste(prefix, colnames(M), sep = "_")
+     M
+}
 
 # Function to extract data
 data(county.fips) 
@@ -139,8 +148,8 @@ hay <- read_csv("data/hay_1918-2008.csv")
 hay$state <- tolower(hay$state)
 hay$fips <- as.integer(hay$fips)
 
-#wheat <- read_csv("data/wheat_1909-2007.csv")
-wheat <- read_csv("data/wheat_1909-2007_spring.csv")
+wheat <- read_csv("data/wheat_1909-2007.csv")
+#wheat <- read_csv("data/wheat_1909-2007_spring.csv")
 wheat$state <- tolower(wheat$state)
 wheat$fips <- as.integer(wheat$fips)
 
@@ -784,18 +793,18 @@ cropdat$p_soybean_a <- cropdat$soybean_a/cropdat$acres
 cropdat$p_wheat_a <- cropdat$wheat_a/cropdat$acres
 
 # First estimate between zero and 1
-cropdat$p_corn_a <- (cropdat$p_corn_a + .0001)/1.0002
-cropdat$p_cotton_a <- (cropdat$p_cotton_a + .0001)/1.0002
-cropdat$p_hay_a <- (cropdat$p_hay_a + .0001)/1.0002
-cropdat$p_soybean_a <- (cropdat$p_soybean_a + .0001)/1.0002
-cropdat$p_wheat_a <- (cropdat$p_wheat_a + .0001)/1.0002
+cropdat$cp_corn_a <- (cropdat$p_corn_a + .001)/1.00101
+cropdat$cp_cotton_a <- (cropdat$p_cotton_a + .001)/1.00101
+cropdat$cp_hay_a <- (cropdat$p_hay_a + .001)/1.00101
+cropdat$cp_soybean_a <- (cropdat$p_soybean_a + .001)/1.00101
+cropdat$cp_wheat_a <- (cropdat$p_wheat_a + .001)/1.00101
 
 # Calc z-scores
-cropdat$z_corn_a <- qnorm(cropdat$p_corn_a)
-cropdat$z_cotton_a <- qnorm(cropdat$p_cotton_a)
-cropdat$z_hay_a <- qnorm(cropdat$p_hay_a)
-cropdat$z_soybean_a <- qnorm(cropdat$p_soybean_a)
-cropdat$z_wheat_a <- qnorm(cropdat$p_wheat_a)
+cropdat$z_corn_a <- qnorm(cropdat$cp_corn_a)
+cropdat$z_cotton_a <- qnorm(cropdat$cp_cotton_a)
+cropdat$z_hay_a <- qnorm(cropdat$cp_hay_a)
+cropdat$z_soybean_a <- qnorm(cropdat$cp_soybean_a)
+cropdat$z_wheat_a <- qnorm(cropdat$cp_wheat_a)
 
 cropdat <- as.data.frame(cropdat)
 

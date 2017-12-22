@@ -4,8 +4,16 @@
 # terms <- NULL
 # terms <- c("dday0_10", "dday10_30")
 
-predictSUR <- function(systemfit.mod, newdata, var.terms = NULL, cons.terms = NULL, intercept = FALSE){
+predictSUR <- function(systemfit.mod, 
+                       newdata, 
+                       var.terms = NULL, 
+                       cons.terms = NULL, 
+                       intercept = FALSE,
+                       leave.one.out = FALSE){
   
+  # var.terms = NULL
+  # cons.terms = NULL
+  #                      
   # n equations from system
   neq <- length(systemfit.mod$eq)
   
@@ -48,13 +56,13 @@ predictSUR <- function(systemfit.mod, newdata, var.terms = NULL, cons.terms = NU
       modmat[[k]] <- inmod
       
       # Set terms
-      var.terms <- colnames(modmat[[1]])
+      varterms <- colnames(modmat[[1]])
       
       # Get coefficients
       coefmat[[k]] <- systemfit.mod$eq[[k]][["coefficients"]] 
         
       # Remove coefficients not in model matrix
-      locterms <- which(names(coefmat[[k]]) %in% var.terms)
+      locterms <- which(names(coefmat[[k]]) %in% varterms)
       coefmat[[k]] <- coefmat[[k]][locterms]
       
       # Return predict values
@@ -79,19 +87,19 @@ predictSUR <- function(systemfit.mod, newdata, var.terms = NULL, cons.terms = NU
       cmodmat[[k]] <- as.matrix(cinmod)
       
       # Set terms
-      var.terms <- colnames(modmat[[1]])
-      cons.terms <- colnames(cmodmat[[1]])
+      varterms <- colnames(modmat[[1]])
+      consterms <- colnames(cmodmat[[1]])
       
       # Get coefficients
       coefmat[[k]] <- systemfit.mod$eq[[k]][["coefficients"]] 
       ccoefmat[[k]] <- systemfit.mod$eq[[k]][["coefficients"]] 
         
       # Remove coefficients not in model matrix
-      locterms <- which(names(coefmat[[k]]) %in% var.terms)
+      locterms <- which(names(coefmat[[k]]) %in% varterms)
       coefmat[[k]] <- coefmat[[k]][locterms]
       
       # Remove coefficients not cons.terms
-      locterms <- which(names(ccoefmat[[k]]) %in% cons.terms)
+      locterms <- which(names(ccoefmat[[k]]) %in% consterms)
       ccoefmat[[k]] <- ccoefmat[[k]][locterms]
         
       
@@ -112,10 +120,22 @@ predictSUR <- function(systemfit.mod, newdata, var.terms = NULL, cons.terms = NU
   # Convert list to data.frame
   retdat <- as.data.frame(matrix(unlist(retdat), ncol = neq))
   
+  # if(isTRUE(leave.one.out)){
+  #   for(i in 1:ncol(retdat)){
+  #     corn <- pnorm(retdat[, 1] + resid(systemfit.mod)[[1]] + systemfit.mod$effects$corn.effect)*1.0002 - 0.0001
+  #     head(corn)
+  #     head(cropdat$p_corn_a)
+  #     apply(retdat, 2, function(x) pnorm(x)*1.0002 - 0.0001)
+  #     mdat <- retdat[, -i]
+  #   }
+  # }
+  
   # Change col names to predict models
   for(p in 1:neq){
     names(retdat)[p] <- paste0(systemfit.mod$eq[[p]][["eqnLabel"]], "_predict")
   }
+  
+  
   
   # message(paste0("Predicted coefficients: ", paste0(terms, collapse = ", ")))
   return(retdat)

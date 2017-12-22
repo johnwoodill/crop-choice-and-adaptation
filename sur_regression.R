@@ -122,7 +122,7 @@ mod <- systemfit(list(corn = mod1,
                        cotton = mod2, 
                        hay = mod3, 
                        soybean = mod4,
-                       wheat = mod5), data = cropdat_dm, method = "SUR", restrict.matrix = restrict)
+                       wheat = mod5), data = cropdat_dm, method = "SUR")
 
 summary(mod)
 sum(mod$coefficients)
@@ -246,7 +246,7 @@ mod <- systemfit(list(corn = mod1,
                        cotton = mod2, 
                        hay = mod3, 
                        soybean = mod4,
-                       wheat = mod5), data = cropdat_dm, method = "SUR", restrict.matrix = restrict)
+                       wheat = mod5), data = cropdat_dm, method = "SUR")
 
 summary(mod)
 sum(mod$coefficients)
@@ -373,7 +373,7 @@ mod <- systemfit(list(corn = mod1,
                        cotton = mod2, 
                        hay = mod3, 
                        soybean = mod4,
-                       wheat = mod5), data = cropdat_dm, method = "SUR", restrict.matrix = restrict)
+                       wheat = mod5), data = cropdat_dm, method = "SUR")
 
 summary(mod)
 sum(mod$coefficients)
@@ -498,7 +498,7 @@ mod <- systemfit(list(corn = mod1,
                        cotton = mod2, 
                        hay = mod3, 
                        soybean = mod4,
-                       wheat = mod5), data = cropdat_dm, method = "SUR", restrict.matrix = restrict)
+                       wheat = mod5), data = cropdat_dm, method = "SUR")
 
 summary(mod)
 sum(mod$coefficients)
@@ -558,7 +558,7 @@ mod <- systemfit(list(corn = mod1,
                        cotton = mod2, 
                        hay = mod3, 
                        soybean = mod4,
-                       wheat = mod5), data = cropdat_dm, method = "SUR", restrict.matrix = restrict)
+                       wheat = mod5), data = cropdat_dm, method = "SUR")
 
 mod$effects <- list(corn.effect = cropdat_means$z_corn_a,
                     cotton.effect = cropdat_means$z_cotton_a,
