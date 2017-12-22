@@ -59,6 +59,9 @@ pdat <- data.frame(temp = scorn$temp,
            rssoybean = ssoybean$sum*rsoybean$sum,
            rswheat = swheat$sum*rwheat$sum)
 
+head(pdat)
+pdat <- filter(pdat, effect != "Weather-effect")
+head(pdat)
 # No crop switching data
 # pdat <- filter(pdat, effect == "Total-effect")
 
@@ -69,7 +72,7 @@ pdat <- pdat %>%
   group_by(type, effect) %>% 
   mutate(change_total = 100*(total - first(total))/first(total))
 
-ggplot(filter(pdat, effect != "Weather-effect"), aes(temp, change_total, color = effect)) + geom_line() + facet_wrap(~type, scales = "free") + ylab("% Change in Total Revenue")
+ggplot(pdat, aes(temp, change_total, color = effect)) + geom_line() + facet_wrap(~type, scales = "free") + ylab("% Change in Total Revenue")
 
 mean(cropdat$acres)
 mean(c(cropdat$corn_grain_a, cropdat$cotton_a, cropdat$hay_a, cropdat$soybean_a, cropdat$wheat_a), na.rm = TRUE)
