@@ -15,8 +15,65 @@ rhay <- readRDS("data/rev_hay_predictions.rds")
 rsoybean <- readRDS("data/rev_soybean_predictions.rds")
 rwheat <- readRDS("data/rev_wheat_predictions.rds")
 
+rcorn$crop <- "Corn"
+rcotton$crop <- "Cotton"
+rhay$crop <- "Hay"
+rsoybean$crop <- "Soybean"
+rwheat$crop <- "Wheat"
+rdat <- rbind(rcorn, rcotton, rhay, rsoybean, rwheat)
+
 # Share acres (SUR)
 sdat <- readRDS("data/sur_predictions.rds")
+rdat <- select(rdat, names(sdat))
+
+sdat <- arrange(sdat, type, effect, temp, crop)
+rdat <- arrange(rdat, type, effect, temp, crop)
+head(sdat)
+head(rdat)
+
+pdat <- data.frame(temp = sdat$temp,
+                   crop = sdat$crop,
+                   type = sdat$type,
+                   effect = sdat$effect,
+                   rev = rdat$sum,
+                   acres = sdat$sum,
+                   rev_acres = rdat$sum*sdat$sum)
+
+sacres <- cropdat %>% 
+  filter(year >= 1980) %>% 
+  summarise(corn_m = mean(corn_grain_a, na.rm = TRUE),
+            cotton_m = mean(cotton_a, na.rm = TRUE),
+            hay_m = mean(hay_a, na.rm = TRUE),
+            soybean_m = mean(soybean_a, na.rm = TRUE),
+            wheat_m = mean(wheat_a, na.rm = TRUE))
+head(pdat)
+sacres <- data.frame(temp = unique(pdat$temp),
+                     )
+pdat$no_adapt_acres <- rep(c(sacres$corn_m, sacres$cotton_m, sacres$hay_m, sacres$soybean_m, sacres$wheat_m), 78)
+pdat$no_adapt_rev_acres <-  pdat$rev*pdat$no_adapt_acres
+
+head(pdat)
+#head(pdat)
+
+pdat <- pdat %>% 
+  group_by(temp, type, effect) %>% 
+  summarise(rev_acres = sum(rev_acres),
+            no_adapt_rev_acres = sum(no_adapt_rev_acres)) %>% 
+  group_by(type, effect) %>% 
+  mutate(change_total = 100*(rev_acres - first(rev_acres))/first(rev_acres),
+         no_adapt_change_total = 100*(no_adapt_rev_acres - first(no_adapt_rev_acres))/first(no_adapt_rev_acres))
+
+
+pdat <- filter(pdat, effect != "Weather-effect")
+ggplot(pdat, aes(temp, change_total, color = effect)) + 
+  geom_line() + facet_wrap(~type, scales = "free") + ylab("% Change in Total Revenue") +
+  geom_line(aes(temp, no_adapt_change_total))
+
+ggplot(pdat, aes(temp, no_adapt_change_total, coor = effect)) + geom_line() + facet_wrap(~type, scales = "free")
+
+newpdat <- pdat %>% 
+  group_by(type, )
+
 
 scorn <- filter(sdat, crop == "Corn")
 scotton <- filter(sdat, crop == "Cotton")
@@ -31,6 +88,8 @@ sacres <- cropdat %>%
             hay_m = mean(hay_a, na.rm = TRUE),
             soybean_m = mean(soybean_a, na.rm = TRUE),
             wheat_m = mean(wheat_a, na.rm = TRUE))
+head(sacres)
+
 cacres <- scorn
 
 scorn <- arrange(scorn, type, effect, temp)
@@ -64,6 +123,7 @@ pdat <- filter(pdat, effect != "Weather-effect")
 head(pdat)
 # No crop switching data
 # pdat <- filter(pdat, effect == "Total-effect")
+
 
 pdat$total <- rowSums(pdat[, 4:8])
 head(pdat)

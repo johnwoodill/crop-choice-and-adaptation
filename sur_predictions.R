@@ -179,9 +179,9 @@ climate_terms = c("dday0_10_five", "dday10_30_five", "dday30_five", "prec_five",
 #                           effect = "Weather-effect")
 # head(wfive)
 
-wfive <- predictSUR.clean(mod = sur_five, newdata_list = newdata_list_five, var.terms = weather_terms, cons.terms = cons.terms_c_five, type = "5-year", effect = "Weather-effect")
-cfive <- predictSUR.clean(mod = sur_five, newdata_list = newdata_list_five, var.terms = climate_terms, cons.terms = cons.terms_w, type = "5-year", effect = "Climate-effect")
-tfive <- predictSUR.clean(mod = sur_five, newdata_list = newdata_list_five, type = "5-year", effect = "Total-effect")
+wfive <- predictSUR.clean(mod = sur_five, acres = cropdat$acres, newdata_list = newdata_list_five, var.terms = weather_terms, cons.terms = cons.terms_c_five, type = "5-year", effect = "Weather-effect")
+cfive <- predictSUR.clean(mod = sur_five, acres = cropdat$acres,  newdata_list = newdata_list_five, var.terms = climate_terms, cons.terms = cons.terms_w, type = "5-year", effect = "Climate-effect")
+tfive <- predictSUR.clean(mod = sur_five, acres = cropdat$acres,  newdata_list = newdata_list_five, type = "5-year", effect = "Total-effect")
 
 #-------------------------------------
 # Ten-year
@@ -201,9 +201,9 @@ climate_terms = c("dday0_10_ten", "dday10_30_ten", "dday30_ten", "prec_ten", "pr
                   "trend2_nc", "trend2_nd", "trend2_ne", "trend2_oh", "trend2_ok", "trend2_sc", 
                   "trend2_sd", "trend2_tn", "trend2_va", "trend2_wi")
 
-wten <- predictSUR.clean(sur_ten, newdata_list = newdata_list_ten, var.terms = weather_terms, cons.terms = cons.terms_c_ten, type = "10-year", effect = "Weather-effect")
-cten <- predictSUR.clean(sur_ten, newdata_list = newdata_list_ten, var.terms = climate_terms, cons.terms = cons.terms_w, type = "10-year", effect = "Climate-effect")
-tten <- predictSUR.clean(sur_ten, newdata_list = newdata_list_ten, type = "10-year", effect = "Total-effect")
+wten <- predictSUR.clean(sur_ten, acres = cropdat$acres,  newdata_list = newdata_list_ten, var.terms = weather_terms, cons.terms = cons.terms_c_ten, type = "10-year", effect = "Weather-effect")
+cten <- predictSUR.clean(sur_ten, acres = cropdat$acres,  newdata_list = newdata_list_ten, var.terms = climate_terms, cons.terms = cons.terms_w, type = "10-year", effect = "Climate-effect")
+tten <- predictSUR.clean(sur_ten, acres = cropdat$acres,  newdata_list = newdata_list_ten, type = "10-year", effect = "Total-effect")
 
 #-------------------------------------
 # Twenty-year
@@ -224,9 +224,9 @@ climate_terms = c("dday0_10_twenty", "dday10_30_twenty", "dday30_twenty", "prec_
                   "trend2_nc", "trend2_nd", "trend2_ne", "trend2_oh", "trend2_ok", "trend2_sc", 
                   "trend2_sd", "trend2_tn", "trend2_va", "trend2_wi")
 
-wtwenty <- predictSUR.clean(sur_twenty, newdata_list = newdata_list_twenty, var.terms = weather_terms, cons.terms = cons.terms_c_twenty, type = "20-year", effect = "Weather-effect")
-ctwenty <- predictSUR.clean(sur_twenty, newdata_list = newdata_list_twenty, var.terms = climate_terms, cons.terms = cons.terms_w, type = "20-year", effect = "Climate-effect")
-ttwenty <- predictSUR.clean(sur_twenty, newdata_list = newdata_list_twenty, type = "20-year", effect = "Total-effect", var.terms = NULL)
+wtwenty <- predictSUR.clean(sur_twenty, acres = cropdat$acres,  newdata_list = newdata_list_twenty, var.terms = weather_terms, cons.terms = cons.terms_c_twenty, type = "20-year", effect = "Weather-effect")
+ctwenty <- predictSUR.clean(sur_twenty, acres = cropdat$acres,  newdata_list = newdata_list_twenty, var.terms = climate_terms, cons.terms = cons.terms_w, type = "20-year", effect = "Climate-effect")
+ttwenty <- predictSUR.clean(sur_twenty, acres = cropdat$acres,  newdata_list = newdata_list_twenty, type = "20-year", effect = "Total-effect", var.terms = NULL)
 
 #-------------------------------------
 # Thirty-year
@@ -247,9 +247,9 @@ climate_terms = c("dday0_10_thirty", "dday10_30_thirty", "dday30_thirty", "prec_
                   "trend2_nc", "trend2_nd", "trend2_ne", "trend2_oh", "trend2_ok", "trend2_sc", 
                   "trend2_sd", "trend2_tn", "trend2_va", "trend2_wi")
 
-wthirty <- predictSUR.clean(sur_thirty, newdata_list = newdata_list_thirty, var.terms = weather_terms, cons.terms = cons.terms_c_thirty, type = "30-year", effect = "Weather-effect")
-cthirty <- predictSUR.clean(sur_thirty, newdata_list = newdata_list_thirty, var.terms = climate_terms, cons.terms = cons.terms_w, type = "30-year", effect = "Climate-effect")
-tthirty <- predictSUR.clean(sur_thirty, newdata_list = newdata_list_thirty, type = "30-year", effect = "Total-effect", var.terms = NULL)
+wthirty <- predictSUR.clean(sur_thirty, acres = cropdat$acres,  newdata_list = newdata_list_thirty, var.terms = weather_terms, cons.terms = cons.terms_c_thirty, type = "30-year", effect = "Weather-effect")
+cthirty <- predictSUR.clean(sur_thirty, acres = cropdat$acres,  newdata_list = newdata_list_thirty, var.terms = climate_terms, cons.terms = cons.terms_w, type = "30-year", effect = "Climate-effect")
+tthirty <- predictSUR.clean(sur_thirty, acres = cropdat$acres,  newdata_list = newdata_list_thirty, type = "30-year", effect = "Total-effect", var.terms = NULL)
 
 #-------------------------------------
 # Sixty-year
@@ -257,7 +257,7 @@ tthirty <- predictSUR.clean(sur_thirty, newdata_list = newdata_list_thirty, type
 # Climate-effect predictions
 climate_terms = c("dday0_10_sixty", "dday10_30_sixty", "dday30_sixty", "prec_sixty", "prec_sq_sixty")
 
-csixty <- predictSUR.clean(sur_sixty, newdata_list = newdata_list_sixty, type = "60-year", effect = "Climate-effect")
+csixty <- predictSUR.clean(sur_sixty, acres = cropdat$acres,  newdata_list = newdata_list_sixty, type = "60-year", effect = "Climate-effect")
 
 
 

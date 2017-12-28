@@ -122,7 +122,8 @@ p_dat <- function(x, prec){
   state_trends$trend_sq <- pdat$trend^2
   state_trends <- state_trends[, 1:25]*state_trends$trend_sq
   pdat <- cbind(pdat, state_trends)
-  pdat <- select(pdat, dday0_10, dday10_30, dday30, prec, prec_sq, 
+  pdat <- select(pdat, z_corn_a, z_cotton_a, z_hay_a, z_soybean_a, z_wheat_a,
+                 dday0_10, dday10_30, dday30, prec, prec_sq, 
                  dday0_10_five, dday10_30_five, dday30_five, prec_five, prec_sq_five,
                  dday0_10_ten, dday10_30_ten, dday30_ten, prec_ten, prec_sq_ten,
                  dday0_10_twenty, dday10_30_twenty, dday30_twenty, prec_twenty, prec_sq_twenty,

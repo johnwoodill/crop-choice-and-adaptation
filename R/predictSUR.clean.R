@@ -4,7 +4,7 @@
 # type = "Five-year"
 # effect = "Climate-effect"
 
-predictSUR.clean <- function(mod, newdata_list, var.terms = NULL, cons.terms = NULL, type, effect){
+predictSUR.clean <- function(mod, newdata_list, acres, var.terms = NULL, cons.terms = NULL, type, effect){
   
   p0 <- newdata_list[[1]]
   p1 <- newdata_list[[2]]
@@ -107,40 +107,40 @@ predictSUR.clean <- function(mod, newdata_list, var.terms = NULL, cons.terms = N
   temp4 <- temp4[, 1:5] / rowSums(temp4[, 1:5])
   temp5 <- temp5[, 1:5] / rowSums(temp5[, 1:5])
   
-  indat0_corn <- sum(temp0$corn0.pred)
-  indat1_corn <- sum(temp1$corn1.pred)
-  indat2_corn <- sum(temp2$corn2.pred)
-  indat3_corn <- sum(temp3$corn3.pred)
-  indat4_corn <- sum(temp4$corn4.pred)
-  indat5_corn <- sum(temp5$corn5.pred)
+  indat0_corn <- sum(temp0$corn0.pred*acres)
+  indat1_corn <- sum(temp1$corn1.pred*acres)
+  indat2_corn <- sum(temp2$corn2.pred*acres)
+  indat3_corn <- sum(temp3$corn3.pred*acres)
+  indat4_corn <- sum(temp4$corn4.pred*acres)
+  indat5_corn <- sum(temp5$corn5.pred*acres)
   
-  indat0_cotton <- sum(temp0$cotton0.pred)
-  indat1_cotton <- sum(temp1$cotton1.pred)
-  indat2_cotton <- sum(temp2$cotton2.pred)
-  indat3_cotton <- sum(temp3$cotton3.pred)
-  indat4_cotton <- sum(temp4$cotton4.pred)
-  indat5_cotton <- sum(temp5$cotton5.pred)
+  indat0_cotton <- sum(temp0$cotton0.pred*acres)
+  indat1_cotton <- sum(temp1$cotton1.pred*acres)
+  indat2_cotton <- sum(temp2$cotton2.pred*acres)
+  indat3_cotton <- sum(temp3$cotton3.pred*acres)
+  indat4_cotton <- sum(temp4$cotton4.pred*acres)
+  indat5_cotton <- sum(temp5$cotton5.pred*acres)
   
-  indat0_hay <- sum(temp0$hay0.pred)
-  indat1_hay <- sum(temp1$hay1.pred)
-  indat2_hay <- sum(temp2$hay2.pred)
-  indat3_hay <- sum(temp3$hay3.pred)
-  indat4_hay <- sum(temp4$hay4.pred)
-  indat5_hay <- sum(temp5$hay5.pred)
+  indat0_hay <- sum(temp0$hay0.pred*acres)
+  indat1_hay <- sum(temp1$hay1.pred*acres)
+  indat2_hay <- sum(temp2$hay2.pred*acres)
+  indat3_hay <- sum(temp3$hay3.pred*acres)
+  indat4_hay <- sum(temp4$hay4.pred*acres)
+  indat5_hay <- sum(temp5$hay5.pred*acres)
   
-  indat0_soybean <- sum(temp0$soybean0.pred)
-  indat1_soybean <- sum(temp1$soybean1.pred)
-  indat2_soybean <- sum(temp2$soybean2.pred)
-  indat3_soybean <- sum(temp3$soybean3.pred)
-  indat4_soybean <- sum(temp4$soybean4.pred)
-  indat5_soybean <- sum(temp5$soybean5.pred)
+  indat0_soybean <- sum(temp0$soybean0.pred*acres)
+  indat1_soybean <- sum(temp1$soybean1.pred*acres)
+  indat2_soybean <- sum(temp2$soybean2.pred*acres)
+  indat3_soybean <- sum(temp3$soybean3.pred*acres)
+  indat4_soybean <- sum(temp4$soybean4.pred*acres)
+  indat5_soybean <- sum(temp5$soybean5.pred*acres)
   
-  indat0_wheat <- sum(temp0$wheat0.pred)
-  indat1_wheat <- sum(temp1$wheat1.pred)
-  indat2_wheat <- sum(temp2$wheat2.pred)
-  indat3_wheat <- sum(temp3$wheat3.pred)
-  indat4_wheat <- sum(temp4$wheat4.pred)
-  indat5_wheat <- sum(temp5$wheat5.pred)
+  indat0_wheat <- sum(temp0$wheat0.pred*acres)
+  indat1_wheat <- sum(temp1$wheat1.pred*acres)
+  indat2_wheat <- sum(temp2$wheat2.pred*acres)
+  indat3_wheat <- sum(temp3$wheat3.pred*acres)
+  indat4_wheat <- sum(temp4$wheat4.pred*acres)
+  indat5_wheat <- sum(temp5$wheat5.pred*acres)
   
   
   
