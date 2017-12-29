@@ -301,6 +301,42 @@ t5_4p <- predictFelm(pmod5, newdata = p4)
 t5_5p <- predictFelm(pmod5, newdata = p5)
 
 # Total predicted revenue per acre
+ta0_fit <- exp(t1_0p$fit + t1_0p$res + t1_0p$effect) - 1
+ta1_fit <- exp(t1_1p$fit + t1_1p$res + t1_1p$effect) - 1 
+ta2_fit <- exp(t1_2p$fit + t1_2p$res + t1_2p$effect) - 1 
+ta3_fit <- exp(t1_3p$fit + t1_3p$res + t1_3p$effect) - 1 
+ta4_fit <- exp(t1_4p$fit + t1_4p$res + t1_4p$effect) - 1 
+ta5_fit <- exp(t1_5p$fit + t1_5p$res + t1_5p$effect) - 1
+
+tb0_fit <- exp(t2_0p$fit + t2_0p$res + t2_0p$effect) - 1
+tb1_fit <- exp(t2_1p$fit + t2_1p$res + t2_1p$effect) - 1 
+tb2_fit <- exp(t2_2p$fit + t2_2p$res + t2_2p$effect) - 1 
+tb3_fit <- exp(t2_3p$fit + t2_3p$res + t2_3p$effect) - 1 
+tb4_fit <- exp(t2_4p$fit + t2_4p$res + t2_4p$effect) - 1 
+tb5_fit <- exp(t2_5p$fit + t2_5p$res + t2_5p$effect) - 1
+
+tc0_fit <- exp(t3_0p$fit + t3_0p$res + t3_0p$effect) - 1
+tc1_fit <- exp(t3_1p$fit + t3_1p$res + t3_1p$effect) - 1 
+tc2_fit <- exp(t3_2p$fit + t3_2p$res + t3_2p$effect) - 1 
+tc3_fit <- exp(t3_3p$fit + t3_3p$res + t3_3p$effect) - 1 
+tc4_fit <- exp(t3_4p$fit + t3_4p$res + t3_4p$effect) - 1 
+tc5_fit <- exp(t3_5p$fit + t3_5p$res + t3_5p$effect) - 1
+
+td0_fit <- exp(t4_0p$fit + t4_0p$res + t4_0p$effect) - 1
+td1_fit <- exp(t4_1p$fit + t4_1p$res + t4_1p$effect) - 1 
+td2_fit <- exp(t4_2p$fit + t4_2p$res + t4_2p$effect) - 1 
+td3_fit <- exp(t4_3p$fit + t4_3p$res + t4_3p$effect) - 1 
+td4_fit <- exp(t4_4p$fit + t4_4p$res + t4_4p$effect) - 1 
+td5_fit <- exp(t4_5p$fit + t4_5p$res + t4_5p$effect) - 1
+
+te0_fit <- exp(t5_0p$fit + t5_0p$res + t5_0p$effect) - 1
+te1_fit <- exp(t5_1p$fit + t5_1p$res + t5_1p$effect) - 1 
+te2_fit <- exp(t5_2p$fit + t5_2p$res + t5_2p$effect) - 1 
+te3_fit <- exp(t5_3p$fit + t5_3p$res + t5_3p$effect) - 1 
+te4_fit <- exp(t5_4p$fit + t5_4p$res + t5_4p$effect) - 1 
+te5_fit <- exp(t5_5p$fit + t5_5p$res + t5_5p$effect) - 1
+
+# Sum of total predicted revenue per acre
 ta0 <- sum(exp(t1_0p$fit + t1_0p$res + t1_0p$effect) - 1)
 ta1 <- sum(exp(t1_1p$fit + t1_1p$res + t1_1p$effect) - 1) 
 ta2 <- sum(exp(t1_2p$fit + t1_2p$res + t1_2p$effect) - 1) 
@@ -408,6 +444,20 @@ pdat <- data.frame(effect = rep(c("Weather-effect", "Climate-effect", "Total-eff
                            td0_ci, td1_ci, td2_ci, td3_ci, td4_ci, td5_ci,
                            ce0_ci, ce1_ci, ce2_ci, ce3, ce4_ci, ce5_ci))
 pdat
+
+adat <- data.frame(effect = "Total-effect",
+                   fit = c(ta0_fit, ta1_fit, ta2_fit, ta3_fit, ta4_fit, ta5_fit,
+                           tb0_fit, tb1_fit, tb2_fit, tb3_fit, tb4_fit, tb5_fit,
+                           tc0_fit, tc1_fit, tc2_fit, tc3_fit, tc4_fit, tc5_fit,
+                           td0_fit, td1_fit, td2_fit, td3_fit, td4_fit, td5_fit,
+                           te0_fit, te1_fit, te2_fit, te3_fit, te4_fit, te5_fit),
+                   temp = rep(c(0, 1, 2, 3, 4, 5), 5, each = 82680),
+                   type = rep(c("5-year", "10-year", "20-year", "30-year", "60-year"), each = 82680*6),
+                   crop = "hay")
+
+head(adat)
+saveRDS(adat, "data/rev_hay_pred.rds")
+
 #sixtypdat <- filter(pdat, type == "60-year")
 # pdat <- filter(pdat, type != "60-year" | effect != "Weather-effect" & effect != "Total-effect")
 pdat

@@ -46,9 +46,23 @@ sacres <- cropdat %>%
             hay_m = mean(hay_a, na.rm = TRUE),
             soybean_m = mean(soybean_a, na.rm = TRUE),
             wheat_m = mean(wheat_a, na.rm = TRUE))
-head(pdat)
-sacres <- data.frame(temp = unique(pdat$temp),
-                     )
+
+trev <- filter(pdat, effect == "Total-effect")
+climate_rev <- filter(pdat, effect == "Climate-effect" & type != "60-year")
+trev$avg_acres <- rep(c(sacres$corn_m, sacres$cotton_m, sacres$hay_m, sacres$soybean_m, sacres$wheat_m), 24)
+trev$climate_acres <- climate_rev$acres
+head(trev)
+climate_rev
+
+
+
+
+
+
+
+
+
+
 pdat$no_adapt_acres <- rep(c(sacres$corn_m, sacres$cotton_m, sacres$hay_m, sacres$soybean_m, sacres$wheat_m), 78)
 pdat$no_adapt_rev_acres <-  pdat$rev*pdat$no_adapt_acres
 
@@ -65,6 +79,7 @@ pdat <- pdat %>%
 
 
 pdat <- filter(pdat, effect != "Weather-effect")
+pdat <- filter(pdat, effect != "Total-effect")
 ggplot(pdat, aes(temp, change_total, color = effect)) + 
   geom_line() + facet_wrap(~type, scales = "free") + ylab("% Change in Total Revenue") +
   geom_line(aes(temp, no_adapt_change_total))
@@ -132,7 +147,7 @@ pdat <- pdat %>%
   group_by(type, effect) %>% 
   mutate(change_total = 100*(total - first(total))/first(total))
 
-ggplot(pdat, aes(temp, change_total, color = effect)) + geom_line() + facet_wrap(~type, scales = "free") + ylab("% Change in Total Revenue")
+ggplot(pdat, aes(temp, change_total, color = effect)) + geom_line() + facet_wrap(~type) + ylab("% Change in Total Revenue")
 
 mean(cropdat$acres)
 mean(c(cropdat$corn_grain_a, cropdat$cotton_a, cropdat$hay_a, cropdat$soybean_a, cropdat$wheat_a), na.rm = TRUE)

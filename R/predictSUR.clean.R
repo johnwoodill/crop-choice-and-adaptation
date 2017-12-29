@@ -55,43 +55,49 @@ predictSUR.clean <- function(mod, newdata_list, acres, var.terms = NULL, cons.te
   wheat4.pred <- pnorm(indat4$wheat_predict + resid(mod)[[5]] + mod$effects$wheat.effect)*1.00101 - 0.001
   wheat5.pred <- pnorm(indat5$wheat_predict + resid(mod)[[5]] + mod$effects$wheat.effect)*1.00101 - 0.001
   
-  temp0 <- data.frame(corn0.pred = corn0.pred,
-                      cotton0.pred = cotton0.pred,
-                      hay0.pred = hay0.pred,
-                      soybean0.pred = soybean0.pred,
-                      wheat0.pred = wheat0.pred)
+  temp0 <- data.frame(temp = 0,
+                      corn.pred = corn0.pred,
+                      cotton.pred = cotton0.pred,
+                      hay.pred = hay0.pred,
+                      soybean.pred = soybean0.pred,
+                      wheat.pred = wheat0.pred)
 
 
-  temp1 <- data.frame(corn1.pred = corn1.pred,
-                      cotton1.pred = cotton1.pred,
-                      hay1.pred = hay1.pred,
-                      soybean1.pred = soybean1.pred,
-                      wheat1.pred = wheat1.pred)
+  temp1 <- data.frame(temp = 1,
+                      corn.pred = corn1.pred,
+                      cotton.pred = cotton1.pred,
+                      hay.pred = hay1.pred,
+                      soybean.pred = soybean1.pred,
+                      wheat.pred = wheat1.pred)
   
-  temp2 <- data.frame(corn2.pred = corn2.pred,
-                      cotton2.pred = cotton2.pred,
-                      hay2.pred = hay2.pred,
-                      soybean2.pred = soybean2.pred,
-                      wheat2.pred = wheat2.pred)
+  temp2 <- data.frame(temp = 2,
+                      corn.pred = corn2.pred,
+                      cotton.pred = cotton2.pred,
+                      hay.pred = hay2.pred,
+                      soybean.pred = soybean2.pred,
+                      wheat.pred = wheat2.pred)
     
-  temp3 <- data.frame(corn3.pred = corn3.pred,
-                      cotton3.pred = cotton3.pred,
-                      hay3.pred = hay3.pred,
-                      soybean3.pred = soybean3.pred,
-                      wheat3.pred = wheat3.pred)
+  temp3 <- data.frame(temp = 3,
+                      corn.pred = corn3.pred,
+                      cotton.pred = cotton3.pred,
+                      hay.pred = hay3.pred,
+                      soybean.pred = soybean3.pred,
+                      wheat.pred = wheat3.pred)
       
       
-  temp4 <- data.frame(corn4.pred = corn4.pred,
-                      cotton4.pred = cotton4.pred,
-                      hay4.pred = hay4.pred,
-                      soybean4.pred = soybean4.pred,
-                      wheat4.pred = wheat4.pred)
+  temp4 <- data.frame(temp = 4,
+                      corn.pred = corn4.pred,
+                      cotton.pred = cotton4.pred,
+                      hay.pred = hay4.pred,
+                      soybean.pred = soybean4.pred,
+                      wheat.pred = wheat4.pred)
         
-  temp5 <- data.frame(corn5.pred = corn5.pred,
-                      cotton5.pred = cotton5.pred,
-                      hay5.pred = hay5.pred,
-                      soybean5.pred = soybean5.pred,
-                      wheat5.pred = wheat5.pred)
+  temp5 <- data.frame(temp = 5,
+                      corn.pred = corn5.pred,
+                      cotton.pred = cotton5.pred,
+                      hay.pred = hay5.pred,
+                      soybean.pred = soybean5.pred,
+                      wheat.pred = wheat5.pred)
   
   temp0[temp0 <0 ] <- 0
   temp1[temp1 <0 ] <- 0
@@ -100,47 +106,47 @@ predictSUR.clean <- function(mod, newdata_list, acres, var.terms = NULL, cons.te
   temp4[temp4 <0 ] <- 0
   temp5[temp5 <0 ] <- 0
   
-  temp0 <- temp0[, 1:5] / rowSums(temp0[, 1:5])
-  temp1 <- temp1[, 1:5] / rowSums(temp1[, 1:5])
-  temp2 <- temp2[, 1:5] / rowSums(temp2[, 1:5])
-  temp3 <- temp3[, 1:5] / rowSums(temp3[, 1:5])
-  temp4 <- temp4[, 1:5] / rowSums(temp4[, 1:5])
-  temp5 <- temp5[, 1:5] / rowSums(temp5[, 1:5])
+  temp0[, 2:6] <- temp0[, 2:6] / rowSums(temp0[, 2:6])
+  temp1[, 2:6] <- temp1[, 2:6] / rowSums(temp1[, 2:6])
+  temp2[, 2:6] <- temp2[, 2:6] / rowSums(temp2[, 2:6])
+  temp3[, 2:6] <- temp3[, 2:6] / rowSums(temp3[, 2:6])
+  temp4[, 2:6] <- temp4[, 2:6] / rowSums(temp4[, 2:6])
+  temp5[, 2:6] <- temp5[, 2:6] / rowSums(temp5[, 2:6])
   
-  indat0_corn <- sum(temp0$corn0.pred*acres)
-  indat1_corn <- sum(temp1$corn1.pred*acres)
-  indat2_corn <- sum(temp2$corn2.pred*acres)
-  indat3_corn <- sum(temp3$corn3.pred*acres)
-  indat4_corn <- sum(temp4$corn4.pred*acres)
-  indat5_corn <- sum(temp5$corn5.pred*acres)
+  indat0_corn <- sum(temp0$corn.pred*acres)
+  indat1_corn <- sum(temp1$corn.pred*acres)
+  indat2_corn <- sum(temp2$corn.pred*acres)
+  indat3_corn <- sum(temp3$corn.pred*acres)
+  indat4_corn <- sum(temp4$corn.pred*acres)
+  indat5_corn <- sum(temp5$corn.pred*acres)
   
-  indat0_cotton <- sum(temp0$cotton0.pred*acres)
-  indat1_cotton <- sum(temp1$cotton1.pred*acres)
-  indat2_cotton <- sum(temp2$cotton2.pred*acres)
-  indat3_cotton <- sum(temp3$cotton3.pred*acres)
-  indat4_cotton <- sum(temp4$cotton4.pred*acres)
-  indat5_cotton <- sum(temp5$cotton5.pred*acres)
+  indat0_cotton <- sum(temp0$cotton.pred*acres)
+  indat1_cotton <- sum(temp1$cotton.pred*acres)
+  indat2_cotton <- sum(temp2$cotton.pred*acres)
+  indat3_cotton <- sum(temp3$cotton.pred*acres)
+  indat4_cotton <- sum(temp4$cotton.pred*acres)
+  indat5_cotton <- sum(temp5$cotton.pred*acres)
   
-  indat0_hay <- sum(temp0$hay0.pred*acres)
-  indat1_hay <- sum(temp1$hay1.pred*acres)
-  indat2_hay <- sum(temp2$hay2.pred*acres)
-  indat3_hay <- sum(temp3$hay3.pred*acres)
-  indat4_hay <- sum(temp4$hay4.pred*acres)
-  indat5_hay <- sum(temp5$hay5.pred*acres)
+  indat0_hay <- sum(temp0$hay.pred*acres)
+  indat1_hay <- sum(temp1$hay.pred*acres)
+  indat2_hay <- sum(temp2$hay.pred*acres)
+  indat3_hay <- sum(temp3$hay.pred*acres)
+  indat4_hay <- sum(temp4$hay.pred*acres)
+  indat5_hay <- sum(temp5$hay.pred*acres)
   
-  indat0_soybean <- sum(temp0$soybean0.pred*acres)
-  indat1_soybean <- sum(temp1$soybean1.pred*acres)
-  indat2_soybean <- sum(temp2$soybean2.pred*acres)
-  indat3_soybean <- sum(temp3$soybean3.pred*acres)
-  indat4_soybean <- sum(temp4$soybean4.pred*acres)
-  indat5_soybean <- sum(temp5$soybean5.pred*acres)
+  indat0_soybean <- sum(temp0$soybean.pred*acres)
+  indat1_soybean <- sum(temp1$soybean.pred*acres)
+  indat2_soybean <- sum(temp2$soybean.pred*acres)
+  indat3_soybean <- sum(temp3$soybean.pred*acres)
+  indat4_soybean <- sum(temp4$soybean.pred*acres)
+  indat5_soybean <- sum(temp5$soybean.pred*acres)
   
-  indat0_wheat <- sum(temp0$wheat0.pred*acres)
-  indat1_wheat <- sum(temp1$wheat1.pred*acres)
-  indat2_wheat <- sum(temp2$wheat2.pred*acres)
-  indat3_wheat <- sum(temp3$wheat3.pred*acres)
-  indat4_wheat <- sum(temp4$wheat4.pred*acres)
-  indat5_wheat <- sum(temp5$wheat5.pred*acres)
+  indat0_wheat <- sum(temp0$wheat.pred*acres)
+  indat1_wheat <- sum(temp1$wheat.pred*acres)
+  indat2_wheat <- sum(temp2$wheat.pred*acres)
+  indat3_wheat <- sum(temp3$wheat.pred*acres)
+  indat4_wheat <- sum(temp4$wheat.pred*acres)
+  indat5_wheat <- sum(temp5$wheat.pred*acres)
   
   
   
@@ -154,7 +160,10 @@ predictSUR.clean <- function(mod, newdata_list, acres, var.terms = NULL, cons.te
                              indat0_wheat, indat1_wheat, indat2_wheat, indat3_wheat, indat4_wheat, indat5_wheat),
                      type = type,
                      effect = effect)
-
-  return(pdat)
+  
+  temp <- bind_rows(temp0, temp1, temp2, temp3, temp4, temp5)
+  retlist <- list(predictions = temp,
+                  agg_predictions = pdat)
+  return(retlist)
 }
 

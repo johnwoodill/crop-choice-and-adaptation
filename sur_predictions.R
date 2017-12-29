@@ -259,13 +259,24 @@ climate_terms = c("dday0_10_sixty", "dday10_30_sixty", "dday30_sixty", "prec_six
 
 csixty <- predictSUR.clean(sur_sixty, acres = cropdat$acres,  newdata_list = newdata_list_sixty, type = "60-year", effect = "Climate-effect")
 
+# Save predictions data
+saveRDS(tfive, "data/tfive.rds")
+saveRDS(tten, "data/tten.rds")
+saveRDS(ttwenty, "data/ttwenty.rds")
+saveRDS(tthirty, "data/tthirty.rds")
 
 
-pdat <- rbind(wfive, cfive, tfive,
-              wten, cten, tten,
-              wtwenty, ctwenty, ttwenty,
-              wthirty, cthirty, tthirty,
-              csixty)
+saveRDS(cfive, "data/cfive.rds")
+saveRDS(cten, "data/cten.rds")
+saveRDS(ctwenty, "data/ctwenty.rds")
+saveRDS(cthirty, "data/cthirty.rds")
+saveRDS(csixty, "data/csixty.rds")
+
+pdat <- rbind(wfive$agg_predictions, cfive$agg_predictions, tfive$agg_predictions,
+              wten$agg_predictions, cten$agg_predictions, tten$agg_predictions,
+              wtwenty$agg_predictions, ctwenty$agg_predictions, ttwenty$agg_predictions,
+              wthirty$agg_predictions, cthirty$agg_predictions, tthirty$agg_predictions,
+              csixty$agg_predictions)
 
 pdat <- pdat %>% 
   group_by(crop, type, effect) %>% 
