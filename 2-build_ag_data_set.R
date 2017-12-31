@@ -148,8 +148,8 @@ hay <- read_csv("data/hay_1918-2008.csv")
 hay$state <- tolower(hay$state)
 hay$fips <- as.integer(hay$fips)
 
-wheat <- read_csv("data/wheat_1909-2007.csv")
-#wheat <- read_csv("data/wheat_1909-2007_spring.csv")
+# wheat <- read_csv("data/wheat_1909-2007.csv")
+wheat <- read_csv("data/wheat_1909-2007_spring.csv")
 wheat$state <- tolower(wheat$state)
 wheat$fips <- as.integer(wheat$fips)
 
@@ -773,6 +773,7 @@ cropdat <- cropdat %>%
 
 # Build trends
 cropdat$trend <- cropdat$year - 1949
+cropdat$trend_sq <- cropdat$trend^2
 cropdat$state <- factor(cropdat$state)
 statenum <- data.frame(state = unique(cropdat$state))
 statenum <- arrange(statenum, state)
@@ -808,12 +809,21 @@ cropdat$z_wheat_a <- qnorm(cropdat$cp_wheat_a)
 
 cropdat <- as.data.frame(cropdat)
 
-state_trends <- as.data.frame(dummyCreator(cropdat$state, "trend2"))
-state_trends$trend_sq <- cropdat$trend^2
-state_trends <- state_trends[, 1:25]*state_trends$trend_sq
-cropdat <- cbind(cropdat, state_trends)
+# Quadratic State-by-year time trends
+# Linear
+state_trends <- as.data.frame(dummyCreator(cropdat$state, "trend"))
+state_trends$trend <- cropdat$trend
+state_trends <- state_trends[, 1:25]*state_trends$trend
 
+# Quadratic
+state_trends_sq <- as.data.frame(dummyCreator(cropdat$state, "trend2"))
+state_trends_sq$trend_sq <- cropdat$trend^2
+state_trends_sq <- state_trends_sq[, 1:25]*state_trends_sq$trend_sq
+cropdat <- cbind(cropdat, state_trends, state_trends_sq)
 
+# Remove de because 180 total obs.
+cropdat <- filter(cropdat, state != "de")
+cropdat$state <- factor(cropdat$state)
 saveRDS(cropdat, "data/full_ag_data.rds")
 fulldat <- readRDS("data/full_ag_data.rds")
 

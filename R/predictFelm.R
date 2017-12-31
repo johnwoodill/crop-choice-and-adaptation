@@ -163,4 +163,3 @@ predictFelm <- function(felm.fit, newdata = NULL, var.terms = NULL, cons.terms =
 #   }
 #   
 
-

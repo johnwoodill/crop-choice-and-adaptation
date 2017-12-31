@@ -147,7 +147,7 @@ pdat <- pdat %>%
   group_by(type, effect) %>% 
   mutate(change_total = 100*(total - first(total))/first(total))
 
-ggplot(pdat, aes(temp, change_total, color = effect)) + geom_line() + facet_wrap(~type) + ylab("% Change in Total Revenue")
+ggplot(pdat, aes(temp, change_total, color = effect)) + geom_line() + facet_wrap(~type, scales = "free") + ylab("% Change in Total Revenue")
 
 mean(cropdat$acres)
 mean(c(cropdat$corn_grain_a, cropdat$cotton_a, cropdat$hay_a, cropdat$soybean_a, cropdat$wheat_a), na.rm = TRUE)

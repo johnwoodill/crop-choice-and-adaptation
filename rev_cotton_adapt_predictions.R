@@ -6,6 +6,9 @@ setwd("/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/")
 
 source("R/predictFelm.R")
 
+cropdat <- readRDS("data/full_ag_data.rds")
+cropdat$trend_sq <- cropdat$trend^2
+
 # Load models
 pmod1 <- readRDS("models/modfive_cotton.rds")
 pmod2 <- readRDS("models/modten_cotton.rds")
@@ -29,7 +32,12 @@ cons.terms_c_twenty <- c("dday0_10_twenty", "dday10_30_twenty", "dday30_twenty",
 cons.terms_c_thirty <- c("dday0_10_thirty", "dday10_30_thirty", "dday30_thirty", "prec_thirty", "prec_sq_thirty")
 
 w_terms <- c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq",
-              "trend2_al" ,"trend2_ar" , "trend2_de" ,"trend2_ga" , "trend2_ia"  ,         
+              "trend_al" ,"trend_ar" , "trend_ga" , "trend_ia"  ,         
+              "trend_il" ,"trend_in" , "trend_ks" , "trend_ky" , "trend_md" , "trend_mi" ,         
+              "trend_mn", "trend_mo" , "trend_ms" ,  "trend_mt" , "trend_nc" , "trend_nd" ,         
+              "trend_ne" ,"trend_oh" , "trend_ok" ,  "trend_sc" , "trend_sd" , "trend_tn" ,         
+              "trend_va" , "trend_wi",
+             "trend2_al" ,"trend2_ar" , "trend2_ga" , "trend2_ia"  ,         
               "trend2_il" ,"trend2_in" , "trend2_ks" , "trend2_ky" , "trend2_md" , "trend2_mi" ,         
               "trend2_mn", "trend2_mo" , "trend2_ms" ,  "trend2_mt" , "trend2_nc" , "trend2_nd" ,         
               "trend2_ne" ,"trend2_oh" , "trend2_ok" ,  "trend2_sc" , "trend2_sd" , "trend2_tn" ,         
@@ -125,28 +133,48 @@ wd4_ci <- sum(w4_4p$se.fit)*1.96
 wd5_ci <- sum(w4_5p$se.fit)*1.96
 
 c_terms_five <- c("dday0_10_five", "dday10_30_five", "dday30_five", "prec_five", "prec_sq_five",
-              "trend2_al" ,"trend2_ar" , "trend2_de" ,"trend2_ga" , "trend2_ia"  ,         
+              "trend_al" ,"trend_ar" , "trend_ga" , "trend_ia"  ,         
+              "trend_il" ,"trend_in" , "trend_ks" , "trend_ky" , "trend_md" , "trend_mi" ,         
+              "trend_mn", "trend_mo" , "trend_ms" ,  "trend_mt" , "trend_nc" , "trend_nd" ,         
+              "trend_ne" ,"trend_oh" , "trend_ok" ,  "trend_sc" , "trend_sd" , "trend_tn" ,         
+              "trend_va" , "trend_wi",
+             "trend2_al" ,"trend2_ar" , "trend2_ga" , "trend2_ia"  ,         
               "trend2_il" ,"trend2_in" , "trend2_ks" , "trend2_ky" , "trend2_md" , "trend2_mi" ,         
               "trend2_mn", "trend2_mo" , "trend2_ms" ,  "trend2_mt" , "trend2_nc" , "trend2_nd" ,         
               "trend2_ne" ,"trend2_oh" , "trend2_ok" ,  "trend2_sc" , "trend2_sd" , "trend2_tn" ,         
               "trend2_va" , "trend2_wi")
 
 c_terms_ten <- c("dday0_10_ten", "dday10_30_ten", "dday30_ten", "prec_ten", "prec_sq_ten",
-              "trend2_al" ,"trend2_ar" , "trend2_de" ,"trend2_ga" , "trend2_ia"  ,         
+              "trend_al" ,"trend_ar" , "trend_ga" , "trend_ia"  ,         
+              "trend_il" ,"trend_in" , "trend_ks" , "trend_ky" , "trend_md" , "trend_mi" ,         
+              "trend_mn", "trend_mo" , "trend_ms" ,  "trend_mt" , "trend_nc" , "trend_nd" ,         
+              "trend_ne" ,"trend_oh" , "trend_ok" ,  "trend_sc" , "trend_sd" , "trend_tn" ,         
+              "trend_va" , "trend_wi",
+             "trend2_al" ,"trend2_ar" , "trend2_ga" , "trend2_ia"  ,         
               "trend2_il" ,"trend2_in" , "trend2_ks" , "trend2_ky" , "trend2_md" , "trend2_mi" ,         
               "trend2_mn", "trend2_mo" , "trend2_ms" ,  "trend2_mt" , "trend2_nc" , "trend2_nd" ,         
               "trend2_ne" ,"trend2_oh" , "trend2_ok" ,  "trend2_sc" , "trend2_sd" , "trend2_tn" ,         
               "trend2_va" , "trend2_wi")
 
 c_terms_twenty <- c("dday0_10_twenty", "dday10_30_twenty", "dday30_twenty", "prec_twenty", "prec_sq_twenty",
-              "trend2_al" ,"trend2_ar" , "trend2_de" ,"trend2_ga" , "trend2_ia"  ,         
+              "trend_al" ,"trend_ar" , "trend_ga" , "trend_ia"  ,         
+              "trend_il" ,"trend_in" , "trend_ks" , "trend_ky" , "trend_md" , "trend_mi" ,         
+              "trend_mn", "trend_mo" , "trend_ms" ,  "trend_mt" , "trend_nc" , "trend_nd" ,         
+              "trend_ne" ,"trend_oh" , "trend_ok" ,  "trend_sc" , "trend_sd" , "trend_tn" ,         
+              "trend_va" , "trend_wi",
+             "trend2_al" ,"trend2_ar" , "trend2_ga" , "trend2_ia"  ,         
               "trend2_il" ,"trend2_in" , "trend2_ks" , "trend2_ky" , "trend2_md" , "trend2_mi" ,         
               "trend2_mn", "trend2_mo" , "trend2_ms" ,  "trend2_mt" , "trend2_nc" , "trend2_nd" ,         
               "trend2_ne" ,"trend2_oh" , "trend2_ok" ,  "trend2_sc" , "trend2_sd" , "trend2_tn" ,         
               "trend2_va" , "trend2_wi")
 
 c_terms_thirty <- c("dday0_10_thirty", "dday10_30_thirty", "dday30_thirty", "prec_thirty", "prec_sq_thirty",
-              "trend2_al" ,"trend2_ar" , "trend2_de" ,"trend2_ga" , "trend2_ia"  ,         
+              "trend_al" ,"trend_ar" , "trend_ga" , "trend_ia"  ,         
+              "trend_il" ,"trend_in" , "trend_ks" , "trend_ky" , "trend_md" , "trend_mi" ,         
+              "trend_mn", "trend_mo" , "trend_ms" ,  "trend_mt" , "trend_nc" , "trend_nd" ,         
+              "trend_ne" ,"trend_oh" , "trend_ok" ,  "trend_sc" , "trend_sd" , "trend_tn" ,         
+              "trend_va" , "trend_wi",
+             "trend2_al" ,"trend2_ar" , "trend2_ga" , "trend2_ia"  ,         
               "trend2_il" ,"trend2_in" , "trend2_ks" , "trend2_ky" , "trend2_md" , "trend2_mi" ,         
               "trend2_mn", "trend2_mo" , "trend2_ms" ,  "trend2_mt" , "trend2_nc" , "trend2_nd" ,         
               "trend2_ne" ,"trend2_oh" , "trend2_ok" ,  "trend2_sc" , "trend2_sd" , "trend2_tn" ,         
@@ -265,7 +293,7 @@ ce5_ci <- sum(c5_5p$se.fit)*1.96
 #-----------------------------------------------------------------
 # Total Effect
 
-t1_0p <- predictFelm(pmod1)
+t1_0p <- predictFelm(felm.fit = pmod1, newdata = cropdat)
 t1_1p <- predictFelm(pmod1, newdata = p1)
 t1_2p <- predictFelm(pmod1, newdata = p2)
 t1_3p <- predictFelm(pmod1, newdata = p3)
