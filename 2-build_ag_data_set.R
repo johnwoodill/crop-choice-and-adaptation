@@ -148,8 +148,8 @@ hay <- read_csv("data/hay_1918-2008.csv")
 hay$state <- tolower(hay$state)
 hay$fips <- as.integer(hay$fips)
 
-# wheat <- read_csv("data/wheat_1909-2007.csv")
-wheat <- read_csv("data/wheat_1909-2007_spring.csv")
+wheat <- read_csv("data/wheat_1909-2007.csv")
+# wheat <- read_csv("data/wheat_1909-2007_spring.csv")
 wheat$state <- tolower(wheat$state)
 wheat$fips <- as.integer(wheat$fips)
 
@@ -365,18 +365,18 @@ fulldat$wheat_yield <- fulldat$wheat_p/fulldat$wheat_a
 fulldat$soybean_yield <- fulldat$soybean_p/fulldat$soybean_a
 
 # # Real revenue per acre
-# fulldat$corn_rrev <- (fulldat$corn_grain_p*fulldat$corn_rprice)/fulldat$corn_grain_a
-# fulldat$cotton_rrev <- (fulldat$cotton_p*fulldat$cotton_rprice)/fulldat$cotton_a
-# fulldat$hay_rrev <- (fulldat$hay_p*fulldat$hay_rprice)/fulldat$hay_a
-# fulldat$wheat_rrev <- (fulldat$wheat_p*fulldat$wheat_rprice)/fulldat$wheat_a
-# fulldat$soybean_rrev <- (fulldat$soybean_p*fulldat$soybean_rprice)/fulldat$soybean_a
+fulldat$corn_rrev <- (fulldat$corn_grain_p*fulldat$corn_rprice)/fulldat$corn_grain_a
+fulldat$cotton_rrev <- (fulldat$cotton_p*fulldat$cotton_rprice)/fulldat$cotton_a
+fulldat$hay_rrev <- (fulldat$hay_p*fulldat$hay_rprice)/fulldat$hay_a
+fulldat$wheat_rrev <- (fulldat$wheat_p*fulldat$wheat_rprice)/fulldat$wheat_a
+fulldat$soybean_rrev <- (fulldat$soybean_p*fulldat$soybean_rprice)/fulldat$soybean_a
 
-# Real revenue per acre constant price
-fulldat$corn_rrev <- (fulldat$corn_grain_p*mean(fulldat$corn_rprice, na.rm = TRUE))/fulldat$corn_grain_a
-fulldat$cotton_rrev <- (fulldat$cotton_p*mean(fulldat$cotton_rprice, na.rm = TRUE))/fulldat$cotton_a
-fulldat$hay_rrev <- (fulldat$hay_p*mean(fulldat$hay_rprice, na.rm = TRUE))/fulldat$hay_a
-fulldat$wheat_rrev <- (fulldat$wheat_p*mean(fulldat$wheat_rprice, na.rm = TRUE))/fulldat$wheat_a
-fulldat$soybean_rrev <- (fulldat$soybean_p*mean(fulldat$soybean_rprice, na.rm = TRUE))/fulldat$soybean_a
+# Real mean revenue per acre constant price
+fulldat$corn_mrev <- (fulldat$corn_grain_p*mean(fulldat$corn_rprice, na.rm = TRUE))/fulldat$corn_grain_a
+fulldat$cotton_mrev <- (fulldat$cotton_p*mean(fulldat$cotton_rprice, na.rm = TRUE))/fulldat$cotton_a
+fulldat$hay_mrev <- (fulldat$hay_p*mean(fulldat$hay_rprice, na.rm = TRUE))/fulldat$hay_a
+fulldat$wheat_mrev <- (fulldat$wheat_p*mean(fulldat$wheat_rprice, na.rm = TRUE))/fulldat$wheat_a
+fulldat$soybean_mrev <- (fulldat$soybean_p*mean(fulldat$soybean_rprice, na.rm = TRUE))/fulldat$soybean_a
 
 # Nominal rev
 fulldat$corn_nrev <- (fulldat$corn_grain_p*fulldat$corn_nprice)/fulldat$corn_grain_a
@@ -387,11 +387,11 @@ fulldat$soybean_nrev <- (fulldat$soybean_p*fulldat$soybean_nprice)/fulldat$soybe
 
 # Organize before degree day merge
 fulldat <- select(fulldat, year, state, fips, lat, long, gdp_price_def, 
-                  corn_grain_a, corn_grain_p, corn_yield, corn_nprice, corn_rprice, corn_rrev, corn_nrev,
-                  cotton_a, cotton_p, cotton_yield, cotton_nprice, cotton_rprice, cotton_rrev, cotton_nrev,
-                  hay_a, hay_p, hay_yield, hay_nprice, hay_rprice, hay_rrev, hay_nrev,
-                  wheat_a, wheat_p, wheat_yield, wheat_nprice, wheat_rprice, wheat_rrev, wheat_nrev,
-                  soybean_a, soybean_p, soybean_yield, soybean_nprice, soybean_rprice, soybean_rrev, soybean_nrev)
+                  corn_grain_a, corn_grain_p, corn_yield, corn_nprice, corn_rprice, corn_mrev, corn_rrev, corn_nrev,
+                  cotton_a, cotton_p, cotton_yield, cotton_nprice, cotton_rprice, cotton_mrev, cotton_rrev, cotton_nrev,
+                  hay_a, hay_p, hay_yield, hay_nprice, hay_rprice, hay_mrev, hay_rrev, hay_nrev,
+                  wheat_a, wheat_p, wheat_yield, wheat_nprice, wheat_rprice, wheat_mrev, wheat_rrev, wheat_nrev,
+                  soybean_a, soybean_p, soybean_yield, soybean_nprice, soybean_rprice, soybean_mrev, soybean_rrev, soybean_nrev)
 
 # Merge degree days
 fulldat <- left_join(fulldat, dd_dat, by = c("year", "fips"))
@@ -641,11 +641,11 @@ data <- filter(data, fips %in% fipss)
 # Build data set for regression estimates
 cropdat <- filter(data, year < 2010)
   
-cropdat$corn_rprice <- mean(cropdat$corn_rprice, na.rm = TRUE)
-cropdat$cotton_rprice <- mean(cropdat$cotton_rprice, na.rm = TRUE)
-cropdat$hay_rprice <- mean(cropdat$hay_rprice, na.rm = TRUE)
-cropdat$wheat_rprice <- mean(cropdat$wheat_rprice, na.rm = TRUE)
-cropdat$soybean_rprice <- mean(cropdat$soybean_rprice, na.rm = TRUE)
+cropdat$corn_mprice <- mean(cropdat$corn_rprice, na.rm = TRUE)
+cropdat$cotton_mprice <- mean(cropdat$cotton_rprice, na.rm = TRUE)
+cropdat$hay_mprice <- mean(cropdat$hay_rprice, na.rm = TRUE)
+cropdat$wheat_mprice <- mean(cropdat$wheat_rprice, na.rm = TRUE)
+cropdat$soybean_mprice <- mean(cropdat$soybean_rprice, na.rm = TRUE)
 
 cropdat <- cropdat %>% 
    group_by(fips) %>% 
@@ -663,11 +663,11 @@ cropdat$soybean_yield <- ifelse(is.na(cropdat$soybean_yield), 0, cropdat$soybean
 cropdat$wheat_yield <- ifelse(is.na(cropdat$wheat_yield), 0, cropdat$wheat_yield)
 
 # Total Activity
-cropdat$corn <- cropdat$corn_yield*cropdat$corn_rprice
-cropdat$cotton <- cropdat$cotton_yield*cropdat$cotton_rprice
-cropdat$hay <- cropdat$hay_yield*cropdat$hay_rprice
-cropdat$wheat <- cropdat$wheat_yield*cropdat$wheat_rprice
-cropdat$soybean <- cropdat$soybean_yield*cropdat$soybean_rprice
+cropdat$corn <- cropdat$corn_yield*cropdat$corn_mprice
+cropdat$cotton <- cropdat$cotton_yield*cropdat$cotton_mprice
+cropdat$hay <- cropdat$hay_yield*cropdat$hay_mprice
+cropdat$wheat <- cropdat$wheat_yield*cropdat$wheat_mprice
+cropdat$soybean <- cropdat$soybean_yield*cropdat$soybean_mprice
 
 # Log crop revenue
 cropdat$ln_rev_corn <- log(1 + cropdat$corn)
@@ -774,17 +774,6 @@ cropdat <- cropdat %>%
 # Build trends
 cropdat$trend <- cropdat$year - 1949
 cropdat$trend_sq <- cropdat$trend^2
-cropdat$state <- factor(cropdat$state)
-statenum <- data.frame(state = unique(cropdat$state))
-statenum <- arrange(statenum, state)
-statenum$statenum <- 1:length(unique(cropdat$state))
-cropdat <- left_join(cropdat, statenum, by = "state")
-cropdat$state_trend <- cropdat$statenum*cropdat$trend
-cropdat$state_trend_sq <- (cropdat$statenum*cropdat$trend)^2
-cropdat$state_trend_five <- cropdat$state_trend*cropdat$five
-cropdat$state_trend_ten <- cropdat$state_trend*cropdat$ten
-cropdat$state_trend_twenty <- cropdat$state_trend*cropdat$twenty
-cropdat$state_trend_thirty <- cropdat$state_trend*cropdat$thirty
 
 # Crop acres as percentage of total
 cropdat$p_corn_a <- cropdat$corn_grain_a/cropdat$acres

@@ -40,7 +40,7 @@ cropdat_means <- demeanlist(testdat, fl = list(fips = factor(cropdat$fips),
 
 mod1 <- z_corn_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
               dday0_10_five + dday10_30_five + dday30_five + prec_five + prec_sq_five +
-                            trend_al +trend_ar + trend_ga + trend_ia  +         
+               trend_al +trend_ar + trend_ga + trend_ia  +         
               trend_il +trend_in + trend_ks + trend_ky + trend_md + trend_mi +         
                 trend_mn+ trend_mo + trend_ms +  trend_mt + trend_nc + trend_nd +         
                 trend_ne +trend_oh + trend_ok +  trend_sc + trend_sd + trend_tn +         

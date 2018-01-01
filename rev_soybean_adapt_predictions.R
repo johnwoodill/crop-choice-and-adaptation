@@ -6,6 +6,9 @@ setwd("/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/")
 
 source("R/predictFelm.R")
 
+cropdat <- readRDS("data/full_ag_data.rds")
+cropdat$trend_sq <- cropdat$trend^2
+
 # Load models
 pmod1 <- readRDS("models/modfive_soybean.rds")
 pmod2 <- readRDS("models/modten_soybean.rds")
@@ -28,12 +31,7 @@ cons.terms_c_ten <- c("dday0_10_ten", "dday10_30_ten", "dday30_ten", "prec_ten",
 cons.terms_c_twenty <- c("dday0_10_twenty", "dday10_30_twenty", "dday30_twenty", "prec_twenty", "prec_sq_twenty")
 cons.terms_c_thirty <- c("dday0_10_thirty", "dday10_30_thirty", "dday30_thirty", "prec_thirty", "prec_sq_thirty")
 
-w_terms <- c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq",
-              "trend2_al" ,"trend2_ar" , "trend2_de" ,"trend2_ga" , "trend2_ia"  ,         
-              "trend2_il" ,"trend2_in" , "trend2_ks" , "trend2_ky" , "trend2_md" , "trend2_mi" ,         
-              "trend2_mn", "trend2_mo" , "trend2_ms" ,  "trend2_mt" , "trend2_nc" , "trend2_nd" ,         
-              "trend2_ne" ,"trend2_oh" , "trend2_ok" ,  "trend2_sc" , "trend2_sd" , "trend2_tn" ,         
-              "trend2_va" , "trend2_wi")
+w_terms <- c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq")
 
 
 
@@ -124,33 +122,13 @@ wd3_ci <- sum(w4_3p$se.fit)*1.96
 wd4_ci <- sum(w4_4p$se.fit)*1.96
 wd5_ci <- sum(w4_5p$se.fit)*1.96
 
-c_terms_five <- c("dday0_10_five", "dday10_30_five", "dday30_five", "prec_five", "prec_sq_five",
-              "trend2_al" ,"trend2_ar" , "trend2_de" ,"trend2_ga" , "trend2_ia"  ,         
-              "trend2_il" ,"trend2_in" , "trend2_ks" , "trend2_ky" , "trend2_md" , "trend2_mi" ,         
-              "trend2_mn", "trend2_mo" , "trend2_ms" ,  "trend2_mt" , "trend2_nc" , "trend2_nd" ,         
-              "trend2_ne" ,"trend2_oh" , "trend2_ok" ,  "trend2_sc" , "trend2_sd" , "trend2_tn" ,         
-              "trend2_va" , "trend2_wi")
+c_terms_five <- c("dday0_10_five", "dday10_30_five", "dday30_five", "prec_five", "prec_sq_five")
 
-c_terms_ten <- c("dday0_10_ten", "dday10_30_ten", "dday30_ten", "prec_ten", "prec_sq_ten",
-              "trend2_al" ,"trend2_ar" , "trend2_de" ,"trend2_ga" , "trend2_ia"  ,         
-              "trend2_il" ,"trend2_in" , "trend2_ks" , "trend2_ky" , "trend2_md" , "trend2_mi" ,         
-              "trend2_mn", "trend2_mo" , "trend2_ms" ,  "trend2_mt" , "trend2_nc" , "trend2_nd" ,         
-              "trend2_ne" ,"trend2_oh" , "trend2_ok" ,  "trend2_sc" , "trend2_sd" , "trend2_tn" ,         
-              "trend2_va" , "trend2_wi")
+c_terms_ten <- c("dday0_10_ten", "dday10_30_ten", "dday30_ten", "prec_ten", "prec_sq_ten")
 
-c_terms_twenty <- c("dday0_10_twenty", "dday10_30_twenty", "dday30_twenty", "prec_twenty", "prec_sq_twenty",
-              "trend2_al" ,"trend2_ar" , "trend2_de" ,"trend2_ga" , "trend2_ia"  ,         
-              "trend2_il" ,"trend2_in" , "trend2_ks" , "trend2_ky" , "trend2_md" , "trend2_mi" ,         
-              "trend2_mn", "trend2_mo" , "trend2_ms" ,  "trend2_mt" , "trend2_nc" , "trend2_nd" ,         
-              "trend2_ne" ,"trend2_oh" , "trend2_ok" ,  "trend2_sc" , "trend2_sd" , "trend2_tn" ,         
-              "trend2_va" , "trend2_wi")
+c_terms_twenty <- c("dday0_10_twenty", "dday10_30_twenty", "dday30_twenty", "prec_twenty", "prec_sq_twenty")
 
-c_terms_thirty <- c("dday0_10_thirty", "dday10_30_thirty", "dday30_thirty", "prec_thirty", "prec_sq_thirty",
-              "trend2_al" ,"trend2_ar" , "trend2_de" ,"trend2_ga" , "trend2_ia"  ,         
-              "trend2_il" ,"trend2_in" , "trend2_ks" , "trend2_ky" , "trend2_md" , "trend2_mi" ,         
-              "trend2_mn", "trend2_mo" , "trend2_ms" ,  "trend2_mt" , "trend2_nc" , "trend2_nd" ,         
-              "trend2_ne" ,"trend2_oh" , "trend2_ok" ,  "trend2_sc" , "trend2_sd" , "trend2_tn" ,         
-              "trend2_va" , "trend2_wi")
+c_terms_thirty <- c("dday0_10_thirty", "dday10_30_thirty", "dday30_thirty", "prec_thirty", "prec_sq_thirty")
 
 c_terms_sixty <- c("dday0_10_sixty", "dday10_30_sixty", "dday30_sixty", "prec_sixty", "prec_sq_sixty")
 
@@ -265,40 +243,51 @@ ce5_ci <- sum(c5_5p$se.fit)*1.96
 #-----------------------------------------------------------------
 # Total Effect
 
-t1_0p <- predictFelm(pmod1)
-t1_1p <- predictFelm(pmod1, newdata = p1)
-t1_2p <- predictFelm(pmod1, newdata = p2)
-t1_3p <- predictFelm(pmod1, newdata = p3)
-t1_4p <- predictFelm(pmod1, newdata = p4)
-t1_5p <- predictFelm(pmod1, newdata = p5)
 
-t2_0p <- predictFelm(pmod2)
-t2_1p <- predictFelm(pmod2, newdata = p1)
-t2_2p <- predictFelm(pmod2, newdata = p2)
-t2_3p <- predictFelm(pmod2, newdata = p3)
-t2_4p <- predictFelm(pmod2, newdata = p4)
-t2_5p <- predictFelm(pmod2, newdata = p5)
+t_terms_five <- c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq", "dday0_10_five", "dday10_30_five", "dday30_five", "prec_five", "prec_sq_five")
 
-t3_0p <- predictFelm(pmod3)
-t3_1p <- predictFelm(pmod3, newdata = p1)
-t3_2p <- predictFelm(pmod3, newdata = p2)
-t3_3p <- predictFelm(pmod3, newdata = p3)
-t3_4p <- predictFelm(pmod3, newdata = p4)
-t3_5p <- predictFelm(pmod3, newdata = p5)
+t_terms_ten <- c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq","dday0_10_ten", "dday10_30_ten", "dday30_ten", "prec_ten", "prec_sq_ten")
 
-t4_0p <- predictFelm(pmod4)
-t4_1p <- predictFelm(pmod4, newdata = p1)
-t4_2p <- predictFelm(pmod4, newdata = p2)
-t4_3p <- predictFelm(pmod4, newdata = p3)
-t4_4p <- predictFelm(pmod4, newdata = p4)
-t4_5p <- predictFelm(pmod4, newdata = p5)
+t_terms_twenty <- c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq","dday0_10_twenty", "dday10_30_twenty", "dday30_twenty", "prec_twenty", "prec_sq_twenty")
 
-t5_0p <- predictFelm(pmod5)
-t5_1p <- predictFelm(pmod5, newdata = p1)
-t5_2p <- predictFelm(pmod5, newdata = p2)
-t5_3p <- predictFelm(pmod5, newdata = p3)
-t5_4p <- predictFelm(pmod5, newdata = p4)
-t5_5p <- predictFelm(pmod5, newdata = p5)
+t_terms_thirty <- c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq","dday0_10_thirty", "dday10_30_thirty", "dday30_thirty", "prec_thirty", "prec_sq_thirty")
+
+t_terms_sixty <- c("dday0_10_sixty", "dday10_30_sixty", "dday30_sixty", "prec_sixty", "prec_sq_sixty")
+
+t1_0p <- predictFelm(felm.fit = pmod1, var.terms = t_terms_five)
+t1_1p <- predictFelm(pmod1, newdata = p1, var.terms = t_terms_five)
+t1_2p <- predictFelm(pmod1, newdata = p2, var.terms = t_terms_five)
+t1_3p <- predictFelm(pmod1, newdata = p3, var.terms = t_terms_five)
+t1_4p <- predictFelm(pmod1, newdata = p4, var.terms = t_terms_five)
+t1_5p <- predictFelm(pmod1, newdata = p5, var.terms = t_terms_five)
+
+t2_0p <- predictFelm(pmod2, var.terms = t_terms_ten)
+t2_1p <- predictFelm(pmod2, newdata = p1, var.terms = t_terms_ten)
+t2_2p <- predictFelm(pmod2, newdata = p2, var.terms = t_terms_ten)
+t2_3p <- predictFelm(pmod2, newdata = p3, var.terms = t_terms_ten)
+t2_4p <- predictFelm(pmod2, newdata = p4, var.terms = t_terms_ten)
+t2_5p <- predictFelm(pmod2, newdata = p5, var.terms = t_terms_ten)
+
+t3_0p <- predictFelm(pmod3, var.terms = t_terms_twenty)
+t3_1p <- predictFelm(pmod3, newdata = p1, var.terms = t_terms_twenty)
+t3_2p <- predictFelm(pmod3, newdata = p2, var.terms = t_terms_twenty)
+t3_3p <- predictFelm(pmod3, newdata = p3, var.terms = t_terms_twenty)
+t3_4p <- predictFelm(pmod3, newdata = p4, var.terms = t_terms_twenty)
+t3_5p <- predictFelm(pmod3, newdata = p5, var.terms = t_terms_twenty)
+
+t4_0p <- predictFelm(pmod4, var.terms = t_terms_thirty)
+t4_1p <- predictFelm(pmod4, newdata = p1, var.terms = t_terms_thirty)
+t4_2p <- predictFelm(pmod4, newdata = p2, var.terms = t_terms_thirty)
+t4_3p <- predictFelm(pmod4, newdata = p3, var.terms = t_terms_thirty)
+t4_4p <- predictFelm(pmod4, newdata = p4, var.terms = t_terms_thirty)
+t4_5p <- predictFelm(pmod4, newdata = p5, var.terms = t_terms_thirty)
+
+t5_0p <- predictFelm(pmod5, var.terms = t_terms_sixty)
+t5_1p <- predictFelm(pmod5, newdata = p1, var.terms = t_terms_sixty)
+t5_2p <- predictFelm(pmod5, newdata = p2, var.terms = t_terms_sixty)
+t5_3p <- predictFelm(pmod5, newdata = p3, var.terms = t_terms_sixty)
+t5_4p <- predictFelm(pmod5, newdata = p4, var.terms = t_terms_sixty)
+t5_5p <- predictFelm(pmod5, newdata = p5, var.terms = t_terms_sixty)
 
 # Total predicted revenue per acre
 ta0_fit <- exp(t1_0p$fit + t1_0p$res + t1_0p$effect) - 1
@@ -451,8 +440,8 @@ adat <- data.frame(effect = "Total-effect",
                            tc0_fit, tc1_fit, tc2_fit, tc3_fit, tc4_fit, tc5_fit,
                            td0_fit, td1_fit, td2_fit, td3_fit, td4_fit, td5_fit,
                            te0_fit, te1_fit, te2_fit, te3_fit, te4_fit, te5_fit),
-                   temp = rep(c(0, 1, 2, 3, 4, 5), 5, each = 82680),
-                   type = rep(c("5-year", "10-year", "20-year", "30-year", "60-year"), each = 82680*6),
+                   temp = rep(c(0, 1, 2, 3, 4, 5), 5, each = length(ta0_fit)),
+                   type = rep(c("5-year", "10-year", "20-year", "30-year", "60-year"), each = length(ta0_fit)*6),
                    crop = "soybean")
 
 head(adat)

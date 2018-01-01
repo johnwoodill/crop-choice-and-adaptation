@@ -28,7 +28,7 @@ modfive_corn <- felm(ln_rev_corn ~ dday0_10 + dday10_30 + dday30 + prec + prec_s
             | fips + five| 0 | state, 
             data = regdat, weights = (1 + regdat$corn_w), psdef = FALSE)
 
-sum(modfive_corn$coefficients)
+sum(modfive_corn$coefficients[1:10])
 summary(modfive_corn)
 
 modfive_cotton <- felm(ln_rev_cotton ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
@@ -46,7 +46,7 @@ modfive_cotton <- felm(ln_rev_cotton ~ dday0_10 + dday10_30 + dday30 + prec + pr
             | fips + five | 0 | state, 
             data = regdat, weights = (1 + regdat$cotton_w), psdef = FALSE)
 
-sum(modfive_cotton$coefficients)
+sum(modfive_cotton$coefficients[1:10])
 summary(modfive_cotton)
 
 modfive_hay <- felm(ln_rev_hay ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
@@ -64,6 +64,7 @@ modfive_hay <- felm(ln_rev_hay ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq 
             | fips + five | 0 | state, 
             data = regdat, weights = (1 + regdat$hay_w), psdef = FALSE)
 
+sum(modfive_hay$coefficients[1:10])
 summary(modfive_hay)
 
 modfive_soybean <- felm(ln_rev_soybean ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
@@ -81,6 +82,7 @@ modfive_soybean <- felm(ln_rev_soybean ~ dday0_10 + dday10_30 + dday30 + prec + 
             | fips + five | 0 | state, 
             data = regdat, weights = (1 + regdat$soybean_w), psdef = FALSE)
 
+sum(modfive_soybean$coefficients[1:10])
 summary(modfive_soybean)
 
 modfive_wheat <- felm(ln_rev_wheat ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
@@ -98,6 +100,7 @@ modfive_wheat <- felm(ln_rev_wheat ~ dday0_10 + dday10_30 + dday30 + prec + prec
             | fips + five | 0 | state, 
             data = regdat, weights = (1 + regdat$wheat_w), psdef = FALSE)
 
+sum(modfive_wheat$coefficients)
 summary(modfive_wheat)
 
 saveRDS(modfive_corn, "models/modfive_corn.rds")
@@ -216,8 +219,9 @@ modtwenty_corn <- felm(ln_rev_corn ~ dday0_10 + dday10_30 + dday30 + prec + prec
               trend2_ne +trend2_oh + trend2_ok +  trend2_sc + trend2_sd + trend2_tn +         
               trend2_va + trend2_wi 
             | fips + twenty | 0 | state, 
-            data = regdat, weights = (1 + regdat$corn_w), psdef = FALSE)
+            data = regdat, weights = (1 + regdat$corn_w))
 
+sum(modtwenty_corn$coefficients[1:10])
 summary(modtwenty_corn)
 
 modtwenty_cotton <- felm(ln_rev_cotton ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
@@ -235,6 +239,7 @@ modtwenty_cotton <- felm(ln_rev_cotton ~ dday0_10 + dday10_30 + dday30 + prec + 
             | fips + twenty | 0 | state, 
             data = regdat, weights = (1 + regdat$cotton_w), psdef = FALSE)
 
+sum(modtwenty_cotton$coefficients[1:10])
 summary(modtwenty_cotton)
 
 modtwenty_hay <- felm(ln_rev_hay ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
@@ -249,9 +254,10 @@ modtwenty_hay <- felm(ln_rev_hay ~ dday0_10 + dday10_30 + dday30 + prec + prec_s
               trend2_mn+ trend2_mo + trend2_ms +  trend2_mt + trend2_nc + trend2_nd +         
               trend2_ne +trend2_oh + trend2_ok +  trend2_sc + trend2_sd + trend2_tn +         
               trend2_va + trend2_wi 
-            | fips + twenty | 0 | state, 
+            | fips + twenty  | 0 | state, 
             data = regdat, weights = (1 + regdat$hay_w), psdef = FALSE)
 
+sum(modtwenty_hay$coefficients)
 summary(modtwenty_hay)
 
 modtwenty_soybean <- felm(ln_rev_soybean ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
@@ -267,7 +273,7 @@ modtwenty_soybean <- felm(ln_rev_soybean ~ dday0_10 + dday10_30 + dday30 + prec 
               trend2_ne +trend2_oh + trend2_ok +  trend2_sc + trend2_sd + trend2_tn +         
               trend2_va + trend2_wi 
             | fips + twenty | 0 | state, 
-            data = regdat, weights = (regdat$soybean_w), psdef = FALSE)
+            data = regdat, weights = (1 +regdat$soybean_w), psdef = FALSE)
 
 summary(modtwenty_soybean)
 
