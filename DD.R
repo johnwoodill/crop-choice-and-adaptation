@@ -6,110 +6,6 @@ library(systemfit)
 
 setwd("/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/")
 cropdat <- readRDS("data/full_ag_data.rds")
-cropdat <- filter(cropdat, year < 2010)
-cropdat$dday0_10 <- cropdat$dday0C - cropdat$dday10C
-cropdat$dday10_30 <- cropdat$dday10C - cropdat$dday30C
-cropdat$state <- factor(cropdat$state)
-cropdat$fips <- factor(cropdat$fips)
-
-dummyCreator <- function(invec, prefix = NULL) {
-     L <- length(invec)
-     ColNames <- sort(unique(invec))
-     M <- matrix(0L, ncol = length(ColNames), nrow = L,
-                 dimnames = list(NULL, ColNames))
-     M[cbind(seq_len(L), match(invec, ColNames))] <- 1L
-     if (!is.null(prefix)) colnames(M) <- paste(prefix, colnames(M), sep = "_")
-     M
-} 
-
-# Exposure weighted values equal zero
-# cropdat$tavg <- cropdat$tavg - mean(cropdat$tavg, na.rm = TRUE)
-# cropdat$dday0_10 <- cropdat$dday0_10 - mean(cropdat$dday0_10, na.rm = TRUE)
-# cropdat$dday10_30 <- cropdat$dday10_30 - mean(cropdat$dday10_30, na.rm = TRUE)
-# cropdat$dday30C <- cropdat$dday30C - mean(cropdat$dday30C, na.rm = TRUE)
-# cropdat$prec <- cropdat$prec - mean(cropdat$prec, na.rm = TRUE)
-cropdat$prec_sq <- cropdat$prec^2
-
-#cropdat <- filter(cropdat, state == "wi")
-#cropdat
-
-# # Constant prices
-cropdat$corn_rprice <- mean(cropdat$corn_rprice, na.rm = TRUE)
-cropdat$cotton_rprice <- mean(cropdat$cotton_rprice, na.rm = TRUE)
-cropdat$hay_rprice <- mean(cropdat$hay_rprice, na.rm = TRUE)
-cropdat$wheat_rprice <- mean(cropdat$wheat_rprice, na.rm = TRUE)
-cropdat$soybean_rprice <- mean(cropdat$soybean_rprice, na.rm = TRUE)
-
-cropdat <- cropdat %>% 
-   group_by(fips) %>% 
-   mutate(avg_corn_a = mean(corn_grain_a, na.rm = TRUE),
-          avg_cotton_a = mean(cotton_a, na.rm = TRUE),
-          avg_hay_a = mean(hay_a, na.rm = TRUE),
-          avg_soybean_a = mean(soybean_a, na.rm = TRUE),
-          avg_wheat_a = mean(wheat_a, na.rm = TRUE))
- 
-# Total Activity
-cropdat$corn <- cropdat$corn_yield*cropdat$corn_rprice
-cropdat$cotton <- cropdat$cotton_yield*cropdat$cotton_rprice
-cropdat$hay <- cropdat$hay_yield*cropdat$hay_rprice
-cropdat$wheat <- cropdat$wheat_yield*cropdat$wheat_rprice
-cropdat$soybean <- cropdat$soybean_yield*cropdat$soybean_rprice
-
-# Constant acres in revenue per acre
-cropdat$c_corn <- (cropdat$corn_grain_p/cropdat$avg_corn_a)*cropdat$corn_rprice
-cropdat$c_cotton <- (cropdat$cotton_p/cropdat$avg_cotton_a)*cropdat$cotton_rprice
-cropdat$c_hay <- (cropdat$hay_p/cropdat$avg_hay_a)*cropdat$hay_rprice
-cropdat$c_soybean <- (cropdat$soybean_p/cropdat$avg_soybean_a)*cropdat$soybean_rprice
-cropdat$c_wheat <- (cropdat$wheat_p/cropdat$avg_wheat_a)*cropdat$wheat_rprice
-
-
-cropdat$rev <- rowSums(cropdat[, c("corn", "cotton", "hay", "soybean", "wheat")], na.rm = TRUE)
-cropdat$c_rev <- rowSums(cropdat[, c("c_corn", "c_cotton", "c_hay", "c_soybean", "c_wheat")], na.rm = TRUE)
-
-cropdat$acres <- rowSums(cropdat[, c("corn_grain_a", "cotton_a", "hay_a", "soybean_a", "wheat_a")], na.rm = TRUE)
-cropdat$c_acres <- rowSums(cropdat[, c("avg_corn_a", "avg_cotton_a", "avg_hay_a", "avg_soybean_a", "avg_wheat_a")], na.rm = TRUE)
-
-cropdat$ln_rev <- log(1 + cropdat$rev)
-cropdat$c_ln_rev <- log(1 + cropdat$c_rev)
-
-cropdat$ln_acres <- log(1 + cropdat$acres)
-cropdat$c_ln_acres <- log(1 + cropdat$c_acres)
-
-# Set weights 1950-1980 Average Acres
-wdat <- cropdat %>% 
-  filter(year <= 1979) %>% 
-  group_by(fips) %>% 
-  summarise(w_acres = mean(acres, na.rm = TRUE),
-            w_corn_a = mean(corn_grain_a, na.rm = TRUE))
-
-cropdat <- left_join(cropdat, wdat, by = "fips")
-
-# Proportion of crop acres as total of harvested_farmland_a
-cropdat$corn_grain_a <- ifelse(is.na(cropdat$corn_grain_a), 0, cropdat$corn_grain_a)
-cropdat$cotton_a <- ifelse(is.na(cropdat$cotton_a), 0, cropdat$cotton_a)
-cropdat$hay_a <- ifelse(is.na(cropdat$hay_a), 0, cropdat$hay_a)
-cropdat$wheat_a <- ifelse(is.na(cropdat$wheat_a), 0, cropdat$wheat_a)
-cropdat$soybean_a <- ifelse(is.na(cropdat$soybean_a), 0, cropdat$soybean_a)
-
-cropdat$p_corn_a <- cropdat$corn_grain_a/cropdat$acres
-cropdat$p_cotton_a <- cropdat$cotton_a/cropdat$acres
-cropdat$p_hay_a <- cropdat$hay_a/cropdat$acres
-cropdat$p_soybean_a <- cropdat$soybean_a/cropdat$acres
-cropdat$p_wheat_a <- cropdat$wheat_a/cropdat$acres
-
-# cropdat$p_corn_a <- cropdat$corn_grain_a/cropdat$cropland_a
-# cropdat$p_cotton_a <- cropdat$cotton_a/cropdat$cropland_a
-# cropdat$p_hay_a <- cropdat$hay_a/cropdat$cropland_a
-# cropdat$p_soybean_a <- cropdat$soybean_a/cropdat$cropland_a
-# cropdat$p_wheat_a <- cropdat$wheat_a/cropdat$cropland_a
-
-cropdat$p_corn_a <- ifelse(is.infinite(cropdat$p_corn_a), NA, cropdat$p_corn_a)
-cropdat$p_cotton_a <- ifelse(is.infinite(cropdat$p_cotton_a), NA, cropdat$p_cotton_a)
-cropdat$p_hay_a <- ifelse(is.infinite(cropdat$p_hay_a), NA, cropdat$p_hay_a)
-cropdat$p_soybean_a <- ifelse(is.infinite(cropdat$p_soybean_a), NA, cropdat$p_soybean_a)
-cropdat$p_wheat_a <- ifelse(is.infinite(cropdat$p_wheat_a), NA, cropdat$p_wheat_a)
-
-
 
 # Find warmest counties
 dat1950 <- filter(cropdat, year >= 1950 & year <= 1979)
@@ -155,20 +51,6 @@ moddat$tau <- ifelse(moddat$year >= 1980, 1, 0)
 moddat$did <- moddat$tau*moddat$omega
 moddat$trend <- moddat$year - 1949
 
-
-# Use average acres in warmest counties
-# moddat$corn <- ifelse(moddat$omega == 1, (moddat$corn_grain_p/moddat$avg_corn_a)*moddat$corn_rprice, moddat$corn)
-# moddat$cotton <- ifelse(moddat$omega == 1, (moddat$cotton_p/moddat$avg_cotton_a)*moddat$cotton_rprice, moddat$cotton)
-# moddat$hay <- ifelse(moddat$omega == 1, (moddat$hay_p/moddat$avg_hay_a)*moddat$hay_rprice, moddat$hay)
-# moddat$soybean <- ifelse(moddat$omega == 1, (moddat$soybean_p/moddat$avg_soybean_a)*moddat$soybean_rprice, moddat$soybean)
-# moddat$wheat <- ifelse(moddat$omega == 1, (moddat$wheat_p/moddat$avg_wheat_a)*moddat$wheat_rprice, moddat$wheat)
-
-# State-trend dummy variables
-state_trend <- dummyCreator(moddat$state, prefix = "state")
-state_trend <- state_trend*moddat$trend
-
-# County-fe dummy variables
-fips_dummy <- dummyCreator(moddat$fips, prefix = "fips")
 
 # Hand computer data
 a = sapply(subset(moddat, tau == 0 & omega == 0, select = rev), mean)
@@ -226,8 +108,18 @@ mod4 <- felm(ln_rev ~ state_trend + dday0_10 + dday10_30 + dday30C + prec + prec
                tau + did  | fips | 0 | 0, data = moddat, weights = moddat$w_acres)
 summary(mod4)
 
-mod5 <- felm(ln_rev ~ state_trend + dday0_10 + dday10_30 + dday30C + prec + prec_sq + 
-               tau + did  | fips | 0 | state, data = moddat, weights = moddat$w_acres)
+mod5 <- felm(ln_rev ~ trend_al +trend_ar  +trend_ga + trend_ia  +         
+              trend_il +trend_in + trend_ks + trend_ky + trend_md + trend_mi +         
+              trend_mn+ trend_mo + trend_ms + trend_mt + trend_nc + trend_nd +         
+              trend_ne +trend_oh + trend_ok +  trend_sc + trend_sd + trend_tn +         
+              trend_va + trend_wi +
+              trend2_al +trend2_ar  +trend2_ga + trend2_ia  +         
+              trend2_il +trend2_in + trend2_ks + trend2_ky + trend2_md + trend2_mi +         
+              trend2_mn+ trend2_mo + trend2_ms +  trend2_mt + trend2_nc + trend2_nd +         
+              trend2_ne +trend2_oh + trend2_ok +  trend2_sc + trend2_sd + trend2_tn +         
+              trend2_va + trend2_wi + dday0_10 + dday10_30 + dday30C + prec + prec_sq + 
+              dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty + 
+               tau + did  | fips  | 0 | state, data = moddat, weights = moddat$acres)
 
 summary(mod5)
 
