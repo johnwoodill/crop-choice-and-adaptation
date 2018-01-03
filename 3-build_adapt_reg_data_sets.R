@@ -31,7 +31,7 @@ names(prec)[4] <- "prec"
 
 # Get acres
 cropdat <- readRDS("data/full_ag_data.rds")
-depvar <- select(cropdat, z_corn_a, z_cotton_a, z_hay_a, z_soybean_a, z_wheat_a)
+depvar <- cropdat[, c("z_corn_a", "z_cotton_a", "z_hay_a", "z_soybean_a", "z_wheat_a")]
 cropdat$acres <- rowSums(cropdat[, c("corn_grain_a", "cotton_a", "hay_a", "soybean_a", "wheat_a")], na.rm = TRUE)
 cropdat <- select(cropdat, year, fips, state, acres)
 
@@ -122,16 +122,19 @@ p_dat <- function(x, prec){
   pdat <- as.data.frame(pdat)
   # Quadratic State-by-year time trends
   # Linear
-  state_trends <- as.data.frame(dummyCreator(pdat$state, "trend"))
+  state_trends <- as.data.frame(dummyCreator(pdat$state, "trend1"))
   state_trends$trend <- pdat$trend
-  state_trends <- state_trends[, 1:24]*state_trends$trend
+  state_trends <- state_trends[, 1:length(state_trends)]*state_trends$trend
+  state_trends$trend <- NULL
   
   # Quadratic
   state_trends_sq <- as.data.frame(dummyCreator(pdat$state, "trend2"))
   state_trends_sq$trend_sq <- pdat$trend^2
-  state_trends_sq <- state_trends_sq[, 1:24]*state_trends_sq$trend_sq
-  pdat <- cbind(pdat, state_trends, state_trends_sq)
-  pdat <- cbind(pdat, depvar)
+  state_trends_sq <- state_trends_sq[, 1:length(state_trends_sq)]*state_trends_sq$trend_sq
+  state_trends_sq$trend_sq <- NULL
+  
+  # pdat <- cbind(pdat, depvar)
+  
   # Select columns
   pdat <- select(pdat, #z_corn_a, z_cotton_a, z_hay_a, z_soybean_a, z_wheat_a,
                  dday0_10, dday10_30, dday30, prec, prec_sq, 
@@ -139,17 +142,22 @@ p_dat <- function(x, prec){
                  dday0_10_ten, dday10_30_ten, dday30_ten, prec_ten, prec_sq_ten,
                  dday0_10_twenty, dday10_30_twenty, dday30_twenty, prec_twenty, prec_sq_twenty,
                  dday0_10_thirty, dday10_30_thirty, dday30_thirty, prec_thirty, prec_sq_thirty,
-                dday0_10_sixty, dday10_30_sixty, dday30_sixty, prec_sixty, prec_sq_sixty, trend, trend_sq,
-                  trend_al, trend_ar, trend_ga, trend_ia, 
-                  trend_il, trend_in, trend_ks, trend_ky, trend_md, trend_mi, 
-                  trend_mn, trend_mo, trend_ms, trend_mt, trend_nc, trend_nd, 
-                  trend_ne, trend_oh, trend_ok, trend_sc, trend_sd, trend_tn, 
-                  trend_va, trend_wi,
-                  trend2_al, trend2_ar, trend2_ga, trend2_ia, 
-                  trend2_il, trend2_in, trend2_ks, trend2_ky, trend2_md, trend2_mi, 
-                  trend2_mn, trend2_mo, trend2_ms, trend2_mt, trend2_nc, trend2_nd, 
-                  trend2_ne, trend2_oh, trend2_ok, trend2_sc, trend2_sd, trend2_tn, 
-                  trend2_va, trend2_wi)
+                dday0_10_sixty, dday10_30_sixty, dday30_sixty, prec_sixty, prec_sq_sixty, trend, trend_sq)
+  
+  pdat <- cbind(pdat, depvar)
+  pdat <- cbind(pdat, state_trends, state_trends_sq)
+  
+  
+                  # trend1_al, trend1_ar, trend1_ga, trend1_ia, 
+                  # trend1_il, trend1_in, trend1_ks, trend1_ky, trend1_md, trend1_mi, 
+                  # trend1_mn, trend1_mo, trend1_ms, trend1_mt, trend1_nc, trend1_nd, 
+                  # trend1_ne, trend1_oh, trend1_ok, trend1_sc, trend1_sd, trend1_tn, 
+                  # trend1_va, trend1_wi,
+                  # trend2_al, trend2_ar, trend2_ga, trend2_ia, 
+                  # trend2_il, trend2_in, trend2_ks, trend2_ky, trend2_md, trend2_mi, 
+                  # trend2_mn, trend2_mo, trend2_ms, trend2_mt, trend2_nc, trend2_nd, 
+                  # trend2_ne, trend2_oh, trend2_ok, trend2_sc, trend2_sd, trend2_tn, 
+                  # trend2_va, trend2_wi)
   return(pdat)
   
 }

@@ -152,5 +152,4 @@ soybean_map <- soybean_map + scale_fill_brewer(palette = "YlGnBu") +
                        panel.border = element_rect(fill = NA))
 soybean_map
 
-dev.off()
 plot_grid(corn_map, cotton_map, hay_map, wheat_map, soybean_map)

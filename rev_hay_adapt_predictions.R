@@ -507,4 +507,3 @@ ggplot(pdat, aes(temp, change)) +
 #plot(c(ld1, ld2, ld3, ld4, ld5))
 #plot(c(p1, p2, p3, p4, p5))
 
-

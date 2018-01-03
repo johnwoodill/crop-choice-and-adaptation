@@ -54,15 +54,15 @@ predictFelm <- function(felm.fit, newdata = NULL, var.terms = NULL, cons.terms =
   
     # Predict with var.terms and no cons.terms
     if(!is.null(var.terms) & is.null(cons.terms)){
-      pred <- predict(lm.fit, newdata = newdata, se.fit = TRUE, type = "terms", terms = var.terms)
-      pred$fit <- rowSums(pred$fit)
+      pred <- predict(lm.fit, newdata = newdata, se.fit = TRUE, type = "response", terms = var.terms)
+      # pred$fit <- rowSums(pred$fit)
     }
   
     # Predict with var.terms and cons.terms
     if(!is.null(var.terms) & !is.null(cons.terms)){
-      pred <- predict(lm.fit, newdata = newdata, se.fit = TRUE, type = "terms", terms = var.terms)
+      pred <- predict(lm.fit, newdata = newdata, se.fit = TRUE, type = "response", terms = var.terms)
       pred$fit <- cbind(pred$fit, cpred)
-      pred$fit <- rowSums(pred$fit)
+      # pred$fit <- rowSums(pred$fit)
     }
 
     

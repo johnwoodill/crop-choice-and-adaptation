@@ -12,19 +12,29 @@ regdat$state <- factor(regdat$state)
 
 # Regressions with state fe and trends
 
+trends <- regdat[, c(grep("trend1", names(regdat)), grep("trend2", names(regdat)))]        
+
+paste(names(trends), collapse = " + ")
+
+# "trend1_al", "trend1_ar", "trend1_ga", "trend1_ia", "trend1_il" "trend1_in" "trend1_ks" "trend1_ky"
+# "trend1_md", "trend1_mi", "trend1_mn", "trend1_mo", "trend1_ms" "trend1_mt" "trend1_nc" "trend1_nd"
+# "trend1_ne", "trend1_oh", "trend1_ok", "trend1_sc", "trend1_sd" "trend1_tn" "trend1_tx" "trend1_va"
+# "trend1_wi", "trend1_wv", "trend2_al", "trend2_ar", "trend2_ga" "trend2_ia" "trend2_il" "trend2_in"
+# "trend2_ks", "trend2_ky", "trend2_md", "trend2_mi", "trend2_mn" "trend2_mo" "trend2_ms" "trend2_mt"
+# "trend2_nc", "trend2_nd", "trend2_ne", "trend2_oh", "trend2_ok" "trend2_sc" "trend2_sd" "trend2_tn"
+# "trend2_tx", "trend2_va", "trend2_wi", "trend2_wv"
+
 # Five year differences 1950-1980 & 1980-2010
 modfive_corn <- felm(ln_rev_corn ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
               dday0_10_five + dday10_30_five + dday30_five + prec_five + prec_sq_five + 
-              trend_al +trend_ar  +trend_ga + trend_ia  +         
-              trend_il +trend_in + trend_ks + trend_ky + trend_md + trend_mi +         
-              trend_mn+ trend_mo + trend_ms + trend_mt + trend_nc + trend_nd +         
-              trend_ne +trend_oh + trend_ok +  trend_sc + trend_sd + trend_tn +         
-              trend_va + trend_wi +
-              trend2_al +trend2_ar  +trend2_ga + trend2_ia  +         
-              trend2_il +trend2_in + trend2_ks + trend2_ky + trend2_md + trend2_mi +         
-              trend2_mn+ trend2_mo + trend2_ms +  trend2_mt + trend2_nc + trend2_nd +         
-              trend2_ne +trend2_oh + trend2_ok +  trend2_sc + trend2_sd + trend2_tn +         
-              trend2_va + trend2_wi 
+trend1_al + trend1_ar + trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + 
+  trend1_ky + trend1_md + trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + 
+  trend1_nc + trend1_nd + trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + 
+  trend1_tn + trend1_tx + trend1_va + trend1_wi + trend1_wv + trend2_al + trend2_ar + 
+  trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
+  trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
+  trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
+  trend2_va + trend2_wi + trend2_wv 
             | fips + five| 0 | state, 
             data = regdat, weights = (1 + regdat$corn_w), psdef = FALSE)
 
@@ -33,16 +43,14 @@ summary(modfive_corn)
 
 modfive_cotton <- felm(ln_rev_cotton ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
               dday0_10_five + dday10_30_five + dday30_five + prec_five + prec_sq_five + 
-              trend_al +trend_ar  +trend_ga + trend_ia  +         
-              trend_il +trend_in + trend_ks + trend_ky + trend_md + trend_mi +         
-              trend_mn+ trend_mo + trend_ms + trend_mt + trend_nc + trend_nd +         
-              trend_ne +trend_oh + trend_ok +  trend_sc + trend_sd + trend_tn +         
-              trend_va + trend_wi +
-              trend2_al +trend2_ar  +trend2_ga + trend2_ia  +         
-              trend2_il +trend2_in + trend2_ks + trend2_ky + trend2_md + trend2_mi +         
-              trend2_mn+ trend2_mo + trend2_ms +  trend2_mt + trend2_nc + trend2_nd +         
-              trend2_ne +trend2_oh + trend2_ok +  trend2_sc + trend2_sd + trend2_tn +         
-              trend2_va + trend2_wi 
+trend1_al + trend1_ar + trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + 
+  trend1_ky + trend1_md + trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + 
+  trend1_nc + trend1_nd + trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + 
+  trend1_tn + trend1_tx + trend1_va + trend1_wi + trend1_wv + trend2_al + trend2_ar + 
+  trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
+  trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
+  trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
+  trend2_va + trend2_wi + trend2_wv 
             | fips + five | 0 | state, 
             data = regdat, weights = (1 + regdat$cotton_w), psdef = FALSE)
 
@@ -51,34 +59,30 @@ summary(modfive_cotton)
 
 modfive_hay <- felm(ln_rev_hay ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
               dday0_10_five + dday10_30_five + dday30_five + prec_five + prec_sq_five + 
-              trend_al +trend_ar  +trend_ga + trend_ia  +         
-              trend_il +trend_in + trend_ks + trend_ky + trend_md + trend_mi +         
-              trend_mn+ trend_mo + trend_ms + trend_mt + trend_nc + trend_nd +         
-              trend_ne +trend_oh + trend_ok +  trend_sc + trend_sd + trend_tn +         
-              trend_va + trend_wi +
-              trend2_al +trend2_ar  +trend2_ga + trend2_ia  +         
-              trend2_il +trend2_in + trend2_ks + trend2_ky + trend2_md + trend2_mi +         
-              trend2_mn+ trend2_mo + trend2_ms +  trend2_mt + trend2_nc + trend2_nd +         
-              trend2_ne +trend2_oh + trend2_ok +  trend2_sc + trend2_sd + trend2_tn +         
-              trend2_va + trend2_wi 
+trend1_al + trend1_ar + trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + 
+  trend1_ky + trend1_md + trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + 
+  trend1_nc + trend1_nd + trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + 
+  trend1_tn + trend1_tx + trend1_va + trend1_wi + trend1_wv + trend2_al + trend2_ar + 
+  trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
+  trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
+  trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
+  trend2_va + trend2_wi + trend2_wv 
             | fips + five | 0 | state, 
             data = regdat, weights = (1 + regdat$hay_w), psdef = FALSE)
 
-sum(modfive_hay$coefficients[1:10])
+sum(modfive_hay$coefficients)
 summary(modfive_hay)
 
 modfive_soybean <- felm(ln_rev_soybean ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
               dday0_10_five + dday10_30_five + dday30_five + prec_five + prec_sq_five + 
-              trend_al +trend_ar  +trend_ga + trend_ia  +         
-              trend_il +trend_in + trend_ks + trend_ky + trend_md + trend_mi +         
-              trend_mn+ trend_mo + trend_ms + trend_mt + trend_nc + trend_nd +         
-              trend_ne +trend_oh + trend_ok +  trend_sc + trend_sd + trend_tn +         
-              trend_va + trend_wi +
-              trend2_al +trend2_ar  +trend2_ga + trend2_ia  +         
-              trend2_il +trend2_in + trend2_ks + trend2_ky + trend2_md + trend2_mi +         
-              trend2_mn+ trend2_mo + trend2_ms +  trend2_mt + trend2_nc + trend2_nd +         
-              trend2_ne +trend2_oh + trend2_ok +  trend2_sc + trend2_sd + trend2_tn +         
-              trend2_va + trend2_wi 
+trend1_al + trend1_ar + trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + 
+  trend1_ky + trend1_md + trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + 
+  trend1_nc + trend1_nd + trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + 
+  trend1_tn + trend1_tx + trend1_va + trend1_wi + trend1_wv + trend2_al + trend2_ar + 
+  trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
+  trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
+  trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
+  trend2_va + trend2_wi + trend2_wv  
             | fips + five | 0 | state, 
             data = regdat, weights = (1 + regdat$soybean_w), psdef = FALSE)
 
@@ -87,16 +91,14 @@ summary(modfive_soybean)
 
 modfive_wheat <- felm(ln_rev_wheat ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
               dday0_10_five + dday10_30_five + dday30_five + prec_five + prec_sq_five + 
-              trend_al +trend_ar  +trend_ga + trend_ia  +         
-              trend_il +trend_in + trend_ks + trend_ky + trend_md + trend_mi +         
-              trend_mn+ trend_mo + trend_ms + trend_mt + trend_nc + trend_nd +         
-              trend_ne +trend_oh + trend_ok +  trend_sc + trend_sd + trend_tn +         
-              trend_va + trend_wi +
-              trend2_al +trend2_ar  +trend2_ga + trend2_ia  +         
-              trend2_il +trend2_in + trend2_ks + trend2_ky + trend2_md + trend2_mi +         
-              trend2_mn+ trend2_mo + trend2_ms +  trend2_mt + trend2_nc + trend2_nd +         
-              trend2_ne +trend2_oh + trend2_ok +  trend2_sc + trend2_sd + trend2_tn +         
-              trend2_va + trend2_wi 
+trend1_al + trend1_ar + trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + 
+  trend1_ky + trend1_md + trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + 
+  trend1_nc + trend1_nd + trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + 
+  trend1_tn + trend1_tx + trend1_va + trend1_wi + trend1_wv + trend2_al + trend2_ar + 
+  trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
+  trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
+  trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
+  trend2_va + trend2_wi + trend2_wv   
             | fips + five | 0 | state, 
             data = regdat, weights = (1 + regdat$wheat_w), psdef = FALSE)
 
@@ -115,16 +117,14 @@ saveRDS(modfive_wheat, "models/modfive_wheat.rds")
 # ten year differences 1950-1980 & 1980-2010
 modten_corn <- felm(ln_rev_corn ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
               dday0_10_ten + dday10_30_ten + dday30_ten + prec_ten + prec_sq_ten + 
-              trend_al +trend_ar  +trend_ga + trend_ia  +         
-              trend_il +trend_in + trend_ks + trend_ky + trend_md + trend_mi +         
-              trend_mn+ trend_mo + trend_ms + trend_mt + trend_nc + trend_nd +         
-              trend_ne +trend_oh + trend_ok +  trend_sc + trend_sd + trend_tn +         
-              trend_va + trend_wi +
-              trend2_al +trend2_ar  +trend2_ga + trend2_ia  +         
-              trend2_il +trend2_in + trend2_ks + trend2_ky + trend2_md + trend2_mi +         
-              trend2_mn+ trend2_mo + trend2_ms +  trend2_mt + trend2_nc + trend2_nd +         
-              trend2_ne +trend2_oh + trend2_ok +  trend2_sc + trend2_sd + trend2_tn +         
-              trend2_va + trend2_wi 
+trend1_al + trend1_ar + trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + 
+  trend1_ky + trend1_md + trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + 
+  trend1_nc + trend1_nd + trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + 
+  trend1_tn + trend1_tx + trend1_va + trend1_wi + trend1_wv + trend2_al + trend2_ar + 
+  trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
+  trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
+  trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
+  trend2_va + trend2_wi + trend2_wv   
             | fips + ten | 0 | state, 
             data = regdat, weights = (1 + regdat$corn_w), psdef = FALSE)
 
@@ -132,16 +132,14 @@ summary(modten_corn)
 
 modten_cotton <- felm(ln_rev_cotton ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
               dday0_10_ten + dday10_30_ten + dday30_ten + prec_ten + prec_sq_ten + 
-              trend_al +trend_ar  +trend_ga + trend_ia  +         
-              trend_il +trend_in + trend_ks + trend_ky + trend_md + trend_mi +         
-              trend_mn+ trend_mo + trend_ms + trend_mt + trend_nc + trend_nd +         
-              trend_ne +trend_oh + trend_ok +  trend_sc + trend_sd + trend_tn +         
-              trend_va + trend_wi +
-              trend2_al +trend2_ar  +trend2_ga + trend2_ia  +         
-              trend2_il +trend2_in + trend2_ks + trend2_ky + trend2_md + trend2_mi +         
-              trend2_mn+ trend2_mo + trend2_ms +  trend2_mt + trend2_nc + trend2_nd +         
-              trend2_ne +trend2_oh + trend2_ok +  trend2_sc + trend2_sd + trend2_tn +         
-              trend2_va + trend2_wi 
+trend1_al + trend1_ar + trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + 
+  trend1_ky + trend1_md + trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + 
+  trend1_nc + trend1_nd + trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + 
+  trend1_tn + trend1_tx + trend1_va + trend1_wi + trend1_wv + trend2_al + trend2_ar + 
+  trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
+  trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
+  trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
+  trend2_va + trend2_wi + trend2_wv 
             | fips + ten | 0 | state, 
             data = regdat, weights = (1 + regdat$cotton_w), psdef = FALSE)
 
@@ -149,16 +147,14 @@ summary(modten_cotton)
 
 modten_hay <- felm(ln_rev_hay ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
               dday0_10_ten + dday10_30_ten + dday30_ten + prec_ten + prec_sq_ten + 
-              trend_al +trend_ar  +trend_ga + trend_ia  +         
-              trend_il +trend_in + trend_ks + trend_ky + trend_md + trend_mi +         
-              trend_mn+ trend_mo + trend_ms + trend_mt + trend_nc + trend_nd +         
-              trend_ne +trend_oh + trend_ok +  trend_sc + trend_sd + trend_tn +         
-              trend_va + trend_wi +
-              trend2_al +trend2_ar  +trend2_ga + trend2_ia  +         
-              trend2_il +trend2_in + trend2_ks + trend2_ky + trend2_md + trend2_mi +         
-              trend2_mn+ trend2_mo + trend2_ms +  trend2_mt + trend2_nc + trend2_nd +         
-              trend2_ne +trend2_oh + trend2_ok +  trend2_sc + trend2_sd + trend2_tn +         
-              trend2_va + trend2_wi 
+trend1_al + trend1_ar + trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + 
+  trend1_ky + trend1_md + trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + 
+  trend1_nc + trend1_nd + trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + 
+  trend1_tn + trend1_tx + trend1_va + trend1_wi + trend1_wv + trend2_al + trend2_ar + 
+  trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
+  trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
+  trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
+  trend2_va + trend2_wi + trend2_wv  
             | fips + ten | 0 | state, 
             data = regdat, weights = (1 + regdat$hay_w), psdef = FALSE)
 
@@ -166,16 +162,14 @@ summary(modten_hay)
 
 modten_soybean <- felm(ln_rev_soybean ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
               dday0_10_ten + dday10_30_ten + dday30_ten + prec_ten + prec_sq_ten + 
-              trend_al +trend_ar  +trend_ga + trend_ia  +         
-              trend_il +trend_in + trend_ks + trend_ky + trend_md + trend_mi +         
-              trend_mn+ trend_mo + trend_ms + trend_mt + trend_nc + trend_nd +         
-              trend_ne +trend_oh + trend_ok +  trend_sc + trend_sd + trend_tn +         
-              trend_va + trend_wi +
-              trend2_al +trend2_ar  +trend2_ga + trend2_ia  +         
-              trend2_il +trend2_in + trend2_ks + trend2_ky + trend2_md + trend2_mi +         
-              trend2_mn+ trend2_mo + trend2_ms +  trend2_mt + trend2_nc + trend2_nd +         
-              trend2_ne +trend2_oh + trend2_ok +  trend2_sc + trend2_sd + trend2_tn +         
-              trend2_va + trend2_wi 
+trend1_al + trend1_ar + trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + 
+  trend1_ky + trend1_md + trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + 
+  trend1_nc + trend1_nd + trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + 
+  trend1_tn + trend1_tx + trend1_va + trend1_wi + trend1_wv + trend2_al + trend2_ar + 
+  trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
+  trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
+  trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
+  trend2_va + trend2_wi + trend2_wv 
             | fips + ten | 0 | state, 
             data = regdat, weights = (1 + regdat$soybean_w), psdef = FALSE)
 
@@ -183,16 +177,14 @@ summary(modten_soybean)
 
 modten_wheat <- felm(ln_rev_wheat ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
               dday0_10_ten + dday10_30_ten + dday30_ten + prec_ten + prec_sq_ten + 
-              trend_al +trend_ar  +trend_ga + trend_ia  +         
-              trend_il +trend_in + trend_ks + trend_ky + trend_md + trend_mi +         
-              trend_mn+ trend_mo + trend_ms + trend_mt + trend_nc + trend_nd +         
-              trend_ne +trend_oh + trend_ok +  trend_sc + trend_sd + trend_tn +         
-              trend_va + trend_wi +
-              trend2_al +trend2_ar  +trend2_ga + trend2_ia  +         
-              trend2_il +trend2_in + trend2_ks + trend2_ky + trend2_md + trend2_mi +         
-              trend2_mn+ trend2_mo + trend2_ms +  trend2_mt + trend2_nc + trend2_nd +         
-              trend2_ne +trend2_oh + trend2_ok +  trend2_sc + trend2_sd + trend2_tn +         
-              trend2_va + trend2_wi 
+trend1_al + trend1_ar + trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + 
+  trend1_ky + trend1_md + trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + 
+  trend1_nc + trend1_nd + trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + 
+  trend1_tn + trend1_tx + trend1_va + trend1_wi + trend1_wv + trend2_al + trend2_ar + 
+  trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
+  trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
+  trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
+  trend2_va + trend2_wi + trend2_wv  
             | fips + ten | 0 | state, 
             data = regdat, weights = (1 + regdat$wheat_w), psdef = FALSE)
 
@@ -208,16 +200,14 @@ saveRDS(modten_wheat, "models/modten_wheat.rds")
 # twenty year differences 1950-1980 & 1980-2010
 modtwenty_corn <- felm(ln_rev_corn ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
               dday0_10_twenty + dday10_30_twenty + dday30_twenty + prec_twenty + prec_sq_twenty + 
-              trend_al +trend_ar  +trend_ga + trend_ia  +         
-              trend_il +trend_in + trend_ks + trend_ky + trend_md + trend_mi +         
-              trend_mn+ trend_mo + trend_ms + trend_mt + trend_nc + trend_nd +         
-              trend_ne +trend_oh + trend_ok +  trend_sc + trend_sd + trend_tn +         
-              trend_va + trend_wi +
-              trend2_al +trend2_ar  +trend2_ga + trend2_ia  +         
-              trend2_il +trend2_in + trend2_ks + trend2_ky + trend2_md + trend2_mi +         
-              trend2_mn+ trend2_mo + trend2_ms +  trend2_mt + trend2_nc + trend2_nd +         
-              trend2_ne +trend2_oh + trend2_ok +  trend2_sc + trend2_sd + trend2_tn +         
-              trend2_va + trend2_wi 
+trend1_al + trend1_ar + trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + 
+  trend1_ky + trend1_md + trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + 
+  trend1_nc + trend1_nd + trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + 
+  trend1_tn + trend1_tx + trend1_va + trend1_wi + trend1_wv + trend2_al + trend2_ar + 
+  trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
+  trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
+  trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
+  trend2_va + trend2_wi + trend2_wv 
             | fips + twenty | 0 | state, 
             data = regdat, weights = (1 + regdat$corn_w))
 
@@ -226,16 +216,14 @@ summary(modtwenty_corn)
 
 modtwenty_cotton <- felm(ln_rev_cotton ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
               dday0_10_twenty + dday10_30_twenty + dday30_twenty + prec_twenty + prec_sq_twenty + 
-              trend_al +trend_ar  +trend_ga + trend_ia  +         
-              trend_il +trend_in + trend_ks + trend_ky + trend_md + trend_mi +         
-              trend_mn+ trend_mo + trend_ms + trend_mt + trend_nc + trend_nd +         
-              trend_ne +trend_oh + trend_ok +  trend_sc + trend_sd + trend_tn +         
-              trend_va + trend_wi +
-              trend2_al +trend2_ar  +trend2_ga + trend2_ia  +         
-              trend2_il +trend2_in + trend2_ks + trend2_ky + trend2_md + trend2_mi +         
-              trend2_mn+ trend2_mo + trend2_ms +  trend2_mt + trend2_nc + trend2_nd +         
-              trend2_ne +trend2_oh + trend2_ok +  trend2_sc + trend2_sd + trend2_tn +         
-              trend2_va + trend2_wi 
+trend1_al + trend1_ar + trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + 
+  trend1_ky + trend1_md + trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + 
+  trend1_nc + trend1_nd + trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + 
+  trend1_tn + trend1_tx + trend1_va + trend1_wi + trend1_wv + trend2_al + trend2_ar + 
+  trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
+  trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
+  trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
+  trend2_va + trend2_wi + trend2_wv   
             | fips + twenty | 0 | state, 
             data = regdat, weights = (1 + regdat$cotton_w), psdef = FALSE)
 
@@ -244,51 +232,46 @@ summary(modtwenty_cotton)
 
 modtwenty_hay <- felm(ln_rev_hay ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
               dday0_10_twenty + dday10_30_twenty + dday30_twenty + prec_twenty + prec_sq_twenty + 
-              trend_al +trend_ar  +trend_ga + trend_ia  +         
-              trend_il +trend_in + trend_ks + trend_ky + trend_md + trend_mi +         
-              trend_mn+ trend_mo + trend_ms + trend_mt + trend_nc + trend_nd +         
-              trend_ne +trend_oh + trend_ok +  trend_sc + trend_sd + trend_tn +         
-              trend_va + trend_wi +
-              trend2_al +trend2_ar  +trend2_ga + trend2_ia  +         
-              trend2_il +trend2_in + trend2_ks + trend2_ky + trend2_md + trend2_mi +         
-              trend2_mn+ trend2_mo + trend2_ms +  trend2_mt + trend2_nc + trend2_nd +         
-              trend2_ne +trend2_oh + trend2_ok +  trend2_sc + trend2_sd + trend2_tn +         
-              trend2_va + trend2_wi 
+trend1_al + trend1_ar + trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + 
+  trend1_ky + trend1_md + trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + 
+  trend1_nc + trend1_nd + trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + 
+  trend1_tn + trend1_tx + trend1_va + trend1_wi + trend1_wv + trend2_al + trend2_ar + 
+  trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
+  trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
+  trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
+  trend2_va + trend2_wi + trend2_wv  
             | fips + twenty  | 0 | state, 
             data = regdat, weights = (1 + regdat$hay_w), psdef = FALSE)
 
-sum(modtwenty_hay$coefficients)
+sum(modtwenty_hay$coefficients[1:10])
 summary(modtwenty_hay)
 
 modtwenty_soybean <- felm(ln_rev_soybean ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
               dday0_10_twenty + dday10_30_twenty + dday30_twenty + prec_twenty + prec_sq_twenty + 
-              trend_al +trend_ar  +trend_ga + trend_ia  +         
-              trend_il +trend_in + trend_ks + trend_ky + trend_md + trend_mi +         
-              trend_mn+ trend_mo + trend_ms + trend_mt + trend_nc + trend_nd +         
-              trend_ne +trend_oh + trend_ok +  trend_sc + trend_sd + trend_tn +         
-              trend_va + trend_wi +
-              trend2_al +trend2_ar  +trend2_ga + trend2_ia  +         
-              trend2_il +trend2_in + trend2_ks + trend2_ky + trend2_md + trend2_mi +         
-              trend2_mn+ trend2_mo + trend2_ms +  trend2_mt + trend2_nc + trend2_nd +         
-              trend2_ne +trend2_oh + trend2_ok +  trend2_sc + trend2_sd + trend2_tn +         
-              trend2_va + trend2_wi 
+trend1_al + trend1_ar + trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + 
+  trend1_ky + trend1_md + trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + 
+  trend1_nc + trend1_nd + trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + 
+  trend1_tn + trend1_tx + trend1_va + trend1_wi + trend1_wv + trend2_al + trend2_ar + 
+  trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
+  trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
+  trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
+  trend2_va + trend2_wi + trend2_wv   
             | fips + twenty | 0 | state, 
             data = regdat, weights = (1 +regdat$soybean_w), psdef = FALSE)
+
 
 summary(modtwenty_soybean)
 
 modtwenty_wheat <- felm(ln_rev_wheat ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
               dday0_10_twenty + dday10_30_twenty + dday30_twenty + prec_twenty + prec_sq_twenty + 
-              trend_al +trend_ar  +trend_ga + trend_ia  +         
-              trend_il +trend_in + trend_ks + trend_ky + trend_md + trend_mi +         
-              trend_mn+ trend_mo + trend_ms + trend_mt + trend_nc + trend_nd +         
-              trend_ne +trend_oh + trend_ok +  trend_sc + trend_sd + trend_tn +         
-              trend_va + trend_wi +
-              trend2_al +trend2_ar  +trend2_ga + trend2_ia  +         
-              trend2_il +trend2_in + trend2_ks + trend2_ky + trend2_md + trend2_mi +         
-              trend2_mn+ trend2_mo + trend2_ms +  trend2_mt + trend2_nc + trend2_nd +         
-              trend2_ne +trend2_oh + trend2_ok +  trend2_sc + trend2_sd + trend2_tn +         
-              trend2_va + trend2_wi 
+trend1_al + trend1_ar + trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + 
+  trend1_ky + trend1_md + trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + 
+  trend1_nc + trend1_nd + trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + 
+  trend1_tn + trend1_tx + trend1_va + trend1_wi + trend1_wv + trend2_al + trend2_ar + 
+  trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
+  trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
+  trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
+  trend2_va + trend2_wi + trend2_wv   
             | fips + twenty | 0 | state, 
             data = regdat, weights = (1 + regdat$wheat_w), psdef = FALSE)
 
@@ -304,16 +287,14 @@ saveRDS(modtwenty_wheat, "models/modtwenty_wheat.rds")
 # thirty year differences 1950-1980 & 1980-2010
 modthirty_corn <- felm(ln_rev_corn ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
               dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty + 
-              trend_al +trend_ar  +trend_ga + trend_ia  +         
-              trend_il +trend_in + trend_ks + trend_ky + trend_md + trend_mi +         
-              trend_mn+ trend_mo + trend_ms + trend_mt + trend_nc + trend_nd +         
-              trend_ne +trend_oh + trend_ok +  trend_sc + trend_sd + trend_tn +         
-              trend_va + trend_wi +
-              trend2_al +trend2_ar  +trend2_ga + trend2_ia  +         
-              trend2_il +trend2_in + trend2_ks + trend2_ky + trend2_md + trend2_mi +         
-              trend2_mn+ trend2_mo + trend2_ms +  trend2_mt + trend2_nc + trend2_nd +         
-              trend2_ne +trend2_oh + trend2_ok +  trend2_sc + trend2_sd + trend2_tn +         
-              trend2_va + trend2_wi 
+trend1_al + trend1_ar + trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + 
+  trend1_ky + trend1_md + trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + 
+  trend1_nc + trend1_nd + trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + 
+  trend1_tn + trend1_tx + trend1_va + trend1_wi + trend1_wv + trend2_al + trend2_ar + 
+  trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
+  trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
+  trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
+  trend2_va + trend2_wi + trend2_wv 
             | fips + thirty | 0 | state, 
             data = regdat, weights = (1 + regdat$corn_w), psdef = FALSE)
 
@@ -321,16 +302,14 @@ summary(modthirty_corn)
 
 modthirty_cotton <- felm(ln_rev_cotton ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
               dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty + 
-              trend_al +trend_ar  +trend_ga + trend_ia  +         
-              trend_il +trend_in + trend_ks + trend_ky + trend_md + trend_mi +         
-              trend_mn+ trend_mo + trend_ms + trend_mt + trend_nc + trend_nd +         
-              trend_ne +trend_oh + trend_ok +  trend_sc + trend_sd + trend_tn +         
-              trend_va + trend_wi +
-              trend2_al +trend2_ar  +trend2_ga + trend2_ia  +         
-              trend2_il +trend2_in + trend2_ks + trend2_ky + trend2_md + trend2_mi +         
-              trend2_mn+ trend2_mo + trend2_ms +  trend2_mt + trend2_nc + trend2_nd +         
-              trend2_ne +trend2_oh + trend2_ok +  trend2_sc + trend2_sd + trend2_tn +         
-              trend2_va + trend2_wi 
+trend1_al + trend1_ar + trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + 
+  trend1_ky + trend1_md + trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + 
+  trend1_nc + trend1_nd + trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + 
+  trend1_tn + trend1_tx + trend1_va + trend1_wi + trend1_wv + trend2_al + trend2_ar + 
+  trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
+  trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
+  trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
+  trend2_va + trend2_wi + trend2_wv  
             | fips + thirty | 0 | state, 
             data = regdat, weights = (1 + regdat$cotton_w), psdef = FALSE)
 
@@ -338,16 +317,14 @@ summary(modthirty_cotton)
 
 modthirty_hay <- felm(ln_rev_hay ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
               dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty + 
-              trend_al +trend_ar  +trend_ga + trend_ia  +         
-              trend_il +trend_in + trend_ks + trend_ky + trend_md + trend_mi +         
-              trend_mn+ trend_mo + trend_ms + trend_mt + trend_nc + trend_nd +         
-              trend_ne +trend_oh + trend_ok +  trend_sc + trend_sd + trend_tn +         
-              trend_va + trend_wi +
-              trend2_al +trend2_ar  +trend2_ga + trend2_ia  +         
-              trend2_il +trend2_in + trend2_ks + trend2_ky + trend2_md + trend2_mi +         
-              trend2_mn+ trend2_mo + trend2_ms +  trend2_mt + trend2_nc + trend2_nd +         
-              trend2_ne +trend2_oh + trend2_ok +  trend2_sc + trend2_sd + trend2_tn +         
-              trend2_va + trend2_wi 
+trend1_al + trend1_ar + trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + 
+  trend1_ky + trend1_md + trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + 
+  trend1_nc + trend1_nd + trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + 
+  trend1_tn + trend1_tx + trend1_va + trend1_wi + trend1_wv + trend2_al + trend2_ar + 
+  trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
+  trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
+  trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
+  trend2_va + trend2_wi + trend2_wv 
             | fips + thirty | 0 | state, 
             data = regdat, weights = (1 + regdat$hay_w), psdef = FALSE)
 
@@ -355,16 +332,14 @@ summary(modthirty_hay)
 
 modthirty_soybean <- felm(ln_rev_soybean ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
               dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty + 
-              trend_al +trend_ar  +trend_ga + trend_ia  +         
-              trend_il +trend_in + trend_ks + trend_ky + trend_md + trend_mi +         
-              trend_mn+ trend_mo + trend_ms + trend_mt + trend_nc + trend_nd +         
-              trend_ne +trend_oh + trend_ok +  trend_sc + trend_sd + trend_tn +         
-              trend_va + trend_wi +
-              trend2_al +trend2_ar  +trend2_ga + trend2_ia  +         
-              trend2_il +trend2_in + trend2_ks + trend2_ky + trend2_md + trend2_mi +         
-              trend2_mn+ trend2_mo + trend2_ms +  trend2_mt + trend2_nc + trend2_nd +         
-              trend2_ne +trend2_oh + trend2_ok +  trend2_sc + trend2_sd + trend2_tn +         
-              trend2_va + trend2_wi 
+trend1_al + trend1_ar + trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + 
+  trend1_ky + trend1_md + trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + 
+  trend1_nc + trend1_nd + trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + 
+  trend1_tn + trend1_tx + trend1_va + trend1_wi + trend1_wv + trend2_al + trend2_ar + 
+  trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
+  trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
+  trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
+  trend2_va + trend2_wi + trend2_wv 
             | fips + thirty | 0 | state, 
             data = regdat, weights = (1 + regdat$soybean_w), psdef = FALSE)
 
@@ -372,16 +347,14 @@ summary(modthirty_soybean)
 
 modthirty_wheat <- felm(ln_rev_wheat ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
               dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty + 
-              trend_al +trend_ar  +trend_ga + trend_ia  +         
-              trend_il +trend_in + trend_ks + trend_ky + trend_md + trend_mi +         
-              trend_mn+ trend_mo + trend_ms + trend_mt + trend_nc + trend_nd +         
-              trend_ne +trend_oh + trend_ok +  trend_sc + trend_sd + trend_tn +         
-              trend_va + trend_wi +
-              trend2_al +trend2_ar  +trend2_ga + trend2_ia  +         
-              trend2_il +trend2_in + trend2_ks + trend2_ky + trend2_md + trend2_mi +         
-              trend2_mn+ trend2_mo + trend2_ms +  trend2_mt + trend2_nc + trend2_nd +         
-              trend2_ne +trend2_oh + trend2_ok +  trend2_sc + trend2_sd + trend2_tn +         
-              trend2_va + trend2_wi 
+trend1_al + trend1_ar + trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + 
+  trend1_ky + trend1_md + trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + 
+  trend1_nc + trend1_nd + trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + 
+  trend1_tn + trend1_tx + trend1_va + trend1_wi + trend1_wv + trend2_al + trend2_ar + 
+  trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
+  trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
+  trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
+  trend2_va + trend2_wi + trend2_wv 
             | fips + thirty | 0 | state, 
             data = regdat, weights = (1 + regdat$wheat_w), psdef = FALSE)
 

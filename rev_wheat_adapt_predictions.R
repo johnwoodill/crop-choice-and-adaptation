@@ -485,8 +485,8 @@ ggplot(pdat, aes(temp, change)) +
   geom_line(aes(color = effect)) +
   geom_point(aes(color = effect), size = 0.5) +
   #geom_errorbar(aes(ymax = change_max, ymin = change_min, color = effect), width = .1) +
-  theme_tufte(base_size = 12) +
-  ylab("% Change in Revenue per acre") +
+  theme_tufte(base_size = 10) +
+  ylab("% Change in Revenue per acre \n (Wheat)") +
   xlab("Change in Temperature (C)") +
   annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
   annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
@@ -500,7 +500,9 @@ ggplot(pdat, aes(temp, change)) +
   #     legend.box.background = element_rect(colour = "grey"), 
   #     legend.title = element_blank(), legend.key = element_blank()) +
   facet_wrap(~type, scales = "free") +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "grey")
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey", alpha = 0.5)
+
+ggsave("figures/predicted_wheat.pdf", device = "pdf", width = 6, height = 4)
   
 # ggplot(sixtypdat, aes(temp, change)) + geom_line()
 #plot(c(c1, c2, c3, c4, c5))
