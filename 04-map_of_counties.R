@@ -19,6 +19,7 @@ crops <- gr %>%
             wheat_a = mean(wheat_a, na.rm = TRUE),
             soybean_a = mean(soybean_a, na.rm = TRUE))
 
+
 crops$state <- NULL
 mapdat <- left_join(mapdat, crops, by = c("region" = "fips"))
 mapdat <- gather(mapdat, region)

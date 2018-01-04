@@ -157,37 +157,37 @@ bsum <- function(x,i) sum(x[i])
 pdat_se_five <- pdat %>% 
   filter(type == "5-year") %>% 
   group_by(temp, type) %>% 
-  summarise(climate_se_sum = sd(boot(climate_effect, bsum, R = 5000, strata = five, parallel = "multicore", ncpus = 3)$t),
-            total_se_sum = sd(boot(total_effect, bsum, R = 5000, strata = five, parallel = "multicore", ncpus = 3)$t),
-            no_cs_se_sum = sd(boot(no_cs_effect, bsum, R = 5000, strata = five, parallel = "multicore", ncpus = 3)$t))
+  summarise(climate_se_sum = sd(boot(climate_effect, bsum, R = 10, strata = five, parallel = "multicore", ncpus = 3)$t),
+            total_se_sum = sd(boot(total_effect, bsum, R = 10, strata = five, parallel = "multicore", ncpus = 3)$t),
+            no_cs_se_sum = sd(boot(no_cs_effect, bsum, R = 10, strata = five, parallel = "multicore", ncpus = 3)$t))
 
 pdat_se_ten <- pdat %>% 
   filter(type == "10-year") %>% 
   group_by(temp, type) %>% 
-  summarise(climate_se_sum = sd(boot(climate_effect, bsum, R = 1000, strata = ten, parallel = "multicore", ncpus = 3)$t),
-            total_se_sum = sd(boot(total_effect, bsum, R = 1000, strata = ten, parallel = "multicore", ncpus = 3)$t),
-            no_cs_se_sum = sd(boot(no_cs_effect, bsum, R = 1000, strata = ten, parallel = "multicore", ncpus = 3)$t))
+  summarise(climate_se_sum = sd(boot(climate_effect, bsum, R = 10, strata = ten, parallel = "multicore", ncpus = 3)$t),
+            total_se_sum = sd(boot(total_effect, bsum, R = 10, strata = ten, parallel = "multicore", ncpus = 3)$t),
+            no_cs_se_sum = sd(boot(no_cs_effect, bsum, R = 10, strata = ten, parallel = "multicore", ncpus = 3)$t))
 
 pdat_se_twenty <- pdat %>% 
   filter(type == "20-year") %>% 
   group_by(temp, type) %>% 
-  summarise(climate_se_sum = sd(boot(climate_effect, bsum, R = 1000, strata = twenty, parallel = "multicore", ncpus = 3)$t),
-            total_se_sum = sd(boot(total_effect, bsum, R = 1000, strata = twenty, parallel = "multicore", ncpus = 3)$t),
-            no_cs_se_sum = sd(boot(no_cs_effect, bsum, R = 1000, strata = twenty, parallel = "multicore", ncpus = 3)$t))
+  summarise(climate_se_sum = sd(boot(climate_effect, bsum, R = 10, strata = twenty, parallel = "multicore", ncpus = 3)$t),
+            total_se_sum = sd(boot(total_effect, bsum, R = 10, strata = twenty, parallel = "multicore", ncpus = 3)$t),
+            no_cs_se_sum = sd(boot(no_cs_effect, bsum, R = 10, strata = twenty, parallel = "multicore", ncpus = 3)$t))
 
 pdat_se_thirty <- pdat %>% 
   filter(type == "30-year") %>% 
   group_by(temp, type) %>% 
-  summarise(climate_se_sum = sd(boot(climate_effect, bsum, R = 1000, strata = thirty, parallel = "multicore", ncpus = 3)$t),
-            total_se_sum = sd(boot(total_effect, bsum, R = 1000, strata = thirty, parallel = "multicore", ncpus = 3)$t),
-            no_cs_se_sum = sd(boot(no_cs_effect, bsum, R = 1000, strata = thirty, parallel = "multicore", ncpus = 3)$t))
+  summarise(climate_se_sum = sd(boot(climate_effect, bsum, R = 10, strata = thirty, parallel = "multicore", ncpus = 3)$t),
+            total_se_sum = sd(boot(total_effect, bsum, R = 10, strata = thirty, parallel = "multicore", ncpus = 3)$t),
+            no_cs_se_sum = sd(boot(no_cs_effect, bsum, R = 10, strata = thirty, parallel = "multicore", ncpus = 3)$t))
 
 pdat_se_sixty <- pdat %>% 
   filter(type == "60-year") %>% 
   group_by(temp, type) %>% 
-  summarise(climate_se_sum = sd(boot(climate_effect, bsum, R = 1000, parallel = "multicore", ncpus = 3)$t),
-            total_se_sum = sd(boot(total_effect, bsum, R = 1000, parallel = "multicore", ncpus = 3)$t),
-            no_cs_se_sum = sd(boot(no_cs_effect, bsum, R = 1000, parallel = "multicore", ncpus = 3)$t))
+  summarise(climate_se_sum = sd(boot(climate_effect, bsum, R = 10, parallel = "multicore", ncpus = 3)$t),
+            total_se_sum = sd(boot(total_effect, bsum, R = 10, parallel = "multicore", ncpus = 3)$t),
+            no_cs_se_sum = sd(boot(no_cs_effect, bsum, R = 10, parallel = "multicore", ncpus = 3)$t))
 
 
 pdat_se <- rbind(pdat_se_five, pdat_se_ten, pdat_se_twenty, pdat_se_thirty, pdat_se_sixty)
