@@ -265,10 +265,13 @@ pdat
 
 # pdat <- filter(pdat, type != "60-year" | effect != "change_total_effect")
 # 
+
+pdat <- filter(pdat, type != "60-year" | effect != "Total-effect")
+
 pdat <- gather(pdat, key = crop, value = value, -temp, -type, -effect)
 
 pdat$effect <- factor(pdat$effect, levels = c("Total-effect", "Climate-effect", "No Crop-switching"),
-                     labels = c("Climate-effect (w/ crop switching)", "Total-effect (w/ crop switching)", "Constant-effect (w/o crop switching)"))
+                     labels = c("Climate-effect \n (w/ crop switching)", "Total-effect \n (w/ crop switching)", "Constant-effect \n (w/o crop switching)"))
 
 pdat$type <- factor(pdat$type, levels = c("5-year", "10-year", "20-year", "30-year", "60-year"))
 pdat$crop <- factor(pdat$crop, levels = c("corn_rev", "cotton_rev", "hay_rev", "soybean_rev", "wheat_rev"),
@@ -281,7 +284,7 @@ ggplot(pdat, aes(temp, value, color = effect)) + geom_line() + facet_wrap(type~c
   #geom_errorbar(aes(ymax = value_max, ymin = value_min, color = effect), width = .1) +
   #geom_ribbon((aes(ymax = value_max, ymin = value_min, color = effect)), fill = "grey") +
   theme_tufte(base_size = 10) +
-  ylab("% Change in Total Revenue per acre") +
+  ylab("% Change in Total Revenue") +
   xlab("Change in Temperature (C)") +
   annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
   annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
@@ -295,5 +298,5 @@ ggplot(pdat, aes(temp, value, color = effect)) + geom_line() + facet_wrap(type~c
   #     legend.box.background = element_rect(colour = "grey"), 
   #     legend.title = element_blank(), legend.key = element_blank()) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey", alpha = 0.5)
-
+ggsave("figures/2-main_crop_rev_plot.pdf", width = 6, height = 7)
 # No adaptation 

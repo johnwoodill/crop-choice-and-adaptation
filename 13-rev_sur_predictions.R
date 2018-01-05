@@ -154,40 +154,40 @@ head(pdat)
 bsum <- function(x,i) sum(x[i])
 #bs <- system.time(boot(cropdat$ln_rev, bsum, R = 1000, strata = cropdat$five))
 
-pdat_se_five <- pdat %>% 
-  filter(type == "5-year") %>% 
-  group_by(temp, type) %>% 
-  summarise(climate_se_sum = sd(boot(climate_effect, bsum, R = 10, strata = five, parallel = "multicore", ncpus = 3)$t),
-            total_se_sum = sd(boot(total_effect, bsum, R = 10, strata = five, parallel = "multicore", ncpus = 3)$t),
-            no_cs_se_sum = sd(boot(no_cs_effect, bsum, R = 10, strata = five, parallel = "multicore", ncpus = 3)$t))
-
-pdat_se_ten <- pdat %>% 
-  filter(type == "10-year") %>% 
-  group_by(temp, type) %>% 
-  summarise(climate_se_sum = sd(boot(climate_effect, bsum, R = 10, strata = ten, parallel = "multicore", ncpus = 3)$t),
-            total_se_sum = sd(boot(total_effect, bsum, R = 10, strata = ten, parallel = "multicore", ncpus = 3)$t),
-            no_cs_se_sum = sd(boot(no_cs_effect, bsum, R = 10, strata = ten, parallel = "multicore", ncpus = 3)$t))
-
-pdat_se_twenty <- pdat %>% 
-  filter(type == "20-year") %>% 
-  group_by(temp, type) %>% 
-  summarise(climate_se_sum = sd(boot(climate_effect, bsum, R = 10, strata = twenty, parallel = "multicore", ncpus = 3)$t),
-            total_se_sum = sd(boot(total_effect, bsum, R = 10, strata = twenty, parallel = "multicore", ncpus = 3)$t),
-            no_cs_se_sum = sd(boot(no_cs_effect, bsum, R = 10, strata = twenty, parallel = "multicore", ncpus = 3)$t))
-
-pdat_se_thirty <- pdat %>% 
-  filter(type == "30-year") %>% 
-  group_by(temp, type) %>% 
-  summarise(climate_se_sum = sd(boot(climate_effect, bsum, R = 10, strata = thirty, parallel = "multicore", ncpus = 3)$t),
-            total_se_sum = sd(boot(total_effect, bsum, R = 10, strata = thirty, parallel = "multicore", ncpus = 3)$t),
-            no_cs_se_sum = sd(boot(no_cs_effect, bsum, R = 10, strata = thirty, parallel = "multicore", ncpus = 3)$t))
-
-pdat_se_sixty <- pdat %>% 
-  filter(type == "60-year") %>% 
-  group_by(temp, type) %>% 
-  summarise(climate_se_sum = sd(boot(climate_effect, bsum, R = 10, parallel = "multicore", ncpus = 3)$t),
-            total_se_sum = sd(boot(total_effect, bsum, R = 10, parallel = "multicore", ncpus = 3)$t),
-            no_cs_se_sum = sd(boot(no_cs_effect, bsum, R = 10, parallel = "multicore", ncpus = 3)$t))
+# pdat_se_five <- pdat %>% 
+#   filter(type == "5-year") %>% 
+#   group_by(temp, type) %>% 
+#   summarise(climate_se_sum = sd(boot(climate_effect, bsum, R = 10, strata = five, parallel = "multicore", ncpus = 3)$t),
+#             total_se_sum = sd(boot(total_effect, bsum, R = 10, strata = five, parallel = "multicore", ncpus = 3)$t),
+#             no_cs_se_sum = sd(boot(no_cs_effect, bsum, R = 10, strata = five, parallel = "multicore", ncpus = 3)$t))
+# 
+# pdat_se_ten <- pdat %>% 
+#   filter(type == "10-year") %>% 
+#   group_by(temp, type) %>% 
+#   summarise(climate_se_sum = sd(boot(climate_effect, bsum, R = 10, strata = ten, parallel = "multicore", ncpus = 3)$t),
+#             total_se_sum = sd(boot(total_effect, bsum, R = 10, strata = ten, parallel = "multicore", ncpus = 3)$t),
+#             no_cs_se_sum = sd(boot(no_cs_effect, bsum, R = 10, strata = ten, parallel = "multicore", ncpus = 3)$t))
+# 
+# pdat_se_twenty <- pdat %>% 
+#   filter(type == "20-year") %>% 
+#   group_by(temp, type) %>% 
+#   summarise(climate_se_sum = sd(boot(climate_effect, bsum, R = 10, strata = twenty, parallel = "multicore", ncpus = 3)$t),
+#             total_se_sum = sd(boot(total_effect, bsum, R = 10, strata = twenty, parallel = "multicore", ncpus = 3)$t),
+#             no_cs_se_sum = sd(boot(no_cs_effect, bsum, R = 10, strata = twenty, parallel = "multicore", ncpus = 3)$t))
+# 
+# pdat_se_thirty <- pdat %>% 
+#   filter(type == "30-year") %>% 
+#   group_by(temp, type) %>% 
+#   summarise(climate_se_sum = sd(boot(climate_effect, bsum, R = 10, strata = thirty, parallel = "multicore", ncpus = 3)$t),
+#             total_se_sum = sd(boot(total_effect, bsum, R = 10, strata = thirty, parallel = "multicore", ncpus = 3)$t),
+#             no_cs_se_sum = sd(boot(no_cs_effect, bsum, R = 10, strata = thirty, parallel = "multicore", ncpus = 3)$t))
+# 
+# pdat_se_sixty <- pdat %>% 
+#   filter(type == "60-year") %>% 
+#   group_by(temp, type) %>% 
+#   summarise(climate_se_sum = sd(boot(climate_effect, bsum, R = 10, parallel = "multicore", ncpus = 3)$t),
+#             total_se_sum = sd(boot(total_effect, bsum, R = 10, parallel = "multicore", ncpus = 3)$t),
+#             no_cs_se_sum = sd(boot(no_cs_effect, bsum, R = 10, parallel = "multicore", ncpus = 3)$t))
 
 
 pdat_se <- rbind(pdat_se_five, pdat_se_ten, pdat_se_twenty, pdat_se_thirty, pdat_se_sixty)
@@ -245,18 +245,18 @@ head(pdat1)
 pdat1 <- filter(pdat1, type != "60-year" | effect != "change_total_effect")
 
 pdat1$effect <- factor(pdat1$effect, levels = c("change_total_effect", "change_climate_effect", "change_no_cs_effect"),
-                    labels = c("Climate-effect (w/ crop switching)", "Total-effect (w/ crop switching)", "Constant-effect (w/o crop switching)"))
+                    labels = c("Climate-effect \n (w/ crop switching)", "Total-effect \n (w/ crop switching)", "Constant-effect \n (w/o crop switching)"))
 pdat1$type <- factor(pdat1$type, levels = c("5-year", "10-year", "20-year", "30-year", "60-year"))
 
 
 ggplot(pdat1, aes(temp, value, color = effect)) + geom_line() + facet_wrap(~type) +
   geom_point(aes(color = effect), size = 0.5) +
-  geom_line(aes(y=value_max, temp, color = effect), linetype = "dashed", alpha = 0.5) +
-  geom_line(aes(y=value_min, temp, color = effect), linetype = "dashed", alpha = 0.5) +
+  # geom_line(aes(y=value_max, temp, color = effect), linetype = "dashed", alpha = 0.5) +
+  # geom_line(aes(y=value_min, temp, color = effect), linetype = "dashed", alpha = 0.5) +
   #geom_errorbar(aes(ymax = value_max, ymin = value_min, color = effect), width = .1) +
   #geom_ribbon((aes(ymax = value_max, ymin = value_min, color = effect)), fill = "grey") +
   theme_tufte(base_size = 10) +
-  ylab("% Change in Total Revenue per acre") +
+  ylab("% Change in Total Revenue") +
   xlab("Change in Temperature (C)") +
   annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
   annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
@@ -271,7 +271,7 @@ ggplot(pdat1, aes(temp, value, color = effect)) + geom_line() + facet_wrap(~type
   #     legend.title = element_blank(), legend.key = element_blank()) +
   facet_wrap(~type) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey", alpha = 0.5)
-
+ggsave("figures/1-main_rev_plot.pdf", width = 6, height = 4)
 # No adaptation 
 
 
