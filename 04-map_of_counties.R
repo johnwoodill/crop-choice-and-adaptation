@@ -1,5 +1,6 @@
 library(choroplethr)
 library(ggthemes)
+library(tidyverse)
 library(cowplot)
 
 grr <- readRDS("data/full_ag_data.rds")

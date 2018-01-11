@@ -112,6 +112,33 @@ mod$effects <- list(corn.effect = cropdat_means$z_corn_a,
                     soybean.effect = cropdat_means$z_soybean_a,
                     wheat.effect = cropdat_means$z_wheat_a)
 
+# Bootstrap standard errors
+bs_cropdat_dm <- cropdat_dm
+bs_cropdat_dm$five <- cropdat$five
+
+se_dat <- data.frame()
+
+for(i in 1:2){}
+registerDoSNOW(makeCluster(2, type = "SOCK"))
+  d <- foreach(i = 1:2, .combine = rbind) %dopar% {
+  # Resample within interval
+  regdat <- bs_cropdat_dm %>% 
+    group_by(five) %>% 
+    sample_frac(1, replace = TRUE)
+  
+  bsmod <- systemfit(list(corn = mod1, 
+                       cotton = mod2, 
+                       hay = mod3, 
+                       soybean = mod4,
+                       wheat = mod5), data = regdat, method = "SUR")
+  
+  mdat <- as.data.frame(t(bsmod$coefficients))
+  names(mdat) <- names(bsmod$coefficients)
+  mdat <- select(mdat, -one_of(grep("trend", names(bsmod$coefficients), value = TRUE)))
+  mdat
+  # se_dat <- rbind(se_dat, mdat)
+  print(i)
+}
 
 saveRDS(mod, "models/sur_model_five.rds")
 

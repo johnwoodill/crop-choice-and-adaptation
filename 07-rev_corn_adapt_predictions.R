@@ -502,7 +502,7 @@ ggplot(pdat, aes(temp, change)) +
   facet_wrap(~type, scales = "free") +
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey", alpha = 0.5)
 
-ggsave("figures/predicted_corn.pdf", device = "pdf", width = 6, height = 4)
+ggsave("figures/4-predicted_corn.pdf", device = "pdf", width = 6, height = 4)
 
 # ggplot(sixtypdat, aes(temp, change)) + geom_line()
 #plot(c(c1, c2, c3, c4, c5))

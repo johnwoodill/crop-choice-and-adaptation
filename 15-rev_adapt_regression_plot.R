@@ -17,7 +17,7 @@ pdat1 <- data.frame(var = rep(c("Degree Day (0-10C)", "Degree Day (10-30C)", "De
                     interv = rep(c("5-year", "10-year", "20-year", "30-year", "60-year"), each = 3),
                   coef = c(modfive$coefficients[1:3], modten$coefficients[1:3], modtwenty$coefficients[1:3],
                              modthirty$coefficients[1:3], modsixty$coefficients[1:3]),
-                  se = c(modfive5$cse[1:3], modten5$cse[1:3], modtwenty$cse[1:3],
+                  se = c(modfive$cse[1:3], modten$cse[1:3], modtwenty$cse[1:3],
                              modthirty$cse[1:3], modsixty$cse[1:3]),
                   effect = "Weather-effect")
 pdat2 <- data.frame(var = rep(c("Degree Day (0-10C)", "Degree Day (10-30C)", "Degree Day (30C)"), 5),
@@ -62,7 +62,7 @@ pdat1 <- data.frame(var = rep(c("Degree Day (0-10C)", "Degree Day (10-30C)", "De
                     interv = rep(c("5-year", "10-year", "20-year", "30-year", "60-year"), each = 3),
                   coef = c(modfive$coefficients[1:3], modten$coefficients[1:3], modtwenty$coefficients[1:3],
                              modthirty$coefficients[1:3], modsixty$coefficients[1:3]),
-                  se = c(modfive5$cse[1:3], modten5$cse[1:3], modtwenty$cse[1:3],
+                  se = c(modfive$cse[1:3], modten$cse[1:3], modtwenty$cse[1:3],
                              modthirty$cse[1:3], modsixty$cse[1:3]),
                   effect = "Weather-effect")
 pdat2 <- data.frame(var = rep(c("Degree Day (0-10C)", "Degree Day (10-30C)", "Degree Day (30C)"), 5),
@@ -106,7 +106,7 @@ pdat1 <- data.frame(var = rep(c("Degree Day (0-10C)", "Degree Day (10-30C)", "De
                     interv = rep(c("5-year", "10-year", "20-year", "30-year", "60-year"), each = 3),
                   coef = c(modfive$coefficients[1:3], modten$coefficients[1:3], modtwenty$coefficients[1:3],
                              modthirty$coefficients[1:3], modsixty$coefficients[1:3]),
-                  se = c(modfive5$cse[1:3], modten5$cse[1:3], modtwenty$cse[1:3],
+                  se = c(modfive$cse[1:3], modten$cse[1:3], modtwenty$cse[1:3],
                              modthirty$cse[1:3], modsixty$cse[1:3]),
                   effect = "Weather-effect")
 pdat2 <- data.frame(var = rep(c("Degree Day (0-10C)", "Degree Day (10-30C)", "Degree Day (30C)"), 5),
@@ -151,7 +151,7 @@ pdat1 <- data.frame(var = rep(c("Degree Day (0-10C)", "Degree Day (10-30C)", "De
                     interv = rep(c("5-year", "10-year", "20-year", "30-year", "60-year"), each = 3),
                   coef = c(modfive$coefficients[1:3], modten$coefficients[1:3], modtwenty$coefficients[1:3],
                              modthirty$coefficients[1:3], modsixty$coefficients[1:3]),
-                  se = c(modfive5$cse[1:3], modten5$cse[1:3], modtwenty$cse[1:3],
+                  se = c(modfive$cse[1:3], modten$cse[1:3], modtwenty$cse[1:3],
                              modthirty$cse[1:3], modsixty$cse[1:3]),
                   effect = "Weather-effect")
 pdat2 <- data.frame(var = rep(c("Degree Day (0-10C)", "Degree Day (10-30C)", "Degree Day (30C)"), 5),
@@ -196,7 +196,7 @@ pdat1 <- data.frame(var = rep(c("Degree Day (0-10C)", "Degree Day (10-30C)", "De
                     interv = rep(c("5-year", "10-year", "20-year", "30-year", "60-year"), each = 3),
                   coef = c(modfive$coefficients[1:3], modten$coefficients[1:3], modtwenty$coefficients[1:3],
                              modthirty$coefficients[1:3], modsixty$coefficients[1:3]),
-                  se = c(modfive5$cse[1:3], modten5$cse[1:3], modtwenty$cse[1:3],
+                  se = c(modfive$cse[1:3], modten$cse[1:3], modtwenty$cse[1:3],
                              modthirty$cse[1:3], modsixty$cse[1:3]),
                   effect = "Weather-effect")
 pdat2 <- data.frame(var = rep(c("Degree Day (0-10C)", "Degree Day (10-30C)", "Degree Day (30C)"), 5),

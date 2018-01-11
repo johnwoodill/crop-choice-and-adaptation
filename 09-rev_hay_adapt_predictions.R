@@ -486,7 +486,7 @@ ggplot(pdat, aes(temp, change)) +
   geom_point(aes(color = effect), size = 0.5) +
   #geom_errorbar(aes(ymax = change_max, ymin = change_min, color = effect), width = .1) +
   theme_tufte(base_size = 12) +
-  ylab("% Change in Revenue per acre") +
+  ylab("% Change in Revenue per acre \n (Hay)") +
   xlab("Change in Temperature (C)") +
   annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
   annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
@@ -501,7 +501,9 @@ ggplot(pdat, aes(temp, change)) +
   #     legend.title = element_blank(), legend.key = element_blank()) +
   facet_wrap(~type, scales = "free") +
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey")
-  
+
+ggsave("figures/predicted_hay.pdf", device = "pdf", width = 6, height = 4)
+
 # ggplot(sixtypdat, aes(temp, change)) + geom_line()
 #plot(c(c1, c2, c3, c4, c5))
 #plot(c(ld1, ld2, ld3, ld4, ld5))
