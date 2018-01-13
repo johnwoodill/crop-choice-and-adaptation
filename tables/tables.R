@@ -286,8 +286,7 @@ star1 <- stargazer(corn1, corn2, corn3, corn4, corn5, corn6, corn7, corn8, corn9
                   title = "Regression explaining Corn Revenue per Acre",
                   column.labels = c("Weather", "Climate ", "Weather-Climate ", "Weather-Climate ",  
                                     "Weather-Climate", "Weather-Climate", "Weather-Climate", "Weather-Climate", "Weather-Climate", "Climate"),
-          dep.var.labels = c("Log(Crop Revenue per Acre)", "Log(Crop Revenue per Acre)", "Log(Crop Revenue per Acre)",
-                             "Log(Crop Revenue per Acre)", "Log(Crop Revenue per Acre)"),
+          dep.var.labels = c("Log(Corn Revenue per Acre)"),
           covariate.labels = c("Degree Days (0-10C) ", "Degree Days (10-30C) ", "Degree Days (30C) ",
                                "Precipitation ", "Precipitation Squared ",
                                "Degree Days (0-10C) ", "Degree Days (10-30C) ", "Degree Days (30C) ",
@@ -296,7 +295,7 @@ star1 <- stargazer(corn1, corn2, corn3, corn4, corn5, corn6, corn7, corn8, corn9
           apply.coef = multiply.100, apply.se = multiply.100,
           table.layout ="=dcm#-t-as=n",
           font.size = "footnotesize",
-          add.lines = list(c("Fixed-effect", "--", "--", "--", "County", "County", "County x Interval", "County x Interval", "County x Interval", "County x Interval", "County x Interval"),
+          add.lines = list(c("Fixed-effect", "--", "--", "--", "County", "County", "County, Interval", "County, Interval", "County, Interval", "County, Interval", "County, Interval"),
                            c("Quad. County-trend", "--", "--", "--", "--", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes"),
                            c("Clusterd SE", "--", "--", "--", "--", "State", "State", "State", "State", "State", "State")),
           notes.append = FALSE, notes.align = "l")
@@ -342,8 +341,7 @@ star2 <- stargazer(cotton1, cotton2, cotton3, cotton4, cotton5, cotton6, cotton7
                   title = "Regression explaining Cotton Revenue per Acre",
                   column.labels = c("Weather", "Climate ", "Weather-Climate ", "Weather-Climate ",  
                                     "Weather-Climate", "Weather-Climate", "Weather-Climate", "Weather-Climate", "Weather-Climate", "Climate"),
-          dep.var.labels = c("Log(Crop Revenue per Acre)", "Log(Crop Revenue per Acre)", "Log(Crop Revenue per Acre)",
-                             "Log(Crop Revenue per Acre)", "Log(Crop Revenue per Acre)"),
+          dep.var.labels = c("Log(Cotton Revenue per Acre)"),
           covariate.labels = c("Degree Days (0-10C) ", "Degree Days (10-30C) ", "Degree Days (30C) ",
                                "Precipitation ", "Precipitation Squared ",
                                "Degree Days (0-10C) ", "Degree Days (10-30C) ", "Degree Days (30C) ",
@@ -352,7 +350,7 @@ star2 <- stargazer(cotton1, cotton2, cotton3, cotton4, cotton5, cotton6, cotton7
           apply.coef = multiply.100, apply.se = multiply.100,
           table.layout ="=dcm#-t-as=n",
           font.size = "footnotesize",
-          add.lines = list(c("Fixed-effect", "--", "--", "--", "County", "County", "County x Interval", "County x Interval", "County x Interval", "County x Interval", "County x Interval"),
+          add.lines = list(c("Fixed-effect", "--", "--", "--", "County", "County", "County, Interval", "County, Interval", "County, Interval", "County, Interval", "County, Interval"),
                            c("Quad. County-trend", "--", "--", "--", "--", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes"),
                            c("Clusterd SE", "--", "--", "--", "--", "State", "State", "State", "State", "State", "State")),
           notes.append = FALSE, notes.align = "l")
@@ -399,8 +397,7 @@ star3 <- stargazer(hay1, hay2, hay3, hay4, hay5, hay6, hay7, hay8, hay9, hay10,
                   title = "Regression explaining Hay Revenue per Acre",
                   column.labels = c("Weather", "Climate ", "Weather-Climate ", "Weather-Climate ",  
                                     "Weather-Climate", "Weather-Climate", "Weather-Climate", "Weather-Climate", "Weather-Climate", "Climate"),
-          dep.var.labels = c("Log(Crop Revenue per Acre)", "Log(Crop Revenue per Acre)", "Log(Crop Revenue per Acre)",
-                             "Log(Crop Revenue per Acre)", "Log(Crop Revenue per Acre)"),
+          dep.var.labels = c("Log(Hay Revenue per Acre)"),
           covariate.labels = c("Degree Days (0-10C) ", "Degree Days (10-30C) ", "Degree Days (30C) ",
                                "Precipitation ", "Precipitation Squared ",
                                "Degree Days (0-10C) ", "Degree Days (10-30C) ", "Degree Days (30C) ",
@@ -409,7 +406,7 @@ star3 <- stargazer(hay1, hay2, hay3, hay4, hay5, hay6, hay7, hay8, hay9, hay10,
           apply.coef = multiply.100, apply.se = multiply.100,
           table.layout ="=dcm#-t-as=n",
           font.size = "footnotesize",
-          add.lines = list(c("Fixed-effect", "--", "--", "--", "County", "County", "County x Interval", "County x Interval", "County x Interval", "County x Interval", "County x Interval"),
+          add.lines = list(c("Fixed-effect", "--", "--", "--", "County", "County", "County, Interval", "County, Interval", "County, Interval", "County, Interval", "County, Interval"),
                            c("Quad. County-trend", "--", "--", "--", "--", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes"),
                            c("Clusterd SE", "--", "--", "--", "--", "State", "State", "State", "State", "State", "State")),
           notes.append = FALSE, notes.align = "l")
@@ -453,8 +450,7 @@ star4 <- stargazer(soybean1, soybean2, soybean3, soybean4, soybean5, soybean6, s
                   title = "Regression explaining Soybean Revenue per Acre",
                   column.labels = c("Weather", "Climate ", "Weather-Climate ", "Weather-Climate ",  
                                     "Weather-Climate", "Weather-Climate", "Weather-Climate", "Weather-Climate", "Weather-Climate", "Climate"),
-          dep.var.labels = c("Log(Crop Revenue per Acre)", "Log(Crop Revenue per Acre)", "Log(Crop Revenue per Acre)",
-                             "Log(Crop Revenue per Acre)", "Log(Crop Revenue per Acre)"),
+          dep.var.labels = c("Log(Soybean Revenue per Acre)"),
           covariate.labels = c("Degree Days (0-10C) ", "Degree Days (10-30C) ", "Degree Days (30C) ",
                                "Precipitation ", "Precipitation Squared ",
                                "Degree Days (0-10C) ", "Degree Days (10-30C) ", "Degree Days (30C) ",
@@ -463,7 +459,7 @@ star4 <- stargazer(soybean1, soybean2, soybean3, soybean4, soybean5, soybean6, s
           apply.coef = multiply.100, apply.se = multiply.100,
           table.layout ="=dcm#-t-as=n",
           font.size = "footnotesize",
-          add.lines = list(c("Fixed-effect", "--", "--", "--", "County", "County", "County x Interval", "County x Interval", "County x Interval", "County x Interval", "County x Interval"),
+          add.lines = list(c("Fixed-effect", "--", "--", "--", "County", "County", "County, Interval", "County, Interval", "County, Interval", "County, Interval", "County, Interval"),
                            c("Quad. County-trend", "--", "--", "--", "--", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes"),
                            c("Clusterd SE", "--", "--", "--", "--", "State", "State", "State", "State", "State", "State")),
           notes.append = FALSE, notes.align = "l")
@@ -509,8 +505,7 @@ star5 <- stargazer(wheat1, wheat2, wheat3, wheat4, wheat5, wheat6, wheat7, wheat
                   title = "Regression explaining Wheat Revenue per Acre",
                   column.labels = c("Weather", "Climate ", "Weather-Climate ", "Weather-Climate ",  
                                     "Weather-Climate", "Weather-Climate", "Weather-Climate", "Weather-Climate", "Weather-Climate", "Climate"),
-          dep.var.labels = c("Log(Crop Revenue per Acre)", "Log(Crop Revenue per Acre)", "Log(Crop Revenue per Acre)",
-                             "Log(Crop Revenue per Acre)", "Log(Crop Revenue per Acre)"),
+          dep.var.labels = c("Log(Wheat Revenue per Acre)"),
           covariate.labels = c("Degree Days (0-10C) ", "Degree Days (10-30C) ", "Degree Days (30C) ",
                                "Precipitation ", "Precipitation Squared ",
                                "Degree Days (0-10C) ", "Degree Days (10-30C) ", "Degree Days (30C) ",
@@ -519,7 +514,7 @@ star5 <- stargazer(wheat1, wheat2, wheat3, wheat4, wheat5, wheat6, wheat7, wheat
           apply.coef = multiply.100, apply.se = multiply.100,
           table.layout ="=dcm#-t-as=n",
           font.size = "footnotesize",
-          add.lines = list(c("Fixed-effect", "--", "--", "--", "County", "County", "County x Interval", "County x Interval", "County x Interval", "County x Interval", "County x Interval"),
+          add.lines = list(c("Fixed-effect", "--", "--", "--", "County", "County", "County, Interval", "County, Interval", "County, Interval", "County, Interval", "County, Interval"),
                            c("Quad. County-trend", "--", "--", "--", "--", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes"),
                            c("Clusterd SE", "--", "--", "--", "--", "State", "State", "State", "State", "State", "State")),
           notes.append = FALSE, notes.align = "l")
@@ -560,17 +555,27 @@ star5 <- c(star5, "\\end{table}")
 
 setwd("/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/tables")          
 {
-cat("\\documentclass[10pt]{article}\n\\usepackage{graphicx}\n\\usepackage{pdflscape}\n\\usepackage{dcolumn}\n\\usepackage[a4paper, total={8in, 10in}]{geometry}\n\\begin{document}", file = "tables.tex")
+cat("\\documentclass[10pt]{article}\n\\usepackage{graphicx}\n\\usepackage{pdflscape}\n\\usepackage{dcolumn}\n\\usepackage[a4paper, total={8in, 10in}]{geometry}\n\\begin{document}\n", file = "tables.tex")
 cat("\\begin{landscape}", file = "tables.tex", sep = "\n", append = TRUE)
+cat("\\mbox{}\\vfill", file = "tables.tex", sep = "\n", append = TRUE)
 cat(star1, file = "tables.tex", sep = "\n", append = TRUE)
+cat("\\vfill", file = "tables.tex", append = TRUE)
 cat("\\newpage", file = "tables.tex", append = TRUE)
+cat("\\mbox{}\\vfill", file = "tables.tex", sep = "\n", append = TRUE)
 cat(star2, file = "tables.tex", sep = "\n", append = TRUE)
+cat("\\vfill", file = "tables.tex", append = TRUE)
 cat("\\newpage", file = "tables.tex", append = TRUE)
+cat("\\mbox{}\\vfill", file = "tables.tex", sep = "\n", append = TRUE)
 cat(star3, file = "tables.tex", sep = "\n", append = TRUE)
+cat("\\vfill", file = "tables.tex", append = TRUE)
 cat("\\newpage", file = "tables.tex", append = TRUE)
+cat("\\mbox{}\\vfill", file = "tables.tex", sep = "\n", append = TRUE)
 cat(star4, file = "tables.tex", sep = "\n", append = TRUE)
+cat("\\vfill", file = "tables.tex", append = TRUE)
 cat("\\newpage", file = "tables.tex", append = TRUE)
+cat("\\mbox{}\\vfill", file = "tables.tex", sep = "\n", append = TRUE)
 cat(star5, file = "tables.tex", sep = "\n", append = TRUE)
+cat("\\vfill", file = "tables.tex", append = TRUE)
 cat("\\end{landscape}", file = "tables.tex", sep = "\n", append = TRUE)
 cat("\\end{document}", file = "tables.tex", append = TRUE)
 # Compile pdf
