@@ -474,7 +474,8 @@ pdat$change_max <- pdat$change_max*100
 
 
 
-pdat$type <- factor(pdat$type, labels = c("5-year", "10-year", "20-year", "30-year", "60-year"))
+pdat$type <- factor(pdat$type, levels = c("5-year", "10-year", "20-year", "30-year", "60-year"),
+                    labels = c("5-year", "10-year", "20-year", "30-year", "60-year"))
 
 pdat <- filter(pdat, type != "60-year" | (effect != "Weather-effect" & effect != "Total-effect"))
 
@@ -485,7 +486,7 @@ ggplot(pdat, aes(temp, change)) +
   geom_line(aes(color = effect)) +
   geom_point(aes(color = effect), size = 0.5) +
   #geom_errorbar(aes(ymax = change_max, ymin = change_min, color = effect), width = .1) +
-  theme_tufte(base_size = 12) +
+  theme_tufte(base_size = 10) +
   ylab("% Change in Revenue per acre \n (Hay)") +
   xlab("Change in Temperature (C)") +
   annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +

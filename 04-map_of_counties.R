@@ -37,7 +37,7 @@ corn_map <- county_choropleth(corndat,
      
                 
 corn_map <- corn_map + scale_fill_brewer(palette = "YlGnBu") + 
-  theme_tufte(base_size = 14)+ 
+  theme_tufte(base_size = 10)+ 
   xlab("Corn") + ylab(NULL) + theme(legend.position = "none",
                        axis.text.x = element_blank(),
                        axis.text.y = element_blank(),
@@ -57,7 +57,7 @@ cotton_map <- county_choropleth(cottondat, state_zoom = c("texas", "oklahoma", "
      
                 
 cotton_map <- cotton_map + scale_fill_brewer(palette = "YlGnBu") + 
-  theme_tufte(base_size = 14)+
+  theme_tufte(base_size = 10)+
   xlab("Cotton") + ylab(NULL) + theme(legend.position = "none",
                        axis.text.x = element_blank(),
                        axis.text.y = element_blank(),
@@ -74,7 +74,7 @@ hay_map <- county_choropleth(haydat,
      
                 
 hay_map <- hay_map + scale_fill_brewer(palette = "YlGnBu") + 
-  theme_tufte(base_size = 14)+ 
+  theme_tufte(base_size = 10)+ 
   xlab("Hay") + ylab(NULL) + theme(legend.position = "none",
                        axis.text.x = element_blank(),
                        axis.text.y = element_blank(),
@@ -91,7 +91,7 @@ wheat_map <- county_choropleth(wheatdat,
      
                 
 wheat_map <- wheat_map + scale_fill_brewer(palette = "YlGnBu") + 
-  theme_tufte(base_size = 14)+ 
+  theme_tufte(base_size = 10)+ 
   xlab("Wheat") + ylab(NULL) + theme(legend.position = "none",
                        axis.text.x = element_blank(),
                        axis.text.y = element_blank(),
@@ -108,7 +108,7 @@ soybean_map <- county_choropleth(soybeandat,
      
                 
 soybean_map <- soybean_map + scale_fill_brewer(palette = "YlGnBu") + 
-  theme_tufte(base_size = 14)+ 
+  theme_tufte(base_size = 10)+ 
   xlab("Soybean") + ylab(NULL) + theme(legend.position = "none",
                        axis.text.x = element_blank(),
                        axis.text.y = element_blank(),
@@ -118,3 +118,4 @@ soybean_map <- soybean_map + scale_fill_brewer(palette = "YlGnBu") +
 soybean_map
 
 plot_grid(corn_map, cotton_map, hay_map, wheat_map, soybean_map)
+ggsave("figures/crop_map.jpg", width = 6, height = 4)

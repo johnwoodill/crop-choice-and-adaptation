@@ -474,7 +474,8 @@ pdat$change_max <- pdat$change_max*100
 
 
 
-pdat$type <- factor(pdat$type, labels = c("5-year", "10-year", "20-year", "30-year", "60-year"))
+pdat$type <- factor(pdat$type, levels = c("5-year", "10-year", "20-year", "30-year", "60-year"),
+                    labels = c("5-year", "10-year", "20-year", "30-year", "60-year"))
 
 pdat <- filter(pdat, type != "60-year" | (effect != "Weather-effect" & effect != "Total-effect"))
 

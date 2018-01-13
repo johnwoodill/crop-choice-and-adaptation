@@ -271,10 +271,10 @@ saveRDS(pdat, "data/sur_predictions.rds")
 
 ggplot(pdat, aes(temp, change, color = effect)) + 
   geom_line() + 
-  geom_point() + 
+  geom_point(size = .5) + 
   #geom_errorbar(aes(ymax = change_max, ymin = change_min, color = effect), width = .1) +
-  theme_tufte(base_size = 12) +
-  ylab("Change in Proportion of Crop Acres") +
+  theme_tufte(base_size = 10) +
+  ylab("% Change in Proportion of Crop Acres") +
   xlab("Change in Temperature (C)") +
   annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
   annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
@@ -282,13 +282,15 @@ ggplot(pdat, aes(temp, change, color = effect)) +
   theme(legend.position = "top", 
        #legend.justification = c("left", "top"), 
        legend.box.background = element_rect(colour = "grey"), 
-       legend.title = element_blank(), legend.key = element_blank()) +
+       legend.title = element_blank(), legend.key = element_blank(),
+       axis.text.x = element_text(angle = 45, hjust = 1)) +
   #theme(legend.position = c(.85,1), 
   #     legend.justification = c("left", "top"), 
   #     legend.box.background = element_rect(colour = "grey"), 
   #     legend.title = element_blank(), legend.key = element_blank()) +
-  facet_wrap(type~crop, scales = "free") +
+  facet_wrap(type~crop) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey")
+ggsave("figures/sur_crop_share_predictions.pdf", width = 6, height = 7)
 
 ppdat <- pdat %>% 
   #filter(effect == "Climate-effect") %>% 

@@ -292,7 +292,8 @@ ggplot(pdat, aes(temp, value, color = effect)) + geom_line() + facet_wrap(type~c
   theme(legend.position = "top", 
        #legend.justification = c("left", "top"), 
        legend.box.background = element_rect(colour = "grey"), 
-       legend.title = element_blank(), legend.key = element_blank()) +
+       legend.title = element_blank(), legend.key = element_blank(),
+        axis.text.x = element_text(angle = 45, hjust = 1)) +
   #theme(legend.position = c(.85,1), 
   #     legend.justification = c("left", "top"), 
   #     legend.box.background = element_rect(colour = "grey"), 

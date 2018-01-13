@@ -198,45 +198,44 @@ pdat <- pdat %>%
   summarise(climate_effect = sum(climate_effect),
             total_effect = sum(total_effect),
             no_cs_effect = sum(no_cs_effect)) %>% 
-  left_join(pdat_se, by = c("type", "temp")) %>% 
-  mutate(climate_effect_min = climate_effect - 1.96*climate_se_sum,
-         climate_effect_max = climate_effect + 1.96*climate_se_sum,
-         total_effect_min = total_effect - 1.96*total_se_sum,
-         total_effect_max = total_effect + 1.96*total_se_sum,
-         no_cs_effect_min = no_cs_effect - 1.96*no_cs_se_sum,
-         no_cs_effect_max = no_cs_effect + 1.96*no_cs_se_sum) %>% 
+  #left_join(pdat_se, by = c("type", "temp")) %>% 
+  # mutate(climate_effect_min = climate_effect - 1.96*climate_se_sum,
+  #        climate_effect_max = climate_effect + 1.96*climate_se_sum) %>% 
+         # total_effect_min = total_effect - 1.96*total_se_sum,
+         # total_effect_max = total_effect + 1.96*total_se_sum,
+         # no_cs_effect_min = no_cs_effect - 1.96*no_cs_se_sum,
+         # no_cs_effect_max = no_cs_effect + 1.96*no_cs_se_sum) %>% 
   group_by(type) %>% 
   mutate(change_climate_effect = 100*(climate_effect - first(climate_effect))/first(climate_effect),
          change_total_effect = 100*(total_effect - first(total_effect))/first(total_effect),
-         change_no_cs_effect = 100*(no_cs_effect - first(no_cs_effect))/first(no_cs_effect),
+         change_no_cs_effect = 100*(no_cs_effect - first(no_cs_effect))/first(no_cs_effect))
          
-         change_climate_effect_max = 100*(climate_effect_max - first(climate_effect_max))/first(climate_effect_max),
-         change_total_effect_max = 100*(total_effect_max - first(total_effect_max))/first(total_effect_max),
-         change_no_cs_effect_max = 100*(no_cs_effect_max - first(no_cs_effect_max))/first(no_cs_effect_max),
-         
-         change_climate_effect_min = 100*(climate_effect_min - first(climate_effect_min))/first(climate_effect_min),
-         change_total_effect_min = 100*(total_effect_min - first(total_effect_min))/first(total_effect_min),
-         change_no_cs_effect_min = 100*(no_cs_effect_min - first(no_cs_effect_min))/first(no_cs_effect_min)) 
+         # change_climate_effect_max = 100*(climate_effect_max - first(climate_effect_max))/first(climate_effect_max),
+         # change_total_effect_max = 100*(total_effect_max - first(total_effect_max))/first(total_effect_max),
+         # change_no_cs_effect_max = 100*(no_cs_effect_max - first(no_cs_effect_max))/first(no_cs_effect_max),
+         # 
+         # change_climate_effect_min = 100*(climate_effect_min - first(climate_effect_min))/first(climate_effect_min),
+         # change_total_effect_min = 100*(total_effect_min - first(total_effect_min))/first(total_effect_min),
+         # change_no_cs_effect_min = 100*(no_cs_effect_min - first(no_cs_effect_min))/first(no_cs_effect_min)) 
   
   
 
 head(pdat)
-View(pdat)
 
 pdat1 <- pdat %>% 
   select(type, temp, change_climate_effect, change_total_effect, change_no_cs_effect) %>% 
   gather(key = effect, value = value, -type, -temp)
 
-pdat2 <- pdat %>% 
-    select(type, temp, change_climate_effect_max, change_total_effect_max, change_no_cs_effect_max) %>% 
-  gather(key = effect, value = value_max, -type, -temp)
+# pdat2 <- pdat %>% 
+#     select(type, temp, change_climate_effect_max, change_total_effect_max, change_no_cs_effect_max) %>% 
+#   gather(key = effect, value = value_max, -type, -temp)
+# 
+# pdat3 <- pdat %>% 
+#     select(type, temp, change_climate_effect_min, change_total_effect_min, change_no_cs_effect_min) %>% 
+#   gather(key = effect, value = value_min, -type, -temp)
 
-pdat3 <- pdat %>% 
-    select(type, temp, change_climate_effect_min, change_total_effect_min, change_no_cs_effect_min) %>% 
-  gather(key = effect, value = value_min, -type, -temp)
-
-pdat1$value_max <- pdat2$value_max
-pdat1$value_min <- pdat3$value_min
+# pdat1$value_max <- pdat2$value_max
+# pdat1$value_min <- pdat3$value_min
 # test <- left_join(pdat1, pdat2, by = c("type", "temp"))
 # test
 # pdat <- left_join(pdat, pdat3, by = c("type", "temp"))

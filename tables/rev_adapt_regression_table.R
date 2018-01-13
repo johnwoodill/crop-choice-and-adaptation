@@ -12,11 +12,16 @@ adj_ln <- function(x){
   }
 
 # Save models
-base1 <- readRDS("models/mod_base_1.rds")
-base2 <- readRDS("models/mod_base_2.rds")
-base3 <- readRDS("models/mod_base_3.rds")
-base4 <- readRDS("models/mod_base_4.rds")
-thirty1 <- readRDS("models/modthirty_1.rds")
+corn1 <- readRDS("models/modtwenty_corn_base_1.rds")
+corn2 <- readRDS("models/modtwenty_corn_base_2.rds")
+corn3 <- readRDS("models/modtwenty_corn_base_3.rds")
+corn4 <- readRDS("models/modtwenty_corn_base_4.rds")
+corn5 <- readRDS("models/modtwenty_corn_base_5.rds")
+corn6 <- readRDS("models/modtwenty_corn.rds")
+corn7 <- readRDS("models/modfive_corn.rds")
+corn8 <- readRDS("models/modten_corn.rds")
+corn9 <- readRDS("models/modthirty_corn.rds")
+corn10 <- readRDS("models/modsixty_corn.rds")
 
 # mod1 <- readRDS("models/modfive5.rds")
 # mod2 <- readRDS("models/modten5.rds")
@@ -30,26 +35,28 @@ thirty1 <- readRDS("models/modthirty_1.rds")
 # mod4d <- readRDS("models/modthirty5d.rds")
 # mod4e <- readRDS("models/modthirty5e.rds")
 
-attr(base1$beta, "dimnames")[[1]] <- c("(Intercept)", "weather_dday0_10", "weather_dday10_30", "weather_dday30", "weather_prec", "weather_prec_sq")
-attr(base2$beta, "dimnames")[[1]] <- c("(Intercept)", "climate_dday0_10", "climate_dday10_30", "climate_dday30", "climate_prec", "climate_prec_sq")
-attr(base3$beta, "dimnames")[[1]] <- c("(Intercept)", "weather_dday0_10", "weather_dday10_30", "weather_dday30", "weather_prec", "weather_prec_sq",
+attr(corn1$beta, "dimnames")[[1]] <- c("(Intercept)", "weather_dday0_10", "weather_dday10_30", "weather_dday30", "weather_prec", "weather_prec_sq")
+attr(corn2$beta, "dimnames")[[1]] <- c("(Intercept)", "climate_dday0_10", "climate_dday10_30", "climate_dday30", "climate_prec", "climate_prec_sq")
+attr(corn3$beta, "dimnames")[[1]] <- c("(Intercept)", "weather_dday0_10", "weather_dday10_30", "weather_dday30", "weather_prec", "weather_prec_sq",
                                 "climate_dday0_10", "climate_dday10_30", "climate_dday30", "climate_prec", "climate_prec_sq")
-attr(base4$beta, "dimnames")[[1]][1:10] <- c("weather_dday0_10", "weather_dday10_30", "weather_dday30", "weather_prec", "weather_prec_sq",
-                                "climate_dday0_10", "climate_dday10_30", "climate_dday30", "climate_prec", "climate_prec_sq")
-attr(thirty1$beta, "dimnames")[[1]][1:10] <- c("weather_dday0_10", "weather_dday10_30", "weather_dday30", "weather_prec", "weather_prec_sq",
+attr(corn4$beta, "dimnames")[[1]] <- c("weather_dday0_10", "weather_dday10_30", "weather_dday30", "weather_prec", "weather_prec_sq",
                                 "climate_dday0_10", "climate_dday10_30", "climate_dday30", "climate_prec", "climate_prec_sq")
 
-attr(base1$coefficients,"dimnames") [[1]] <- c("(Intercept)", "weather_dday0_10", "weather_dday10_30", "weather_dday30", "weather_prec", "weather_prec_sq")
-attr(base2$coefficients,"dimnames") [[1]] <- c("(Intercept)", "climate_dday0_10", "climate_dday10_30", "climate_dday30", "climate_prec", "climate_prec_sq")
-attr(base3$coefficients,"dimnames") [[1]] <- c("(Intercept)", "weather_dday0_10", "weather_dday10_30", "weather_dday30", "weather_prec", "weather_prec_sq",
+attr(corn5$beta, "dimnames")[[1]][1:10] <- c("weather_dday0_10", "weather_dday10_30", "weather_dday30", "weather_prec", "weather_prec_sq",
                                 "climate_dday0_10", "climate_dday10_30", "climate_dday30", "climate_prec", "climate_prec_sq")
-attr(base4$coefficients,"dimnames") [[1]][1:10] <- c("weather_dday0_10", "weather_dday10_30", "weather_dday30", "weather_prec", "weather_prec_sq",
+attr(corn6$beta, "dimnames")[[1]][1:10] <- c("weather_dday0_10", "weather_dday10_30", "weather_dday30", "weather_prec", "weather_prec_sq",
                                 "climate_dday0_10", "climate_dday10_30", "climate_dday30", "climate_prec", "climate_prec_sq")
-attr(thirty1$coefficients,"dimnames") [[1]][1:10] <- c("weather_dday0_10", "weather_dday10_30", "weather_dday30", "weather_prec", "weather_prec_sq",
+attr(corn7$beta, "dimnames")[[1]][1:10] <- c("weather_dday0_10", "weather_dday10_30", "weather_dday30", "weather_prec", "weather_prec_sq",
                                 "climate_dday0_10", "climate_dday10_30", "climate_dday30", "climate_prec", "climate_prec_sq")
+attr(corn8$beta, "dimnames")[[1]][1:10] <- c("weather_dday0_10", "weather_dday10_30", "weather_dday30", "weather_prec", "weather_prec_sq",
+                                "climate_dday0_10", "climate_dday10_30", "climate_dday30", "climate_prec", "climate_prec_sq")
+attr(corn9$beta, "dimnames")[[1]][1:10] <- c("weather_dday0_10", "weather_dday10_30", "weather_dday30", "weather_prec", "weather_prec_sq",
+                                "climate_dday0_10", "climate_dday10_30", "climate_dday30", "climate_prec", "climate_prec_sq")
+attr(corn10$beta, "dimnames")[[1]] <- c("climate_dday0_10", "climate_dday10_30", "climate_dday30", "climate_prec", "climate_prec_sq")
 
 
-star1 <- stargazer(base1, base2, base3, base4, thirty1, 
+
+star1 <- stargazer(corn1, corn2, corn3, corn4, corn5, corn6, corn7, corn8, corn9, corn10,
                   align = FALSE, no.space = FALSE,
                   style = "aer", digits = 2,
                   omit = c("fips", "year", "state", "trend"),

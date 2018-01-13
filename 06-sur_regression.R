@@ -1,3 +1,13 @@
+#-----------------------------------------------------
+# Warning: This script includes bootstrapping methods
+# for calculating standard errors for each SUR equation.
+# As a result, this script will take a while to run.
+#------------------------------
+# Time to complete: 24-hours
+# Cores: 20  RAM: 200GB
+#------------------------------
+
+
 library(systemfit)
 library(tidyverse)
 library(lfe)

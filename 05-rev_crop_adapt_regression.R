@@ -405,28 +405,177 @@ saveRDS(modsixty_hay, "models/modsixty_hay.rds")
 saveRDS(modsixty_soybean, "models/modsixty_soybean.rds")
 saveRDS(modsixty_wheat, "models/modsixty_wheat.rds")
 
-# 
-# # # Build up regression
-# mod_base_1 <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq, data = regdat, weights = regdat$w)
-# 
-# mod_base_2 <- felm(ln_rev ~ dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty,
-#             data = regdat, weights = regdat$w)
-# 
-# mod_base_3 <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
-#               dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty,
-#             data = regdat, weights = regdat$w)
-# 
-# mod_base_4 <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
-#               dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty +
-#               trend2_al +trend2_ar + trend2_de +trend2_ga + trend2_ia  +         
-#               trend2_il +trend2_in + trend2_ks + trend2_ky + trend2_md + trend2_mi +         
-#               trend2_mn+ trend2_mo + trend2_ms +  trend2_mt + trend2_nc + trend2_nd +         
-#               trend2_ne +trend2_oh + trend2_ok +  trend2_sc + trend2_sd + trend2_tn +         
-#               trend2_va + trend2_wi
-#             | state  | 0 | 0,
-#             data = regdat, weights = regdat$w)
-# 
-# saveRDS(mod_base_1, "models/mod_base_1.rds")
-# saveRDS(mod_base_2, "models/mod_base_2.rds")
-# saveRDS(mod_base_3, "models/mod_base_3.rds")
-# saveRDS(mod_base_4, "models/mod_base_4.rds")
+
+# # Build up regression results
+
+# Corn
+corn_base_1 <- felm(ln_rev_corn ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq, data = regdat, weights = regdat$corn_w)
+
+corn_base_2 <- felm(ln_rev_corn ~ dday0_10_twenty + dday10_30_twenty + dday30_twenty + prec_twenty + prec_sq_twenty,
+            data = regdat, weights = regdat$corn_w)
+
+corn_base_3 <- felm(ln_rev_corn ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
+              dday0_10_twenty + dday10_30_twenty + dday30_twenty + prec_twenty + prec_sq_twenty,
+            data = regdat, weights = regdat$corn_w)
+
+corn_base_4 <- felm(ln_rev_corn ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
+              dday0_10_twenty + dday10_30_twenty + dday30_twenty + prec_twenty + prec_sq_twenty | fips | 0 | 0,
+            data = regdat, weights = regdat$corn_w)
+
+corn_base_5 <- felm(ln_rev_corn ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
+              dday0_10_twenty + dday10_30_twenty + dday30_twenty + prec_twenty + prec_sq_twenty +
+              trend1_al + trend1_ar + trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + 
+              trend1_ky + trend1_md + trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + 
+              trend1_nc + trend1_nd + trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + 
+              trend1_tn + trend1_tx + trend1_va + trend1_wi + trend1_wv + trend2_al + trend2_ar + 
+              trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
+              trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
+              trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
+              trend2_va + trend2_wi + trend2_wv
+            | fips  | 0 | 0,
+            data = regdat, weights = regdat$corn_w)
+
+saveRDS(corn_base_1, "models/modtwenty_corn_base_1.rds")
+saveRDS(corn_base_2, "models/modtwenty_corn_base_2.rds")
+saveRDS(corn_base_3, "models/modtwenty_corn_base_3.rds")
+saveRDS(corn_base_4, "models/modtwenty_corn_base_4.rds")
+saveRDS(corn_base_5, "models/modtwenty_corn_base_5.rds")
+
+
+# Cotton
+cotton_base_1 <- felm(ln_rev_cotton ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq, data = regdat, weights = regdat$cotton_w)
+
+cotton_base_2 <- felm(ln_rev_cotton ~ dday0_10_twenty + dday10_30_twenty + dday30_twenty + prec_twenty + prec_sq_twenty,
+            data = regdat, weights = regdat$cotton_w)
+
+cotton_base_3 <- felm(ln_rev_cotton ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
+              dday0_10_twenty + dday10_30_twenty + dday30_twenty + prec_twenty + prec_sq_twenty,
+            data = regdat, weights = regdat$cotton_w)
+
+cotton_base_4 <- felm(ln_rev_cotton ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
+              dday0_10_twenty + dday10_30_twenty + dday30_twenty + prec_twenty + prec_sq_twenty | fips | 0 | 0,
+            data = regdat, weights = regdat$cotton_w)
+
+cotton_base_5 <- felm(ln_rev_cotton ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
+              dday0_10_twenty + dday10_30_twenty + dday30_twenty + prec_twenty + prec_sq_twenty +
+              trend1_al + trend1_ar + trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + 
+              trend1_ky + trend1_md + trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + 
+              trend1_nc + trend1_nd + trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + 
+              trend1_tn + trend1_tx + trend1_va + trend1_wi + trend1_wv + trend2_al + trend2_ar + 
+              trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
+              trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
+              trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
+              trend2_va + trend2_wi + trend2_wv
+            | fips  | 0 | 0,
+            data = regdat, weights = regdat$cotton_w)
+
+saveRDS(cotton_base_1, "models/modtwenty_cotton_base_1.rds")
+saveRDS(cotton_base_2, "models/modtwenty_cotton_base_2.rds")
+saveRDS(cotton_base_3, "models/modtwenty_cotton_base_3.rds")
+saveRDS(cotton_base_4, "models/modtwenty_cotton_base_4.rds")
+saveRDS(cotton_base_5, "models/modtwenty_cotton_base_5.rds")
+
+
+# hay
+hay_base_1 <- felm(ln_rev_hay ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq, data = regdat, weights = regdat$hay_w)
+
+hay_base_2 <- felm(ln_rev_hay ~ dday0_10_twenty + dday10_30_twenty + dday30_twenty + prec_twenty + prec_sq_twenty,
+            data = regdat, weights = regdat$hay_w)
+
+hay_base_3 <- felm(ln_rev_hay ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
+              dday0_10_twenty + dday10_30_twenty + dday30_twenty + prec_twenty + prec_sq_twenty,
+            data = regdat, weights = regdat$hay_w)
+
+hay_base_4 <- felm(ln_rev_hay ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
+              dday0_10_twenty + dday10_30_twenty + dday30_twenty + prec_twenty + prec_sq_twenty | fips | 0 | 0,
+            data = regdat, weights = regdat$hay_w)
+
+hay_base_5 <- felm(ln_rev_hay ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
+              dday0_10_twenty + dday10_30_twenty + dday30_twenty + prec_twenty + prec_sq_twenty +
+              trend1_al + trend1_ar + trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + 
+              trend1_ky + trend1_md + trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + 
+              trend1_nc + trend1_nd + trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + 
+              trend1_tn + trend1_tx + trend1_va + trend1_wi + trend1_wv + trend2_al + trend2_ar + 
+              trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
+              trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
+              trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
+              trend2_va + trend2_wi + trend2_wv
+            | fips  | 0 | 0,
+            data = regdat, weights = regdat$hay_w)
+
+saveRDS(hay_base_1, "models/modtwenty_hay_base_1.rds")
+saveRDS(hay_base_2, "models/modtwenty_hay_base_2.rds")
+saveRDS(hay_base_3, "models/modtwenty_hay_base_3.rds")
+saveRDS(hay_base_4, "models/modtwenty_hay_base_4.rds")
+saveRDS(hay_base_5, "models/modtwenty_hay_base_5.rds")
+
+
+# soybean
+soybean_base_1 <- felm(ln_rev_soybean ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq, data = regdat, weights = regdat$soybean_w)
+
+soybean_base_2 <- felm(ln_rev_soybean ~ dday0_10_twenty + dday10_30_twenty + dday30_twenty + prec_twenty + prec_sq_twenty,
+            data = regdat, weights = regdat$soybean_w)
+
+soybean_base_3 <- felm(ln_rev_soybean ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
+              dday0_10_twenty + dday10_30_twenty + dday30_twenty + prec_twenty + prec_sq_twenty,
+            data = regdat, weights = regdat$soybean_w)
+
+soybean_base_4 <- felm(ln_rev_soybean ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
+              dday0_10_twenty + dday10_30_twenty + dday30_twenty + prec_twenty + prec_sq_twenty | fips | 0 | 0,
+            data = regdat, weights = regdat$soybean_w)
+
+soybean_base_5 <- felm(ln_rev_soybean ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
+              dday0_10_twenty + dday10_30_twenty + dday30_twenty + prec_twenty + prec_sq_twenty +
+              trend1_al + trend1_ar + trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + 
+              trend1_ky + trend1_md + trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + 
+              trend1_nc + trend1_nd + trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + 
+              trend1_tn + trend1_tx + trend1_va + trend1_wi + trend1_wv + trend2_al + trend2_ar + 
+              trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
+              trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
+              trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
+              trend2_va + trend2_wi + trend2_wv
+            | fips  | 0 | 0,
+            data = regdat, weights = regdat$soybean_w)
+
+saveRDS(soybean_base_1, "models/modtwenty_soybean_base_1.rds")
+saveRDS(soybean_base_2, "models/modtwenty_soybean_base_2.rds")
+saveRDS(soybean_base_3, "models/modtwenty_soybean_base_3.rds")
+saveRDS(soybean_base_4, "models/modtwenty_soybean_base_4.rds")
+saveRDS(soybean_base_5, "models/modtwenty_soybean_base_5.rds")
+
+
+# wheat
+wheat_base_1 <- felm(ln_rev_wheat ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq, data = regdat, weights = regdat$wheat_w)
+
+wheat_base_2 <- felm(ln_rev_wheat ~ dday0_10_twenty + dday10_30_twenty + dday30_twenty + prec_twenty + prec_sq_twenty,
+            data = regdat, weights = regdat$wheat_w)
+
+wheat_base_3 <- felm(ln_rev_wheat ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
+              dday0_10_twenty + dday10_30_twenty + dday30_twenty + prec_twenty + prec_sq_twenty,
+            data = regdat, weights = regdat$wheat_w)
+
+wheat_base_4 <- felm(ln_rev_wheat ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
+              dday0_10_twenty + dday10_30_twenty + dday30_twenty + prec_twenty + prec_sq_twenty | fips | 0 | 0,
+            data = regdat, weights = regdat$wheat_w)
+
+wheat_base_5 <- felm(ln_rev_wheat ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
+              dday0_10_twenty + dday10_30_twenty + dday30_twenty + prec_twenty + prec_sq_twenty +
+              trend1_al + trend1_ar + trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + 
+              trend1_ky + trend1_md + trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + 
+              trend1_nc + trend1_nd + trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + 
+              trend1_tn + trend1_tx + trend1_va + trend1_wi + trend1_wv + trend2_al + trend2_ar + 
+              trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
+              trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
+              trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
+              trend2_va + trend2_wi + trend2_wv
+            | fips  | 0 | 0,
+            data = regdat, weights = regdat$wheat_w)
+
+saveRDS(wheat_base_1, "models/modtwenty_wheat_base_1.rds")
+saveRDS(wheat_base_2, "models/modtwenty_wheat_base_2.rds")
+saveRDS(wheat_base_3, "models/modtwenty_wheat_base_3.rds")
+saveRDS(wheat_base_4, "models/modtwenty_wheat_base_4.rds")
+saveRDS(wheat_base_5, "models/modtwenty_wheat_base_5.rds")
+
+
+
