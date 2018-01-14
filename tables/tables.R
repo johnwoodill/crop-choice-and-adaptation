@@ -9,7 +9,9 @@ multiply.1000 <- function(x) (x * 1000)
 
 adj_ln <- function(x){
   ((exp(x) - 1))
-  }
+}
+
+
 
 # Save models
 corn1 <- readRDS("models/modtwenty_corn_base_1.rds")
