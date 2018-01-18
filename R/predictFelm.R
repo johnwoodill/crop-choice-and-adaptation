@@ -2,7 +2,7 @@
 # newdata  : new prediction data
 
 # Custom predict funciton for Felm object models
-predictFelm <- function(felm.fit, newdata = NULL, var.terms = NULL, cons.terms = NULL){
+predictFelm <- function(felm.fit, newdata = NULL, var.terms = NULL, cons.terms = NULL, felm.se = FALSE){
   felm.formula <- as.character(felm.fit$call[[2]])
   rhs          = felm.formula[3]
   last         = which(strsplit(rhs,"")[[1]]=="|")[1] - 1
@@ -10,25 +10,28 @@ predictFelm <- function(felm.fit, newdata = NULL, var.terms = NULL, cons.terms =
   dep.var <- felm.formula[2]
   exp.var <- attr(felm.fit$terms,"term.labels")
   w <<- felm.fit$weights
-  
 
+  # For predicted with clustered standard errors  
+  if(isTRUE(felm.se)){
+    terms <- c(var.terms, cons.terms)
+    m.terms <- as.formula(c("~ - 1 + ", paste(var.terms, cons.terms, collapse = " + ")))
+    m.mat <- as.data.frame(model.matrix(m.terms, data = newdata))
+    mloc <- which(colnames(felm.fit$clustervcv) %in% terms)
+    clcov <- felm.fit$clustervcv[mloc, mloc]
+    n <- 1000
+    nr <- nrow(m.mat)
+    mmat.list <- split(m.mat, rep(1:ceiling(nr/n), each = n, length.out = nr))
+    d <- lapply(mmat.list, FUN = function(x) sqrt(diag(as.matrix(x) %*% clcov %*% t(as.matrix(x)))))
+    fit.se <- do.call("rbind", lapply(d, as.data.frame))
+  }
+  
   # Get model data
   dat <- as.data.frame(cbind(felm.fit$response, felm.fit$X))
   
   # Get demeaned data from felm object
   dmdat <- as.data.frame(cbind(felm.fit$cY, felm.fit$cX))
-  
-  # No fixed-effects
-     if( is.null(getfe( felm.fit )) ) {
-      lm.fit    = lm( lm.formula, data=dat )
-
-     }
-  
-  # W/o weights and fixed-effects
-    if (is.null(w) & !is.null(getfe(felm.fit))){
-      lm.formula   = paste(lm.formula, "- 1" )
        lm.fit       = lm( lm.formula, data=dmdat)
-    }
+    
     
   # With weights and fixed-effects
     if (!is.null(w) & !is.null(getfe(felm.fit))){
@@ -44,7 +47,7 @@ predictFelm <- function(felm.fit, newdata = NULL, var.terms = NULL, cons.terms =
     # predictions for cons.terms
     if(!is.null(cons.terms)){
       cterms <- select(newdata, cons.terms)
-      cterms <- cterms %>% 
+      cterms <- cterms %>%
         mutate_all(mean)
       clm.fit <- update(lm.fit, paste0("~ - 1 +", paste(cons.terms, collapse = " +" )))
       cpred <- predict(clm.fit, newdata = cterms)
@@ -56,21 +59,23 @@ predictFelm <- function(felm.fit, newdata = NULL, var.terms = NULL, cons.terms =
     if(!is.null(var.terms) & is.null(cons.terms)){
       pred <- predict(lm.fit, newdata = newdata, se.fit = TRUE, type = "terms", terms = var.terms)
       pred$fit <- rowSums(pred$fit)
+      pred$felm.se.fit <- fit.se
+      pred$se.fit <- rowSums(pred$se.fit)
     }
   
-    # Predict with var.terms and cons.terms
+    # # Predict with var.terms and cons.terms
     if(!is.null(var.terms) & !is.null(cons.terms)){
       pred <- predict(lm.fit, newdata = newdata, se.fit = TRUE, type = "terms", terms = var.terms)
       pred$fit <- cbind(pred$fit, cpred)
       pred$fit <- rowSums(pred$fit)
+
     }
 
-    
-    if(is.null(var.terms)){
+    # # Predict all terms
+    if(is.null(var.terms) & is.null(cons.terms)){
       pred <- predict(lm.fit, newdata = newdata, se.fit = TRUE)
     }
-      
-    
+  
     pred$res <- felm.fit$residuals
     
     
