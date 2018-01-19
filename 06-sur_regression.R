@@ -20,8 +20,8 @@ cl <- makeCluster(20)
 registerDoParallel(cl)
 
 # # Crop data
-download.file("https://www.dropbox.com/s/u0e0wah5jnmqtf9/full_ag_data.rds?raw=1",
-              destfile = "data/full_ag_data.rds", method = "auto")
+# download.file("https://www.dropbox.com/s/u0e0wah5jnmqtf9/full_ag_data.rds?raw=1",
+#               destfile = "data/full_ag_data.rds", method = "auto")
 
 cropdat <- readRDS("data/full_ag_data.rds")
 cropdat <- as.data.frame(cropdat)

@@ -16,7 +16,7 @@ hay_mod <- readRDS("models/mod_hay.rds")
 soybean_mod <- readRDS("models/mod_soybean.rds")
 wheat_mod <- readRDS("models/mod_wheat.rds")
 
-terms = c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq")
+terms = c("dday0_10", "dday10_30", "dday30", "prec_sq")
 
 # Load changes in degree day data
 p1 <- readRDS("data/degree_day_changes/panel_adapt_regression_data_1C.rds")
@@ -70,7 +70,7 @@ pdat_corn
 
 # cotton
 # Get predictions for weather conditional on climate (restrict terms to weather)
-cotton_0p <- predictFelm(cotton_mod, newdata = cropdat, var.terms = terms, felm.se = TRUE)
+cotton_0p <- predictFelm(felm.fit = cotton_mod, newdata = cropdat, var.terms = terms, felm.se = TRUE)
 cotton_1p <- predictFelm(cotton_mod, newdata = p1, var.terms = terms, felm.se = TRUE)
 cotton_2p <- predictFelm(cotton_mod, newdata = p2, var.terms = terms, felm.se = TRUE)
 cotton_3p <- predictFelm(cotton_mod, newdata = p3, var.terms = terms, felm.se = TRUE)
@@ -86,12 +86,12 @@ cotton_p4 <- sum(exp(cotton_4p$fit + cotton_4p$res + cotton_4p$effect) - 1)
 cotton_p5 <- sum(exp(cotton_5p$fit + cotton_5p$res + cotton_5p$effect) - 1) 
 
 # Get standard errors of sum
-cotton_p0_ci <- sum(exp(cotton_0p$felm.se.fit + cotton_0p$res + cotton_0p$effect) - 1)
-cotton_p1_ci <- sum(exp(cotton_1p$felm.se.fit + cotton_1p$res + cotton_1p$effect) - 1)
-cotton_p2_ci <- sum(exp(cotton_2p$felm.se.fit + cotton_2p$res + cotton_2p$effect) - 1)
-cotton_p3_ci <- sum(exp(cotton_3p$felm.se.fit + cotton_3p$res + cotton_3p$effect) - 1)
-cotton_p4_ci <- sum(exp(cotton_4p$felm.se.fit + cotton_4p$res + cotton_4p$effect) - 1)
-cotton_p5_ci <- sum(exp(cotton_5p$felm.se.fit + cotton_5p$res + cotton_5p$effect) - 1)
+cotton_p0_ci <- sum(exp(cotton_0p$se.fit + cotton_0p$res + cotton_0p$effect) - 1)
+cotton_p1_ci <- sum(exp(cotton_1p$se.fit + cotton_1p$res + cotton_1p$effect) - 1)
+cotton_p2_ci <- sum(exp(cotton_2p$se.fit + cotton_2p$res + cotton_2p$effect) - 1)
+cotton_p3_ci <- sum(exp(cotton_3p$se.fit + cotton_3p$res + cotton_3p$effect) - 1)
+cotton_p4_ci <- sum(exp(cotton_4p$se.fit + cotton_4p$res + cotton_4p$effect) - 1)
+cotton_p5_ci <- sum(exp(cotton_5p$se.fit + cotton_5p$res + cotton_5p$effect) - 1)
 
 cotton_p0_fit <- exp(cotton_0p$fit + cotton_0p$res + cotton_0p$effect) - 1
 cotton_p1_fit <- exp(cotton_1p$fit + cotton_1p$res + cotton_1p$effect) - 1
@@ -100,7 +100,10 @@ cotton_p3_fit <- exp(cotton_3p$fit + cotton_3p$res + cotton_3p$effect) - 1
 cotton_p4_fit <- exp(cotton_4p$fit + cotton_4p$res + cotton_4p$effect) - 1
 cotton_p5_fit <- exp(cotton_5p$fit + cotton_5p$res + cotton_5p$effect) - 1
 
-
+# cotton_0p <- predictFelm(felm.fit = cotton_mod, newdata = cropdat, var.terms = c("dday0_10"), felm.se = TRUE)
+# 
+# head(exp(cotton_0p$fit + cotton_0p$res + cotton_0p$effect) - 1)
+# head(exp(cotton_0p$felm.se.fit + cotton_0p$res + cotton_0p$effect) - 1)
 
 pdat_cotton <- data.frame(effect = rep(c("Weather-effect")),
                         crop = "Cotton",
@@ -287,7 +290,7 @@ pdat$change_max <- pdat$change_max*100
 saveRDS(pdat, "data/rev_crop_predictions.rds")
 
 ggplot(pdat, aes(temp, change)) + 
-  # geom_ribbon(aes(ymax = change_max, ymin = change_min, x = temp), fill = "grey", alpha = 0.5 ) +
+  geom_ribbon(aes(ymax = change_max, ymin = change_min, x = temp), fill = "grey", alpha = 0.5 ) +
   geom_line() +
   # geom_point(size = 0.5) +
   #geom_errorbar(aes(ymax = change_max, ymin = change_min, color = effect), width = .1) +

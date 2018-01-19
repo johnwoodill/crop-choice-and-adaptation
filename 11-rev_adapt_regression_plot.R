@@ -4,11 +4,7 @@ library(ggthemes)
 
 
 # Corn
-modfive <- readRDS("models/modfive_corn.rds")
-modten <- readRDS("models/modten_corn.rds")
-modtwenty <- readRDS("models/modtwenty_corn.rds")
-modthirty <- readRDS("models/modthirty_corn.rds")
-modsixty <- readRDS("models/modsixty_corn.rds")
+modten <- readRDS("models/mod_corn.rds")
 
 # Remove trend coefficients to make it easier to plot
 modfive_coef <- modfive$coefficients[-c(grep("trend", rownames(modfive$coefficients)))]

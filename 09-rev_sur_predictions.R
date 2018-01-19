@@ -1,6 +1,7 @@
 library(boot)
 library(tidyverse)
 library(ggthemes)
+library(boot)
 
 source("R/boot.strap.R")
 
@@ -9,30 +10,17 @@ cropdat <- readRDS("data/full_ag_data.rds")
 # rev_crop_pred <- readRDS("data/rev_crop_predictions.rds")
 rev_crop_pred <- readRDS("data/rev_crop_pred.rds")
 
-# Revenue predictions
- # rev_corn_pred <- readRDS("data/rev_corn_pred.rds")
-# rev_cotton_pred <- readRDS("data/rev_cotton_pred.rds")
-# rev_hay_pred <- readRDS("data/rev_hay_pred.rds")
-# rev_soybean_pred <- readRDS("data/rev_soybean_pred.rds")
-# rev_wheat_pred <- readRDS("data/rev_wheat_pred.rds")
-
-# Crop share predictions
-# tten <- readRDS("data/tten.rds")
-# ttwenty <- readRDS("data/ttwenty.rds")
-# tthirty <- readRDS("data/tthirty.rds")
-
-# tten$predictions$type <- "10-year"
-# ttwenty$predictions$type <- "20-year"
-# tthirty$predictions$type <- "30-year"
-
+# Load Climate Sur Models
 cten <- readRDS("data/cten.rds")
 ctwenty <- readRDS("data/ctwenty.rds")
 cthirty <- readRDS("data/cthirty.rds")
 
+# Assign intervals
 cten$predictions$type <- "10-year"
 ctwenty$predictions$type <- "20-year"
 cthirty$predictions$type <- "30-year"
 
+# Get average crop since 1980
 dat <- cropdat %>% 
   select(year, fips, corn_grain_a, cotton_a, hay_a, wheat_a, soybean_a) %>% 
   filter(year >= 1950) %>% 
@@ -44,44 +32,19 @@ dat <- cropdat %>%
             soybean_a = mean(soybean_a, na.rm = TRUE))
 
 
-# tdat <- bind_rows(tfive$predictions, tten$predictions, ttwenty$predictions, tthirty$predictions, csixty$predictions)
-# tdat$effect <- "Total-effect"
-
+# Bind SUR climate data
 cdat <- bind_rows(cten$predictions, ctwenty$predictions, cthirty$predictions)
 cdat$effect <- "Climate-effect"
 
+# Bind no crop switching data
 ndat <- bind_rows(dat[, 3:7], dat[, 3:7], dat[, 3:7], dat[, 3:7], dat[, 3:7], dat[, 3:7])
+
 # ndat <- bind_rows(dat[, 3:7])
 # ndat <- bind_rows(ndat, ndat, ndat, ndat, ndat, ndat)
 ndat$effect <- "No Crop-switching"
 
 
-# # Total-effect
-# tdat$corn_rev <- rev_corn_pred$fit
-# tdat$cotton_rev <- rev_cotton_pred$fit
-# tdat$hay_rev <- rev_hay_pred$fit
-# tdat$soybean_rev <- rev_soybean_pred$fit
-# tdat$wheat_rev <- rev_wheat_pred$fit
-# 
-# tdat$corn.pred <- tdat$corn.pred*cropdat$acres
-# tdat$cotton.pred <- tdat$cotton.pred*cropdat$acres
-# tdat$hay.pred <- tdat$hay.pred*cropdat$acres
-# tdat$soybean.pred <- tdat$soybean.pred*cropdat$acres
-# tdat$wheat.pred <- tdat$wheat.pred*cropdat$acres
-
-# # Remove negative values from predictions
-# tdat$corn_rev <- ifelse(tdat$corn_rev < 0, 0, tdat$corn_rev)
-# tdat$cotton_rev <- ifelse(tdat$cotton_rev < 0, 0, tdat$cotton_rev)
-# tdat$hay_rev <- ifelse(tdat$hay_rev < 0, 0, tdat$hay_rev)
-# tdat$soybean_rev <- ifelse(tdat$soybean_rev < 0, 0, tdat$soybean_rev)
-# tdat$wheat_rev <- ifelse(tdat$wheat_rev < 0, 0, tdat$wheat_rev)
-
-# head(tdat)
-
-# total_effect <- (tdat$corn.pred*tdat$corn_rev) + (tdat$cotton.pred*tdat$cotton_rev) + (tdat$hay.pred*tdat$hay_rev) +
-#   (tdat$soybean.pred*tdat$soybean_rev) + (tdat$wheat.pred*tdat$wheat_rev)
-
-# Climate effects
+# Assign rev to climate data
 cdat$corn_rev <- rep(rev_crop_pred$corn_rev.pred, 3)
 cdat$cotton_rev <- rep(rev_crop_pred$cotton_rev.pred, 3)
 cdat$hay_rev <- rep(rev_crop_pred$hay_rev.pred, 3)
@@ -95,6 +58,7 @@ cdat$hay_rev <- ifelse(cdat$hay_rev < 0, 0, cdat$hay_rev)
 cdat$soybean_rev <- ifelse(cdat$soybean_rev < 0, 0, cdat$soybean_rev)
 cdat$wheat_rev <- ifelse(cdat$wheat_rev < 0, 0, cdat$wheat_rev)
 
+# Get crop acres by county
 cdat$corn.pred <- cdat$corn.pred*cropdat$acres
 cdat$cotton.pred <- cdat$cotton.pred*cropdat$acres
 cdat$hay.pred <- cdat$hay.pred*cropdat$acres
@@ -103,38 +67,26 @@ cdat$wheat.pred <- cdat$wheat.pred*cropdat$acres
 
 head(cdat)
 
+# Assign climate effects
 climate_effect <- (cdat$corn.pred*cdat$corn_rev) + (cdat$cotton.pred*cdat$cotton_rev) + (cdat$hay.pred*cdat$hay_rev) +
   (cdat$soybean.pred*cdat$soybean_rev) + (cdat$wheat.pred*cdat$wheat_rev)
 
 # No crop-switching
 
-# Remove negative values from predictions
-# rev_corn_pred$fit <- ifelse(rev_corn_pred$fit < 0, 0, rev_corn_pred$fit)
-# rev_cotton_pred$fit <- ifelse(rev_cotton_pred$fit < 0, 0, rev_cotton_pred$fit)
-# rev_hay_pred$fit <- ifelse(rev_hay_pred$fit < 0, 0, rev_hay_pred$fit)
-# rev_soybean_pred$fit <- ifelse(rev_soybean_pred$fit < 0, 0, rev_soybean_pred$fit)
-# rev_wheat_pred$fit <- ifelse(rev_wheat_pred$fit < 0, 0, rev_wheat_pred$fit)
-
-# ndat$corn.pred <- rev_corn_pred$fit*ndat$corn_grain_a
-# ndat$cotton.pred <- rev_cotton_pred$fit*ndat$cotton_a
-# ndat$hay.pred <- rev_hay_pred$fit*ndat$hay_a
-# ndat$soybean.pred <- rev_soybean_pred$fit*ndat$soybean_a
-# ndat$wheat.pred <- rev_wheat_pred$fit*ndat$wheat_a
-
+# Get no crop switching data
 ndat$corn.pred <- rev_crop_pred$corn_rev.pred*ndat$corn_grain_a
 ndat$cotton.pred <- rev_crop_pred$cotton_rev.pred*ndat$cotton_a
 ndat$hay.pred <- rev_crop_pred$hay_rev.pred*ndat$hay_a
 ndat$soybean.pred <- rev_crop_pred$soybean_rev.pred*ndat$soybean_a
 ndat$wheat.pred <- rev_crop_pred$wheat_rev.pred*ndat$wheat_a
 
-
-
 head(ndat)
 
+# Get no crop switching effect
+no_cs_effect <- (ndat$corn.pred) + (ndat$cotton.pred) + (ndat$hay.pred) + (ndat$soybean.pred) + (ndat$wheat.pred)
 
-no_cs_effect <- (ndat$corn.pred) + (ndat$cotton.pred) + (ndat$hay.pred) +
-  (ndat$soybean.pred) + (ndat$wheat.pred)
 
+# Get plot data
 pdat <- data.frame(year = rep(cropdat$year, 3),
                    ten = rep(cropdat$ten, 3),
                    twenty = rep(cropdat$twenty, 3),
@@ -143,10 +95,10 @@ pdat <- data.frame(year = rep(cropdat$year, 3),
                    temp = cdat$temp,
                    type = cdat$type)
 
+
+# Assign climate and no crop switching effects
 pdat$climate_effect <- climate_effect
-# pdat$total_effect <- total_effect
 pdat$no_cs_effect <- no_cs_effect
-head(pdat)
 
 # Bootstrap s.e. of sum
 # head(test)
@@ -157,70 +109,48 @@ head(pdat)
 head(pdat)
 
 bsum <- function(x,i) sum(x[i])
-#bs <- system.time(boot(cropdat$ln_rev, bsum, R = 1000, strata = cropdat$five))
-
-# pdat_se_five <- pdat %>% 
-#   filter(type == "5-year") %>% 
-#   group_by(temp, type) %>% 
-#   summarise(climate_se_sum = sd(boot(climate_effect, bsum, R = 10, strata = five, parallel = "multicore", ncpus = 3)$t),
-#             total_se_sum = sd(boot(total_effect, bsum, R = 10, strata = five, parallel = "multicore", ncpus = 3)$t),
-#             no_cs_se_sum = sd(boot(no_cs_effect, bsum, R = 10, strata = five, parallel = "multicore", ncpus = 3)$t))
-# 
-# pdat_se_ten <- pdat %>% 
-#   filter(type == "10-year") %>% 
-#   group_by(temp, type) %>% 
-#   summarise(climate_se_sum = sd(boot(climate_effect, bsum, R = 10, strata = ten, parallel = "multicore", ncpus = 3)$t),
-#             total_se_sum = sd(boot(total_effect, bsum, R = 10, strata = ten, parallel = "multicore", ncpus = 3)$t),
-#             no_cs_se_sum = sd(boot(no_cs_effect, bsum, R = 10, strata = ten, parallel = "multicore", ncpus = 3)$t))
-# 
-# pdat_se_twenty <- pdat %>% 
-#   filter(type == "20-year") %>% 
-#   group_by(temp, type) %>% 
-#   summarise(climate_se_sum = sd(boot(climate_effect, bsum, R = 10, strata = twenty, parallel = "multicore", ncpus = 3)$t),
-#             total_se_sum = sd(boot(total_effect, bsum, R = 10, strata = twenty, parallel = "multicore", ncpus = 3)$t),
-#             no_cs_se_sum = sd(boot(no_cs_effect, bsum, R = 10, strata = twenty, parallel = "multicore", ncpus = 3)$t))
-# 
-# pdat_se_thirty <- pdat %>% 
-#   filter(type == "30-year") %>% 
-#   group_by(temp, type) %>% 
-#   summarise(climate_se_sum = sd(boot(climate_effect, bsum, R = 10, strata = thirty, parallel = "multicore", ncpus = 3)$t),
-#             total_se_sum = sd(boot(total_effect, bsum, R = 10, strata = thirty, parallel = "multicore", ncpus = 3)$t),
-#             no_cs_se_sum = sd(boot(no_cs_effect, bsum, R = 10, strata = thirty, parallel = "multicore", ncpus = 3)$t))
-# 
-# pdat_se_sixty <- pdat %>% 
-#   filter(type == "60-year") %>% 
-#   group_by(temp, type) %>% 
-#   summarise(climate_se_sum = sd(boot(climate_effect, bsum, R = 10, parallel = "multicore", ncpus = 3)$t),
-#             total_se_sum = sd(boot(total_effect, bsum, R = 10, parallel = "multicore", ncpus = 3)$t),
-#             no_cs_se_sum = sd(boot(no_cs_effect, bsum, R = 10, parallel = "multicore", ncpus = 3)$t))
+# boot(cropdat$ln_rev, bsum, R = 2, strata = cropdat$five, parallel = "multicore", ncpus = 2)$t
 
 
-pdat_se <- rbind(pdat_se_five, pdat_se_ten, pdat_se_twenty, pdat_se_thirty, pdat_se_sixty)
+# pdat_se_ten <- pdat %>%
+#    filter(type == "10-year") %>%
+#    group_by(temp, type) %>%
+#    summarise(climate_se_sum = sd(boot(pdat$climate_effect, bsum, R = 2000)$t),
+#              no_cs_se_sum = sd(boot(pdat$no_cs_effect, bsum, R = 2000)$t))
+
+# pdat_se_twenty <- pdat %>%
+#    filter(type == "20-year") %>%
+#    group_by(temp, type) %>%
+#    summarise(climate_se_sum = sd(boot(pdat$climate_effect, bsum, R = 2000, strata = pdat$twenty, parallel = "multicore", ncpus = 2)$t),
+#              no_cs_se_sum = sd(boot(pdat$no_cs_effect, bsum, R = 2000, strata = pdat$twenty, parallel = "multicore", ncpus = 2)$t))
+# 
+#  pdat_se_thirty <- pdat %>%
+#    filter(type == "30-year") %>%
+#    group_by(temp, type) %>%
+#    summarise(climate_se_sum = sd(boot(pdat$climate_effect, bsum, R = 2000, strata = pdat$thirty, parallel = "multicore", ncpus = 2)$t),
+#              no_cs_se_sum = sd(boot(pdat$no_cs_effect, bsum, R = 2000, strata = pdat$thirty, parallel = "multicore", ncpus = 2)$t))
+# #
+
+
+pdat_se <- rbind(pdat_se_ten, pdat_se_twenty, pdat_se_thirty)
 pdat_se
 
 pdat <- pdat %>% 
   group_by(type, temp) %>% 
   summarise(climate_effect = sum(climate_effect),
-            # total_effect = sum(total_effect),
             no_cs_effect = sum(no_cs_effect)) %>% 
   #left_join(pdat_se, by = c("type", "temp")) %>% 
   # mutate(climate_effect_min = climate_effect - 1.96*climate_se_sum,
   #        climate_effect_max = climate_effect + 1.96*climate_se_sum) %>% 
-         # total_effect_min = total_effect - 1.96*total_se_sum,
-         # total_effect_max = total_effect + 1.96*total_se_sum,
          # no_cs_effect_min = no_cs_effect - 1.96*no_cs_se_sum,
          # no_cs_effect_max = no_cs_effect + 1.96*no_cs_se_sum) %>% 
   group_by(type) %>% 
   mutate(change_climate_effect = 100*(climate_effect - first(climate_effect))/first(climate_effect),
-         # change_total_effect = 100*(total_effect - first(total_effect))/first(total_effect),
          change_no_cs_effect = 100*(no_cs_effect - first(no_cs_effect))/first(no_cs_effect))
-         
          # change_climate_effect_max = 100*(climate_effect_max - first(climate_effect_max))/first(climate_effect_max),
-         # change_total_effect_max = 100*(total_effect_max - first(total_effect_max))/first(total_effect_max),
          # change_no_cs_effect_max = 100*(no_cs_effect_max - first(no_cs_effect_max))/first(no_cs_effect_max),
          # 
          # change_climate_effect_min = 100*(climate_effect_min - first(climate_effect_min))/first(climate_effect_min),
-         # change_total_effect_min = 100*(total_effect_min - first(total_effect_min))/first(total_effect_min),
          # change_no_cs_effect_min = 100*(no_cs_effect_min - first(no_cs_effect_min))/first(no_cs_effect_min)) 
   
   
@@ -246,10 +176,8 @@ pdat1 <- pdat %>%
 # pdat <- left_join(pdat, pdat3, by = c("type", "temp"))
 head(pdat1)
 
-# pdat1 <- filter(pdat1, type != "60-year" | effect != "change_total_effect")
-
 pdat1$effect <- factor(pdat1$effect, levels = c("change_climate_effect", "change_no_cs_effect"),
-                    labels = c("Climate-effect \n (w/ crop switching)", "Constant-effect \n (w/o crop switching)"))
+                    labels = c("Climate acres \n (w/ crop switching)", "Constant acres \n (w/o crop switching)"))
 pdat1$type <- factor(pdat1$type, levels = c("10-year", "20-year", "30-year"))
 
 
