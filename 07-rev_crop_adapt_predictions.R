@@ -25,6 +25,7 @@ p3 <- readRDS("data/degree_day_changes/panel_adapt_regression_data_3C.rds")
 p4 <- readRDS("data/degree_day_changes/panel_adapt_regression_data_4C.rds")
 p5 <- readRDS("data/degree_day_changes/panel_adapt_regression_data_5C.rds")
 
+
 #---------------------------------------------------------------------------------
 # Corn
 # Get predictions for weather conditional on climate (restrict terms to weather)
@@ -44,12 +45,12 @@ corn_p4 <- sum(exp(corn_4p$fit + corn_4p$res + corn_4p$effect) - 1)
 corn_p5 <- sum(exp(corn_5p$fit + corn_5p$res + corn_5p$effect) - 1) 
 
 # Get standard errors of sum
-corn_p0_ci <- sum(exp(corn_0p$felm.se.fit + corn_0p$res + corn_0p$effect) - 1)
-corn_p1_ci <- sum(exp(corn_1p$felm.se.fit + corn_1p$res + corn_1p$effect) - 1)
-corn_p2_ci <- sum(exp(corn_2p$felm.se.fit + corn_2p$res + corn_2p$effect) - 1)
-corn_p3_ci <- sum(exp(corn_3p$felm.se.fit + corn_3p$res + corn_3p$effect) - 1)
-corn_p4_ci <- sum(exp(corn_4p$felm.se.fit + corn_4p$res + corn_4p$effect) - 1)
-corn_p5_ci <- sum(exp(corn_5p$felm.se.fit + corn_5p$res + corn_5p$effect) - 1)
+corn_p0_ci <- sum(exp(corn_0p$felm.se.fit) - 1)
+corn_p1_ci <- sum(exp(corn_1p$felm.se.fit) - 1)
+corn_p2_ci <- sum(exp(corn_2p$felm.se.fit) - 1)
+corn_p3_ci <- sum(exp(corn_3p$felm.se.fit) - 1)
+corn_p4_ci <- sum(exp(corn_4p$felm.se.fit) - 1)
+corn_p5_ci <- sum(exp(corn_5p$felm.se.fit) - 1)
 
 corn_p0_fit <- exp(corn_0p$fit + corn_0p$res + corn_0p$effect) - 1
 corn_p1_fit <- exp(corn_1p$fit + corn_1p$res + corn_1p$effect) - 1
@@ -86,12 +87,12 @@ cotton_p4 <- sum(exp(cotton_4p$fit + cotton_4p$res + cotton_4p$effect) - 1)
 cotton_p5 <- sum(exp(cotton_5p$fit + cotton_5p$res + cotton_5p$effect) - 1) 
 
 # Get standard errors of sum
-cotton_p0_ci <- sum(exp(cotton_0p$se.fit + cotton_0p$res + cotton_0p$effect) - 1)
-cotton_p1_ci <- sum(exp(cotton_1p$se.fit + cotton_1p$res + cotton_1p$effect) - 1)
-cotton_p2_ci <- sum(exp(cotton_2p$se.fit + cotton_2p$res + cotton_2p$effect) - 1)
-cotton_p3_ci <- sum(exp(cotton_3p$se.fit + cotton_3p$res + cotton_3p$effect) - 1)
-cotton_p4_ci <- sum(exp(cotton_4p$se.fit + cotton_4p$res + cotton_4p$effect) - 1)
-cotton_p5_ci <- sum(exp(cotton_5p$se.fit + cotton_5p$res + cotton_5p$effect) - 1)
+cotton_p0_ci <- sum(exp(cotton_0p$felm.se.fit) - 1)
+cotton_p1_ci <- sum(exp(cotton_1p$felm.se.fit) - 1)
+cotton_p2_ci <- sum(exp(cotton_2p$felm.se.fit) - 1)
+cotton_p3_ci <- sum(exp(cotton_3p$felm.se.fit) - 1)
+cotton_p4_ci <- sum(exp(cotton_4p$felm.se.fit) - 1)
+cotton_p5_ci <- sum(exp(cotton_5p$felm.se.fit) - 1)
 
 cotton_p0_fit <- exp(cotton_0p$fit + cotton_0p$res + cotton_0p$effect) - 1
 cotton_p1_fit <- exp(cotton_1p$fit + cotton_1p$res + cotton_1p$effect) - 1
@@ -132,12 +133,12 @@ hay_p4 <- sum(exp(hay_4p$fit + hay_4p$res + hay_4p$effect) - 1)
 hay_p5 <- sum(exp(hay_5p$fit + hay_5p$res + hay_5p$effect) - 1) 
 
 # Get standard errors of sum
-hay_p0_ci <- sum(exp(hay_0p$felm.se.fit + hay_0p$res + hay_0p$effect) - 1)
-hay_p1_ci <- sum(exp(hay_1p$felm.se.fit + hay_1p$res + hay_1p$effect) - 1)
-hay_p2_ci <- sum(exp(hay_2p$felm.se.fit + hay_2p$res + hay_2p$effect) - 1)
-hay_p3_ci <- sum(exp(hay_3p$felm.se.fit + hay_3p$res + hay_3p$effect) - 1)
-hay_p4_ci <- sum(exp(hay_4p$felm.se.fit + hay_4p$res + hay_4p$effect) - 1)
-hay_p5_ci <- sum(exp(hay_5p$felm.se.fit + hay_5p$res + hay_5p$effect) - 1)
+hay_p0_ci <- sum(exp(hay_0p$felm.se.fit) - 1)
+hay_p1_ci <- sum(exp(hay_1p$felm.se.fit) - 1)
+hay_p2_ci <- sum(exp(hay_2p$felm.se.fit) - 1)
+hay_p3_ci <- sum(exp(hay_3p$felm.se.fit) - 1)
+hay_p4_ci <- sum(exp(hay_4p$felm.se.fit) - 1)
+hay_p5_ci <- sum(exp(hay_5p$felm.se.fit) - 1)
 
 
 hay_p0_fit <- exp(hay_0p$fit + hay_0p$res + hay_0p$effect) - 1
@@ -175,12 +176,12 @@ soybean_p4 <- sum(exp(soybean_4p$fit + soybean_4p$res + soybean_4p$effect) - 1)
 soybean_p5 <- sum(exp(soybean_5p$fit + soybean_5p$res + soybean_5p$effect) - 1) 
 
 # Get standard errors of sum
-soybean_p0_ci <- sum(exp(soybean_0p$felm.se.fit + soybean_0p$res + soybean_0p$effect) - 1)
-soybean_p1_ci <- sum(exp(soybean_1p$felm.se.fit + soybean_1p$res + soybean_1p$effect) - 1)
-soybean_p2_ci <- sum(exp(soybean_2p$felm.se.fit + soybean_2p$res + soybean_2p$effect) - 1)
-soybean_p3_ci <- sum(exp(soybean_3p$felm.se.fit + soybean_3p$res + soybean_3p$effect) - 1)
-soybean_p4_ci <- sum(exp(soybean_4p$felm.se.fit + soybean_4p$res + soybean_4p$effect) - 1)
-soybean_p5_ci <- sum(exp(soybean_5p$felm.se.fit + soybean_5p$res + soybean_5p$effect) - 1)
+soybean_p0_ci <- sum(exp(soybean_0p$felm.se.fit) - 1)
+soybean_p1_ci <- sum(exp(soybean_1p$felm.se.fit) - 1)
+soybean_p2_ci <- sum(exp(soybean_2p$felm.se.fit) - 1)
+soybean_p3_ci <- sum(exp(soybean_3p$felm.se.fit) - 1)
+soybean_p4_ci <- sum(exp(soybean_4p$felm.se.fit) - 1)
+soybean_p5_ci <- sum(exp(soybean_5p$felm.se.fit) - 1)
 
 soybean_p0_fit <- exp(soybean_0p$fit + soybean_0p$res + soybean_0p$effect) - 1
 soybean_p1_fit <- exp(soybean_1p$fit + soybean_1p$res + soybean_1p$effect) - 1
@@ -220,12 +221,12 @@ wheat_p4 <- sum(exp(wheat_4p$fit + wheat_4p$res + wheat_4p$effect) - 1)
 wheat_p5 <- sum(exp(wheat_5p$fit + wheat_5p$res + wheat_5p$effect) - 1) 
 
 # Get standard errors of sum
-wheat_p0_ci <- sum(exp(wheat_0p$felm.se.fit + wheat_0p$res + wheat_0p$effect) - 1)
-wheat_p1_ci <- sum(exp(wheat_1p$felm.se.fit + wheat_1p$res + wheat_1p$effect) - 1)
-wheat_p2_ci <- sum(exp(wheat_2p$felm.se.fit + wheat_2p$res + wheat_2p$effect) - 1)
-wheat_p3_ci <- sum(exp(wheat_3p$felm.se.fit + wheat_3p$res + wheat_3p$effect) - 1)
-wheat_p4_ci <- sum(exp(wheat_4p$felm.se.fit + wheat_4p$res + wheat_4p$effect) - 1)
-wheat_p5_ci <- sum(exp(wheat_5p$felm.se.fit + wheat_5p$res + wheat_5p$effect) - 1)
+wheat_p0_ci <- sum(exp(wheat_0p$felm.se.fit) - 1)
+wheat_p1_ci <- sum(exp(wheat_1p$felm.se.fit) - 1)
+wheat_p2_ci <- sum(exp(wheat_2p$felm.se.fit) - 1)
+wheat_p3_ci <- sum(exp(wheat_3p$felm.se.fit) - 1)
+wheat_p4_ci <- sum(exp(wheat_4p$felm.se.fit) - 1)
+wheat_p5_ci <- sum(exp(wheat_5p$felm.se.fit) - 1)
 
 wheat_p0_fit <- exp(wheat_0p$fit + wheat_0p$res + wheat_0p$effect) - 1
 wheat_p1_fit <- exp(wheat_1p$fit + wheat_1p$res + wheat_1p$effect) - 1
@@ -260,8 +261,8 @@ saveRDS(adat, "data/rev_crop_pred.rds")
                               
 # Predicted percentage change
 pdat <- rbind(pdat_corn, pdat_cotton, pdat_hay, pdat_soybean, pdat_wheat)
-pdat$change_min <- pdat$sum - pdat$ci
-pdat$change_max <- pdat$sum + pdat$ci
+pdat$change_min <- pdat$sum - pdat$ci*1.96
+pdat$change_max <- pdat$sum + pdat$ci*1.96
 pdat
 
 saveRDS(pdat, "data/rev_crop_predictions.rds")
@@ -288,9 +289,10 @@ pdat$change_max <- pdat$change_max*100
 
 
 saveRDS(pdat, "data/rev_crop_predictions.rds")
+pdat <- readRDS("data/rev_crop_predictions.rds")
 
 ggplot(pdat, aes(temp, change)) + 
-  geom_ribbon(aes(ymax = change_max, ymin = change_min, x = temp), fill = "grey", alpha = 0.5 ) +
+  geom_ribbon(aes(ymax = change_max, ymin = change_min, x = temp), fill = "#C0CCD9", alpha = 0.5 ) +
   geom_line() +
   # geom_point(size = 0.5) +
   #geom_errorbar(aes(ymax = change_max, ymin = change_min, color = effect), width = .1) +
@@ -311,7 +313,7 @@ ggplot(pdat, aes(temp, change)) +
   facet_wrap(~crop) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey", alpha = 0.5)
 
-ggsave("figures/4-predicted_corn.pdf", device = "pdf", width = 6, height = 4)
+ggsave("figures/4-predicted_crop.pdf", device = "pdf", width = 6, height = 4)
 
 # ggplot(sixtypdat, aes(temp, change)) + geom_line()
 #plot(c(c1, c2, c3, c4, c5))

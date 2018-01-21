@@ -28,10 +28,7 @@ paste(names(trends), collapse = " + ")
 
 #-------------------------------------------------------------
 mod_corn <- felm(ln_rev_corn ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-trend1_al + trend1_ar + trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + 
-  trend1_ky + trend1_md + trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + 
-  trend1_nc + trend1_nd + trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + 
-  trend1_tn + trend1_tx + trend1_va + trend1_wi + trend1_wv + trend2_al + trend2_ar + 
+trend2_al + trend2_ar + 
   trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
   trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
   trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
@@ -42,10 +39,7 @@ trend1_al + trend1_ar + trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_k
 summary(mod_corn)
 
 mod_cotton <- felm(ln_rev_cotton ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-trend1_al + trend1_ar + trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + 
-  trend1_ky + trend1_md + trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + 
-  trend1_nc + trend1_nd + trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + 
-  trend1_tn + trend1_tx + trend1_va + trend1_wi + trend1_wv + trend2_al + trend2_ar + 
+trend2_al + trend2_ar + 
   trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
   trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
   trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
@@ -56,10 +50,7 @@ trend1_al + trend1_ar + trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_k
 summary(mod_cotton)
 
 mod_hay <- felm(ln_rev_hay ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-trend1_al + trend1_ar + trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + 
-  trend1_ky + trend1_md + trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + 
-  trend1_nc + trend1_nd + trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + 
-  trend1_tn + trend1_tx + trend1_va + trend1_wi + trend1_wv + trend2_al + trend2_ar + 
+trend2_al + trend2_ar + 
   trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
   trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
   trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
@@ -70,10 +61,7 @@ trend1_al + trend1_ar + trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_k
 summary(mod_hay)
 
 mod_soybean <- felm(ln_rev_soybean ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-trend1_al + trend1_ar + trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + 
-  trend1_ky + trend1_md + trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + 
-  trend1_nc + trend1_nd + trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + 
-  trend1_tn + trend1_tx + trend1_va + trend1_wi + trend1_wv + trend2_al + trend2_ar + 
+trend2_al + trend2_ar + 
   trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
   trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
   trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
@@ -84,10 +72,7 @@ trend1_al + trend1_ar + trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_k
 summary(mod_soybean)
 
 mod_wheat <- felm(ln_rev_wheat ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-trend1_al + trend1_ar + trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + 
-  trend1_ky + trend1_md + trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + 
-  trend1_nc + trend1_nd + trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + 
-  trend1_tn + trend1_tx + trend1_va + trend1_wi + trend1_wv + trend2_al + trend2_ar + 
+trend2_al + trend2_ar + 
   trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
   trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
   trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
@@ -123,10 +108,7 @@ corn_base_3 <- felm(ln_rev_corn ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq
             data = regdat, weights = regdat$corn_w)
 
 corn_base_4 <- felm(ln_rev_corn ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
-              trend1_al + trend1_ar + trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + 
-              trend1_ky + trend1_md + trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + 
-              trend1_nc + trend1_nd + trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + 
-              trend1_tn + trend1_tx + trend1_va + trend1_wi + trend1_wv + trend2_al + trend2_ar + 
+trend2_al + trend2_ar + 
               trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
               trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
               trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
@@ -156,10 +138,7 @@ cotton_base_3 <- felm(ln_rev_cotton ~ dday0_10 + dday10_30 + dday30 + prec + pre
             data = regdat, weights = regdat$cotton_w)
 
 cotton_base_4 <- felm(ln_rev_cotton ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
-              trend1_al + trend1_ar + trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + 
-              trend1_ky + trend1_md + trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + 
-              trend1_nc + trend1_nd + trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + 
-              trend1_tn + trend1_tx + trend1_va + trend1_wi + trend1_wv + trend2_al + trend2_ar + 
+trend2_al + trend2_ar + 
               trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
               trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
               trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
@@ -189,10 +168,7 @@ hay_base_3 <- felm(ln_rev_hay ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
             data = regdat, weights = regdat$hay_w)
 
 hay_base_4 <- felm(ln_rev_hay ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
-              trend1_al + trend1_ar + trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + 
-              trend1_ky + trend1_md + trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + 
-              trend1_nc + trend1_nd + trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + 
-              trend1_tn + trend1_tx + trend1_va + trend1_wi + trend1_wv + trend2_al + trend2_ar + 
+trend2_al + trend2_ar + 
               trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
               trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
               trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
@@ -222,10 +198,7 @@ soybean_base_3 <- felm(ln_rev_soybean ~ dday0_10 + dday10_30 + dday30 + prec + p
             data = regdat, weights = regdat$soybean_w)
 
 soybean_base_4 <- felm(ln_rev_soybean ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
-              trend1_al + trend1_ar + trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + 
-              trend1_ky + trend1_md + trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + 
-              trend1_nc + trend1_nd + trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + 
-              trend1_tn + trend1_tx + trend1_va + trend1_wi + trend1_wv + trend2_al + trend2_ar + 
+trend2_al + trend2_ar + 
               trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
               trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
               trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
@@ -255,10 +228,7 @@ wheat_base_3 <- felm(ln_rev_wheat ~ dday0_10 + dday10_30 + dday30 + prec + prec_
             data = regdat, weights = regdat$wheat_w)
 
 wheat_base_4 <- felm(ln_rev_wheat ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
-              trend1_al + trend1_ar + trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + 
-              trend1_ky + trend1_md + trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + 
-              trend1_nc + trend1_nd + trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + 
-              trend1_tn + trend1_tx + trend1_va + trend1_wi + trend1_wv + trend2_al + trend2_ar + 
+trend2_al + trend2_ar + 
               trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
               trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
               trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 

@@ -1,21 +1,21 @@
 library(tidyverse)
 library(ggthemes)
 
-
+setwd("/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/")
 
 # Load SUR models
-modfive <- readRDS("models/sur_model_five.rds")
-modten <- readRDS("models/sur_model_ten.rds")
-modtwenty <- readRDS("models/sur_model_twenty.rds")
-modthirty <- readRDS("models/sur_model_thirty.rds")
-modsixty <- readRDS("models/sur_model_sixty.rds")
+# modfive <- readRDS("models/sur_model_five.rds")
+modten <- readRDS("models/sur_model_ten_weather_climate.rds")
+modtwenty <- readRDS("models/sur_model_twenty_weather_climate.rds")
+modthirty <- readRDS("models/sur_model_thirty_weather_climate.rds")
+# modsixty <- readRDS("models/sur_model_sixty.rds")
 
 # Remove trend coefficients to make it easier to plot
-modfive_coef <- modfive$coefficients[-c(grep("trend", names(modfive$coefficients)))]
+# modfive_coef <- modfive$coefficients[-c(grep("trend", names(modfive$coefficients)))]
 modten_coef <- modten$coefficients[-c(grep("trend", names(modten$coefficients)))]
 modtwenty_coef <- modtwenty$coefficients[-c(grep("trend", names(modtwenty$coefficients)))]
 modthirty_coef <- modthirty$coefficients[-c(grep("trend", names(modthirty$coefficients)))]
-modsixty_coef <- modsixty$coefficients
+# modsixty_coef <- modsixty$coefficients
 
 
 length(modfive$coefficients)/5
@@ -26,10 +26,10 @@ nrow(modfive$bs.se)/5
 # Corn
 # Weather-effects
 pdat1 <- data.frame(var = rep(c("Degree Day (0-10C)", "Degree Day (10-30C)", "Degree Day (30C)"), 5),
-                    interv = rep(c("5-year", "10-year", "20-year", "30-year", "60-year"), each = 3),
-                  coef = c(modfive_coef[1:3], modten_coef[1:3], modtwenty_coef[1:3],
-                             modthirty_coef[1:3], modsixty_coef[1:3]),
-                  se = c(modfive$bs.se[1:3, 1], modten$bs.se[1:3, 1], modtwenty$bs.se[1:3, 1],
+                    interv = rep(c("10-year", "20-year", "30-year"), each = 3),
+                  coef = c(modten_coef[1:3], modtwenty_coef[1:3],
+                             modthirty_coef[1:3]),
+                  se = c(modten$bs.se[1:3, 1], modtwenty$bs.se[1:3, 1],
                              modthirty$bs.se[1:3, 1], modsixty$bs.se[1:3, 1]),
                   effect = "Weather-effect")
 

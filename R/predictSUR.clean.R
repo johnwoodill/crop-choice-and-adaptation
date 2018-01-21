@@ -13,7 +13,7 @@ predictSUR.clean <- function(mod, newdata_list, acres, var.terms = NULL, cons.te
   p4 <- newdata_list[[5]]
   p5 <- newdata_list[[6]]
     
-  indat0 <- predictSUR(mod, newdata = p0, var.terms = var.terms, cons.terms = cons.terms)
+  indat0 <- predictSUR(systemfit.mod = mod, newdata = p0, var.terms = var.terms, cons.terms = cons.terms)
   indat1 <- predictSUR(mod, newdata = p1, var.terms = var.terms, cons.terms = cons.terms)
   indat2 <- predictSUR(mod, newdata = p2, var.terms = var.terms, cons.terms = cons.terms)
   indat3 <- predictSUR(mod, newdata = p3, var.terms = var.terms, cons.terms = cons.terms)

@@ -20,9 +20,23 @@ cropdat$thirty <- factor(cropdat$thirty)
 
 
 # Sur models
-sur_ten <- readRDS("models/sur_model_ten.rds")
-sur_twenty <- readRDS("models/sur_model_twenty.rds")
-sur_thirty <- readRDS("models/sur_model_thirty.rds")
+sur_ten <- readRDS("models/sur_model_ten_sq.rds")
+sur_twenty <- readRDS("models/sur_model_twenty_sq.rds")
+sur_thirty <- readRDS("models/sur_model_thirty_sq.rds")
+
+# State-quad trend
+# sur_ten <- readRDS("models/sur_model_ten_sq.rds")
+# sur_twenty <- readRDS("models/sur_model_twenty_sq.rds")
+# sur_thirty <- readRDS("models/sur_model_thirty_sq.rds")
+
+# State-quad trend with weather and climate
+# sur_ten <- readRDS("models/sur_model_ten_test.rds")
+# sur_twenty <- readRDS("models/sur_model_twenty_test.rds")
+# sur_thirty <- readRDS("models/sur_model_thirty_test.rds")
+# 
+ # sur_ten <- readRDS("models/sur_model_ten_weather_climate.rds")
+# sur_twenty <- readRDS("models/sur_model_twenty_weather_climate.rds")
+# sur_thirty <- readRDS("models/sur_model_thirty_weather_climate.rds")
 
 
 # Prediction data 0C-5C
@@ -100,50 +114,70 @@ newdata_list_thirty <- list(p0 = p0_thirty,
                      p4 = p4_thirty,
                      p5 = p5_thirty)
 
+ten_climate_terms_v = c("dday0_10_ten", "dday10_30_ten", "dday30_ten", "prec_ten", "prec_sq_ten", 
+                        "trend1_al" , "trend1_ar" , "trend1_ga" , "trend1_ia" , "trend1_il" , "trend1_in" , "trend1_ks" , "trend1_ky" , "trend1_md" , "trend1_mi" , "trend1_mn" , "trend1_mo" , "trend1_ms" , "trend1_mt" , "trend1_nc" , "trend1_nd" , "trend1_ne" , "trend1_oh" , "trend1_ok" , "trend1_sc" , "trend1_sd" , "trend1_tn" , "trend1_tx" , "trend1_va" , "trend1_wi" , "trend1_wv",
+                        "trend2_al" , "trend2_ar" , "trend2_ga" , "trend2_ia" , "trend2_il" , "trend2_in" , "trend2_ks" , "trend2_ky" , "trend2_md" , "trend2_mi" , "trend2_mn" , "trend2_mo" , "trend2_ms" , "trend2_mt" , "trend2_nc" , "trend2_nd" , "trend2_ne" , "trend2_oh" , "trend2_ok" , "trend2_sc" , "trend2_sd" , "trend2_tn" , "trend2_tx" , "trend2_va" , "trend2_wi" , "trend2_wv")
+twenty_climate_terms_v = c("dday0_10_twenty", "dday10_30_twenty", "dday30_twenty", "prec_twenty", "prec_sq_twenty", 
+                                                   "trend1_al" , "trend1_ar" , "trend1_ga" , "trend1_ia" , "trend1_il" , "trend1_in" , "trend1_ks" , "trend1_ky" , "trend1_md" , "trend1_mi" , "trend1_mn" , "trend1_mo" , "trend1_ms" , "trend1_mt" , "trend1_nc" , "trend1_nd" , "trend1_ne" , "trend1_oh" , "trend1_ok" , "trend1_sc" , "trend1_sd" , "trend1_tn" , "trend1_tx" , "trend1_va" , "trend1_wi" , "trend1_wv",
+                        "trend2_al" , "trend2_ar" , "trend2_ga" , "trend2_ia" , "trend2_il" , "trend2_in" , "trend2_ks" , "trend2_ky" , "trend2_md" , "trend2_mi" , "trend2_mn" , "trend2_mo" , "trend2_ms" , "trend2_mt" , "trend2_nc" , "trend2_nd" , "trend2_ne" , "trend2_oh" , "trend2_ok" , "trend2_sc" , "trend2_sd" , "trend2_tn" , "trend2_tx" , "trend2_va" , "trend2_wi" , "trend2_wv")
 
-cons.terms_w <- c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq")
-cons.terms_c_ten <- c("dday0_10_ten", "dday10_30_ten", "dday30_ten", "prec_ten", "prec_sq_ten")
-cons.terms_c_twenty <- c("dday0_10_twenty", "dday10_30_twenty", "dday30_twenty", "prec_twenty", "prec_sq_twenty")
-cons.terms_c_thirty <- c("dday0_10_thirty", "dday10_30_thirty", "dday30_thirty", "prec_thirty", "prec_sq_thirty")
+thirty_climate_terms_v = c("dday0_10_thirty", "dday10_30_thirty", "dday30_thirty", "prec_thirty", "prec_sq_thirty", 
+                                                   "trend1_al" , "trend1_ar" , "trend1_ga" , "trend1_ia" , "trend1_il" , "trend1_in" , "trend1_ks" , "trend1_ky" , "trend1_md" , "trend1_mi" , "trend1_mn" , "trend1_mo" , "trend1_ms" , "trend1_mt" , "trend1_nc" , "trend1_nd" , "trend1_ne" , "trend1_oh" , "trend1_ok" , "trend1_sc" , "trend1_sd" , "trend1_tn" , "trend1_tx" , "trend1_va" , "trend1_wi" , "trend1_wv",
+                        "trend2_al" , "trend2_ar" , "trend2_ga" , "trend2_ia" , "trend2_il" , "trend2_in" , "trend2_ks" , "trend2_ky" , "trend2_md" , "trend2_mi" , "trend2_mn" , "trend2_mo" , "trend2_ms" , "trend2_mt" , "trend2_nc" , "trend2_nd" , "trend2_ne" , "trend2_oh" , "trend2_ok" , "trend2_sc" , "trend2_sd" , "trend2_tn" , "trend2_tx" , "trend2_va" , "trend2_wi" , "trend2_wv")
+
+weather_terms_c = c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq")
+
+# ten_climate_terms_v = c("dday0_10_ten", "dday10_30_ten", "dday30_ten", "prec_ten", "prec_sq_ten")
+# twenty_climate_terms_v = c("dday0_10_twenty", "dday10_30_twenty", "dday30_twenty", "prec_twenty")
+# thirty_climate_terms_v = c("dday0_10_thirty", "dday10_30_thirty", "dday30_thirty", "prec_thirty")
+# weather_terms_c = c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq")
 
 
 #-------------------------------------
 # Ten-year
 
 # Climate-effect predictions
-climate_terms = c("dday0_10_ten", "dday10_30_ten", "dday30_ten", "prec_ten", "prec_sq_ten")
 
-cten <- predictSUR.clean(sur_ten, acres = cropdat$acres,  newdata_list = newdata_list_ten, var.terms = climate_terms, cons.terms = cons.terms_w, type = "10-year", effect = "Climate-effect")
+cten <- predictSUR.clean(mod = sur_ten, 
+                         acres = cropdat$acres,  
+                         newdata_list = newdata_list_ten, 
+                         # var.terms = ten_climate_terms_v,
+                         # cons.terms = weather_terms_c, 
+                         type = "10-year", 
+                         effect = "Climate-effect")
 
 #-------------------------------------
 # Twenty-year
 
 # Climate-effect predictions
-climate_terms = c("dday0_10_twenty", "dday10_30_twenty", "dday30_twenty", "prec_twenty", "prec_sq_twenty")
 
-ctwenty <- predictSUR.clean(sur_twenty, acres = cropdat$acres,  newdata_list = newdata_list_twenty, var.terms = climate_terms, cons.terms = cons.terms_w, type = "20-year", effect = "Climate-effect")
+ctwenty <- predictSUR.clean(mod = sur_twenty, 
+                            acres = cropdat$acres,  
+                            newdata_list = newdata_list_twenty, 
+                            # var.terms = twenty_climate_terms_v,
+                            # cons.terms = weather_terms_c, 
+                            type = "20-year", 
+                            effect = "Climate-effect")
 
 #-------------------------------------
 # Thirty-year
 
 # Climate-effect predictions
-climate_terms = c("dday0_10_thirty", "dday10_30_thirty", "dday30_thirty", "prec_thirty", "prec_sq_thirty")
 
-cthirty <- predictSUR.clean(sur_thirty, acres = cropdat$acres,  newdata_list = newdata_list_thirty, var.terms = climate_terms, cons.terms = cons.terms_w, type = "30-year", effect = "Climate-effect")
+cthirty <- predictSUR.clean(sur_thirty, 
+                            acres = cropdat$acres,  
+                            newdata_list = newdata_list_thirty, 
+                            # var.terms = thirty_climate_terms_v,
+                            # cons.terms = weather_terms_c, 
+                            type = "30-year", 
+                            effect = "Climate-effect")
 
 # Save predictions data
-saveRDS(tten, "data/tten.rds")
-saveRDS(ttwenty, "data/ttwenty.rds")
-saveRDS(tthirty, "data/tthirty.rds")
-
-
 saveRDS(cten, "data/cten.rds")
 saveRDS(ctwenty, "data/ctwenty.rds")
 saveRDS(cthirty, "data/cthirty.rds")
 
-pdat <- rbind(wten$agg_predictions, cten$agg_predictions, tten$agg_predictions,
-              wtwenty$agg_predictions, ctwenty$agg_predictions, ttwenty$agg_predictions,
-              wthirty$agg_predictions, cthirty$agg_predictions, tthirty$agg_predictions)
+pdat <- rbind(cten$agg_predictions, ctwenty$agg_predictions, cthirty$agg_predictions)
 
 pdat <- pdat %>% 
   group_by(crop, type, effect) %>% 
@@ -155,10 +189,10 @@ pdat$change <- 100*pdat$change
 
 saveRDS(pdat, "data/sur_predictions.rds")
 
-ggplot(pdat, aes(temp, change, color = effect)) + 
+ggplot(pdat, aes(temp, change)) + 
   geom_line() + 
   geom_point(size = .5) + 
-  #geom_errorbar(aes(ymax = change_max, ymin = change_min, color = effect), width = .1) +
+  # geom_errorbar(aes(ymax = change_max, ymin = change_min, color = effect), width = .1) +
   theme_tufte(base_size = 10) +
   ylab("% Change in Proportion of Crop Acres") +
   xlab("Change in Temperature (C)") +
@@ -174,38 +208,40 @@ ggplot(pdat, aes(temp, change, color = effect)) +
   #     legend.justification = c("left", "top"), 
   #     legend.box.background = element_rect(colour = "grey"), 
   #     legend.title = element_blank(), legend.key = element_blank()) +
-  facet_wrap(type~crop) +
+  facet_wrap(type~crop, ncol = 5, scales = "free") +
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey")
-ggsave("figures/sur_crop_share_predictions.pdf", width = 6, height = 7)
 
-ppdat <- pdat %>% 
-  #filter(effect == "Climate-effect") %>% 
-  group_by(temp, type, effect) %>% 
-  summarise(total = sum(sum)) %>%
-  group_by(type, effect) %>% 
-  mutate(change = (total - first(total))/first(total))
-ppdat$change <- ppdat$change*100
-ppdat
+ggsave("figures/sur_crop_share_predictions.pdf", width = 6, height = 5)
 
-ggplot(ppdat, aes(temp, change, color = type)) + 
-  geom_line() + 
-  geom_point(size = 0.5) + 
-  facet_wrap(~effect, ncol = 3) +
-  theme_tufte(base_size = 12) +
-  ylab("Change in Proportion of Total Crop Acres") +
-  xlab("Change in Temperature (C)") +
-  annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
-  annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
-  scale_x_continuous(breaks = 0:5, labels = c("+0C", "+1C", "+2C", "+3C", "+4C", "+5C")) +
-  theme(legend.position = "top", 
-       #legend.justification = c("left", "top"), 
-       legend.box.background = element_rect(colour = "grey"), 
-       legend.title = element_blank(), legend.key = element_blank()) +
-  #theme(legend.position = c(.85,1), 
-  #     legend.justification = c("left", "top"), 
-  #     legend.box.background = element_rect(colour = "grey"), 
-  #     legend.title = element_blank(), legend.key = element_blank()) +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "grey")
+# Average acres
+# ppdat <- pdat %>% 
+#   filter(effect == "Climate-effect") %>% 
+#   group_by(temp, type, effect) %>% 
+#   summarise(total = sum(sum)) %>%
+#   group_by(type, effect) %>% 
+#   mutate(change = (total - first(total))/first(total))
+# ppdat$change <- ppdat$change*100
+# ppdat
+
+# ggplot(ppdat, aes(temp, change, color = type)) + 
+#   geom_line() + 
+#   geom_point(size = 0.5) + 
+#   facet_wrap(~effect, ncol = 3) +
+#   theme_tufte(base_size = 12) +
+#   ylab("Change in Proportion of Total Crop Acres") +
+#   xlab("Change in Temperature (C)") +
+#   annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
+#   annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
+#   scale_x_continuous(breaks = 0:5, labels = c("+0C", "+1C", "+2C", "+3C", "+4C", "+5C")) +
+#   theme(legend.position = "top", 
+#        #legend.justification = c("left", "top"), 
+#        legend.box.background = element_rect(colour = "grey"), 
+#        legend.title = element_blank(), legend.key = element_blank()) +
+#   #theme(legend.position = c(.85,1), 
+#   #     legend.justification = c("left", "top"), 
+#   #     legend.box.background = element_rect(colour = "grey"), 
+#   #     legend.title = element_blank(), legend.key = element_blank()) +
+#   geom_hline(yintercept = 0, linetype = "dashed", color = "grey")
 
 
 
