@@ -4,7 +4,7 @@
 # type = "Five-year"
 # effect = "Climate-effect"
 
-predictSUR.clean <- function(mod, newdata_list, acres, var.terms = NULL, cons.terms = NULL, type, effect){
+predictSUR.clean <- function(mod, newdata_list, acres, fips, var.terms = NULL, cons.terms = NULL, type, effect){
   
   p0 <- newdata_list[[1]]
   p1 <- newdata_list[[2]]
@@ -13,12 +13,12 @@ predictSUR.clean <- function(mod, newdata_list, acres, var.terms = NULL, cons.te
   p4 <- newdata_list[[5]]
   p5 <- newdata_list[[6]]
     
-  indat0 <- predictSUR(systemfit.mod = mod, newdata = p0, var.terms = var.terms, cons.terms = cons.terms)
-  indat1 <- predictSUR(mod, newdata = p1, var.terms = var.terms, cons.terms = cons.terms)
-  indat2 <- predictSUR(mod, newdata = p2, var.terms = var.terms, cons.terms = cons.terms)
-  indat3 <- predictSUR(mod, newdata = p3, var.terms = var.terms, cons.terms = cons.terms)
-  indat4 <- predictSUR(mod, newdata = p4, var.terms = var.terms, cons.terms = cons.terms)
-  indat5 <- predictSUR(mod, newdata = p5, var.terms = var.terms, cons.terms = cons.terms)
+  indat0 <- predictSUR(systemfit.mod = mod, newdata = p0, fips = fips, var.terms = var.terms, cons.terms = cons.terms)
+  indat1 <- predictSUR(mod, newdata = p1, fips = fips, var.terms = var.terms, cons.terms = cons.terms)
+  indat2 <- predictSUR(mod, newdata = p2, fips = fips, var.terms = var.terms, cons.terms = cons.terms)
+  indat3 <- predictSUR(mod, newdata = p3, fips = fips, var.terms = var.terms, cons.terms = cons.terms)
+  indat4 <- predictSUR(mod, newdata = p4, fips = fips, var.terms = var.terms, cons.terms = cons.terms)
+  indat5 <- predictSUR(mod, newdata = p5, fips = fips, var.terms = var.terms, cons.terms = cons.terms)
   
   corn0.pred <- pnorm(indat0$corn_predict + resid(mod)[[1]] + mod$effects$corn.effect)*1.00101 - 0.001
   corn1.pred <- pnorm(indat1$corn_predict + resid(mod)[[1]] + mod$effects$corn.effect)*1.00101 - 0.001

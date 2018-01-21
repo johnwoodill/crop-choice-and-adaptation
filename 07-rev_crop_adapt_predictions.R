@@ -29,12 +29,12 @@ p5 <- readRDS("data/degree_day_changes/panel_adapt_regression_data_5C.rds")
 #---------------------------------------------------------------------------------
 # Corn
 # Get predictions for weather conditional on climate (restrict terms to weather)
-corn_0p <- predictFelm(corn_mod, newdata = cropdat, var.terms = terms, felm.se = TRUE)
-corn_1p <- predictFelm(corn_mod, newdata = p1, var.terms = terms, felm.se = TRUE)
-corn_2p <- predictFelm(corn_mod, newdata = p2, var.terms = terms, felm.se = TRUE)
-corn_3p <- predictFelm(corn_mod, newdata = p3, var.terms = terms, felm.se = TRUE)
-corn_4p <- predictFelm(corn_mod, newdata = p4, var.terms = terms, felm.se = TRUE)
-corn_5p <- predictFelm(corn_mod, newdata = p5, var.terms = terms, felm.se = TRUE)
+corn_0p <- predictFelm(corn_mod, newdata = cropdat, var.terms = terms)
+corn_1p <- predictFelm(corn_mod, newdata = p1, var.terms = terms)
+corn_2p <- predictFelm(corn_mod, newdata = p2, var.terms = terms)
+corn_3p <- predictFelm(corn_mod, newdata = p3, var.terms = terms)
+corn_4p <- predictFelm(corn_mod, newdata = p4, var.terms = terms)
+corn_5p <- predictFelm(corn_mod, newdata = p5, var.terms = terms)
 
 # Total predicted revenue per acre
 corn_p0 <- sum(exp(corn_0p$fit + corn_0p$res + corn_0p$effect) - 1)
@@ -71,12 +71,12 @@ pdat_corn
 
 # cotton
 # Get predictions for weather conditional on climate (restrict terms to weather)
-cotton_0p <- predictFelm(felm.fit = cotton_mod, newdata = cropdat, var.terms = terms, felm.se = TRUE)
-cotton_1p <- predictFelm(cotton_mod, newdata = p1, var.terms = terms, felm.se = TRUE)
-cotton_2p <- predictFelm(cotton_mod, newdata = p2, var.terms = terms, felm.se = TRUE)
-cotton_3p <- predictFelm(cotton_mod, newdata = p3, var.terms = terms, felm.se = TRUE)
-cotton_4p <- predictFelm(cotton_mod, newdata = p4, var.terms = terms, felm.se = TRUE)
-cotton_5p <- predictFelm(cotton_mod, newdata = p5, var.terms = terms, felm.se = TRUE)
+cotton_0p <- predictFelm(felm.fit = cotton_mod, newdata = cropdat, var.terms = terms)
+cotton_1p <- predictFelm(cotton_mod, newdata = p1, var.terms = terms)
+cotton_2p <- predictFelm(cotton_mod, newdata = p2, var.terms = terms)
+cotton_3p <- predictFelm(cotton_mod, newdata = p3, var.terms = terms)
+cotton_4p <- predictFelm(cotton_mod, newdata = p4, var.terms = terms)
+cotton_5p <- predictFelm(cotton_mod, newdata = p5, var.terms = terms)
 
 # Total predicted revenue per acre
 cotton_p0 <- sum(exp(cotton_0p$fit + cotton_0p$res + cotton_0p$effect) - 1)
@@ -101,7 +101,7 @@ cotton_p3_fit <- exp(cotton_3p$fit + cotton_3p$res + cotton_3p$effect) - 1
 cotton_p4_fit <- exp(cotton_4p$fit + cotton_4p$res + cotton_4p$effect) - 1
 cotton_p5_fit <- exp(cotton_5p$fit + cotton_5p$res + cotton_5p$effect) - 1
 
-# cotton_0p <- predictFelm(felm.fit = cotton_mod, newdata = cropdat, var.terms = c("dday0_10"), felm.se = TRUE)
+# cotton_0p <- predictFelm(felm.fit = cotton_mod, newdata = cropdat, var.terms = c("dday0_10"))
 # 
 # head(exp(cotton_0p$fit + cotton_0p$res + cotton_0p$effect) - 1)
 # head(exp(cotton_0p$felm.se.fit + cotton_0p$res + cotton_0p$effect) - 1)
@@ -117,12 +117,12 @@ pdat_cotton
 #---------------------------------------------------------------------------------
 # hay
 # Get predictions for weather conditional on climate (restrict terms to weather)
-hay_0p <- predictFelm(hay_mod, newdata = cropdat, var.terms = terms, felm.se = TRUE)
-hay_1p <- predictFelm(hay_mod, newdata = p1, var.terms = terms, felm.se = TRUE)
-hay_2p <- predictFelm(hay_mod, newdata = p2, var.terms = terms, felm.se = TRUE)
-hay_3p <- predictFelm(hay_mod, newdata = p3, var.terms = terms, felm.se = TRUE)
-hay_4p <- predictFelm(hay_mod, newdata = p4, var.terms = terms, felm.se = TRUE)
-hay_5p <- predictFelm(hay_mod, newdata = p5, var.terms = terms, felm.se = TRUE)
+hay_0p <- predictFelm(hay_mod, newdata = cropdat, var.terms = terms)
+hay_1p <- predictFelm(hay_mod, newdata = p1, var.terms = terms)
+hay_2p <- predictFelm(hay_mod, newdata = p2, var.terms = terms)
+hay_3p <- predictFelm(hay_mod, newdata = p3, var.terms = terms)
+hay_4p <- predictFelm(hay_mod, newdata = p4, var.terms = terms)
+hay_5p <- predictFelm(hay_mod, newdata = p5, var.terms = terms)
 
 # Total predicted revenue per acre
 hay_p0 <- sum(exp(hay_0p$fit + hay_0p$res + hay_0p$effect) - 1)
@@ -160,12 +160,12 @@ pdat_hay
 #---------------------------------------------------------------------------------
 # soybean
 # Get predictions for weather conditional on climate (restrict terms to weather)
-soybean_0p <- predictFelm(soybean_mod, newdata = cropdat, var.terms = terms, felm.se = TRUE)
-soybean_1p <- predictFelm(soybean_mod, newdata = p1, var.terms = terms, felm.se = TRUE)
-soybean_2p <- predictFelm(soybean_mod, newdata = p2, var.terms = terms, felm.se = TRUE)
-soybean_3p <- predictFelm(soybean_mod, newdata = p3, var.terms = terms, felm.se = TRUE)
-soybean_4p <- predictFelm(soybean_mod, newdata = p4, var.terms = terms, felm.se = TRUE)
-soybean_5p <- predictFelm(soybean_mod, newdata = p5, var.terms = terms, felm.se = TRUE)
+soybean_0p <- predictFelm(soybean_mod, newdata = cropdat, var.terms = terms)
+soybean_1p <- predictFelm(soybean_mod, newdata = p1, var.terms = terms)
+soybean_2p <- predictFelm(soybean_mod, newdata = p2, var.terms = terms)
+soybean_3p <- predictFelm(soybean_mod, newdata = p3, var.terms = terms)
+soybean_4p <- predictFelm(soybean_mod, newdata = p4, var.terms = terms)
+soybean_5p <- predictFelm(soybean_mod, newdata = p5, var.terms = terms)
 
 # Total predicted revenue per acre
 soybean_p0 <- sum(exp(soybean_0p$fit + soybean_0p$res + soybean_0p$effect) - 1)
@@ -205,12 +205,12 @@ pdat_soybean
 #---------------------------------------------------------------------------------
 # wheat
 # Get predictions for weather conditional on climate (restrict terms to weather)
-wheat_0p <- predictFelm(wheat_mod, newdata = cropdat, var.terms = terms, felm.se = TRUE)
-wheat_1p <- predictFelm(wheat_mod, newdata = p1, var.terms = terms, felm.se = TRUE)
-wheat_2p <- predictFelm(wheat_mod, newdata = p2, var.terms = terms, felm.se = TRUE)
-wheat_3p <- predictFelm(wheat_mod, newdata = p3, var.terms = terms, felm.se = TRUE)
-wheat_4p <- predictFelm(wheat_mod, newdata = p4, var.terms = terms, felm.se = TRUE)
-wheat_5p <- predictFelm(wheat_mod, newdata = p5, var.terms = terms, felm.se = TRUE)
+wheat_0p <- predictFelm(wheat_mod, newdata = cropdat, var.terms = terms)
+wheat_1p <- predictFelm(wheat_mod, newdata = p1, var.terms = terms)
+wheat_2p <- predictFelm(wheat_mod, newdata = p2, var.terms = terms)
+wheat_3p <- predictFelm(wheat_mod, newdata = p3, var.terms = terms)
+wheat_4p <- predictFelm(wheat_mod, newdata = p4, var.terms = terms)
+wheat_5p <- predictFelm(wheat_mod, newdata = p5, var.terms = terms)
 
 # Total predicted revenue per acre
 wheat_p0 <- sum(exp(wheat_0p$fit + wheat_0p$res + wheat_0p$effect) - 1)

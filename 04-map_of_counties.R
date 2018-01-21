@@ -119,3 +119,4 @@ soybean_map
 
 plot_grid(corn_map, cotton_map, hay_map, wheat_map, soybean_map)
 ggsave("figures/crop_map.jpg", width = 6, height = 4)
+

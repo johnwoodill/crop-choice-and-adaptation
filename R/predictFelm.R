@@ -2,7 +2,7 @@
 # newdata  : new prediction data
 
 # Custom predict funciton for Felm object models
-predictFelm <- function(felm.fit, newdata = NULL, var.terms = NULL, cons.terms = NULL, felm.se = FALSE){
+predictFelm <- function(felm.fit, newdata = NULL, var.terms = NULL, cons.terms = NULL){
   felm.formula <- as.character(felm.fit$call[[2]])
   rhs          = felm.formula[3]
   last         = which(strsplit(rhs,"")[[1]]=="|")[1] - 1
@@ -10,11 +10,15 @@ predictFelm <- function(felm.fit, newdata = NULL, var.terms = NULL, cons.terms =
   dep.var <- felm.formula[2]
   exp.var <- attr(felm.fit$terms,"term.labels")
   w <<- felm.fit$weights
-
+  
   # For predicted with clustered standard errors  
-  if(isTRUE(felm.se)){
-    terms <- c(var.terms, cons.terms)
-    m.terms <- as.formula(c("~ - 1 + ", paste(var.terms, cons.terms, collapse = " + ")))
+  if(!is.null(felm.fit$cse)){
+    if(is.null(var.terms) & is.null(cons.terms)){
+      terms <- exp.var
+    } else {
+      terms <- c(var.terms, cons.terms)
+    }
+    m.terms <- as.formula(c("~ - 1 + ", paste(terms, collapse = " + ")))
     m.mat <- as.data.frame(model.matrix(m.terms, data = newdata))
     mloc <- which(colnames(felm.fit$clustervcv) %in% terms)
     clcov <- felm.fit$clustervcv[mloc, mloc]
@@ -68,12 +72,13 @@ predictFelm <- function(felm.fit, newdata = NULL, var.terms = NULL, cons.terms =
       pred <- predict(lm.fit, newdata = newdata, se.fit = TRUE, type = "terms", terms = var.terms)
       pred$fit <- cbind(pred$fit, cpred)
       pred$fit <- rowSums(pred$fit)
-
+      pred$felm.se.fit <- fit.se
     }
 
     # # Predict all terms
     if(is.null(var.terms) & is.null(cons.terms)){
       pred <- predict(lm.fit, newdata = newdata, se.fit = TRUE)
+      pred$felm.se.fit <- fit.se
     }
   
     pred$res <- felm.fit$residuals

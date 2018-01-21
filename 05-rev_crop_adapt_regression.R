@@ -28,24 +28,24 @@ paste(names(trends), collapse = " + ")
 
 #-------------------------------------------------------------
 mod_corn <- felm(ln_rev_corn ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-trend2_al + trend2_ar + 
+  trend2_al + trend2_ar + 
   trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
   trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
   trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
   trend2_va + trend2_wi + trend2_wv 
             | fips | 0 | state, 
-            data = regdat, weights = (1 + regdat$corn_w), psdef = FALSE)
+            data = regdat, weights = (.01 + regdat$corn_w), psdef = FALSE)
 
 summary(mod_corn)
 
 mod_cotton <- felm(ln_rev_cotton ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-trend2_al + trend2_ar + 
+  trend2_al + trend2_ar + 
   trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
   trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
   trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
   trend2_va + trend2_wi + trend2_wv 
             | fips | 0 | state, 
-            data = regdat, weights = (1 + regdat$cotton_w), psdef = FALSE)
+            data = regdat, weights = (.01 + regdat$cotton_w), psdef = FALSE)
 
 summary(mod_cotton)
 
@@ -56,29 +56,29 @@ trend2_al + trend2_ar +
   trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
   trend2_va + trend2_wi + trend2_wv 
             | fips | 0 | state, 
-            data = regdat, weights = (1 + regdat$hay_w), psdef = FALSE)
+            data = regdat, weights = (.01 + regdat$hay_w), psdef = FALSE)
 
 summary(mod_hay)
 
 mod_soybean <- felm(ln_rev_soybean ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-trend2_al + trend2_ar + 
+  trend2_al + trend2_ar + 
   trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
   trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
   trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
   trend2_va + trend2_wi + trend2_wv 
             | fips | 0 | state, 
-            data = regdat, weights = (1 + regdat$soybean_w), psdef = FALSE)
+            data = regdat, weights = (.01 + regdat$soybean_w), psdef = FALSE)
 
 summary(mod_soybean)
 
 mod_wheat <- felm(ln_rev_wheat ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-trend2_al + trend2_ar + 
+  trend2_al + trend2_ar + 
   trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
   trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
   trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
   trend2_va + trend2_wi + trend2_wv 
             | fips | 0 | state, 
-            data = regdat, weights = (1 + regdat$wheat_w), psdef = FALSE)
+            data = regdat, weights = (.01 + regdat$wheat_w), psdef = FALSE)
 
 summary(mod_wheat)
 
@@ -108,7 +108,7 @@ corn_base_3 <- felm(ln_rev_corn ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq
             data = regdat, weights = regdat$corn_w)
 
 corn_base_4 <- felm(ln_rev_corn ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
-trend2_al + trend2_ar + 
+              trend2_al + trend2_ar + 
               trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
               trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
               trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
