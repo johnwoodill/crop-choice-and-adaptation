@@ -48,23 +48,36 @@ ctwenty$predictions$type <- "20-year"
 cthirty$predictions$type <- "30-year"
 
 # Get average crop since 1980
-dat <- cropdat %>% 
+mdat <- cropdat %>% 
   select(year, fips, corn_grain_a, cotton_a, hay_a, wheat_a, soybean_a) %>% 
-  filter(year >= 1950) %>% 
+  filter(year >= 1980) %>% 
   group_by(fips) %>% 
-  mutate(corn_grain_a = mean(corn_grain_a, na.rm = TRUE),
+  summarise(corn_grain_a = mean(corn_grain_a, na.rm = TRUE),
          cotton_a = mean(cotton_a, na.rm = TRUE),
          hay_a = mean(hay_a, na.rm = TRUE),
          wheat_a = mean(wheat_a, na.rm = TRUE),
          soybean_a = mean(soybean_a, na.rm = TRUE))
 
+dat <- cropdat
+dat$corn_grain_a <- NULL
+dat$cotton_a <- NULL
+dat$hay_a <- NULL
+dat$soybean_a <- NULL
+dat$wheat_a <- NULL
+
+dat <- left_join(dat, mdat, by = "fips")
 
 # Bind SUR climate data
 cdat <- bind_rows(cten$predictions, ctwenty$predictions, cthirty$predictions)
 cdat$effect <- "Climate-effect"
 
 # Bind no crop switching data
-ndat <- bind_rows(dat[, 3:7], dat[, 3:7], dat[, 3:7], dat[, 3:7], dat[, 3:7], dat[, 3:7])
+ndat <- bind_rows(dat[, c("corn_grain_a", "cotton_a", "hay_a", "wheat_a", "soybean_a")], 
+                  dat[, c("corn_grain_a", "cotton_a", "hay_a", "wheat_a", "soybean_a")],
+                  dat[, c("corn_grain_a", "cotton_a", "hay_a", "wheat_a", "soybean_a")],
+                  dat[, c("corn_grain_a", "cotton_a", "hay_a", "wheat_a", "soybean_a")],
+                  dat[, c("corn_grain_a", "cotton_a", "hay_a", "wheat_a", "soybean_a")],
+                   dat[, c("corn_grain_a", "cotton_a", "hay_a", "wheat_a", "soybean_a")])
 
 # ndat <- bind_rows(dat[, 3:7])
 # ndat <- bind_rows(ndat, ndat, ndat, ndat, ndat, ndat)

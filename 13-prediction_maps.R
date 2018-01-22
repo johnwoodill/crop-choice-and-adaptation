@@ -46,7 +46,7 @@ cdat <- cdat %>%
 # head(cdat)
 # nrow(cdat)
 
-cdat <- filter(cdat, temp == 0 | temp == 5)
+cdat <- filter(cdat, temp == 0 | temp == 2)
 
 cdat <- cdat %>%
   group_by(region, type, effect) %>%
@@ -261,7 +261,7 @@ soybean_map0 <- county_choropleth(soybeandat0,
                 
 soybean_map0 <- soybean_map0 + scale_fill_brewer(palette = "YlGnBu") + 
   theme_tufte(base_size = 10)+ 
-  xlab("soybean (+5C - 0C) - 10-year") + ylab(NULL) + theme(legend.position = "none",
+  xlab("soybean (+2C - 0C) - 10-year") + ylab(NULL) + theme(legend.position = "none",
                        axis.text.x = element_blank(),
                        axis.text.y = element_blank(),
                        axis.ticks.x = element_blank(),
@@ -280,7 +280,7 @@ soybean_map1 <- county_choropleth(soybeandat1 ,
                 
 soybean_map1 <- soybean_map1 + scale_fill_brewer(palette = "YlGnBu") + 
   theme_tufte(base_size = 10)+ 
-  xlab("soybean (+5C - 0C) - 20-year") + ylab(NULL) + theme(legend.position = "none",
+  xlab("soybean (+2C - 0C) - 20-year") + ylab(NULL) + theme(legend.position = "none",
                        axis.text.x = element_blank(),
                        axis.text.y = element_blank(),
                        axis.ticks.x = element_blank(),
@@ -297,7 +297,7 @@ soybean_map2 <- county_choropleth(soybeandat2 ,
                 
 soybean_map2 <- soybean_map2 + scale_fill_brewer(palette = "YlGnBu") + 
   theme_tufte(base_size = 10)+ 
-  xlab("soybean (+5C - 0C) - 30-year") + ylab(NULL) + theme(legend.position = "none",
+  xlab("soybean (+2C - 0C) - 30-year") + ylab(NULL) + theme(legend.position = "none",
                        axis.text.x = element_blank(),
                        axis.text.y = element_blank(),
                        axis.ticks.x = element_blank(),
@@ -322,7 +322,7 @@ wheat_map0 <- county_choropleth(wheatdat0,
                 
 wheat_map0 <- wheat_map0 + scale_fill_brewer(palette = "YlGnBu") + 
   theme_tufte(base_size = 10)+ 
-  xlab("wheat (+5C - 0C) - 10-year") + ylab(NULL) + theme(legend.position = "none",
+  xlab("wheat (+2C - 0C) - 10-year") + ylab(NULL) + theme(legend.position = "none",
                        axis.text.x = element_blank(),
                        axis.text.y = element_blank(),
                        axis.ticks.x = element_blank(),
@@ -341,7 +341,7 @@ wheat_map1 <- county_choropleth(wheatdat1 ,
                 
 wheat_map1 <- wheat_map1 + scale_fill_brewer(palette = "YlGnBu") + 
   theme_tufte(base_size = 10)+ 
-  xlab("wheat (+5C - 0C) - 20-year") + ylab(NULL) + theme(legend.position = "none",
+  xlab("wheat (+2C - 0C) - 20-year") + ylab(NULL) + theme(legend.position = "none",
                        axis.text.x = element_blank(),
                        axis.text.y = element_blank(),
                        axis.ticks.x = element_blank(),
@@ -358,7 +358,7 @@ wheat_map2 <- county_choropleth(wheatdat2 ,
                 
 wheat_map2 <- wheat_map2 + scale_fill_brewer(palette = "YlGnBu") + 
   theme_tufte(base_size = 10)+ 
-  xlab("wheat (+5C - 0C) - 30-year") + ylab(NULL) + theme(legend.position = "none",
+  xlab("wheat (+2C - 0C) - 30-year") + ylab(NULL) + theme(legend.position = "none",
                        axis.text.x = element_blank(),
                        axis.text.y = element_blank(),
                        axis.ticks.x = element_blank(),

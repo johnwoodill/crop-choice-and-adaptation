@@ -30,8 +30,13 @@ cropdat$thirty <- factor(cropdat$thirty)
 sur_ten <- readRDS("models/sur_model_ten_test.rds")
 sur_twenty <- readRDS("models/sur_model_twenty_test.rds")
 sur_thirty <- readRDS("models/sur_model_thirty_test.rds")
+
+#State-linear trend with weather and climate
+# sur_ten <- readRDS("models/sur_model_ten_lnt.rds")
+# sur_twenty <- readRDS("models/sur_model_twenty_lnt.rds")
+# sur_thirty <- readRDS("models/sur_model_thirty_lnt.rds")
 # 
- # sur_ten <- readRDS("models/sur_model_ten_weather_climate.rds")
+# sur_ten <- readRDS("models/sur_model_ten_weather_climate.rds")
 # sur_twenty <- readRDS("models/sur_model_twenty_weather_climate.rds")
 # sur_thirty <- readRDS("models/sur_model_thirty_weather_climate.rds")
 
@@ -131,7 +136,7 @@ weather_terms_c = c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq")
 cten <- predictSUR.clean(mod = sur_ten, 
                          acres = cropdat$acres,  
                          fips = cropdat$fips,
-                         newdata_list = newdata_list_ten, 
+                         newdata_list = newdata_list_ten,
                          var.terms = ten_climate_terms_v,
                          cons.terms = weather_terms_c,
                          type = "10-year", 
@@ -159,7 +164,7 @@ ctwenty <- predictSUR.clean(mod = sur_twenty,
 cthirty <- predictSUR.clean(sur_thirty, 
                             acres = cropdat$acres,  
                             fips = cropdat$fips,
-                            newdata_list = newdata_list_thirty, 
+                            newdata_list = newdata_list_thirty,
                             var.terms = thirty_climate_terms_v,
                             cons.terms = weather_terms_c,
                             type = "30-year", 
@@ -177,8 +182,6 @@ pdat <- pdat %>%
   mutate(change = (sum - first(sum))/first(sum))
 pdat
 pdat$change <- 100*pdat$change
-
-# pdat <- filter(pdat, type != "60-year" | effect != "Weather-effect" & effect != "Total-effect")
 
 saveRDS(pdat, "data/sur_predictions.rds")
 

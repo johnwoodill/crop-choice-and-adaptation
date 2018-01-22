@@ -16,7 +16,7 @@ hay_mod <- readRDS("models/mod_hay.rds")
 soybean_mod <- readRDS("models/mod_soybean.rds")
 wheat_mod <- readRDS("models/mod_wheat.rds")
 
-terms = c("dday0_10", "dday10_30", "dday30", "prec_sq")
+terms = c("dday0_10", "dday10_30", "dday30","prec", "prec_sq")
 
 # Load changes in degree day data
 p1 <- readRDS("data/degree_day_changes/panel_adapt_regression_data_1C.rds")
