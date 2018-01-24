@@ -14,14 +14,15 @@ library(lfe)
 library(doParallel)
 
 setwd("/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/")
+setwd("/home/johnw/")
 
 # Setup parallel for bootstrapping
 # cl <- makeCluster(20)
 # registerDoParallel(cl)
 
 # # Crop data
-# download.file("https://www.dropbox.com/s/u0e0wah5jnmqtf9/full_ag_data.rds?raw=1",
-#               destfile = "data/full_ag_data.rds", method = "auto")
+download.file("https://www.dropbox.com/s/u0e0wah5jnmqtf9/full_ag_data.rds?raw=1",
+              destfile = "data/full_ag_data.rds", method = "auto")
 
 cropdat <- readRDS("data/full_ag_data.rds")
 cropdat <- as.data.frame(cropdat)
@@ -88,7 +89,7 @@ mod5 <- ln_rev_wheat ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
   trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
   trend2_va + trend2_wi + trend2_wv  - 1
 
-ten_mod <- systemfit(list(corn = mod1, 
+mod <- systemfit(list(corn = mod1, 
                        cotton = mod2, 
                        hay = mod3, 
                        soybean = mod4,
@@ -97,18 +98,18 @@ ten_mod <- systemfit(list(corn = mod1,
 summary(ten_mod)
 sum(ten_mod$coefficients)
 
-ten_mod$effects <- list(corn.effect = cropdat_means$ln_rev_corn,
-                    cotton.effect = cropdat_means$ln_rev_cotton,
-                    hay.effect = cropdat_means$ln_rev_hay,
-                    soybean.effect = cropdat_means$ln_rev_soybean,
-                    wheat.effect = cropdat_means$ln_rev_wheat)
+mod$effects <- list(ln_corn.effect = cropdat_means$ln_rev_corn,
+                    ln_cotton.effect = cropdat_means$ln_rev_cotton,
+                    ln_hay.effect = cropdat_means$ln_rev_hay,
+                    ln_soybean.effect = cropdat_means$ln_rev_soybean,
+                    ln_wheat.effect = cropdat_means$ln_rev_wheat)
 
 # Bootstrap standard errors
 # bs_cropdat_dm <- cropdat_dm
 # 
 # se_dat <- data.frame()
 # 
-# d <- foreach(i = 1:2, .combine = rbind, .packages = c("dplyr", "systemfit")) %dopar% {
+# d <- foreach(i = 1:2000, .combine = rbind, .packages = c("dplyr", "systemfit")) %dopar% {
 #   # Resample within interval
 #   regdat <- bs_cropdat_dm %>% 
 #     sample_frac(1, replace = TRUE)
@@ -126,7 +127,7 @@ ten_mod$effects <- list(corn.effect = cropdat_means$ln_rev_corn,
 # }
 # 
 # mod$bs.se <- as.data.frame(apply(d, 2, sd))
-saveRDS(ten_mod, "models/sur_rev_model.rds")
+saveRDS(mod, "models/sur_rev_model.rds")
 
 
 # stopCluster(cl)

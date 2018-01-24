@@ -5,41 +5,17 @@ library(ggthemes)
 
 setwd("/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/")
 
-source("R/predictSUR.R")
-source("R/predictSUR.clean.R")
+# source("R/predictSUR.R")
+# source("R/predictSUR.clean.R")
 
 # Crop data
 cropdat <- readRDS("data/full_ag_data.rds")
+
 cropdat <- as.data.frame(cropdat)
 cropdat$fips <- factor(cropdat$fips)
-cropdat$state <- factor(cropdat$state)
-cropdat$five <- factor(cropdat$five)
-cropdat$ten <- factor(cropdat$ten)
-cropdat$twenty <- factor(cropdat$twenty)
-cropdat$thirty <- factor(cropdat$thirty)
-
-
-# Sur models
-
-# State-quad trend
-# sur_ten <- readRDS("models/sur_model_ten_sq.rds")
-# sur_twenty <- readRDS("models/sur_model_twenty_sq.rds")
-# sur_thirty <- readRDS("models/sur_model_thirty_sq.rds")
 
 #State-quad trend with weather and climate
-sur_ten <- readRDS("models/sur_model_ten_test.rds")
-sur_twenty <- readRDS("models/sur_model_twenty_test.rds")
-sur_thirty <- readRDS("models/sur_model_thirty_test.rds")
-
-#State-linear trend with weather and climate
-# sur_ten <- readRDS("models/sur_model_ten_lnt.rds")
-# sur_twenty <- readRDS("models/sur_model_twenty_lnt.rds")
-# sur_thirty <- readRDS("models/sur_model_thirty_lnt.rds")
-# 
-# sur_ten <- readRDS("models/sur_model_ten_weather_climate.rds")
-# sur_twenty <- readRDS("models/sur_model_twenty_weather_climate.rds")
-# sur_thirty <- readRDS("models/sur_model_thirty_weather_climate.rds")
-
+sur_rev <- readRDS("models/sur_rev_model.rds")
 
 # Prediction data 0C-5C
 p0 <- cropdat
@@ -62,130 +38,143 @@ newdata_list <- list(p0 = p0,
 
 
 
-p0_ten <- demeanlist(p0, fl = list(fips = factor(cropdat$fips),
-                                         ten = factor(cropdat$ten)))
-p0_ten_means <- demeanlist(p0, fl = list(fips = factor(cropdat$fips),
-                                         ten = factor(cropdat$ten)), means = TRUE)
+p0_dm <- demeanlist(p0, fl = list(fips = factor(cropdat$fips)))
+p0_means <- demeanlist(p0, fl = list(fips = factor(cropdat$fips)), means = TRUE)
 
-p1_ten <- p1 - p0_ten_means
-p2_ten <- p2 - p0_ten_means
-p3_ten <- p3 - p0_ten_means
-p4_ten <- p4 - p0_ten_means
-p5_ten <- p5 - p0_ten_means
+p1_dm <- p1 - p0_means
+p2_dm <- p2 - p0_means
+p3_dm <- p3 - p0_means
+p4_dm <- p4 - p0_means
+p5_dm <- p5 - p0_means
 
-newdata_list_ten <- list(p0 = p0_ten,
-                     p1 = p1_ten,
-                     p2 = p2_ten,
-                     p3 = p3_ten,
-                     p4 = p4_ten,
-                     p5 = p5_ten)
-
-p0_twenty <- demeanlist(p0, fl = list(fips = factor(cropdat$fips),
-                                         twenty = factor(cropdat$twenty)))
-p0_twenty_means <- demeanlist(p0, fl = list(fips = factor(cropdat$fips),
-                                         twenty = factor(cropdat$twenty)), means = TRUE)
-
-p1_twenty <- p1 - p0_twenty_means
-p2_twenty <- p2 - p0_twenty_means
-p3_twenty <- p3 - p0_twenty_means
-p4_twenty <- p4 - p0_twenty_means
-p5_twenty <- p5 - p0_twenty_means
-
-newdata_list_twenty <- list(p0 = p0_twenty,
-                     p1 = p1_twenty,
-                     p2 = p2_twenty,
-                     p3 = p3_twenty,
-                     p4 = p4_twenty,
-                     p5 = p5_twenty)
-
-p0_thirty <- demeanlist(p0, fl = list(fips = factor(cropdat$fips),
-                                         thirty = factor(cropdat$thirty)))
-p0_thirty_means <- demeanlist(p0, fl = list(fips = factor(cropdat$fips),
-                                         thirty = factor(cropdat$thirty)), means = TRUE)
-
-p1_thirty <- p1 - p0_thirty_means
-p2_thirty <- p2 - p0_thirty_means
-p3_thirty <- p3 - p0_thirty_means
-p4_thirty <- p4 - p0_thirty_means
-p5_thirty <- p5 - p0_thirty_means
-
-newdata_list_thirty <- list(p0 = p0_thirty,
-                     p1 = p1_thirty,
-                     p2 = p2_thirty,
-                     p3 = p3_thirty,
-                     p4 = p4_thirty,
-                     p5 = p5_thirty)
-
-ten_climate_terms_v = c("dday0_10_ten", "dday10_30_ten", "dday30_ten", "prec_ten", "prec_sq_ten")
-twenty_climate_terms_v = c("dday0_10_twenty", "dday10_30_twenty", "dday30_twenty", "prec_twenty", "prec_sq_twenty")
-thirty_climate_terms_v = c("dday0_10_thirty", "dday10_30_thirty", "dday30_thirty", "prec_thirty", "prec_sq_thirty")
-
-weather_terms_c = c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq")
-
-# ten_climate_terms_v = c("dday0_10_ten", "dday10_30_ten", "dday30_ten", "prec_ten", "prec_sq_ten")
-# twenty_climate_terms_v = c("dday0_10_twenty", "dday10_30_twenty", "dday30_twenty", "prec_twenty")
-# thirty_climate_terms_v = c("dday0_10_thirty", "dday10_30_thirty", "dday30_thirty", "prec_thirty")
-# weather_terms_c = c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq")
+newdata_list <- list(p0 = p0_dm,
+                     p1 = p1_dm,
+                     p2 = p2_dm,
+                     p3 = p3_dm,
+                     p4 = p4_dm,
+                     p5 = p5_dm)
 
 
-#-------------------------------------
-# Ten-year
+# Predictions
+prev0 <- predict(sur_rev, newdata = p0_dm)
+prev1 <- predict(sur_rev, newdata = p1_dm)
+prev2 <- predict(sur_rev, newdata = p2_dm)
+prev3 <- predict(sur_rev, newdata = p3_dm)
+prev4 <- predict(sur_rev, newdata = p4_dm)
+prev5 <- predict(sur_rev, newdata = p5_dm)
 
-# Climate-effect predictions
+sum(exp(cropdat$ln_rev_corn) -1)
 
-cten <- predictSUR.clean(mod = sur_ten, 
-                         acres = cropdat$acres,  
-                         fips = cropdat$fips,
-                         newdata_list = newdata_list_ten,
-                         var.terms = ten_climate_terms_v,
-                         cons.terms = weather_terms_c,
-                         type = "10-year", 
-                         effect = "Climate-effect")
+# Sum of 
+# Corn rev changes and predictions
+corn_p0 <- sum(exp(prev0$corn.pred + sur_rev$effects$corn.effect + resid(sur_rev)[[1]]) - 1)
+corn_p1 <- sum(exp(prev1$corn.pred + sur_rev$effects$corn.effect + resid(sur_rev)[[1]]) - 1)
+corn_p2 <- sum(exp(prev2$corn.pred + sur_rev$effects$corn.effect + resid(sur_rev)[[1]]) - 1)
+corn_p3 <- sum(exp(prev3$corn.pred + sur_rev$effects$corn.effect + resid(sur_rev)[[1]]) - 1)
+corn_p4 <- sum(exp(prev4$corn.pred + sur_rev$effects$corn.effect + resid(sur_rev)[[1]]) - 1)
+corn_p5 <- sum(exp(prev5$corn.pred + sur_rev$effects$corn.effect + resid(sur_rev)[[1]]) - 1)
 
-#-------------------------------------
-# Twenty-year
+corn_p0_fit <- exp(prev0$corn.pred + sur_rev$effects$corn.effect + resid(sur_rev)[[1]]) - 1
+corn_p1_fit <- exp(prev1$corn.pred + sur_rev$effects$corn.effect + resid(sur_rev)[[1]]) - 1
+corn_p2_fit <- exp(prev2$corn.pred + sur_rev$effects$corn.effect + resid(sur_rev)[[1]]) - 1
+corn_p3_fit <- exp(prev3$corn.pred + sur_rev$effects$corn.effect + resid(sur_rev)[[1]]) - 1
+corn_p4_fit <- exp(prev4$corn.pred + sur_rev$effects$corn.effect + resid(sur_rev)[[1]]) - 1
+corn_p5_fit <- exp(prev5$corn.pred + sur_rev$effects$corn.effect + resid(sur_rev)[[1]]) - 1
 
-# Climate-effect predictions
+# cotton rev changes
+cotton_p0 <- sum(exp(prev0$cotton.pred + sur_rev$effects$cotton.effect + resid(sur_rev)[[2]]) - 1)
+cotton_p1 <- sum(exp(prev1$cotton.pred + sur_rev$effects$cotton.effect + resid(sur_rev)[[2]]) - 1)
+cotton_p2 <- sum(exp(prev2$cotton.pred + sur_rev$effects$cotton.effect + resid(sur_rev)[[2]]) - 1)
+cotton_p3 <- sum(exp(prev3$cotton.pred + sur_rev$effects$cotton.effect + resid(sur_rev)[[2]]) - 1)
+cotton_p4 <- sum(exp(prev4$cotton.pred + sur_rev$effects$cotton.effect + resid(sur_rev)[[2]]) - 1)
+cotton_p5 <- sum(exp(prev5$cotton.pred + sur_rev$effects$cotton.effect + resid(sur_rev)[[2]]) - 1)
 
-ctwenty <- predictSUR.clean(mod = sur_twenty, 
-                            acres = cropdat$acres,  
-                            fips = cropdat$fips,
-                            newdata_list = newdata_list_twenty, 
-                            var.terms = twenty_climate_terms_v,
-                            cons.terms = weather_terms_c,
-                            type = "20-year", 
-                            effect = "Climate-effect")
+cotton_p0_fit <- exp(prev0$cotton.pred + sur_rev$effects$cotton.effect + resid(sur_rev)[[2]]) - 1
+cotton_p1_fit <- exp(prev1$cotton.pred + sur_rev$effects$cotton.effect + resid(sur_rev)[[2]]) - 1
+cotton_p2_fit <- exp(prev2$cotton.pred + sur_rev$effects$cotton.effect + resid(sur_rev)[[2]]) - 1
+cotton_p3_fit <- exp(prev3$cotton.pred + sur_rev$effects$cotton.effect + resid(sur_rev)[[2]]) - 1
+cotton_p4_fit <- exp(prev4$cotton.pred + sur_rev$effects$cotton.effect + resid(sur_rev)[[2]]) - 1
+cotton_p5_fit <- exp(prev5$cotton.pred + sur_rev$effects$cotton.effect + resid(sur_rev)[[2]]) - 1
 
-#-------------------------------------
-# Thirty-year
 
-# Climate-effect predictions
+# hay rev changes
+hay_p0 <- sum(exp(prev0$hay.pred + sur_rev$effects$hay.effect + resid(sur_rev)[[3]]) - 1)
+hay_p1 <- sum(exp(prev1$hay.pred + sur_rev$effects$hay.effect + resid(sur_rev)[[3]]) - 1)
+hay_p2 <- sum(exp(prev2$hay.pred + sur_rev$effects$hay.effect + resid(sur_rev)[[3]]) - 1)
+hay_p3 <- sum(exp(prev3$hay.pred + sur_rev$effects$hay.effect + resid(sur_rev)[[3]]) - 1)
+hay_p4 <- sum(exp(prev4$hay.pred + sur_rev$effects$hay.effect + resid(sur_rev)[[3]]) - 1)
+hay_p5 <- sum(exp(prev5$hay.pred + sur_rev$effects$hay.effect + resid(sur_rev)[[3]]) - 1)
 
-cthirty <- predictSUR.clean(sur_thirty, 
-                            acres = cropdat$acres,  
-                            fips = cropdat$fips,
-                            newdata_list = newdata_list_thirty,
-                            var.terms = thirty_climate_terms_v,
-                            cons.terms = weather_terms_c,
-                            type = "30-year", 
-                            effect = "Climate-effect")
+hay_p0_fit <- exp(prev0$hay.pred + sur_rev$effects$hay.effect + resid(sur_rev)[[3]]) - 1
+hay_p1_fit <- exp(prev1$hay.pred + sur_rev$effects$hay.effect + resid(sur_rev)[[3]]) - 1
+hay_p2_fit <- exp(prev2$hay.pred + sur_rev$effects$hay.effect + resid(sur_rev)[[3]]) - 1
+hay_p3_fit <- exp(prev3$hay.pred + sur_rev$effects$hay.effect + resid(sur_rev)[[3]]) - 1
+hay_p4_fit <- exp(prev4$hay.pred + sur_rev$effects$hay.effect + resid(sur_rev)[[3]]) - 1
+hay_p5_fit <- exp(prev5$hay.pred + sur_rev$effects$hay.effect + resid(sur_rev)[[3]]) - 1
 
-# Save predictions data
-saveRDS(cten, "data/cten.rds")
-saveRDS(ctwenty, "data/ctwenty.rds")
-saveRDS(cthirty, "data/cthirty.rds")
+# soybean rev changes
+soybean_p0 <- sum(exp(prev0$soybean.pred + sur_rev$effects$soybean.effect + resid(sur_rev)[[4]]) - 1)
+soybean_p1 <- sum(exp(prev1$soybean.pred + sur_rev$effects$soybean.effect + resid(sur_rev)[[4]]) - 1)
+soybean_p2 <- sum(exp(prev2$soybean.pred + sur_rev$effects$soybean.effect + resid(sur_rev)[[4]]) - 1)
+soybean_p3 <- sum(exp(prev3$soybean.pred + sur_rev$effects$soybean.effect + resid(sur_rev)[[4]]) - 1)
+soybean_p4 <- sum(exp(prev4$soybean.pred + sur_rev$effects$soybean.effect + resid(sur_rev)[[4]]) - 1)
+soybean_p5 <- sum(exp(prev5$soybean.pred + sur_rev$effects$soybean.effect + resid(sur_rev)[[4]]) - 1)
 
-pdat <- rbind(cten$agg_predictions, ctwenty$agg_predictions, cthirty$agg_predictions)
+soybean_p0_fit <- exp(prev0$soybean.pred + sur_rev$effects$soybean.effect + resid(sur_rev)[[4]]) - 1
+soybean_p1_fit <- exp(prev1$soybean.pred + sur_rev$effects$soybean.effect + resid(sur_rev)[[4]]) - 1
+soybean_p2_fit <- exp(prev2$soybean.pred + sur_rev$effects$soybean.effect + resid(sur_rev)[[4]]) - 1
+soybean_p3_fit <- exp(prev3$soybean.pred + sur_rev$effects$soybean.effect + resid(sur_rev)[[4]]) - 1
+soybean_p4_fit <- exp(prev4$soybean.pred + sur_rev$effects$soybean.effect + resid(sur_rev)[[4]]) - 1
+soybean_p5_fit <- exp(prev5$soybean.pred + sur_rev$effects$soybean.effect + resid(sur_rev)[[4]]) - 1
 
-pdat <- pdat %>% 
-  group_by(crop, type, effect) %>% 
+
+# wheat rev changes
+wheat_p0 <- sum(exp(prev0$wheat.pred + sur_rev$effects$wheat.effect + resid(sur_rev)[[5]]) - 1)
+wheat_p1 <- sum(exp(prev1$wheat.pred + sur_rev$effects$wheat.effect + resid(sur_rev)[[5]]) - 1)
+wheat_p2 <- sum(exp(prev2$wheat.pred + sur_rev$effects$wheat.effect + resid(sur_rev)[[5]]) - 1)
+wheat_p3 <- sum(exp(prev3$wheat.pred + sur_rev$effects$wheat.effect + resid(sur_rev)[[5]]) - 1)
+wheat_p4 <- sum(exp(prev4$wheat.pred + sur_rev$effects$wheat.effect + resid(sur_rev)[[5]]) - 1)
+wheat_p5 <- sum(exp(prev5$wheat.pred + sur_rev$effects$wheat.effect + resid(sur_rev)[[5]]) - 1)
+
+wheat_p0_fit <- exp(prev0$wheat.pred + sur_rev$effects$wheat.effect + resid(sur_rev)[[5]]) - 1
+wheat_p1_fit <- exp(prev1$wheat.pred + sur_rev$effects$wheat.effect + resid(sur_rev)[[5]]) - 1
+wheat_p2_fit <- exp(prev2$wheat.pred + sur_rev$effects$wheat.effect + resid(sur_rev)[[5]]) - 1
+wheat_p3_fit <- exp(prev3$wheat.pred + sur_rev$effects$wheat.effect + resid(sur_rev)[[5]]) - 1
+wheat_p4_fit <- exp(prev4$wheat.pred + sur_rev$effects$wheat.effect + resid(sur_rev)[[5]]) - 1
+wheat_p5_fit <- exp(prev5$wheat.pred + sur_rev$effects$wheat.effect + resid(sur_rev)[[5]]) - 1
+
+pred_sur_rev <- data.frame(temp = rep(c(0, 1, 2, 3, 4, 5), 5),
+                           crop = rep(c("Corn", "Cotton", "Hay", "Soybean", "Wheat"), each = 6),
+                           pred = c(corn_p0_fit, corn_p0_fit, corn_p0_fit, corn_p0_fit, corn_p0_fit, corn_p0_fit, corn_p0_fit,
+                                    cotton_p0_fit, cotton_p0_fit, cotton_p0_fit, cotton_p0_fit, cotton_p0_fit, cotton_p0_fit, cotton_p0_fit,
+                                    hay_p0_fit, hay_p0_fit, hay_p0_fit, hay_p0_fit, hay_p0_fit, hay_p0_fit, hay_p0_fit,
+                                    soybean_p0_fit, soybean_p0_fit, soybean_p0_fit, soybean_p0_fit, soybean_p0_fit, soybean_p0_fit, soybean_p0_fit,
+                                    wheat_p0_fit, wheat_p0_fit, wheat_p0_fit, wheat_p0_fit, wheat_p0_fit, wheat_p0_fit, wheat_p0_fit))
+                           
+
+
+pdat_sur_rev <- data.frame(temp = rep(c(0, 1, 2, 3, 4, 5), 5),
+                           crop = rep(c("Corn", "Cotton", "Hay", "Soybean", "Wheat"), each = 6),
+                           sum = c(corn_p0, corn_p1, corn_p2, corn_p3, corn_p4, corn_p5,
+                                   cotton_p0, cotton_p1, cotton_p2, cotton_p3, cotton_p4, cotton_p5,
+                                   hay_p0, hay_p1, hay_p2, hay_p3, hay_p4, hay_p5,
+                                   soybean_p0, soybean_p1, soybean_p2, soybean_p3, soybean_p4, soybean_p5,
+                                   wheat_p0, wheat_p1, wheat_p2, wheat_p3, wheat_p4, wheat_p5))
+
+
+
+pdat_sur_rev
+
+
+pdat_sur_rev <- pdat_sur_rev %>% 
+  group_by(crop) %>% 
   mutate(change = (sum - first(sum))/first(sum))
-pdat
-pdat$change <- 100*pdat$change
+pdat_sur_rev
+pdat_sur_rev$change <- 100*pdat_sur_rev$change
 
-saveRDS(pdat, "data/sur_predictions.rds")
+saveRDS(pdat_sur_rev, "data/sur_rev_agg_predictions.rds")
 
-ggplot(pdat, aes(temp, change)) + 
+ggplot(pdat_sur_rev, aes(temp, change)) + 
   geom_line() + 
   geom_point(size = .5) + 
   # geom_errorbar(aes(ymax = change_max, ymin = change_min, color = effect), width = .1) +
@@ -204,7 +193,7 @@ ggplot(pdat, aes(temp, change)) +
   #     legend.justification = c("left", "top"), 
   #     legend.box.background = element_rect(colour = "grey"), 
   #     legend.title = element_blank(), legend.key = element_blank()) +
-  facet_wrap(type~crop, ncol = 5, scales = "free") +
+  facet_wrap(~crop, ncol = 3) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey")
 
 ggsave("figures/sur_crop_share_predictions.pdf", width = 6, height = 5)

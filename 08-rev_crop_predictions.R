@@ -203,7 +203,7 @@ pdat <- readRDS("data/rev_crop_predictions.rds")
 ggplot(pdat, aes(temp, change)) + 
   geom_ribbon(aes(ymax = change_max, ymin = change_min, x = temp), fill = "#C0CCD9", alpha = 0.5 ) +
   geom_line() +
-  # geom_point(size = 0.5) +
+  geom_point(size = 0.5) +
   #geom_errorbar(aes(ymax = change_max, ymin = change_min, color = effect), width = .1) +
   theme_tufte(base_size = 10) +
   ylab("% Change in Revenue per acre") +
