@@ -20,25 +20,9 @@ cropdat$thirty <- factor(cropdat$thirty)
 
 
 # Sur models
-
-# State-quad trend
-# sur_ten <- readRDS("models/sur_model_ten_sq.rds")
-# sur_twenty <- readRDS("models/sur_model_twenty_sq.rds")
-# sur_thirty <- readRDS("models/sur_model_thirty_sq.rds")
-
-#State-quad trend with weather and climate
-sur_ten <- readRDS("models/sur_model_ten_test.rds")
-sur_twenty <- readRDS("models/sur_model_twenty_test.rds")
-sur_thirty <- readRDS("models/sur_model_thirty_test.rds")
-
-#State-linear trend with weather and climate
-# sur_ten <- readRDS("models/sur_model_ten_lnt.rds")
-# sur_twenty <- readRDS("models/sur_model_twenty_lnt.rds")
-# sur_thirty <- readRDS("models/sur_model_thirty_lnt.rds")
-# 
-# sur_ten <- readRDS("models/sur_model_ten_weather_climate.rds")
-# sur_twenty <- readRDS("models/sur_model_twenty_weather_climate.rds")
-# sur_thirty <- readRDS("models/sur_model_thirty_weather_climate.rds")
+sur_ten <- readRDS("models/sur_share_model_ten.rds")
+sur_twenty <- readRDS("models/sur_share_model_twenty.rds")
+sur_thirty <- readRDS("models/sur_share_model_thirty.rds")
 
 
 # Prediction data 0C-5C
@@ -120,14 +104,6 @@ ten_climate_terms_v = c("dday0_10_ten", "dday10_30_ten", "dday30_ten", "prec_ten
 twenty_climate_terms_v = c("dday0_10_twenty", "dday10_30_twenty", "dday30_twenty", "prec_twenty", "prec_sq_twenty")
 thirty_climate_terms_v = c("dday0_10_thirty", "dday10_30_thirty", "dday30_thirty", "prec_thirty", "prec_sq_thirty")
 
-weather_terms_c = c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq")
-
-# ten_climate_terms_v = c("dday0_10_ten", "dday10_30_ten", "dday30_ten", "prec_ten", "prec_sq_ten")
-# twenty_climate_terms_v = c("dday0_10_twenty", "dday10_30_twenty", "dday30_twenty", "prec_twenty")
-# thirty_climate_terms_v = c("dday0_10_thirty", "dday10_30_thirty", "dday30_thirty", "prec_thirty")
-# weather_terms_c = c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq")
-
-
 #-------------------------------------
 # Ten-year
 
@@ -138,7 +114,6 @@ cten <- predictSUR.clean(mod = sur_ten,
                          fips = cropdat$fips,
                          newdata_list = newdata_list_ten,
                          var.terms = ten_climate_terms_v,
-                         cons.terms = weather_terms_c,
                          type = "10-year", 
                          effect = "Climate-effect")
 
@@ -152,7 +127,6 @@ ctwenty <- predictSUR.clean(mod = sur_twenty,
                             fips = cropdat$fips,
                             newdata_list = newdata_list_twenty, 
                             var.terms = twenty_climate_terms_v,
-                            cons.terms = weather_terms_c,
                             type = "20-year", 
                             effect = "Climate-effect")
 
@@ -166,7 +140,6 @@ cthirty <- predictSUR.clean(sur_thirty,
                             fips = cropdat$fips,
                             newdata_list = newdata_list_thirty,
                             var.terms = thirty_climate_terms_v,
-                            cons.terms = weather_terms_c,
                             type = "30-year", 
                             effect = "Climate-effect")
 
@@ -204,44 +177,44 @@ ggplot(pdat, aes(temp, change)) +
   #     legend.justification = c("left", "top"), 
   #     legend.box.background = element_rect(colour = "grey"), 
   #     legend.title = element_blank(), legend.key = element_blank()) +
-  facet_wrap(type~crop, ncol = 5, scales = "free") +
+  facet_wrap(type~crop, ncol = 5) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey")
 
 ggsave("figures/sur_crop_share_predictions.pdf", width = 6, height = 5)
 
 # Average acres
-# ppdat <- pdat %>% 
-#   filter(effect == "Climate-effect") %>% 
-#   group_by(temp, type, effect) %>% 
+# ppdat <- pdat %>%
+#   filter(effect == "Climate-effect") %>%
+#   group_by(temp, type, effect) %>%
 #   summarise(total = sum(sum)) %>%
-#   group_by(type, effect) %>% 
+#   group_by(type, effect) %>%
 #   mutate(change = (total - first(total))/first(total))
 # ppdat$change <- ppdat$change*100
 # ppdat
-
-# ggplot(ppdat, aes(temp, change, color = type)) + 
-#   geom_line() + 
-#   geom_point(size = 0.5) + 
-#   facet_wrap(~effect, ncol = 3) +
-#   theme_tufte(base_size = 12) +
-#   ylab("Change in Proportion of Total Crop Acres") +
-#   xlab("Change in Temperature (C)") +
-#   annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
-#   annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
-#   scale_x_continuous(breaks = 0:5, labels = c("+0C", "+1C", "+2C", "+3C", "+4C", "+5C")) +
-#   theme(legend.position = "top", 
-#        #legend.justification = c("left", "top"), 
-#        legend.box.background = element_rect(colour = "grey"), 
-#        legend.title = element_blank(), legend.key = element_blank()) +
-#   #theme(legend.position = c(.85,1), 
-#   #     legend.justification = c("left", "top"), 
-#   #     legend.box.background = element_rect(colour = "grey"), 
-#   #     legend.title = element_blank(), legend.key = element_blank()) +
-#   geom_hline(yintercept = 0, linetype = "dashed", color = "grey")
-
-
-
-
-
-
-
+# 
+#  ggplot(ppdat, aes(temp, change, color = type)) +
+#    geom_line() +
+#    geom_point(size = 0.5) +
+#    facet_wrap(~effect, ncol = 3) +
+#    theme_tufte(base_size = 12) +
+#    ylab("Change in Proportion of Total Crop Acres") +
+#    xlab("Change in Temperature (C)") +
+#    annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
+#    annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
+#    scale_x_continuous(breaks = 0:5, labels = c("+0C", "+1C", "+2C", "+3C", "+4C", "+5C")) +
+#    theme(legend.position = "top",
+#         #legend.justification = c("left", "top"),
+#         legend.box.background = element_rect(colour = "grey"),
+#         legend.title = element_blank(), legend.key = element_blank()) +
+#    #theme(legend.position = c(.85,1),
+#    #     legend.justification = c("left", "top"),
+#    #     legend.box.background = element_rect(colour = "grey"),
+#    #     legend.title = element_blank(), legend.key = element_blank()) +
+#    geom_hline(yintercept = 0, linetype = "dashed", color = "grey")
+# 
+# 
+# 
+# 
+# 
+# 
+# 

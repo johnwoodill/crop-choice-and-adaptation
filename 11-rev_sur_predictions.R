@@ -16,8 +16,6 @@ library(tidyr)
 
 setwd("/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/")
 
-
-
 # download.file("https://www.dropbox.com/s/u0e0wah5jnmqtf9/full_ag_data.rds?raw=1",
 #               destfile = "data/full_ag_data.rds", method = "auto")
 
@@ -33,14 +31,119 @@ setwd("/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/")
 # download.file("https://www.dropbox.com/s/5m12yu2dxhudynb/rev_crop_pred.rds?raw=1",
 #               destfile = "data/rev_crop_pred.rds", method = "auto")
 
+# Aggregate revenue per acre (Total-effect)
 rev_crop_pred <- readRDS("data/rev_crop_pred.rds")
 
-cropdat <- readRDS("data/full_ag_data.rds")
+# SUR Crop (Individual Crop revenue effect)
+sur_rev <- readRDS("data/sur_rev_predictions.rds")
 
-# Load Climate Sur Models
+# Sur Share (Individual Climate Share effect)
 cten <- readRDS("data/cten.rds")
 ctwenty <- readRDS("data/ctwenty.rds")
 cthirty <- readRDS("data/cthirty.rds")
+
+# Crop data
+cropdat <- readRDS("data/full_ag_data.rds")
+
+# Get average crop since 1980
+mdat <- cropdat %>% 
+  select(year, fips, corn_grain_a, cotton_a, hay_a, wheat_a, soybean_a) %>% 
+  filter(year >= 1980) %>% 
+  group_by(fips) %>% 
+  summarise(corn_grain_a = mean(corn_grain_a, na.rm = TRUE),
+         cotton_a = mean(cotton_a, na.rm = TRUE),
+         hay_a = mean(hay_a, na.rm = TRUE),
+         wheat_a = mean(wheat_a, na.rm = TRUE),
+         soybean_a = mean(soybean_a, na.rm = TRUE))
+
+dat <- cropdat
+dat$corn_grain_a <- NULL
+dat$cotton_a <- NULL
+dat$hay_a <- NULL
+dat$soybean_a <- NULL
+dat$wheat_a <- NULL
+
+dat <- left_join(dat, mdat, by = "fips")
+constant_acres <- (dat$corn_grain_a + dat$cotton_a + dat$hay_a + dat$soybean_a + dat$wheat_a)
+sum(constant_acres)
+sum(cropdat$acres)
+
+#-----------------------------------------------------------------------------------
+# Total-effect
+
+cten$predictions$corn.pred*cropdat$acres + 
+                                    cten$predictions$cotton.pred*cropdat$acres + 
+                                    cten$predictions$hay.pred*cropdat$acres + 
+                                    cten$predictions$soybean.pred*cropdat$acres + 
+                                    cten$predictions$wheat.pred
+
+# w/ adaptation
+total_effect_w_adaptation_ten <- ((cten$predictions$corn.pred*cropdat$acres + 
+                                    cten$predictions$cotton.pred*cropdat$acres + 
+                                    cten$predictions$hay.pred*cropdat$acres + 
+                                    cten$predictions$soybean.pred*cropdat$acres + 
+                                    cten$predictions$wheat.pred*cropdat$acres)*rev_crop_pred$modten_rev.pred) 
+  
+total_effect_w_adaptation_twenty <- ((ctwenty$predictions$corn.pred*cropdat$acres + 
+                                    ctwenty$predictions$cotton.pred*cropdat$acres + 
+                                    ctwenty$predictions$hay.pred*cropdat$acres + 
+                                    ctwenty$predictions$soybean.pred*cropdat$acres + 
+                                    ctwenty$predictions$wheat.pred*cropdat$acres)*rev_crop_pred$modtwenty_rev.pred) 
+
+total_effect_w_adaptation_thirty <- ((cthirty$predictions$corn.pred*cropdat$acres + 
+                                    cthirty$predictions$cotton.pred*cropdat$acres + 
+                                    cthirty$predictions$hay.pred*cropdat$acres + 
+                                    cthirty$predictions$soybean.pred*cropdat$acres + 
+                                    cthirty$predictions$wheat.pred*cropdat$acres)*rev_crop_pred$modthirty_rev.pred) 
+
+# w/o adaptation
+total_effect_wo_adaptation_ten <- ((cten$predictions$corn.pred*constant_acres + 
+                                    cten$predictions$cotton.pred*constant_acres + 
+                                    cten$predictions$hay.pred*constant_acres + 
+                                    cten$predictions$soybean.pred*constant_acres + 
+                                    cten$predictions$wheat.pred*constant_acres)*rev_crop_pred$modten_rev.pred) 
+  
+total_effect_wo_adaptation_twenty <- ((ctwenty$predictions$corn.pred*constant_acres + 
+                                    ctwenty$predictions$cotton.pred*constant_acres + 
+                                    ctwenty$predictions$hay.pred*constant_acres + 
+                                    ctwenty$predictions$soybean.pred*constant_acres + 
+                                    ctwenty$predictions$wheat.pred*constant_acres)*rev_crop_pred$modtwenty_rev.pred) 
+
+total_effect_wo_adaptation_thirty <- ((cthirty$predictions$corn.pred*constant_acres + 
+                                    cthirty$predictions$cotton.pred*constant_acres + 
+                                    cthirty$predictions$hay.pred*constant_acres + 
+                                    cthirty$predictions$soybean.pred*constant_acres + 
+                                    cthirty$predictions$wheat.pred*constant_acres)*rev_crop_pred$modthirty_rev.pred) 
+
+
+tdat <- data.frame(temp = rev_crop_pred$temp,
+                   effect = rev_crop_pred$effect,
+                   total_effect_w_adaptation_ten = total_effect_w_adaptation_ten,
+                   total_effect_w_adaptation_twenty = total_effect_w_adaptation_twenty,
+                   total_effect_w_adaptation_thirty = total_effect_w_adaptation_thirty,
+                   total_effect_wo_adaptation_ten = total_effect_wo_adaptation_ten,
+                   total_effect_wo_adaptation_twenty = total_effect_wo_adaptation_twenty,
+                   total_effect_wo_adaptation_thirty = total_effect_wo_adaptation_thirty)
+
+pc <- function(x){ 100*(x - first(x))/first(x)}
+
+test <- tdat %>% 
+  group_by(temp, effect) %>% 
+  summarise_all(sum) %>% 
+  ungroup() %>% 
+  select(-temp) %>% 
+  group_by(effect) %>% 
+  mutate_all(pc)
+
+test
+test$temp <- c(0, 1, 2, 3, 4, 5)
+test <- gather(test, key = crop, value = value, -temp, -effect)
+test$interval <- rep(c("10-year", "20-year", "30-year"), each = 6)
+
+head(test)
+
+ggplot(test, aes(temp, value, color = crop)) + geom_line() + facet_wrap(~interval, scales = "free")
+
 
 # Assign intervals
 cten$predictions$type <- "10-year"
@@ -92,11 +195,11 @@ cdat$soybean_rev <- rep(rev_crop_pred$soybean_rev.pred, 3)
 cdat$wheat_rev <- rep(rev_crop_pred$wheat_rev.pred, 3)
 
 # Remove negative values from predictions
-cdat$corn_rev <- ifelse(cdat$corn_rev < 0, 0, cdat$corn_rev)
-cdat$cotton_rev <- ifelse(cdat$cotton_rev < 0, 0, cdat$cotton_rev)
-cdat$hay_rev <- ifelse(cdat$hay_rev < 0, 0, cdat$hay_rev)
-cdat$soybean_rev <- ifelse(cdat$soybean_rev < 0, 0, cdat$soybean_rev)
-cdat$wheat_rev <- ifelse(cdat$wheat_rev < 0, 0, cdat$wheat_rev)
+# cdat$corn_rev <- ifelse(cdat$corn_rev < 0, 0, cdat$corn_rev)
+# cdat$cotton_rev <- ifelse(cdat$cotton_rev < 0, 0, cdat$cotton_rev)
+# cdat$hay_rev <- ifelse(cdat$hay_rev < 0, 0, cdat$hay_rev)
+# cdat$soybean_rev <- ifelse(cdat$soybean_rev < 0, 0, cdat$soybean_rev)
+# cdat$wheat_rev <- ifelse(cdat$wheat_rev < 0, 0, cdat$wheat_rev)
 
 # Get crop acres by county
 cdat$corn.pred <- cdat$corn.pred*cropdat$acres

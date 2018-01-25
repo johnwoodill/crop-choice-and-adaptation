@@ -54,94 +54,93 @@ newdata_list <- list(p0 = p0_dm,
                      p4 = p4_dm,
                      p5 = p5_dm)
 
+terms = c("dday0_10", "dday10_30", "dday30","prec", "prec_sq")
 
 # Predictions
-prev0 <- predict(sur_rev, newdata = p0_dm)
-prev1 <- predict(sur_rev, newdata = p1_dm)
-prev2 <- predict(sur_rev, newdata = p2_dm)
-prev3 <- predict(sur_rev, newdata = p3_dm)
-prev4 <- predict(sur_rev, newdata = p4_dm)
-prev5 <- predict(sur_rev, newdata = p5_dm)
-
-sum(exp(cropdat$ln_rev_corn) -1)
+prev0 <- predictSUR(sur_rev, newdata = p0_dm, var.terms = terms)
+prev1 <- predictSUR(sur_rev, newdata = p1_dm, var.terms = terms)
+prev2 <- predictSUR(sur_rev, newdata = p2_dm, var.terms = terms)
+prev3 <- predictSUR(sur_rev, newdata = p3_dm, var.terms = terms)
+prev4 <- predictSUR(sur_rev, newdata = p4_dm, var.terms = terms)
+prev5 <- predictSUR(sur_rev, newdata = p5_dm, var.terms = terms)
 
 # Sum of 
 # Corn rev changes and predictions
-corn_p0 <- sum(exp(prev0$corn.pred + sur_rev$effects$corn.effect + resid(sur_rev)[[1]]) - 1)
-corn_p1 <- sum(exp(prev1$corn.pred + sur_rev$effects$corn.effect + resid(sur_rev)[[1]]) - 1)
-corn_p2 <- sum(exp(prev2$corn.pred + sur_rev$effects$corn.effect + resid(sur_rev)[[1]]) - 1)
-corn_p3 <- sum(exp(prev3$corn.pred + sur_rev$effects$corn.effect + resid(sur_rev)[[1]]) - 1)
-corn_p4 <- sum(exp(prev4$corn.pred + sur_rev$effects$corn.effect + resid(sur_rev)[[1]]) - 1)
-corn_p5 <- sum(exp(prev5$corn.pred + sur_rev$effects$corn.effect + resid(sur_rev)[[1]]) - 1)
+corn_p0 <- sum(exp(prev0$corn_pred + sur_rev$effects$ln_corn.effect + resid(sur_rev)[[1]]) - 1)
+corn_p1 <- sum(exp(prev1$corn_pred + sur_rev$effects$ln_corn.effect + resid(sur_rev)[[1]]) - 1)
+corn_p2 <- sum(exp(prev2$corn_pred + sur_rev$effects$ln_corn.effect + resid(sur_rev)[[1]]) - 1)
+corn_p3 <- sum(exp(prev3$corn_pred + sur_rev$effects$ln_corn.effect + resid(sur_rev)[[1]]) - 1)
+corn_p4 <- sum(exp(prev4$corn_pred + sur_rev$effects$ln_corn.effect + resid(sur_rev)[[1]]) - 1)
+corn_p5 <- sum(exp(prev5$corn_pred + sur_rev$effects$ln_corn.effect + resid(sur_rev)[[1]]) - 1)
 
-corn_p0_fit <- exp(prev0$corn.pred + sur_rev$effects$corn.effect + resid(sur_rev)[[1]]) - 1
-corn_p1_fit <- exp(prev1$corn.pred + sur_rev$effects$corn.effect + resid(sur_rev)[[1]]) - 1
-corn_p2_fit <- exp(prev2$corn.pred + sur_rev$effects$corn.effect + resid(sur_rev)[[1]]) - 1
-corn_p3_fit <- exp(prev3$corn.pred + sur_rev$effects$corn.effect + resid(sur_rev)[[1]]) - 1
-corn_p4_fit <- exp(prev4$corn.pred + sur_rev$effects$corn.effect + resid(sur_rev)[[1]]) - 1
-corn_p5_fit <- exp(prev5$corn.pred + sur_rev$effects$corn.effect + resid(sur_rev)[[1]]) - 1
+corn_p0_fit <- exp(prev0$corn_pred + sur_rev$effects$ln_corn.effect + resid(sur_rev)[[1]]) - 1
+corn_p1_fit <- exp(prev1$corn_pred + sur_rev$effects$ln_corn.effect + resid(sur_rev)[[1]]) - 1
+corn_p2_fit <- exp(prev2$corn_pred + sur_rev$effects$ln_corn.effect + resid(sur_rev)[[1]]) - 1
+corn_p3_fit <- exp(prev3$corn_pred + sur_rev$effects$ln_corn.effect + resid(sur_rev)[[1]]) - 1
+corn_p4_fit <- exp(prev4$corn_pred + sur_rev$effects$ln_corn.effect + resid(sur_rev)[[1]]) - 1
+corn_p5_fit <- exp(prev5$corn_pred + sur_rev$effects$ln_corn.effect + resid(sur_rev)[[1]]) - 1
 
 # cotton rev changes
-cotton_p0 <- sum(exp(prev0$cotton.pred + sur_rev$effects$cotton.effect + resid(sur_rev)[[2]]) - 1)
-cotton_p1 <- sum(exp(prev1$cotton.pred + sur_rev$effects$cotton.effect + resid(sur_rev)[[2]]) - 1)
-cotton_p2 <- sum(exp(prev2$cotton.pred + sur_rev$effects$cotton.effect + resid(sur_rev)[[2]]) - 1)
-cotton_p3 <- sum(exp(prev3$cotton.pred + sur_rev$effects$cotton.effect + resid(sur_rev)[[2]]) - 1)
-cotton_p4 <- sum(exp(prev4$cotton.pred + sur_rev$effects$cotton.effect + resid(sur_rev)[[2]]) - 1)
-cotton_p5 <- sum(exp(prev5$cotton.pred + sur_rev$effects$cotton.effect + resid(sur_rev)[[2]]) - 1)
+cotton_p0 <- sum(exp(prev0$cotton_pred + sur_rev$effects$ln_cotton.effect + resid(sur_rev)[[2]]) - 1)
+cotton_p1 <- sum(exp(prev1$cotton_pred + sur_rev$effects$ln_cotton.effect + resid(sur_rev)[[2]]) - 1)
+cotton_p2 <- sum(exp(prev2$cotton_pred + sur_rev$effects$ln_cotton.effect + resid(sur_rev)[[2]]) - 1)
+cotton_p3 <- sum(exp(prev3$cotton_pred + sur_rev$effects$ln_cotton.effect + resid(sur_rev)[[2]]) - 1)
+cotton_p4 <- sum(exp(prev4$cotton_pred + sur_rev$effects$ln_cotton.effect + resid(sur_rev)[[2]]) - 1)
+cotton_p5 <- sum(exp(prev5$cotton_pred + sur_rev$effects$ln_cotton.effect + resid(sur_rev)[[2]]) - 1)
 
-cotton_p0_fit <- exp(prev0$cotton.pred + sur_rev$effects$cotton.effect + resid(sur_rev)[[2]]) - 1
-cotton_p1_fit <- exp(prev1$cotton.pred + sur_rev$effects$cotton.effect + resid(sur_rev)[[2]]) - 1
-cotton_p2_fit <- exp(prev2$cotton.pred + sur_rev$effects$cotton.effect + resid(sur_rev)[[2]]) - 1
-cotton_p3_fit <- exp(prev3$cotton.pred + sur_rev$effects$cotton.effect + resid(sur_rev)[[2]]) - 1
-cotton_p4_fit <- exp(prev4$cotton.pred + sur_rev$effects$cotton.effect + resid(sur_rev)[[2]]) - 1
-cotton_p5_fit <- exp(prev5$cotton.pred + sur_rev$effects$cotton.effect + resid(sur_rev)[[2]]) - 1
+cotton_p0_fit <- exp(prev0$cotton_pred + sur_rev$effects$ln_cotton.effect + resid(sur_rev)[[2]]) - 1
+cotton_p1_fit <- exp(prev1$cotton_pred + sur_rev$effects$ln_cotton.effect + resid(sur_rev)[[2]]) - 1
+cotton_p2_fit <- exp(prev2$cotton_pred + sur_rev$effects$ln_cotton.effect + resid(sur_rev)[[2]]) - 1
+cotton_p3_fit <- exp(prev3$cotton_pred + sur_rev$effects$ln_cotton.effect + resid(sur_rev)[[2]]) - 1
+cotton_p4_fit <- exp(prev4$cotton_pred + sur_rev$effects$ln_cotton.effect + resid(sur_rev)[[2]]) - 1
+cotton_p5_fit <- exp(prev5$cotton_pred + sur_rev$effects$ln_cotton.effect + resid(sur_rev)[[2]]) - 1
 
 
 # hay rev changes
-hay_p0 <- sum(exp(prev0$hay.pred + sur_rev$effects$hay.effect + resid(sur_rev)[[3]]) - 1)
-hay_p1 <- sum(exp(prev1$hay.pred + sur_rev$effects$hay.effect + resid(sur_rev)[[3]]) - 1)
-hay_p2 <- sum(exp(prev2$hay.pred + sur_rev$effects$hay.effect + resid(sur_rev)[[3]]) - 1)
-hay_p3 <- sum(exp(prev3$hay.pred + sur_rev$effects$hay.effect + resid(sur_rev)[[3]]) - 1)
-hay_p4 <- sum(exp(prev4$hay.pred + sur_rev$effects$hay.effect + resid(sur_rev)[[3]]) - 1)
-hay_p5 <- sum(exp(prev5$hay.pred + sur_rev$effects$hay.effect + resid(sur_rev)[[3]]) - 1)
+hay_p0 <- sum(exp(prev0$hay_pred + sur_rev$effects$ln_hay.effect + resid(sur_rev)[[3]]) - 1)
+hay_p1 <- sum(exp(prev1$hay_pred + sur_rev$effects$ln_hay.effect + resid(sur_rev)[[3]]) - 1)
+hay_p2 <- sum(exp(prev2$hay_pred + sur_rev$effects$ln_hay.effect + resid(sur_rev)[[3]]) - 1)
+hay_p3 <- sum(exp(prev3$hay_pred + sur_rev$effects$ln_hay.effect + resid(sur_rev)[[3]]) - 1)
+hay_p4 <- sum(exp(prev4$hay_pred + sur_rev$effects$ln_hay.effect + resid(sur_rev)[[3]]) - 1)
+hay_p5 <- sum(exp(prev5$hay_pred + sur_rev$effects$ln_hay.effect + resid(sur_rev)[[3]]) - 1)
 
-hay_p0_fit <- exp(prev0$hay.pred + sur_rev$effects$hay.effect + resid(sur_rev)[[3]]) - 1
-hay_p1_fit <- exp(prev1$hay.pred + sur_rev$effects$hay.effect + resid(sur_rev)[[3]]) - 1
-hay_p2_fit <- exp(prev2$hay.pred + sur_rev$effects$hay.effect + resid(sur_rev)[[3]]) - 1
-hay_p3_fit <- exp(prev3$hay.pred + sur_rev$effects$hay.effect + resid(sur_rev)[[3]]) - 1
-hay_p4_fit <- exp(prev4$hay.pred + sur_rev$effects$hay.effect + resid(sur_rev)[[3]]) - 1
-hay_p5_fit <- exp(prev5$hay.pred + sur_rev$effects$hay.effect + resid(sur_rev)[[3]]) - 1
+hay_p0_fit <- exp(prev0$hay_pred + sur_rev$effects$ln_hay.effect + resid(sur_rev)[[3]]) - 1
+hay_p1_fit <- exp(prev1$hay_pred + sur_rev$effects$ln_hay.effect + resid(sur_rev)[[3]]) - 1
+hay_p2_fit <- exp(prev2$hay_pred + sur_rev$effects$ln_hay.effect + resid(sur_rev)[[3]]) - 1
+hay_p3_fit <- exp(prev3$hay_pred + sur_rev$effects$ln_hay.effect + resid(sur_rev)[[3]]) - 1
+hay_p4_fit <- exp(prev4$hay_pred + sur_rev$effects$ln_hay.effect + resid(sur_rev)[[3]]) - 1
+hay_p5_fit <- exp(prev5$hay_pred + sur_rev$effects$ln_hay.effect + resid(sur_rev)[[3]]) - 1
 
 # soybean rev changes
-soybean_p0 <- sum(exp(prev0$soybean.pred + sur_rev$effects$soybean.effect + resid(sur_rev)[[4]]) - 1)
-soybean_p1 <- sum(exp(prev1$soybean.pred + sur_rev$effects$soybean.effect + resid(sur_rev)[[4]]) - 1)
-soybean_p2 <- sum(exp(prev2$soybean.pred + sur_rev$effects$soybean.effect + resid(sur_rev)[[4]]) - 1)
-soybean_p3 <- sum(exp(prev3$soybean.pred + sur_rev$effects$soybean.effect + resid(sur_rev)[[4]]) - 1)
-soybean_p4 <- sum(exp(prev4$soybean.pred + sur_rev$effects$soybean.effect + resid(sur_rev)[[4]]) - 1)
-soybean_p5 <- sum(exp(prev5$soybean.pred + sur_rev$effects$soybean.effect + resid(sur_rev)[[4]]) - 1)
+soybean_p0 <- sum(exp(prev0$soybean_pred + sur_rev$effects$ln_soybean.effect + resid(sur_rev)[[4]]) - 1)
+soybean_p1 <- sum(exp(prev1$soybean_pred + sur_rev$effects$ln_soybean.effect + resid(sur_rev)[[4]]) - 1)
+soybean_p2 <- sum(exp(prev2$soybean_pred + sur_rev$effects$ln_soybean.effect + resid(sur_rev)[[4]]) - 1)
+soybean_p3 <- sum(exp(prev3$soybean_pred + sur_rev$effects$ln_soybean.effect + resid(sur_rev)[[4]]) - 1)
+soybean_p4 <- sum(exp(prev4$soybean_pred + sur_rev$effects$ln_soybean.effect + resid(sur_rev)[[4]]) - 1)
+soybean_p5 <- sum(exp(prev5$soybean_pred + sur_rev$effects$ln_soybean.effect + resid(sur_rev)[[4]]) - 1)
 
-soybean_p0_fit <- exp(prev0$soybean.pred + sur_rev$effects$soybean.effect + resid(sur_rev)[[4]]) - 1
-soybean_p1_fit <- exp(prev1$soybean.pred + sur_rev$effects$soybean.effect + resid(sur_rev)[[4]]) - 1
-soybean_p2_fit <- exp(prev2$soybean.pred + sur_rev$effects$soybean.effect + resid(sur_rev)[[4]]) - 1
-soybean_p3_fit <- exp(prev3$soybean.pred + sur_rev$effects$soybean.effect + resid(sur_rev)[[4]]) - 1
-soybean_p4_fit <- exp(prev4$soybean.pred + sur_rev$effects$soybean.effect + resid(sur_rev)[[4]]) - 1
-soybean_p5_fit <- exp(prev5$soybean.pred + sur_rev$effects$soybean.effect + resid(sur_rev)[[4]]) - 1
+soybean_p0_fit <- exp(prev0$soybean_pred + sur_rev$effects$ln_soybean.effect + resid(sur_rev)[[4]]) - 1
+soybean_p1_fit <- exp(prev1$soybean_pred + sur_rev$effects$ln_soybean.effect + resid(sur_rev)[[4]]) - 1
+soybean_p2_fit <- exp(prev2$soybean_pred + sur_rev$effects$ln_soybean.effect + resid(sur_rev)[[4]]) - 1
+soybean_p3_fit <- exp(prev3$soybean_pred + sur_rev$effects$ln_soybean.effect + resid(sur_rev)[[4]]) - 1
+soybean_p4_fit <- exp(prev4$soybean_pred + sur_rev$effects$ln_soybean.effect + resid(sur_rev)[[4]]) - 1
+soybean_p5_fit <- exp(prev5$soybean_pred + sur_rev$effects$ln_soybean.effect + resid(sur_rev)[[4]]) - 1
 
 
 # wheat rev changes
-wheat_p0 <- sum(exp(prev0$wheat.pred + sur_rev$effects$wheat.effect + resid(sur_rev)[[5]]) - 1)
-wheat_p1 <- sum(exp(prev1$wheat.pred + sur_rev$effects$wheat.effect + resid(sur_rev)[[5]]) - 1)
-wheat_p2 <- sum(exp(prev2$wheat.pred + sur_rev$effects$wheat.effect + resid(sur_rev)[[5]]) - 1)
-wheat_p3 <- sum(exp(prev3$wheat.pred + sur_rev$effects$wheat.effect + resid(sur_rev)[[5]]) - 1)
-wheat_p4 <- sum(exp(prev4$wheat.pred + sur_rev$effects$wheat.effect + resid(sur_rev)[[5]]) - 1)
-wheat_p5 <- sum(exp(prev5$wheat.pred + sur_rev$effects$wheat.effect + resid(sur_rev)[[5]]) - 1)
+wheat_p0 <- sum(exp(prev0$wheat_pred + sur_rev$effects$ln_wheat.effect + resid(sur_rev)[[5]]) - 1)
+wheat_p1 <- sum(exp(prev1$wheat_pred + sur_rev$effects$ln_wheat.effect + resid(sur_rev)[[5]]) - 1)
+wheat_p2 <- sum(exp(prev2$wheat_pred + sur_rev$effects$ln_wheat.effect + resid(sur_rev)[[5]]) - 1)
+wheat_p3 <- sum(exp(prev3$wheat_pred + sur_rev$effects$ln_wheat.effect + resid(sur_rev)[[5]]) - 1)
+wheat_p4 <- sum(exp(prev4$wheat_pred + sur_rev$effects$ln_wheat.effect + resid(sur_rev)[[5]]) - 1)
+wheat_p5 <- sum(exp(prev5$wheat_pred + sur_rev$effects$ln_wheat.effect + resid(sur_rev)[[5]]) - 1)
 
-wheat_p0_fit <- exp(prev0$wheat.pred + sur_rev$effects$wheat.effect + resid(sur_rev)[[5]]) - 1
-wheat_p1_fit <- exp(prev1$wheat.pred + sur_rev$effects$wheat.effect + resid(sur_rev)[[5]]) - 1
-wheat_p2_fit <- exp(prev2$wheat.pred + sur_rev$effects$wheat.effect + resid(sur_rev)[[5]]) - 1
-wheat_p3_fit <- exp(prev3$wheat.pred + sur_rev$effects$wheat.effect + resid(sur_rev)[[5]]) - 1
-wheat_p4_fit <- exp(prev4$wheat.pred + sur_rev$effects$wheat.effect + resid(sur_rev)[[5]]) - 1
-wheat_p5_fit <- exp(prev5$wheat.pred + sur_rev$effects$wheat.effect + resid(sur_rev)[[5]]) - 1
+wheat_p0_fit <- exp(prev0$wheat_pred + sur_rev$effects$ln_wheat.effect + resid(sur_rev)[[5]]) - 1
+wheat_p1_fit <- exp(prev1$wheat_pred + sur_rev$effects$ln_wheat.effect + resid(sur_rev)[[5]]) - 1
+wheat_p2_fit <- exp(prev2$wheat_pred + sur_rev$effects$ln_wheat.effect + resid(sur_rev)[[5]]) - 1
+wheat_p3_fit <- exp(prev3$wheat_pred + sur_rev$effects$ln_wheat.effect + resid(sur_rev)[[5]]) - 1
+wheat_p4_fit <- exp(prev4$wheat_pred + sur_rev$effects$ln_wheat.effect + resid(sur_rev)[[5]]) - 1
+wheat_p5_fit <- exp(prev5$wheat_pred + sur_rev$effects$ln_wheat.effect + resid(sur_rev)[[5]]) - 1
 
 pred_sur_rev <- data.frame(temp = rep(c(0, 1, 2, 3, 4, 5), 5),
                            crop = rep(c("Corn", "Cotton", "Hay", "Soybean", "Wheat"), each = 6),
@@ -173,6 +172,7 @@ pdat_sur_rev
 pdat_sur_rev$change <- 100*pdat_sur_rev$change
 
 saveRDS(pdat_sur_rev, "data/sur_rev_agg_predictions.rds")
+saveRDS(pred_sur_rev, "data/sur_rev_predictions.rds")
 
 ggplot(pdat_sur_rev, aes(temp, change)) + 
   geom_line() + 
