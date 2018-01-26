@@ -97,11 +97,17 @@ mod3 <- z_hay_a ~ dday0_10_ten + dday10_30_ten + dday30_ten + prec_ten + prec_sq
 
 
 mod4 <- z_soybean_a ~ dday0_10_ten + dday10_30_ten + dday30_ten + prec_ten + prec_sq_ten +
-  trend2_al + trend2_ar + 
+  trend1_al + trend1_ar + 
+  trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + trend1_ky + trend1_md + 
+  trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + trend1_nc + trend1_nd + 
+  trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + trend1_tn + trend1_tx + 
+  trend1_va + trend1_wi + trend1_wv +
+      trend2_al + trend2_ar + 
   trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
   trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
   trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
-  trend2_va + trend2_wi + trend2_wv  - 1
+  trend2_va + trend2_wi + trend2_wv - 1
+
 
 
 mod5 <- z_wheat_a ~ dday0_10_ten + dday10_30_ten + dday30_ten + prec_ten + prec_sq_ten +
@@ -185,10 +191,16 @@ cropdat_means <- demeanlist(dmdat, fl = list(fips = factor(cropdat$fips),
 
 
 mod1 <- z_corn_a ~ dday0_10_twenty + dday10_30_twenty + dday30_twenty + prec_twenty + prec_sq_twenty +
-  trend2_al + trend2_ar + 
+  trend1_al + trend1_ar + 
+  trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + trend1_ky + trend1_md + 
+  trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + trend1_nc + trend1_nd + 
+  trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + trend1_tn + trend1_tx + 
+  trend1_va + trend1_wi + trend1_wv +
+      trend2_al + trend2_ar + 
   trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
   trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
   trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
+  trend2_va + trend2_wi + trend2_wv - 1d2_sc + trend2_sd + trend2_tn + trend2_tx + 
   trend2_va + trend2_wi + trend2_wv  - 1
 
 
@@ -229,6 +241,8 @@ mod4 <- z_soybean_a ~  dday0_10_twenty + dday10_30_twenty + dday30_twenty + prec
   trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
   trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
   trend2_va + trend2_wi + trend2_wv - 1
+
+
 
 mod5 <- z_wheat_a ~  dday0_10_twenty + dday10_30_twenty + dday30_twenty + prec_twenty + prec_sq_twenty +
   trend1_al + trend1_ar + 

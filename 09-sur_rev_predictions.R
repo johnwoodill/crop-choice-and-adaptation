@@ -5,7 +5,7 @@ library(ggthemes)
 
 setwd("/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/")
 
-# source("R/predictSUR.R")
+source("R/predictSUR.R")
 # source("R/predictSUR.clean.R")
 
 # Crop data
@@ -179,7 +179,7 @@ ggplot(pdat_sur_rev, aes(temp, change)) +
   geom_point(size = .5) + 
   # geom_errorbar(aes(ymax = change_max, ymin = change_min, color = effect), width = .1) +
   theme_tufte(base_size = 10) +
-  ylab("% Change in Proportion of Crop Acres") +
+  ylab("% Change in Revenue per acre") +
   xlab("Change in Temperature (C)") +
   annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
   annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +

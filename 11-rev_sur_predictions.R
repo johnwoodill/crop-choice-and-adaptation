@@ -71,11 +71,22 @@ sum(cropdat$acres)
 #-----------------------------------------------------------------------------------
 # Total-effect
 
-cten$predictions$corn.pred*cropdat$acres + 
+a <- cten$predictions$corn.pred*cropdat$acres + 
                                     cten$predictions$cotton.pred*cropdat$acres + 
                                     cten$predictions$hay.pred*cropdat$acres + 
                                     cten$predictions$soybean.pred*cropdat$acres + 
                                     cten$predictions$wheat.pred
+
+head(a)
+head(cropdat$acres*rev_crop_pred$modten_rev.pred)
+head(total_effect_w_adaptation_ten)
+
+
+# Remove negative values from predictions
+rev_crop_pred$modten_rev.pred <- ifelse(rev_crop_pred$modten_rev.pred < 0, 0, rev_crop_pred$modten_rev.pred)
+rev_crop_pred$modtwenty_rev.pred <- ifelse(rev_crop_pred$modtwenty_rev.pred < 0, 0, rev_crop_pred$modtwenty_rev.pred)
+rev_crop_pred$modthirty_rev.pred <- ifelse(rev_crop_pred$modthirty_rev.pred < 0, 0, rev_crop_pred$modthirty_rev.pred)
+
 
 # w/ adaptation
 total_effect_w_adaptation_ten <- ((cten$predictions$corn.pred*cropdat$acres + 
@@ -139,67 +150,41 @@ test
 test$temp <- c(0, 1, 2, 3, 4, 5)
 test <- gather(test, key = crop, value = value, -temp, -effect)
 test$interval <- rep(c("10-year", "20-year", "30-year"), each = 6)
-
+test$type <- c(rep("Total effect w/ adaptation", 18), rep("Total effect w/o adaptation", 18))
 head(test)
+test
+ggplot(test, aes(temp, value, color = type)) + geom_line() + facet_wrap(~interval, scales = "free") + ylim(-10, 100)
 
-ggplot(test, aes(temp, value, color = crop)) + geom_line() + facet_wrap(~interval, scales = "free")
 
+
+
+#--------------------------------------------------
+# Individual crop effects
 
 # Assign intervals
 cten$predictions$type <- "10-year"
 ctwenty$predictions$type <- "20-year"
 cthirty$predictions$type <- "30-year"
 
-# Get average crop since 1980
-mdat <- cropdat %>% 
-  select(year, fips, corn_grain_a, cotton_a, hay_a, wheat_a, soybean_a) %>% 
-  filter(year >= 1980) %>% 
-  group_by(fips) %>% 
-  summarise(corn_grain_a = mean(corn_grain_a, na.rm = TRUE),
-         cotton_a = mean(cotton_a, na.rm = TRUE),
-         hay_a = mean(hay_a, na.rm = TRUE),
-         wheat_a = mean(wheat_a, na.rm = TRUE),
-         soybean_a = mean(soybean_a, na.rm = TRUE))
-
-dat <- cropdat
-dat$corn_grain_a <- NULL
-dat$cotton_a <- NULL
-dat$hay_a <- NULL
-dat$soybean_a <- NULL
-dat$wheat_a <- NULL
-
-dat <- left_join(dat, mdat, by = "fips")
-
 # Bind SUR climate data
 cdat <- bind_rows(cten$predictions, ctwenty$predictions, cthirty$predictions)
-cdat$effect <- "Climate-effect"
-
-# Bind no crop switching data
-ndat <- bind_rows(dat[, c("corn_grain_a", "cotton_a", "hay_a", "wheat_a", "soybean_a")], 
-                  dat[, c("corn_grain_a", "cotton_a", "hay_a", "wheat_a", "soybean_a")],
-                  dat[, c("corn_grain_a", "cotton_a", "hay_a", "wheat_a", "soybean_a")],
-                  dat[, c("corn_grain_a", "cotton_a", "hay_a", "wheat_a", "soybean_a")],
-                  dat[, c("corn_grain_a", "cotton_a", "hay_a", "wheat_a", "soybean_a")],
-                   dat[, c("corn_grain_a", "cotton_a", "hay_a", "wheat_a", "soybean_a")])
-
-# ndat <- bind_rows(dat[, 3:7])
-# ndat <- bind_rows(ndat, ndat, ndat, ndat, ndat, ndat)
-ndat$effect <- "No Crop-switching"
-
+cdat$effect <- "Crop-effect"
 
 # Assign rev to climate data
-cdat$corn_rev <- rep(rev_crop_pred$corn_rev.pred, 3)
+cdat$corn_rev <- rep(sur_rev$pred)
+
+
 cdat$cotton_rev <- rep(rev_crop_pred$cotton_rev.pred, 3)
 cdat$hay_rev <- rep(rev_crop_pred$hay_rev.pred, 3)
 cdat$soybean_rev <- rep(rev_crop_pred$soybean_rev.pred, 3)
 cdat$wheat_rev <- rep(rev_crop_pred$wheat_rev.pred, 3)
 
 # Remove negative values from predictions
-# cdat$corn_rev <- ifelse(cdat$corn_rev < 0, 0, cdat$corn_rev)
-# cdat$cotton_rev <- ifelse(cdat$cotton_rev < 0, 0, cdat$cotton_rev)
-# cdat$hay_rev <- ifelse(cdat$hay_rev < 0, 0, cdat$hay_rev)
-# cdat$soybean_rev <- ifelse(cdat$soybean_rev < 0, 0, cdat$soybean_rev)
-# cdat$wheat_rev <- ifelse(cdat$wheat_rev < 0, 0, cdat$wheat_rev)
+cdat$corn_rev <- ifelse(cdat$corn_rev < 0, 0, cdat$corn_rev)
+cdat$cotton_rev <- ifelse(cdat$cotton_rev < 0, 0, cdat$cotton_rev)
+cdat$hay_rev <- ifelse(cdat$hay_rev < 0, 0, cdat$hay_rev)
+cdat$soybean_rev <- ifelse(cdat$soybean_rev < 0, 0, cdat$soybean_rev)
+cdat$wheat_rev <- ifelse(cdat$wheat_rev < 0, 0, cdat$wheat_rev)
 
 # Get crop acres by county
 cdat$corn.pred <- cdat$corn.pred*cropdat$acres

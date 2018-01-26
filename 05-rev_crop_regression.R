@@ -41,9 +41,7 @@ modten_1 <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
             data = regdat, weights = regdat$w)
 summary(modten_1)
 
-saveRDS(modten_1, "models/trend_ln.rds")
-saveRDS(modten_1, "models/trend_q.rds")
-saveRDS(modten_1, "models/trend_ln_q.rds")
+saveRDS(modten_1, "models/rev_crop_modten.rds")
 
 # Twenty year differences 1950-1980 & 1980-2010
 modtwenty_1 <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
@@ -62,6 +60,8 @@ modtwenty_1 <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
             data = regdat, weights = regdat$w)
 summary(modtwenty_1)
 
+saveRDS(modtwenty_1, "models/rev_crop_modtwenty.rds")
+
 # Thirty year differences 1950-1980 & 1980-2010
 modthirty_1 <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
               dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty + 
@@ -79,11 +79,9 @@ modthirty_1 <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
             data = regdat, weights = regdat$w)
 summary(modthirty_1)
 
+saveRDS(modthirty_1, "models/rev_crop_modthirty.rds")
 
-# Save robust model (5)
-saveRDS(modten_1, "models/rev_crop_modten_1.rds")
-saveRDS(modtwenty_1, "models/rev_crop_modtwenty_1.rds")
-saveRDS(modthirty_1, "models/rev_crop_modthirty_1.rds")
+
 # 
 
 

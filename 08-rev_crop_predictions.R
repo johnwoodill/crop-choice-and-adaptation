@@ -16,12 +16,12 @@ cropdat$trend_sq <- cropdat$trend^2
 # soybean_mod <- readRDS("models/mod_soybean.rds")
 # wheat_mod <- readRDS("models/mod_wheat.rds")
 
-modten <- readRDS("models/rev_crop_modten_1.rds")
-modtwenty <- readRDS("models/rev_crop_modtwenty_1.rds")
-modthirty <- readRDS("models/rev_crop_modthirty_1.rds")
+modten <- readRDS("models/rev_crop_modten.rds")
+modtwenty <- readRDS("models/rev_crop_modtwenty.rds")
+modthirty <- readRDS("models/rev_crop_modthirty.rds")
 
 terms_ten = c("dday0_10", "dday10_30", "dday30","prec", "prec_sq", "dday0_10_ten", "dday10_30_ten", "dday30_ten", "prec_ten", "prec_sq_ten")
-terms_twenty = c("dday0_10", "dday10_30", "dday30","prec", "prec_sq", "dday0_10_twenty", "dday10_30_twenty", "dday30_twenty", "prec_twenty", "prec_twenty_twenty")
+terms_twenty = c("dday0_10", "dday10_30", "dday30","prec", "prec_sq", "dday0_10_twenty", "dday10_30_twenty", "dday30_twenty", "prec_twenty", "prec_sq_twenty")
 terms_thirty = c("dday0_10", "dday10_30", "dday30","prec", "prec_sq", "dday0_10_thirty", "dday10_30_thirty", "dday30_thirty", "prec_thirty", "prec_sq_thirty")
 
 # Load changes in degree day data
@@ -77,12 +77,12 @@ pdat_modten
 #---------------------------------------------------------------------------------
 # 20-year
 # Get predictions for weather conditional on climate (restrict terms to weather)
-modtwenty_0p <- predictFelm(modtwenty, newdata = cropdat, var.terms = terms)
-modtwenty_1p <- predictFelm(modtwenty, newdata = p1, var.terms = terms)
-modtwenty_2p <- predictFelm(modtwenty, newdata = p2, var.terms = terms)
-modtwenty_3p <- predictFelm(modtwenty, newdata = p3, var.terms = terms)
-modtwenty_4p <- predictFelm(modtwenty, newdata = p4, var.terms = terms)
-modtwenty_5p <- predictFelm(modtwenty, newdata = p5, var.terms = terms)
+modtwenty_0p <- predictFelm(modtwenty, newdata = cropdat, var.terms = terms_twenty)
+modtwenty_1p <- predictFelm(modtwenty, newdata = p1, var.terms = terms_twenty)
+modtwenty_2p <- predictFelm(modtwenty, newdata = p2, var.terms = terms_twenty)
+modtwenty_3p <- predictFelm(modtwenty, newdata = p3, var.terms = terms_twenty)
+modtwenty_4p <- predictFelm(modtwenty, newdata = p4, var.terms = terms_twenty)
+modtwenty_5p <- predictFelm(modtwenty, newdata = p5, var.terms = terms_twenty)
 
 # Total predicted revenue per acre
 modtwenty_p0 <- sum(exp(modtwenty_0p$fit + modtwenty_0p$res + modtwenty_0p$effect) - 1)
@@ -119,12 +119,12 @@ pdat_modtwenty
 #---------------------------------------------------------------------------------
 # 30-year
 # Get predictions for weather conditional on climate (restrict terms to weather)
-modthirty_0p <- predictFelm(modthirty, newdata = cropdat, var.terms = terms)
-modthirty_1p <- predictFelm(modthirty, newdata = p1, var.terms = terms)
-modthirty_2p <- predictFelm(modthirty, newdata = p2, var.terms = terms)
-modthirty_3p <- predictFelm(modthirty, newdata = p3, var.terms = terms)
-modthirty_4p <- predictFelm(modthirty, newdata = p4, var.terms = terms)
-modthirty_5p <- predictFelm(modthirty, newdata = p5, var.terms = terms)
+modthirty_0p <- predictFelm(modthirty, newdata = cropdat, var.terms = terms_thirty)
+modthirty_1p <- predictFelm(modthirty, newdata = p1, var.terms = terms_thirty)
+modthirty_2p <- predictFelm(modthirty, newdata = p2, var.terms = terms_thirty)
+modthirty_3p <- predictFelm(modthirty, newdata = p3, var.terms = terms_thirty)
+modthirty_4p <- predictFelm(modthirty, newdata = p4, var.terms = terms_thirty)
+modthirty_5p <- predictFelm(modthirty, newdata = p5, var.terms = terms_thirty)
 
 # Total predicted revenue per acre
 modthirty_p0 <- sum(exp(modthirty_0p$fit + modthirty_0p$res + modthirty_0p$effect) - 1)

@@ -130,28 +130,29 @@ mod$effects <- list(ln_corn.effect = cropdat_means$ln_rev_corn,
                     ln_wheat.effect = cropdat_means$ln_rev_wheat)
 
 # Bootstrap standard errors
-# bs_cropdat_dm <- cropdat_dm
-# 
-# se_dat <- data.frame()
-# 
-# d <- foreach(i = 1:2000, .combine = rbind, .packages = c("dplyr", "systemfit")) %dopar% {
-#   # Resample within interval
-#   regdat <- bs_cropdat_dm %>% 
-#     sample_frac(1, replace = TRUE)
-#   
-#   bsmod <- systemfit(list(corn = mod1, 
-#                        cotton = mod2, 
-#                        hay = mod3, 
-#                        soybean = mod4,
-#                        wheat = mod5), data = regdat, method = "SUR")
-#   
-#   mdat <- as.data.frame(t(bsmod$coefficients))
-#   names(mdat) <- names(bsmod$coefficients)
-#   mdat <- select(mdat, -one_of(grep("trend", names(bsmod$coefficients), value = TRUE)))
-#   mdat
-# }
-# 
-# mod$bs.se <- as.data.frame(apply(d, 2, sd))
+bs_cropdat_dm <- cropdat_dm
+
+se_dat <- data.frame()
+
+d <- foreach(i = 1:2000, .combine = rbind, .packages = c("dplyr", "systemfit")) %dopar% {
+  # Resample within interval
+  regdat <- bs_cropdat_dm %>%
+    sample_frac(1, replace = TRUE)
+
+  bsmod <- systemfit(list(corn = mod1,
+                       cotton = mod2,
+                       hay = mod3,
+                       soybean = mod4,
+                       wheat = mod5), data = regdat, method = "SUR")
+
+  mdat <- as.data.frame(t(bsmod$coefficients))
+  names(mdat) <- names(bsmod$coefficients)
+  mdat <- select(mdat, -one_of(grep("trend", names(bsmod$coefficients), value = TRUE)))
+  mdat
+}
+
+mod$bs.se <- as.data.frame(apply(d, 2, sd))
+
 saveRDS(mod, "models/sur_rev_model.rds")
 
 
