@@ -120,8 +120,8 @@ mod <- systemfit(list(corn = mod1,
                        soybean = mod4,
                        wheat = mod5), data = cropdat_dm, method = "SUR")
 
-summary(ten_mod)
-sum(ten_mod$coefficients)
+summary(mod)
+sum(mod$coefficients)
 
 mod$effects <- list(ln_corn.effect = cropdat_means$ln_rev_corn,
                     ln_cotton.effect = cropdat_means$ln_rev_cotton,
