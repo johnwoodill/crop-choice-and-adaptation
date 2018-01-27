@@ -144,11 +144,11 @@ wheat_p5_fit <- exp(prev5$wheat_pred + sur_rev$effects$ln_wheat.effect + resid(s
 
 pred_sur_rev <- data.frame(temp = rep(c(0, 1, 2, 3, 4, 5), 5),
                            crop = rep(c("Corn", "Cotton", "Hay", "Soybean", "Wheat"), each = 6),
-                           pred = c(corn_p0_fit, corn_p0_fit, corn_p0_fit, corn_p0_fit, corn_p0_fit, corn_p0_fit, corn_p0_fit,
-                                    cotton_p0_fit, cotton_p0_fit, cotton_p0_fit, cotton_p0_fit, cotton_p0_fit, cotton_p0_fit, cotton_p0_fit,
-                                    hay_p0_fit, hay_p0_fit, hay_p0_fit, hay_p0_fit, hay_p0_fit, hay_p0_fit, hay_p0_fit,
-                                    soybean_p0_fit, soybean_p0_fit, soybean_p0_fit, soybean_p0_fit, soybean_p0_fit, soybean_p0_fit, soybean_p0_fit,
-                                    wheat_p0_fit, wheat_p0_fit, wheat_p0_fit, wheat_p0_fit, wheat_p0_fit, wheat_p0_fit, wheat_p0_fit))
+                           pred = c(corn_p0_fit, corn_p1_fit, corn_p2_fit, corn_p3_fit, corn_p4_fit, corn_p5_fit,
+                                    cotton_p0_fit, cotton_p1_fit, cotton_p2_fit, cotton_p3_fit, cotton_p4_fit, cotton_p5_fit,
+                                    hay_p0_fit, hay_p1_fit, hay_p2_fit, hay_p3_fit, hay_p4_fit, hay_p5_fit,
+                                    soybean_p0_fit, soybean_p1_fit, soybean_p2_fit, soybean_p3_fit, soybean_p4_fit, soybean_p5_fit,
+                                    wheat_p0_fit, wheat_p1_fit, wheat_p2_fit, wheat_p3_fit, wheat_p4_fit, wheat_p5_fit))
                            
 
 
@@ -162,7 +162,7 @@ pdat_sur_rev <- data.frame(temp = rep(c(0, 1, 2, 3, 4, 5), 5),
 
 
 
-pdat_sur_rev
+# pdat_sur_rev
 
 
 pdat_sur_rev <- pdat_sur_rev %>% 

@@ -165,8 +165,8 @@ adat <- data.frame(effect = "Total-effect",
                    modten_rev.pred = c(modten_p0_fit, modten_p1_fit, modten_p2_fit, modten_p3_fit, modten_p4_fit, modten_p5_fit),
                    modtwenty_rev.pred = c(modtwenty_p0_fit, modtwenty_p1_fit, modtwenty_p2_fit, modtwenty_p3_fit, modtwenty_p4_fit, modtwenty_p5_fit),
                    modthirty_rev.pred = c(modthirty_p0_fit, modthirty_p1_fit, modthirty_p2_fit, modthirty_p3_fit, modthirty_p4_fit, modthirty_p5_fit),
-                   temp = rep(c(0, 1, 2, 3, 4, 5), 3, each = length(modten_p0_fit)/3),
-                   interval = rep(c("10-year", "20-year", "30-year"), 6, each = length(modten_p0_fit)/3))
+                   temp = rep(c(0, 1, 2, 3, 4, 5), each = length(modten_p0_fit)/3))
+                   # interval = rep(c("10-year", "20-year", "30-year"), 6, each = length(modten_p0_fit)/3))
 head(adat)                            
 saveRDS(adat, "data/rev_crop_pred.rds")
                               

@@ -184,7 +184,7 @@ ggsave("figures/sur_crop_share_predictions.pdf", width = 6, height = 5)
 
 # Average acres
 # ppdat <- pdat %>%
-#   filter(effect == "Climate-effect") %>%
+#   # filter(effect == "Climate-effect") %>%
 #   group_by(temp, type, effect) %>%
 #   summarise(total = sum(sum)) %>%
 #   group_by(type, effect) %>%

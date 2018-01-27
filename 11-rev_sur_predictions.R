@@ -48,7 +48,7 @@ cropdat <- readRDS("data/full_ag_data.rds")
 # Get average crop since 1980
 mdat <- cropdat %>% 
   select(year, fips, corn_grain_a, cotton_a, hay_a, wheat_a, soybean_a) %>% 
-  filter(year >= 1980) %>% 
+  filter(year >= 1980) %>%
   group_by(fips) %>% 
   summarise(corn_grain_a = mean(corn_grain_a, na.rm = TRUE),
          cotton_a = mean(cotton_a, na.rm = TRUE),
@@ -72,13 +72,14 @@ sum(cropdat$acres)
 # Total-effect
 
 a <- cten$predictions$corn.pred*cropdat$acres + 
-                                    cten$predictions$cotton.pred*cropdat$acres + 
-                                    cten$predictions$hay.pred*cropdat$acres + 
-                                    cten$predictions$soybean.pred*cropdat$acres + 
-                                    cten$predictions$wheat.pred
+     cten$predictions$cotton.pred*cropdat$acres +
+     cten$predictions$hay.pred*cropdat$acres +
+     cten$predictions$soybean.pred*cropdat$acres +
+     cten$predictions$wheat.pred*cropdat$acres
 
 head(a)
 head(cropdat$acres*rev_crop_pred$modten_rev.pred)
+head(a*rev_crop_pred$modten_rev.pred)
 head(total_effect_w_adaptation_ten)
 
 
@@ -138,7 +139,7 @@ tdat <- data.frame(temp = rev_crop_pred$temp,
 
 pc <- function(x){ 100*(x - first(x))/first(x)}
 
-test <- tdat %>% 
+pdat <- tdat %>% 
   group_by(temp, effect) %>% 
   summarise_all(sum) %>% 
   ungroup() %>% 
@@ -146,15 +147,17 @@ test <- tdat %>%
   group_by(effect) %>% 
   mutate_all(pc)
 
-test
-test$temp <- c(0, 1, 2, 3, 4, 5)
-test <- gather(test, key = crop, value = value, -temp, -effect)
-test$interval <- rep(c("10-year", "20-year", "30-year"), each = 6)
-test$type <- c(rep("Total effect w/ adaptation", 18), rep("Total effect w/o adaptation", 18))
-head(test)
-test
-ggplot(test, aes(temp, value, color = type)) + geom_line() + facet_wrap(~interval, scales = "free") + ylim(-10, 100)
+pdat
+pdat$temp <- c(0, 1, 2, 3, 4, 5)
+pdat <- gather(pdat, key = crop, value = value, -temp, -effect)
+pdat$interval <- rep(c("10-year", "20-year", "30-year"), each = 6)
+pdat$type <- c(rep("Total effect w/ adaptation", 18), rep("Total effect w/o adaptation", 18))
+head(pdat)
+pdat
+ggplot(pdat, aes(temp, value, color = type)) + geom_line() + facet_wrap(~interval, scales = "free") + ylim(-10, 100)
 
+
+# Crop-effect
 
 
 
@@ -171,7 +174,7 @@ cdat <- bind_rows(cten$predictions, ctwenty$predictions, cthirty$predictions)
 cdat$effect <- "Crop-effect"
 
 # Assign rev to climate data
-cdat$corn_rev <- rep(sur_rev$pred)
+# cdat$corn_rev <- rep(sur_rev$)
 
 
 cdat$cotton_rev <- rep(rev_crop_pred$cotton_rev.pred, 3)
