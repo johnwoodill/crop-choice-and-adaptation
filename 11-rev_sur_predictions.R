@@ -159,11 +159,6 @@ ggplot(pdat, aes(temp, value, color = type)) + geom_line() + facet_wrap(~interva
 
 # Crop-effect
 
-
-
-#--------------------------------------------------
-# Individual crop effects
-
 # Assign intervals
 cten$predictions$type <- "10-year"
 ctwenty$predictions$type <- "20-year"
@@ -172,6 +167,92 @@ cthirty$predictions$type <- "30-year"
 # Bind SUR climate data
 cdat <- bind_rows(cten$predictions, ctwenty$predictions, cthirty$predictions)
 cdat$effect <- "Crop-effect"
+sur_rev$temp <- NULL
+sur_rev <- rbind(sur_rev, sur_rev, sur_rev)
+cdat <- bind_cols(cdat, sur_rev)
+
+# Remove negative values from predictions
+cdat$corn_rev <- ifelse(cdat$corn_rev < 0, 0, cdat$corn_rev)
+cdat$cotton_rev <- ifelse(cdat$cotton_rev < 0, 0, cdat$cotton_rev)
+cdat$hay_rev <- ifelse(cdat$hay_rev < 0, 0, cdat$hay_rev)
+cdat$soybean_rev <- ifelse(cdat$soybean_rev < 0, 0, cdat$soybean_rev)
+cdat$wheat_rev <- ifelse(cdat$wheat_rev < 0, 0, cdat$wheat_rev)
+
+# Get crop acres by county
+cdat$corn.pred <- cdat$corn.pred*cropdat$acres
+cdat$cotton.pred <- cdat$cotton.pred*cropdat$acres
+cdat$hay.pred <- cdat$hay.pred*cropdat$acres
+cdat$soybean.pred <- cdat$soybean.pred*cropdat$acres
+cdat$wheat.pred <- cdat$wheat.pred*cropdat$acres
+
+# Get crop acres by county
+cdat$corn.pred_ncs <- cdat$corn.pred*constant_acres
+cdat$cotton.pred_ncs <- cdat$cotton.pred*constant_acres
+cdat$hay.pred_ncs <- cdat$hay.pred*constant_acres
+cdat$soybean.pred_ncs <- cdat$soybean.pred*constant_acres
+cdat$wheat.pred_ncs <- cdat$wheat.pred*constant_acres
+
+climate_effect <- (cdat$corn.pred*cdat$corn_rev) + (cdat$cotton.pred*cdat$cotton_rev) + (cdat$hay.pred*cdat$hay_rev) +
+  (cdat$soybean.pred*cdat$soybean_rev) + (cdat$wheat.pred*cdat$wheat_rev)
+
+no_cs_effect <- (cdat$corn.pred_ncs*cdat$corn_rev) + (cdat$cotton.pred_ncs*cdat$cotton_rev) + (cdat$hay.pred_ncs*cdat$hay_rev) +
+  (cdat$soybean.pred_ncs*cdat$soybean_rev) + (cdat$wheat.pred_ncs*cdat$wheat_rev)
+
+cpdat <-  data.frame(temp = cdat$temp,
+                     type = cdat$type,
+                     effect = cdat$effect,
+                     climate_effect = climate_effect,
+                     no_cs_effect = no_cs_effect)
+
+cpdat <- cpdat %>% 
+  group_by(type, temp) %>% 
+  summarise(climate_effect = sum(climate_effect),
+            no_cs_effect = sum(no_cs_effect)) %>% 
+  mutate(change_climate_effect = 100*(climate_effect - first(climate_effect))/first(climate_effect),
+         no_cs_effect = 100*(no_cs_effect - first(no_cs_effect))/first(no_cs_effect))
+         
+head(cpdat)
+cpdat <- select(cpdat, -climate_effect) %>% gather(key = effect, value = value, -type, -temp)
+
+ggplot(cpdat, aes(temp, value, color = effect)) + geom_line() + facet_wrap(~type)
+
+
+
+
+
+
+ggplot(cpdat, aes(x = temp, y = value, group = effect)) + 
+  # geom_ribbon(aes(ymax = value_max, ymin = value_min), fill = "#C0CCD9", alpha = 0.5 ) +
+  geom_line(aes(color = effect)) + 
+  geom_point(aes(color = effect), size = 0.5) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey", alpha = 0.5) +
+  theme_tufte(base_size = 10) +
+  ylab("% Change in Total Revenue") +
+  xlab("Change in Temperature (C)") +
+  annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
+  annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
+  scale_x_continuous(breaks = 0:5, labels = c("+0C", "+1C", "+2C", "+3C", "+4C", "+5C")) +
+  scale_y_continuous(breaks = seq(0,-50, by = -10), labels = c("0", "-10%", "-20%", "-30%", "-40%", "-50%")) +
+  guides(color = guide_legend(keywidth = 2, keyheight = 1,
+                                override.aes = list(linetype = c(1, 1),
+                                                    size = 1.5,
+                                                    shape = c(NA, NA)))) +
+    facet_wrap(~type) +
+    theme(legend.position = "top", 
+        legend.box.background = element_rect(colour = "grey"), 
+        legend.title = element_blank(),
+        legend.key = element_rect(fill = NA, color = NA))
+
+
+
+
+
+
+
+#---------------------------------------------------------------------------------------------------
+# Individual crop effects
+
+
 
 # Assign rev to climate data
 # cdat$corn_rev <- rep(sur_rev$)
