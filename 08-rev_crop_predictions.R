@@ -10,12 +10,6 @@ cropdat <- readRDS("data/full_ag_data.rds")
 cropdat$trend_sq <- cropdat$trend^2
 
 # Load models
-# corn_mod <- readRDS("models/mod_corn.rds")
-# cotton_mod <- readRDS("models/mod_cotton.rds")
-# hay_mod <- readRDS("models/mod_hay.rds")
-# soybean_mod <- readRDS("models/mod_soybean.rds")
-# wheat_mod <- readRDS("models/mod_wheat.rds")
-
 modten <- readRDS("models/rev_crop_modten.rds")
 modtwenty <- readRDS("models/rev_crop_modtwenty.rds")
 modthirty <- readRDS("models/rev_crop_modthirty.rds")
@@ -71,7 +65,7 @@ pdat_modten <- data.frame(effect = rep(c("Total-effect")),
                    temp = rep(c(0, 1, 2, 3, 4, 5)),
                    sum = c(modten_p0, modten_p1, modten_p2, modten_p3, modten_p4, modten_p5),
                    ci = c(modten_p0_ci, modten_p1_ci, modten_p2_ci, modten_p3_ci, modten_p4_ci, modten_p5_ci))
-pdat_modten
+head(pdat_modten)
 
 
 #---------------------------------------------------------------------------------
@@ -165,10 +159,10 @@ adat <- data.frame(effect = "Total-effect",
                    modten_rev.pred = c(modten_p0_fit, modten_p1_fit, modten_p2_fit, modten_p3_fit, modten_p4_fit, modten_p5_fit),
                    modtwenty_rev.pred = c(modtwenty_p0_fit, modtwenty_p1_fit, modtwenty_p2_fit, modtwenty_p3_fit, modtwenty_p4_fit, modtwenty_p5_fit),
                    modthirty_rev.pred = c(modthirty_p0_fit, modthirty_p1_fit, modthirty_p2_fit, modthirty_p3_fit, modthirty_p4_fit, modthirty_p5_fit),
-                   temp = rep(c(0, 1, 2, 3, 4, 5), each = length(modten_p0_fit)/3))
-                   # interval = rep(c("10-year", "20-year", "30-year"), 6, each = length(modten_p0_fit)/3))
+                   temp = rep(c(0, 1, 2, 3, 4, 5), each = length(modten_p0_fit)))
+
 head(adat)                            
-saveRDS(adat, "data/rev_crop_pred.rds")
+saveRDS(adat, "data/rev_crop_predictions.rds")
                               
 # Predicted percentage change
 pdat <- rbind(pdat_modten, pdat_modtwenty, pdat_modthirty)
@@ -176,7 +170,7 @@ pdat$change_min <- pdat$sum - pdat$ci*1.96
 pdat$change_max <- pdat$sum + pdat$ci*1.96
 pdat
 
-saveRDS(pdat, "data/rev_crop_predictions.rds")
+
 
 pdat <- pdat %>% 
   group_by(interval) %>% 
@@ -189,18 +183,8 @@ pdat$change <- pdat$change*100
 pdat$change_min <- pdat$change_min*100
 pdat$change_max <- pdat$change_max*100
 
-# Predicted values
-#############################
-#############################
-#############################
-#############################
-#############################
-#############################
-
-
-
-saveRDS(pdat, "data/rev_crop_predictions.rds")
-pdat <- readRDS("data/rev_crop_predictions.rds")
+saveRDS(pdat, "data/rev_crop_perc_change.rds")
+pdat <- readRDS("data/rev_crop_perc_change.rds")
 
 ggplot(pdat, aes(temp, change)) + 
   geom_ribbon(aes(ymax = change_max, ymin = change_min, x = temp), fill = "#C0CCD9", alpha = 0.5 ) +
@@ -224,11 +208,7 @@ ggplot(pdat, aes(temp, change)) +
   facet_wrap(~interval) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey", alpha = 0.5)
 
-ggsave("figures/4-predicted_crop.pdf", device = "pdf", width = 6, height = 4)
+ggsave("figures/rev_crop_predictions.pdf", device = "pdf", width = 6, height = 4)
 
-# ggplot(sixtypdat, aes(temp, change)) + geom_line()
-#plot(c(c1, c2, c3, c4, c5))
-#plot(c(ld1, ld2, ld3, ld4, ld5))
-#plot(c(p1, p2, p3, p4, p5))
 
 

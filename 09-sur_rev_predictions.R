@@ -198,6 +198,8 @@ ggplot(pdat_sur_rev, aes(temp, change)) +
 
 ggsave("figures/sur_crop_share_predictions.pdf", width = 6, height = 5)
 
+head(pred_sur_rev)
+
 # Average acres
 # ppdat <- pdat %>% 
 #   filter(effect == "Climate-effect") %>% 

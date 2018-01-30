@@ -15,10 +15,9 @@ adj_ln <- function(x){
 mod1 <- readRDS("models/rev_crop_mod_base_1.rds")
 mod2 <- readRDS("models/rev_crop_mod_base_2.rds")
 mod3 <- readRDS("models/rev_crop_mod_base_3.rds")
-mod4 <- readRDS("models/rev_crop_mod_base_4.rds")
-mod5 <- readRDS("models/rev_crop_modten_1.rds")
-mod6 <- readRDS("models/rev_crop_modtwenty_1.rds")
-mod7 <- readRDS("models/rev_crop_modthirty_1.rds")
+mod4 <- readRDS("models/rev_crop_modten.rds")
+mod5 <- readRDS("models/rev_crop_modtwenty.rds")
+mod6 <- readRDS("models/rev_crop_modthirty.rds")
 
 
 attr(mod1$beta, "dimnames")[[1]] <- c("(Intercept)", "weather_dday0_10", "weather_dday10_30", "weather_dday30", "weather_prec", "weather_prec_sq",
@@ -39,8 +38,6 @@ attr(mod5$beta, "dimnames")[[1]][1:10] <- c("weather_dday0_10", "weather_dday10_
 attr(mod6$beta, "dimnames")[[1]][1:10] <- c("weather_dday0_10", "weather_dday10_30", "weather_dday30", "weather_prec", "weather_prec_sq",
                                 "climate_dday0_10", "climate_dday10_30", "climate_dday30", "climate_prec", "climate_prec_sq")
 
-attr(mod7$beta, "dimnames")[[1]][1:10] <- c("weather_dday0_10", "weather_dday10_30", "weather_dday30", "weather_prec", "weather_prec_sq",
-                                "climate_dday0_10", "climate_dday10_30", "climate_dday30", "climate_prec", "climate_prec_sq")
 
 # Coefficients
 attr(mod1$coefficients, "dimnames")[[1]] <- c("(Intercept)", "weather_dday0_10", "weather_dday10_30", "weather_dday30", "weather_prec", "weather_prec_sq",
@@ -61,17 +58,15 @@ attr(mod5$coefficients, "dimnames")[[1]][1:10] <- c("weather_dday0_10", "weather
 attr(mod6$coefficients, "dimnames")[[1]][1:10] <- c("weather_dday0_10", "weather_dday10_30", "weather_dday30", "weather_prec", "weather_prec_sq",
                                 "climate_dday0_10", "climate_dday10_30", "climate_dday30", "climate_prec", "climate_prec_sq")
 
-attr(mod7$coefficients, "dimnames")[[1]][1:10] <- c("weather_dday0_10", "weather_dday10_30", "weather_dday30", "weather_prec", "weather_prec_sq",
-                                "climate_dday0_10", "climate_dday10_30", "climate_dday30", "climate_prec", "climate_prec_sq")
 
 
-star1 <- stargazer(mod1, mod2, mod3, mod4, mod5, mod6, mod7,
+star1 <- stargazer(mod1, mod2, mod3, mod4, mod5, mod6,
                   align = FALSE, no.space = FALSE,
                   style = "aer", digits = 2,
                   omit = c("fips", "year", "state", "trend"),
                   omit.stat = c("ser", "f"),
                   title = "Regression Model explaining Crop Revenue per Acre",
-                  column.labels = c("10-year", "10-year", "10-year", "10-year", "10-year", "20-year", "30-year"),
+                  column.labels = c("10-year", "10-year", "10-year", "10-year", "20-year", "30-year"),
           dep.var.labels = c("Log(Crop Revenue per Acre)", "Log(Crop Revenue per Acre)", "Log(Crop Revenue per Acre)",
                              "Log(Crop Revenue per Acre)", "Log(Crop Revenue per Acre)"),
           covariate.labels = c("Degree Days (0-10C)", "Degree Days (10-30C)", "Degree Days (30C) ",
@@ -82,42 +77,36 @@ star1 <- stargazer(mod1, mod2, mod3, mod4, mod5, mod6, mod7,
           apply.coef = multiply.100, apply.se = multiply.100,
           table.layout ="=dcm#-t-as=n",
           font.size = "footnotesize",
-          add.lines = list(c("Fixed-effect", "--", "County", "County, Interval", "County, Interval", "County, Interval", "County, Interval", "County, Interval"),
-                           c("Quad. State-trend", "--", "--", "--", "Yes", "Yes", "Yes", "Yes"),
-                           c("Clusterd SE", "--", "--", "--", "--", "State", "State", "State")),
+          add.lines = list(c("Fixed-effect", "--", "County", "County, Interval", "County, Interval", "County, Interval", "County, Interval"),
+                           c("Quad. State-trend", "--", "--", "--", "Yes", "Yes", "Yes"),
+                           c("Clusterd SE", "--", "--", "--", "State", "State", "State")),
           notes.append = FALSE, notes.align = "l")
 
 
 
-# Fix Column heading
-# star_1 <- star1[1:12]
-# star1_last <- star1[13:length(star1)]
-# star1_headinga <- paste("\\\\[-1.8ex] &  & (30-year) & (30-year) & (30-year) & (30-year) & (30-year) & (5-year) & (10-year) & (20-year) & (60-year)\\\\") 
-# star1 <- c(star_1, star1_headinga, star1_last)
+# star_1 <- star1[1:7]
+# star1_last <- star1[8:length(star1)]
+# star1_shrink <- paste("\\resizebox{\\columnwidth}{!}{%")
+# star1 <- c(star_1, star1_shrink, star1_last)
 
-star_1 <- star1[1:7]
-star1_last <- star1[8:length(star1)]
-star1_shrink <- paste("\\resizebox{\\columnwidth}{!}{%")
-star1 <- c(star_1, star1_shrink, star1_last)
-
-star_1 <- star1[1:15]
-star1_last <- star1[16:length(star1)]
+star_1 <- star1[1:14]
+star1_last <- star1[15:length(star1)]
 # star1_climate <- paste("\\textbf{Climate-effect}\\\\")
 star1 <- c(star_1, "\\textbf{Weather-effect}\\\\", "\\\\[-1.8ex]", star1_last)
 
-star_1 <- star1[1:32]
-star1_last <- star1[33:length(star1)]
+star_1 <- star1[1:31]
+star1_last <- star1[32:length(star1)]
 # star1_climate <- paste("\\textbf{Climate-effect}\\\\")
 star1 <- c(star_1, "\\hline \\\\[-1.8ex]", "\\textbf{Climate-effect}\\\\", "\\\\[-1.8ex]", star1_last)
 
 
 loc <- which(star1 == "\\end{tabular} ")
 star1 <- star1[1:loc-1]
-star1notes <- paste("\\parbox{8in}{Notes: Table reports regression coefficients for log crop revenue per acre using weather (year-to-year) and climate (average of interval) degree day and precipitation variables from 1950-2010.
-Crop revenue per acre is calculated by summing production (lbs) per acre times average crop price for corn, cotton, hay, soybean, and wheat from 1950-2010. Climate variables are averaged over intervals from 10 to 30-years. Regression
+star1notes <- paste("\\parbox{6.8in}{Notes: Table reports regression coefficients for log crop revenue per acre using weather (year-to-year) and climate (average of decade interval) degree day and precipitation variables from 1950-2010.
+Crop revenue per acre is calculated by summing production (lbs) per acre times average crop price for corn, cotton, hay, soybean, and wheat. Climate variables are averaged over intervals from 10 to 30-years. Regression
 estimates are weighted by total county-level total acres (smoothed using a spline). Estimates in \\textbf{bold} are statistically significant at 95\\%. Coefficients have been multiplied by 100.}")
 
-star1 <- c(star1, "\\end{tabular}%", "}", star1notes)
+star1 <- c(star1, "\\end{tabular}", star1notes)
 star1 <- c(star1, "\\end{table}")
 
 

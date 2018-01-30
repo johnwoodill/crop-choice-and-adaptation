@@ -1,38 +1,42 @@
 # install.packages("dplyr")
-# install.packages("ggthemes")
-# install.packages("doParallel")
 # install.packages("tidyr")
-
-library(tidyverse)
-library(ggthemes)
+#
+# library(tidyverse)
+# library(ggthemes)
+library(cowplot)
 library(boot)
 library(dplyr)
-library(doParallel)
+# library(doParallel)
 library(tidyr)
 
-# # Setup parallel for bootstrapping
-# cl <- makeCluster(20)
-# registerDoParallel(cl)
-
-setwd("/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/")
-
-# download.file("https://www.dropbox.com/s/u0e0wah5jnmqtf9/full_ag_data.rds?raw=1",
-#               destfile = "data/full_ag_data.rds", method = "auto")
-
+# setwd("/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/")
+# setwd("/home/johnw/Projects/adaptation-and-crop-choice/")
 # dir.create("data")
-# download.file("https://www.dropbox.com/s/ec66n5lpnf93kx0/cten.rds?raw=1",
-#               destfile = "data/cten.rds", method = "auto")
-# download.file("https://www.dropbox.com/s/z76xz06mciubjs8/cthirty.rds?raw=1",
-#               destfile = "data/cthirty.rds", method = "auto")
-# download.file("https://www.dropbox.com/s/f39oeticdhasci3/ctwenty.rds?raw=1",
-#               destfile = "data/ctwenty.rds", method = "auto")
-# download.file("https://www.dropbox.com/s/t4e95ep1zhyenon/full_ag_data.rds?raw=1",
-#               destfile = "data/full_ag_data.rds", method = "auto")
-# download.file("https://www.dropbox.com/s/5m12yu2dxhudynb/rev_crop_pred.rds?raw=1",
-#               destfile = "data/rev_crop_pred.rds", method = "auto")
+# 
+#  download.file("https://www.dropbox.com/s/u0e0wah5jnmqtf9/full_ag_data.rds?raw=1",
+#                destfile = "data/full_ag_data.rds", method = "auto")
+# 
+# 
+#  download.file("https://www.dropbox.com/s/0ou8valnkcy2g4w/cten.rds?raw=1",
+#                destfile = "data/cten.rds", method = "auto")
+# 
+#  download.file("https://www.dropbox.com/s/tvn4efevmicqjes/ctwenty.rds?raw=1",
+#                destfile = "data/ctwenty.rds", method = "auto")
+# 
+#  download.file("https://www.dropbox.com/s/b2sfagm24fvg64o/cthirty.rds?raw=1",
+#                destfile = "data/cthirty.rds", method = "auto")
+# 
+#  download.file("https://www.dropbox.com/s/lz1m3chiok48l54/sur_rev_predictions.rds?raw=1",
+#                destfile = "data/sur_rev_predictions.rds", method = "auto")
+# 
+#  download.file("https://www.dropbox.com/s/ktdboxifdcczpxu/rev_crop_predictions.rds?raw=1",
+#                destfile = "data/rev_crop_predictions.rds", method = "auto")
+
+# Crop data
+cropdat <- readRDS("data/full_ag_data.rds")
 
 # Aggregate revenue per acre (Total-effect)
-rev_crop_pred <- readRDS("data/rev_crop_pred.rds")
+rev_crop_pred <- readRDS("data/rev_crop_predictions.rds")
 
 # SUR Crop (Individual Crop revenue effect)
 sur_rev <- readRDS("data/sur_rev_predictions.rds")
@@ -42,51 +46,33 @@ cten <- readRDS("data/cten.rds")
 ctwenty <- readRDS("data/ctwenty.rds")
 cthirty <- readRDS("data/cthirty.rds")
 
-# Crop data
-cropdat <- readRDS("data/full_ag_data.rds")
-
 # Get average crop since 1980
 mdat <- cropdat %>% 
   select(year, fips, corn_grain_a, cotton_a, hay_a, wheat_a, soybean_a) %>% 
   filter(year >= 1980) %>%
   group_by(fips) %>% 
-  summarise(corn_grain_a = mean(corn_grain_a, na.rm = TRUE),
-         cotton_a = mean(cotton_a, na.rm = TRUE),
-         hay_a = mean(hay_a, na.rm = TRUE),
-         wheat_a = mean(wheat_a, na.rm = TRUE),
-         soybean_a = mean(soybean_a, na.rm = TRUE))
+  summarise(avg_corn_grain_a = mean(corn_grain_a, na.rm = TRUE),
+         avg_cotton_a = mean(cotton_a, na.rm = TRUE),
+         avg_hay_a = mean(hay_a, na.rm = TRUE),
+         avg_wheat_a = mean(wheat_a, na.rm = TRUE),
+         avg_soybean_a = mean(soybean_a, na.rm = TRUE))
 
-dat <- cropdat
-dat$corn_grain_a <- NULL
-dat$cotton_a <- NULL
-dat$hay_a <- NULL
-dat$soybean_a <- NULL
-dat$wheat_a <- NULL
+nmdat <- select(cropdat, fips)
+nmdat <- left_join(nmdat, mdat, by = "fips")
+head(nmdat)
 
-dat <- left_join(dat, mdat, by = "fips")
-constant_acres <- (dat$corn_grain_a + dat$cotton_a + dat$hay_a + dat$soybean_a + dat$wheat_a)
+constant_acres <- (nmdat$avg_corn_grain_a + nmdat$avg_cotton_a + nmdat$avg_hay_a + nmdat$avg_soybean_a + nmdat$avg_wheat_a)
 sum(constant_acres)
 sum(cropdat$acres)
 
 #-----------------------------------------------------------------------------------
 # Total-effect
 
-a <- cten$predictions$corn.pred*cropdat$acres + 
-     cten$predictions$cotton.pred*cropdat$acres +
-     cten$predictions$hay.pred*cropdat$acres +
-     cten$predictions$soybean.pred*cropdat$acres +
-     cten$predictions$wheat.pred*cropdat$acres
-
-head(a)
-head(cropdat$acres*rev_crop_pred$modten_rev.pred)
-head(a*rev_crop_pred$modten_rev.pred)
-head(total_effect_w_adaptation_ten)
-
-
 # Remove negative values from predictions
 rev_crop_pred$modten_rev.pred <- ifelse(rev_crop_pred$modten_rev.pred < 0, 0, rev_crop_pred$modten_rev.pred)
 rev_crop_pred$modtwenty_rev.pred <- ifelse(rev_crop_pred$modtwenty_rev.pred < 0, 0, rev_crop_pred$modtwenty_rev.pred)
 rev_crop_pred$modthirty_rev.pred <- ifelse(rev_crop_pred$modthirty_rev.pred < 0, 0, rev_crop_pred$modthirty_rev.pred)
+
 
 
 # w/ adaptation
@@ -109,27 +95,14 @@ total_effect_w_adaptation_thirty <- ((cthirty$predictions$corn.pred*cropdat$acre
                                     cthirty$predictions$wheat.pred*cropdat$acres)*rev_crop_pred$modthirty_rev.pred) 
 
 # w/o adaptation
-total_effect_wo_adaptation_ten <- ((cten$predictions$corn.pred*constant_acres + 
-                                    cten$predictions$cotton.pred*constant_acres + 
-                                    cten$predictions$hay.pred*constant_acres + 
-                                    cten$predictions$soybean.pred*constant_acres + 
-                                    cten$predictions$wheat.pred*constant_acres)*rev_crop_pred$modten_rev.pred) 
+total_effect_wo_adaptation_ten <- ((constant_acres)*rev_crop_pred$modten_rev.pred) 
   
-total_effect_wo_adaptation_twenty <- ((ctwenty$predictions$corn.pred*constant_acres + 
-                                    ctwenty$predictions$cotton.pred*constant_acres + 
-                                    ctwenty$predictions$hay.pred*constant_acres + 
-                                    ctwenty$predictions$soybean.pred*constant_acres + 
-                                    ctwenty$predictions$wheat.pred*constant_acres)*rev_crop_pred$modtwenty_rev.pred) 
+total_effect_wo_adaptation_twenty <- ((constant_acres)*rev_crop_pred$modtwenty_rev.pred) 
 
-total_effect_wo_adaptation_thirty <- ((cthirty$predictions$corn.pred*constant_acres + 
-                                    cthirty$predictions$cotton.pred*constant_acres + 
-                                    cthirty$predictions$hay.pred*constant_acres + 
-                                    cthirty$predictions$soybean.pred*constant_acres + 
-                                    cthirty$predictions$wheat.pred*constant_acres)*rev_crop_pred$modthirty_rev.pred) 
+total_effect_wo_adaptation_thirty <- ((constant_acres)*rev_crop_pred$modthirty_rev.pred) 
 
 
 tdat <- data.frame(temp = rev_crop_pred$temp,
-                   effect = rev_crop_pred$effect,
                    total_effect_w_adaptation_ten = total_effect_w_adaptation_ten,
                    total_effect_w_adaptation_twenty = total_effect_w_adaptation_twenty,
                    total_effect_w_adaptation_thirty = total_effect_w_adaptation_thirty,
@@ -137,26 +110,70 @@ tdat <- data.frame(temp = rev_crop_pred$temp,
                    total_effect_wo_adaptation_twenty = total_effect_wo_adaptation_twenty,
                    total_effect_wo_adaptation_thirty = total_effect_wo_adaptation_thirty)
 
-pc <- function(x){ 100*(x - first(x))/first(x)}
+bsum <- function(x,i) sum(x[i])
+# 
 
-pdat <- tdat %>% 
-  group_by(temp, effect) %>% 
+# tdat_se <- tdat %>%
+#  group_by(temp) %>%
+#  summarise(total_effect_w_adaptation_ten_se = sd(boot(tdat$total_effect_w_adaptation_ten, bsum, R = 2, parallel = "multicore", ncpus = 1)$t),
+#            total_effect_w_adaptation_twenty_se = sd(boot(tdat$total_effect_w_adaptation_twenty, bsum, R = 2, parallel = "multicore", ncpus = 1)$t),
+#            total_effect_w_adaptation_thirty_se = sd(boot(tdat$total_effect_w_adaptation_thirty, bsum, R = 2, parallel = "multicore", ncpus = 1)$t),
+#            total_effect_wo_adaptation_ten_se = sd(boot(tdat$total_effect_wo_adaptation_ten, bsum, R = 2, parallel = "multicore", ncpus = 1)$t),
+#            total_effect_wo_adaptation_twenty_se = sd(boot(tdat$total_effect_wo_adaptation_twenty, bsum, R = 2, parallel = "multicore", ncpus = 1)$t),
+#            total_effect_wo_adaptation_thirty_se = sd(boot(tdat$total_effect_wo_adaptation_thirty, bsum, R = 2, parallel = "multicore", ncpus = 1)$t))
+
+tdat_se <- structure(list(temp = c(0, 1, 2, 3, 4, 5), total_effect_w_adaptation_ten_se = c(19073790202.906, 
+19740204081.8862, 18962089673.5456, 19930084914.5478, 19356885005.4511, 
+19551729107.7945), total_effect_w_adaptation_twenty_se = c(20288624647.0258, 
+19995052402.5343, 20247284409.4748, 20377496305.5224, 20244882118.4208, 
+20795093748.0419), total_effect_w_adaptation_thirty_se = c(29385105873.758, 
+29183886072.3893, 29797870630.2517, 28306794237.1547, 29421155696.9885, 
+28564991980.449), total_effect_wo_adaptation_ten_se = c(17328198656.3934, 
+17858678788.8979, 17988467793.88, 17376515160.1466, 17296291309.0373, 
+17600396659.6228), total_effect_wo_adaptation_twenty_se = c(18702940711.968, 
+18093569361.8691, 18943875193.7337, 18309450542.6874, 18889964653.1173, 
+18370925222.3326), total_effect_wo_adaptation_thirty_se = c(24637581936.2668, 
+25525693012.456, 24798626986.7444, 25601753993.2751, 25108298730.2547, 
+24808117215.4096)), class = c("tbl_df", "tbl", "data.frame"), .Names = c("temp", 
+"total_effect_w_adaptation_ten_se", "total_effect_w_adaptation_twenty_se", 
+"total_effect_w_adaptation_thirty_se", "total_effect_wo_adaptation_ten_se", 
+"total_effect_wo_adaptation_twenty_se", "total_effect_wo_adaptation_thirty_se"
+), row.names = c(NA, -6L))
+
+
+tpdat <- tdat %>% 
+  group_by(temp) %>% 
   summarise_all(sum) %>% 
-  ungroup() %>% 
-  select(-temp) %>% 
-  group_by(effect) %>% 
-  mutate_all(pc)
+  ungroup() 
 
-pdat
-pdat$temp <- c(0, 1, 2, 3, 4, 5)
-pdat <- gather(pdat, key = crop, value = value, -temp, -effect)
-pdat$interval <- rep(c("10-year", "20-year", "30-year"), each = 6)
-pdat$type <- c(rep("Total effect w/ adaptation", 18), rep("Total effect w/o adaptation", 18))
-head(pdat)
-pdat
-ggplot(pdat, aes(temp, value, color = type)) + geom_line() + facet_wrap(~interval, scales = "free") + ylim(-10, 100)
+tpdat <- gather(tpdat, key = crop, value = value, -temp)
+tdat_se <- gather(tdat_se, key = crop, value = se, -temp)
+tdat_se$crop <- gsub("_se", "", tdat_se$crop)
+
+tpdat <- left_join(tpdat, tdat_se, by = c("temp", "crop"))
+tpdat$min <- tpdat$value - tpdat$se*1.96
+tpdat$max <- tpdat$value + tpdat$se*1.96
+
+tpdat <- tpdat %>% 
+  group_by(crop) %>% 
+  mutate(change = 100*(value - first(value))/first(value),
+             change_min = 100*(min - first(value))/first(value),
+             change_max = 100*(max - first(value))/first(value)) %>% 
+  ungroup()
 
 
+tpdat$interval <- rep(c("10-year", "20-year", "30-year"), by = 3, each = 6)
+tpdat$effect <- c(rep("Total effect (w/ adaptation)", 18), rep("Total effect (w/o adaptation)", 18))
+tpdat$crop <- NULL
+tpdat <- select(tpdat, temp, interval, effect, change, change_min, change_max)
+head(tpdat)
+
+ggplot(tpdat, aes(temp, change, color = effect)) + geom_line() + 
+  geom_line(aes(temp, change_min), linetype = "dashed") +
+  geom_line(aes(temp, change_max), linetype = "dashed") + facet_wrap(~interval) 
+
+
+#----------------------------------------------------------------------------------------
 # Crop-effect
 
 # Assign intervals
@@ -179,18 +196,18 @@ cdat$soybean_rev <- ifelse(cdat$soybean_rev < 0, 0, cdat$soybean_rev)
 cdat$wheat_rev <- ifelse(cdat$wheat_rev < 0, 0, cdat$wheat_rev)
 
 # Get crop acres by county
-cdat$corn.pred <- cdat$corn.pred*cropdat$acres
-cdat$cotton.pred <- cdat$cotton.pred*cropdat$acres
-cdat$hay.pred <- cdat$hay.pred*cropdat$acres
-cdat$soybean.pred <- cdat$soybean.pred*cropdat$acres
-cdat$wheat.pred <- cdat$wheat.pred*cropdat$acres
-
-# Get crop acres by county
 cdat$corn.pred_ncs <- cdat$corn.pred*constant_acres
 cdat$cotton.pred_ncs <- cdat$cotton.pred*constant_acres
 cdat$hay.pred_ncs <- cdat$hay.pred*constant_acres
 cdat$soybean.pred_ncs <- cdat$soybean.pred*constant_acres
 cdat$wheat.pred_ncs <- cdat$wheat.pred*constant_acres
+
+# Get crop acres by county
+cdat$corn.pred <- cdat$corn.pred*cropdat$acres
+cdat$cotton.pred <- cdat$cotton.pred*cropdat$acres
+cdat$hay.pred <- cdat$hay.pred*cropdat$acres
+cdat$soybean.pred <- cdat$soybean.pred*cropdat$acres
+cdat$wheat.pred <- cdat$wheat.pred*cropdat$acres
 
 climate_effect <- (cdat$corn.pred*cdat$corn_rev) + (cdat$cotton.pred*cdat$cotton_rev) + (cdat$hay.pred*cdat$hay_rev) +
   (cdat$soybean.pred*cdat$soybean_rev) + (cdat$wheat.pred*cdat$wheat_rev)
@@ -199,30 +216,78 @@ no_cs_effect <- (cdat$corn.pred_ncs*cdat$corn_rev) + (cdat$cotton.pred_ncs*cdat$
   (cdat$soybean.pred_ncs*cdat$soybean_rev) + (cdat$wheat.pred_ncs*cdat$wheat_rev)
 
 cpdat <-  data.frame(temp = cdat$temp,
-                     type = cdat$type,
-                     effect = cdat$effect,
+                     interval = cdat$type,
                      climate_effect = climate_effect,
                      no_cs_effect = no_cs_effect)
+head(cpdat)
+
+
+cpdat_se <- cpdat %>%
+ group_by(temp, interval) %>%
+ summarise(climate_effect_se = sd(boot(cpdat$climate_effect, bsum, R = 2000, parallel = "multicore", ncpus = 10)$t),
+           no_cs_effect_se = sd(boot(cpdat$no_cs_effect, bsum, R = 2000, parallel = "multicore", ncpus = 10)$t))
+
+# cpdat_se <- cpdat %>%
+#  group_by(temp, interval) %>%
+#  summarise(climate_effect_se = sd(boot(cpdat$climate_effect, bsum, R = 2000)$t),
+#            no_cs_effect_se = sd(boot(cpdat$no_cs_effect, bsum, R = 2000)$t))
+
+cpdat_se <- structure(list(temp = c(0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4,
+4, 4, 5, 5, 5), interval = structure(c(1L, 2L, 3L, 1L, 2L, 3L, 
+1L, 2L, 3L, 1L, 2L, 3L, 1L, 2L, 3L, 1L, 2L, 3L), .Label = c("10-year", 
+"20-year", "30-year"), class = "factor"), climate_effect_se = c(17162770787.7136, 
+16511449418.8604, 16516497036.557, 17048234170.274, 16612557518.7988, 
+16934512496.6512, 16881661827.3878, 16260316254.8786, 16836122180.2142, 
+16668068685.4391, 16495741090.535, 16990070603.2612, 16750783296.0539, 
+16932956463.6496, 16409738327.8969, 16899012963.3939, 16690644540.3352, 
+17027740255.2907), no_cs_effect_se = c(16476036916.5247, 16112724262.157, 
+16347586637.54, 16280438631.2917, 16564547977.1034, 16371055819.0225, 
+16794426321.4232, 16461823595.627, 16179542557.4212, 16257916487.8651, 
+16566092453.8316, 16003455775.3366, 16677241345.2355, 16493033566.4019, 
+15979152798.4165, 16347460181.8961, 16421341245.4817, 16094963705.5546
+)), .Names = c("temp", "interval", "climate_effect_se", "no_cs_effect_se"
+), row.names = c(NA, -18L), class = c("grouped_df", "tbl_df", 
+"tbl", "data.frame"), vars = "temp", drop = TRUE)
 
 cpdat <- cpdat %>% 
-  group_by(type, temp) %>% 
-  summarise(climate_effect = sum(climate_effect),
-            no_cs_effect = sum(no_cs_effect)) %>% 
-  mutate(change_climate_effect = 100*(climate_effect - first(climate_effect))/first(climate_effect),
-         no_cs_effect = 100*(no_cs_effect - first(no_cs_effect))/first(no_cs_effect))
+  group_by(temp, interval) %>% 
+  summarise_all(sum) %>% 
+  ungroup() 
+
+cpdat <- gather(cpdat, key = effect, value = value, -temp, -interval)
+cpdat_se <- gather(cpdat_se, key = effect, value = se, -temp, -interval)
+cpdat_se$effect <- gsub("_se", "", cpdat_se$effect)
+
+cpdat <- left_join(cpdat, cpdat_se, by = c("temp", "effect", "interval"))
+cpdat$min <- cpdat$value - cpdat$se*1.96
+cpdat$max <- cpdat$value + cpdat$se*1.96
+
+
+cpdat <- cpdat %>% 
+  group_by(interval, effect) %>% 
+  mutate(change = 100*(value - first(value))/first(value),
+         change_min = 100*(min - first(value))/first(value),
+         change_max = 100*(max - first(value))/first(value))
+
          
 head(cpdat)
-cpdat <- select(cpdat, -climate_effect) %>% gather(key = effect, value = value, -type, -temp)
-
-ggplot(cpdat, aes(temp, value, color = effect)) + geom_line() + facet_wrap(~type)
+cpdat <- select(cpdat, temp, interval, effect, change, change_min, change_max)
 
 
+cpdat$effect <- factor(cpdat$effect, levels = c("no_cs_effect", "climate_effect"),
+                       labels = c("Crop effect (w/o adaptation)", "Crop effect (w/ adaptation)"))
+cpdat$panel <- 2
+tpdat$panel <- 1
+head(cpdat)
+head(tpdat)
 
+pdat <- bind_rows(cpdat, tpdat)
 
-
-
-ggplot(cpdat, aes(x = temp, y = value, group = effect)) + 
-  # geom_ribbon(aes(ymax = value_max, ymin = value_min), fill = "#C0CCD9", alpha = 0.5 ) +
+pdat$effect <- factor(pdat$effect, levels = c("Total effect (w/ adaptation)", "Total effect (w/o adaptation)",
+                                              "Crop effect (w/ adaptation)", "Crop effect (w/o adaptation)")) 
+pdat
+ggplot(pdat, aes(x = temp, y = change, group = effect)) + 
+  geom_ribbon(aes(ymax = change_max, ymin = change_min), fill = "#C0CCD9", alpha = 0.5 ) +
   geom_line(aes(color = effect)) + 
   geom_point(aes(color = effect), size = 0.5) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey", alpha = 0.5) +
@@ -233,205 +298,19 @@ ggplot(cpdat, aes(x = temp, y = value, group = effect)) +
   annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
   scale_x_continuous(breaks = 0:5, labels = c("+0C", "+1C", "+2C", "+3C", "+4C", "+5C")) +
   scale_y_continuous(breaks = seq(0,-50, by = -10), labels = c("0", "-10%", "-20%", "-30%", "-40%", "-50%")) +
-  guides(color = guide_legend(keywidth = 2, keyheight = 1,
+  guides(color = guide_legend(keywidth = 1, keyheight = 1,
                                 override.aes = list(linetype = c(1, 1),
                                                     size = 1.5,
                                                     shape = c(NA, NA)))) +
-    facet_wrap(~type) +
+    facet_wrap(panel~interval, labeller = labeller(
+      panel = c('1' = '', '2' = ''))) +
     theme(legend.position = "top", 
         legend.box.background = element_rect(colour = "grey"), 
         legend.title = element_blank(),
-        legend.key = element_rect(fill = NA, color = NA))
+        legend.key = element_rect(fill = NA, color = NA),
+        legend.text=element_text(size=6.3))
 
 
+ggsave("figures/1-main_rev_plot.pdf", width = 6, height = 5)
 
-
-
-
-
-#---------------------------------------------------------------------------------------------------
-# Individual crop effects
-
-
-
-# Assign rev to climate data
-# cdat$corn_rev <- rep(sur_rev$)
-
-
-cdat$cotton_rev <- rep(rev_crop_pred$cotton_rev.pred, 3)
-cdat$hay_rev <- rep(rev_crop_pred$hay_rev.pred, 3)
-cdat$soybean_rev <- rep(rev_crop_pred$soybean_rev.pred, 3)
-cdat$wheat_rev <- rep(rev_crop_pred$wheat_rev.pred, 3)
-
-# Remove negative values from predictions
-cdat$corn_rev <- ifelse(cdat$corn_rev < 0, 0, cdat$corn_rev)
-cdat$cotton_rev <- ifelse(cdat$cotton_rev < 0, 0, cdat$cotton_rev)
-cdat$hay_rev <- ifelse(cdat$hay_rev < 0, 0, cdat$hay_rev)
-cdat$soybean_rev <- ifelse(cdat$soybean_rev < 0, 0, cdat$soybean_rev)
-cdat$wheat_rev <- ifelse(cdat$wheat_rev < 0, 0, cdat$wheat_rev)
-
-# Get crop acres by county
-cdat$corn.pred <- cdat$corn.pred*cropdat$acres
-cdat$cotton.pred <- cdat$cotton.pred*cropdat$acres
-cdat$hay.pred <- cdat$hay.pred*cropdat$acres
-cdat$soybean.pred <- cdat$soybean.pred*cropdat$acres
-cdat$wheat.pred <- cdat$wheat.pred*cropdat$acres
-
-head(cdat)
-
-# Assign climate effects
-climate_effect <- (cdat$corn.pred*cdat$corn_rev) + (cdat$cotton.pred*cdat$cotton_rev) + (cdat$hay.pred*cdat$hay_rev) +
-  (cdat$soybean.pred*cdat$soybean_rev) + (cdat$wheat.pred*cdat$wheat_rev)
-
-# No crop-switching
-
-# Get no crop switching data
-ndat$corn.pred <- rev_crop_pred$corn_rev.pred*ndat$corn_grain_a
-ndat$cotton.pred <- rev_crop_pred$cotton_rev.pred*ndat$cotton_a
-ndat$hay.pred <- rev_crop_pred$hay_rev.pred*ndat$hay_a
-ndat$soybean.pred <- rev_crop_pred$soybean_rev.pred*ndat$soybean_a
-ndat$wheat.pred <- rev_crop_pred$wheat_rev.pred*ndat$wheat_a
-
-head(ndat)
-
-# Get no crop switching effect
-no_cs_effect <- (ndat$corn.pred) + (ndat$cotton.pred) + (ndat$hay.pred) + (ndat$soybean.pred) + (ndat$wheat.pred)
-
-
-# Get plot data
-pdat <- data.frame(year = rep(cropdat$year, 3),
-                   ten = rep(cropdat$ten, 3),
-                   twenty = rep(cropdat$twenty, 3),
-                   thirty = rep(cropdat$thirty, 3),
-                   fips = rep(cropdat$fips, 3),
-                   temp = cdat$temp,
-                   type = cdat$type)
-
-
-# Assign climate and no crop switching effects
-pdat$climate_effect <- climate_effect
-pdat$no_cs_effect <- no_cs_effect
-
-
-
-bsum <- function(x,i) sum(x[i])
-# Test boot
-## boot(cropdat$ln_rev, bsum, R = 2, strata = cropdat$five, parallel = "multicore", ncpus = 14)$t
-
-# 
-# pdat_se_ten <- pdat %>%
-#   filter(type == "10-year") %>%
-#   group_by(temp, type) %>%
-#   summarise(climate_se_sum = sd(boot(pdat$climate_effect, bsum, R = 2000)$t),
-#             no_cs_se_sum = sd(boot(pdat$no_cs_effect, bsum, R = 2000)$t))
-# 
-# pdat_se_twenty <- pdat %>%
-#   filter(type == "20-year") %>%
-#   group_by(temp, type) %>%
-#   summarise(climate_se_sum = sd(boot(pdat$climate_effect, bsum, R = 2000)$t),
-#             no_cs_se_sum = sd(boot(pdat$no_cs_effect, bsum, R = 2000)$t))
-# 
-# pdat_se_thirty <- pdat %>%
-#   filter(type == "30-year") %>%
-#   group_by(temp, type) %>%
-#   summarise(climate_se_sum = sd(boot(pdat$climate_effect, bsum, R = 2000)$t),
-#             no_cs_se_sum = sd(boot(pdat$no_cs_effect, bsum, R = 2000)$t))
-# # #
-
-# Results from AWS run
-pdat_se_ten <- structure(list(temp = c(0, 1, 2, 3, 4, 5), type = structure(c(1L, 
-1L, 1L, 1L, 1L, 1L), .Label = c("10-year", "20-year", "30-year"
-), class = "factor"), climate_se_sum = c(5254676156.82528, 5178662535.38406, 
-5304213056.50403, 5192633070.83388, 5292269833.13169, 5366307321.31913
-), no_cs_se_sum = c(4247143411.80754, 4391272622.4693, 4313769731.86249, 
-4331639487.54841, 4315580455.93608, 4438163581.27787)), .Names = c("temp", 
-"type", "climate_se_sum", "no_cs_se_sum"), class = c("grouped_df", 
-"tbl_df", "tbl", "data.frame"), row.names = c(NA, -6L), vars = "temp", drop = TRUE)
-
-
-pdat_se_twenty <- structure(list(temp = c(0, 1, 2, 3, 4, 5), type = structure(c(2L, 
-2L, 2L, 2L, 2L, 2L), .Label = c("10-year", "20-year", "30-year"
-), class = "factor"), climate_se_sum = c(5244146160.07248, 5268045204.95006, 
-5338659160.36829, 5265452635.0205, 5292947363.01195, 5316826463.30749
-), no_cs_se_sum = c(4295090098.65422, 4282145462.36554, 4283873111.56688, 
-4360165700.52113, 4295595698.79234, 4346001858.6149)), .Names = c("temp", 
-"type", "climate_se_sum", "no_cs_se_sum"), class = c("grouped_df", 
-"tbl_df", "tbl", "data.frame"), row.names = c(NA, -6L), vars = "temp", drop = TRUE)
-  
-
-pdat_se_thirty <- structure(list(temp = c(0, 1, 2, 3, 4, 5), type = structure(c(3L, 
-3L, 3L, 3L, 3L, 3L), .Label = c("10-year", "20-year", "30-year"
-), class = "factor"), climate_se_sum = c(5365321282.20105, 5197660903.35256, 
-5404942357.1265, 5383358261.21039, 5273807976.11258, 5316758511.62023
-), no_cs_se_sum = c(4314116091.74431, 4446948743.03167, 4513815813.85627, 
-4410117210.59456, 4391835867.79902, 4388037066.66999)), .Names = c("temp", 
-"type", "climate_se_sum", "no_cs_se_sum"), class = c("grouped_df", 
-"tbl_df", "tbl", "data.frame"), row.names = c(NA, -6L), vars = "temp", drop = TRUE)
-
-
-
-pdat_se <- rbind(pdat_se_ten, pdat_se_twenty, pdat_se_thirty)
-# pdat_se
-
-pdat <- pdat %>% 
-  group_by(type, temp) %>% 
-  summarise(climate_effect = sum(climate_effect),
-            no_cs_effect = sum(no_cs_effect)) %>% 
-  left_join(pdat_se, by = c("type", "temp")) %>%
-  mutate(climate_effect_min = climate_effect - 1.96*climate_se_sum,
-         climate_effect_max = climate_effect + 1.96*climate_se_sum,
-         no_cs_effect_min = no_cs_effect - 1.96*no_cs_se_sum,
-         no_cs_effect_max = no_cs_effect + 1.96*no_cs_se_sum) %>%
-  group_by(type) %>% 
-  mutate(change_climate_effect = 100*(climate_effect - first(climate_effect))/first(climate_effect),
-         change_no_cs_effect = 100*(no_cs_effect - first(no_cs_effect))/first(no_cs_effect),
-         change_climate_effect_max = 100*(climate_effect_max - first(climate_effect))/first(climate_effect),
-         change_no_cs_effect_max = 100*(no_cs_effect_max - first(no_cs_effect))/first(no_cs_effect),
-         change_climate_effect_min = 100*(climate_effect_min - first(climate_effect))/first(climate_effect),
-         change_no_cs_effect_min = 100*(no_cs_effect_min - first(no_cs_effect))/first(no_cs_effect))
-
-
-
-pdat1 <- pdat %>% 
-  select(type, temp, change_climate_effect, change_no_cs_effect) %>% 
-  gather(key = effect, value = value, -type, -temp)
-
-pdat2 <- pdat %>%
-    select(type, temp, change_climate_effect_max, change_no_cs_effect_max) %>%
-  gather(key = effect, value = value_max, -type, -temp)
-
-pdat3 <- pdat %>%
-    select(type, temp, change_climate_effect_min, change_no_cs_effect_min) %>%
-  gather(key = effect, value = value_min, -type, -temp)
-
-pdat1$value_max <- pdat2$value_max
-pdat1$value_min <- pdat3$value_min
-
-pdat1$effect <- factor(pdat1$effect, levels = c("change_climate_effect", "change_no_cs_effect"),
-                       labels = c("Climate acres \n (w/ crop switching)", "Constant acres \n (w/o crop switching)"))
-pdat1$type <- factor(pdat1$type, levels = c("10-year", "20-year", "30-year"))
-
-ggplot(pdat1, aes(x = temp, y = value, group = effect)) + 
-  geom_ribbon(aes(ymax = value_max, ymin = value_min), fill = "#C0CCD9", alpha = 0.5 ) +
-  geom_line(aes(color = effect)) + 
-  geom_point(aes(color = effect), size = 0.5) +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "grey", alpha = 0.5) +
-  theme_tufte(base_size = 10) +
-  ylab("% Change in Total Revenue") +
-  xlab("Change in Temperature (C)") +
-  annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
-  annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
-  scale_x_continuous(breaks = 0:5, labels = c("+0C", "+1C", "+2C", "+3C", "+4C", "+5C")) +
-  scale_y_continuous(breaks = seq(0,-50, by = -10), labels = c("0", "-10%", "-20%", "-30%", "-40%", "-50%")) +
-  guides(color = guide_legend(keywidth = 2, keyheight = 1,
-                                override.aes = list(linetype = c(1, 1),
-                                                    size = 1.5,
-                                                    shape = c(NA, NA)))) +
-    facet_wrap(~type) +
-    theme(legend.position = "top", 
-        legend.box.background = element_rect(colour = "grey"), 
-        legend.title = element_blank(),
-        legend.key = element_rect(fill = NA, color = NA))
-
-ggsave("figures/1-main_rev_plot.pdf", width = 6, height = 4)
 

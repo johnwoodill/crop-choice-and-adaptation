@@ -150,6 +150,30 @@ saveRDS(cthirty, "data/cthirty.rds")
 
 pdat <- rbind(cten$agg_predictions, ctwenty$agg_predictions, cthirty$agg_predictions)
 
+head(pdat)
+
+ggplot(pdat, aes(temp, (sum/1000000), color = crop)) + geom_line() + 
+  geom_hline(yintercept = 12073232296/1000000, linetype = "dashed", color = "grey") +
+  theme_tufte(base_size = 10) +
+  ylab("Total Acres \n (Millions)") +
+  xlab("Change in Temperature (C)") +
+  annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
+  annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
+  scale_x_continuous(breaks = 0:5, labels = c("+0C", "+1C", "+2C", "+3C", "+4C", "+5C")) +
+  theme(legend.position = "top", 
+       #legend.justification = c("left", "top"), 
+       legend.box.background = element_rect(colour = "grey"), 
+       legend.title = element_blank(), legend.key = element_blank(),
+       axis.text.x = element_text(angle = 45, hjust = 1)) +
+  #theme(legend.position = c(.85,1), 
+  #     legend.justification = c("left", "top"), 
+  #     legend.box.background = element_rect(colour = "grey"), 
+  #     legend.title = element_blank(), legend.key = element_blank()) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey") +
+    facet_wrap(~type) 
+
+pdat %>% group_by(temp, type) %>% summarise(nsum = sum(sum))
+
 pdat <- pdat %>% 
   group_by(crop, type, effect) %>% 
   mutate(change = (sum - first(sum))/first(sum))
