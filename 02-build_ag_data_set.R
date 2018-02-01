@@ -802,7 +802,7 @@ cropdat <- filter(cropdat, state != "ma")
 cropdat <- filter(cropdat, state != "ct")
 
 
-# Quadratic State-by-year time trends
+# State-level time trends
 # Linear
 state_trends <- as.data.frame(dummyCreator(cropdat$state, "trend1"))
 state_trends$trend <- cropdat$trend
@@ -817,7 +817,41 @@ state_trends_sq$trend_sq <- NULL
 
 cropdat <- cbind(cropdat, state_trends, state_trends_sq)
 
+# State-level interval trend 
+ten_trend <- as.data.frame(dummyCreator(cropdat$state, "ten_trend1"))
+twenty_trend <- as.data.frame(dummyCreator(cropdat$state, "twenty_trend1"))
+thirty_trend <- as.data.frame(dummyCreator(cropdat$state, "thirty_trend1"))
 
+ten_trend$ten <- cropdat$ten
+twenty_trend$twenty <- cropdat$twenty
+thirty_trend$thirty <- cropdat$thirty
+
+ten_trend <- ten_trend[, 1:length(ten_trend)]*ten_trend$ten
+twenty_trend <- twenty_trend[, 1:length(twenty_trend)]*twenty_trend$twenty
+thirty_trend <- thirty_trend[, 1:length(thirty_trend)]*thirty_trend$thirty
+ten_trend$ten <- NULL
+twenty_trend$twenty <- NULL
+thirty_trend$thirty <- NULL
+
+# Quadratic
+ten_trend_sq <- as.data.frame(dummyCreator(cropdat$state, "ten_trend2"))
+twenty_trend_sq <- as.data.frame(dummyCreator(cropdat$state, "twenty_trend2"))
+thirty_trend_sq <- as.data.frame(dummyCreator(cropdat$state, "thirty_trend2"))
+
+ten_trend_sq$ten_sq <- cropdat$ten^2
+twenty_trend_sq$twenty_sq <- cropdat$twenty^2
+thirty_trend_sq$thirty_sq <- cropdat$thirty^2
+
+ten_trend_sq <- ten_trend_sq[, 1:length(ten_trend_sq)]*ten_trend_sq$ten_sq
+twenty_trend_sq <- twenty_trend_sq[, 1:length(twenty_trend_sq)]*twenty_trend_sq$twenty_sq
+thirty_trend_sq <- thirty_trend_sq[, 1:length(thirty_trend_sq)]*thirty_trend_sq$thirty_sq
+ten_trend$ten_sq <- NULL
+twenty_trend$twenty_sq <- NULL
+thirty_trend$thirty_sq <- NULL
+
+cropdat <- cbind(cropdat, ten_trend, twenty_trend, thirty_trend, ten_trend_sq, twenty_trend_sq, thirty_trend_sq)
+
+# Save cropdat
 cropdat$state <- factor(cropdat$state)
 saveRDS(cropdat, "data/full_ag_data.rds")
 fulldat <- readRDS("data/full_ag_data.rds")
