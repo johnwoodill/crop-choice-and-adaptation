@@ -36,8 +36,8 @@ p5 <- readRDS("data/degree_day_changes/panel_adapt_regression_data_5C.rds")
 #---------------------------------------------------------------------------------
 # 10-year
 # Get predictions for weather conditional on climate (restrict terms to weather)
-wcmodten_0p <- predictFelm(modten, newdata = cropdat, var.terms = wcterms_ten)
-wcmodten_1p <- predictFelm(modten, newdata = p1, var.terms = wcterms_ten)
+wcmodten_0p <- predictFelm(felm.fit = modten, newdata = cropdat, var.terms = wcterms_ten)
+wcmodten_1p <- predictFelm(felm.fit = modten, newdata = p1, var.terms = wcterms_ten)
 wcmodten_2p <- predictFelm(modten, newdata = p2, var.terms = wcterms_ten)
 wcmodten_3p <- predictFelm(modten, newdata = p3, var.terms = wcterms_ten)
 wcmodten_4p <- predictFelm(modten, newdata = p4, var.terms = wcterms_ten)
@@ -206,12 +206,12 @@ head(pdat_wmodten)
 #---------------------------------------------------------------------------------
 # 20-year
 # Get predictions for weather conditional on climate (restrict terms to weather)
-wmodtwenty_0p <- predictFelm(modtwenty, newdata = cropdat, var.terms = cterms_twenty)
-wmodtwenty_1p <- predictFelm(modtwenty, newdata = p1, var.terms = cterms_twenty)
-wmodtwenty_2p <- predictFelm(modtwenty, newdata = p2, var.terms = cterms_twenty)
-wmodtwenty_3p <- predictFelm(modtwenty, newdata = p3, var.terms = cterms_twenty)
-wmodtwenty_4p <- predictFelm(modtwenty, newdata = p4, var.terms = cterms_twenty)
-wmodtwenty_5p <- predictFelm(modtwenty, newdata = p5, var.terms = cterms_twenty)
+wmodtwenty_0p <- predictFelm(modtwenty, newdata = cropdat, var.terms = wterms, cons.terms = cterms_twenty)
+wmodtwenty_1p <- predictFelm(modtwenty, newdata = p1, var.terms = wterms, cons.terms = cterms_twenty)
+wmodtwenty_2p <- predictFelm(modtwenty, newdata = p2, var.terms = wterms, cons.terms = cterms_twenty)
+wmodtwenty_3p <- predictFelm(modtwenty, newdata = p3, var.terms = wterms, cons.terms = cterms_twenty)
+wmodtwenty_4p <- predictFelm(modtwenty, newdata = p4, var.terms = wterms, cons.terms = cterms_twenty)
+wmodtwenty_5p <- predictFelm(modtwenty, newdata = p5, var.terms = wterms, cons.terms = cterms_twenty)
 
 # Total predicted revenue per acre
 wmodtwenty_0p$sum <- sum(exp(wmodtwenty_0p$fit + wmodtwenty_0p$res + wmodtwenty_0p$effect) - 1)
@@ -247,12 +247,12 @@ head(pdat_wmodtwenty)
 #---------------------------------------------------------------------------------
 # 30-year
 # Get predictions for weather conditional on climate (restrict terms to weather)
-wmodthirty_0p <- predictFelm(modthirty, newdata = cropdat, var.terms = cterms_thirty)
-wmodthirty_1p <- predictFelm(modthirty, newdata = p1, var.terms = cterms_thirty)
-wmodthirty_2p <- predictFelm(modthirty, newdata = p2, var.terms = cterms_thirty)
-wmodthirty_3p <- predictFelm(modthirty, newdata = p3, var.terms = cterms_thirty)
-wmodthirty_4p <- predictFelm(modthirty, newdata = p4, var.terms = cterms_thirty)
-wmodthirty_5p <- predictFelm(modthirty, newdata = p5, var.terms = cterms_thirty)
+wmodthirty_0p <- predictFelm(modthirty, newdata = cropdat, var.terms = wterms, cons.terms = cterms_thirty)
+wmodthirty_1p <- predictFelm(modthirty, newdata = p1, var.terms = wterms, cons.terms = cterms_thirty)
+wmodthirty_2p <- predictFelm(modthirty, newdata = p2, var.terms = wterms, cons.terms = cterms_thirty)
+wmodthirty_3p <- predictFelm(modthirty, newdata = p3, var.terms = wterms, cons.terms = cterms_thirty)
+wmodthirty_4p <- predictFelm(modthirty, newdata = p4, var.terms = wterms, cons.terms = cterms_thirty)
+wmodthirty_5p <- predictFelm(modthirty, newdata = p5, var.terms = wterms, cons.terms = cterms_thirty)
 
 # Total predicted revenue per acre
 wmodthirty_0p$sum <- sum(exp(wmodthirty_0p$fit + wmodthirty_0p$res + wmodthirty_0p$effect) - 1)
@@ -345,7 +345,7 @@ ggplot(pdat, aes(temp, change, group = effect)) +
     legend.box.background = element_rect(colour = "grey"),
     legend.title = element_blank(), legend.key = element_blank()) +
   facet_wrap(~interval, ncol = 3) +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "grey", alpha = 0.5) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey", alpha = 0.5) 
   
 
 ggsave("figures/rev_crop_predictions.pdf", device = "pdf", width = 6, height = 4)

@@ -120,7 +120,8 @@ p_dat <- function(x, prec){
   pdat$trend <- pdat$year - 1949
   pdat$trend_sq <- pdat$trend^2
   pdat <- as.data.frame(pdat)
-  # Quadratic State-by-year time trends
+  
+  # State-level time trends
   # Linear
   state_trends <- as.data.frame(dummyCreator(pdat$state, "trend1"))
   state_trends$trend <- pdat$trend
@@ -132,6 +133,52 @@ p_dat <- function(x, prec){
   state_trends_sq$trend_sq <- pdat$trend^2
   state_trends_sq <- state_trends_sq[, 1:length(state_trends_sq)]*state_trends_sq$trend_sq
   state_trends_sq$trend_sq <- NULL
+  
+  pdat <- cbind(pdat, state_trends, state_trends_sq)
+  
+  # State-level interval trend 
+  ten_trend <- as.data.frame(dummyCreator(pdat$state, "ten_trend1"))
+  twenty_trend <- as.data.frame(dummyCreator(pdat$state, "twenty_trend1"))
+  thirty_trend <- as.data.frame(dummyCreator(pdat$state, "thirty_trend1"))
+  
+  ten_trend$ten <- ifelse(pdat$ten == 1950, 1, ifelse(pdat$ten == 1960, 2, ifelse(pdat$ten == 1970, 3, ifelse(pdat$ten == 1980, 4, 
+  ifelse(pdat$ten == 1990, 5, 6)))))
+  
+  twenty_trend$twenty <- ifelse(pdat$twenty == 1950, 1, ifelse(pdat$twenty == 1970, 2, 3))
+  
+  thirty_trend$thirty <- ifelse(pdat$thirty == 1950, 1, 2)
+  
+  ten_trend <- ten_trend[, 1:length(ten_trend)]*ten_trend$ten
+  twenty_trend <- twenty_trend[, 1:length(twenty_trend)]*twenty_trend$twenty
+  thirty_trend <- thirty_trend[, 1:length(thirty_trend)]*thirty_trend$thirty
+  
+  
+  # Quadratic
+  ten_trend_sq <- as.data.frame(dummyCreator(pdat$state, "ten_trend2"))
+  twenty_trend_sq <- as.data.frame(dummyCreator(pdat$state, "twenty_trend2"))
+  thirty_trend_sq <- as.data.frame(dummyCreator(pdat$state, "thirty_trend2"))
+  
+  ten_trend$ten <- ifelse(pdat$ten == 1950, 1, ifelse(pdat$ten == 1960, 2, ifelse(pdat$ten == 1970, 3, ifelse(pdat$ten == 1980, 4, 
+  ifelse(pdat$ten == 1990, 5, 6)))))
+  
+  twenty_trend$twenty <- ifelse(pdat$twenty == 1950, 1, ifelse(pdat$twenty == 1970, 2, 3))
+  
+  thirty_trend$thirty <- ifelse(pdat$thirty == 1950, 1, 2)
+  
+  ten_trend_sq$ten_sq <- ten_trend$ten^2
+  twenty_trend_sq$twenty_sq <- twenty_trend$twenty^2
+  thirty_trend_sq$thirty_sq <- thirty_trend$thirty^2
+  
+  ten_trend_sq <- ten_trend_sq[, 1:length(ten_trend_sq)]*ten_trend_sq$ten_sq
+  twenty_trend_sq <- twenty_trend_sq[, 1:length(twenty_trend_sq)]*twenty_trend_sq$twenty_sq
+  thirty_trend_sq <- thirty_trend_sq[, 1:length(thirty_trend_sq)]*thirty_trend_sq$thirty_sq
+  
+  ten_trend$ten <- NULL
+  twenty_trend$twenty <- NULL
+  thirty_trend$thirty <- NULL
+  ten_trend$ten_sq <- NULL
+  twenty_trend$twenty_sq <- NULL
+  thirty_trend$thirty_sq <- NULL
   
   # pdat <- cbind(pdat, depvar)
   
@@ -146,6 +193,7 @@ p_dat <- function(x, prec){
   
   pdat <- cbind(pdat, depvar)
   pdat <- cbind(pdat, state_trends, state_trends_sq)
+  pdat <- cbind(pdat, ten_trend, twenty_trend, thirty_trend, ten_trend_sq, twenty_trend_sq, thirty_trend_sq)
   
   
                   # trend1_al, trend1_ar, trend1_ga, trend1_ia, 
