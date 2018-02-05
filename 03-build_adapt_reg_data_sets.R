@@ -30,7 +30,7 @@ prec <- read_csv("data/fips_precipitation_1900-2013.csv")
 names(prec)[4] <- "prec"
 
 # Get acres
-cropdat <- readRDS("data/full_ag_data.rds")
+# cropdat <- readRDS("data/full_ag_data.rds")
 depvar <- cropdat[, c("z_corn_a", "z_cotton_a", "z_hay_a", "z_soybean_a", "z_wheat_a")]
 cropdat$acres <- rowSums(cropdat[, c("corn_grain_a", "cotton_a", "hay_a", "soybean_a", "wheat_a")], na.rm = TRUE)
 cropdat <- select(cropdat, year, fips, state, acres)

@@ -325,7 +325,6 @@ head(cropdat)
             tmin = mean(tmin))
 
 
-
 # Schlenker and Roberts data
  # dd_dat <- read_dta("data/ddayOverAgAreaByMonth.dta")
  #  dd_dat$year <- as.integer(dd_dat$year)

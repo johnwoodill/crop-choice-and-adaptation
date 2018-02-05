@@ -214,6 +214,49 @@ thirty_map3 <- thirty_map3 + scale_fill_brewer(palette = "RdYlBu", direction = -
   
 thirty_map3
 
+
+# Climate
+# Residual checks
+modthirty_4 <- felm(prec_thirty ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
+                trend1_al + trend1_ar + 
+  trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + trend1_ky + trend1_md + 
+  trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + trend1_nc + trend1_nd + 
+  trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + trend1_tn + trend1_tx + 
+  trend1_va + trend1_wi  +
+       trend2_al + trend2_ar + 
+  trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
+  trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
+  trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
+  trend2_va + trend2_wi | fips + thirty| 0 | state, 
+            data = regdat, weights = regdat$w, psdef = FALSE)
+summary(modthirty_4)
+
+modthirty_res4 <- data.frame(value = residuals(modthirty_4))
+modthirty_res4$region <- regdat$fips
+
+modthirty_res4 <- modthirty_res4 %>% 
+  group_by(region) %>% 
+  summarise(value = mean(prec_thirty))
+
+regdat$state <- toupper(factor(regdat$state))
+states <- tolower(unique(state.name[match(regdat$state, state.abb)]))
+states <- states[!is.na(states)]  
+
+thirty_map4 <- county_choropleth(modthirty_res4,
+                 title      = NULL, state_zoom = states)
+     
+                
+thirty_map4 <- thirty_map4 + scale_fill_brewer(palette = "RdYlBu", direction = -1) + 
+  theme_tufte(base_size = 10)+ 
+  xlab("Climate Precipitation Residuals (30-year)") + ylab(NULL) + theme(legend.position = "none",
+                       axis.text.x = element_blank(),
+                       axis.text.y = element_blank(),
+                       axis.ticks.x = element_blank(),
+                       axis.ticks.y = element_blank(),
+                       panel.border = element_rect(fill = NA)) 
+  
+thirty_map4
+
 plot_grid(thirty_map1, thirty_map2, thirty_map3, ncol = 3)
 
 #---------------------------------------------------------------------------------------
@@ -342,6 +385,51 @@ twenty_map3 <- twenty_map3 + scale_fill_brewer(palette = "RdYlBu", direction = -
                        panel.border = element_rect(fill = NA)) 
   
 twenty_map3
+
+
+# Climate
+# Residual checks
+modtwenty_4 <- felm(prec_twenty ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
+                trend1_al + trend1_ar + 
+  trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + trend1_ky + trend1_md + 
+  trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + trend1_nc + trend1_nd + 
+  trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + trend1_tn + trend1_tx + 
+  trend1_va + trend1_wi  +
+       trend2_al + trend2_ar + 
+  trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
+  trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
+  trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
+  trend2_va + trend2_wi | fips + twenty| 0 | state, 
+            data = regdat, weights = regdat$w, psdef = FALSE)
+summary(modtwenty_4)
+
+modtwenty_res4 <- data.frame(value = residuals(modtwenty_4))
+modtwenty_res4$region <- regdat$fips
+
+modtwenty_res4 <- modtwenty_res4 %>% 
+  group_by(region) %>% 
+  summarise(value = mean(prec_twenty))
+
+regdat$state <- toupper(factor(regdat$state))
+states <- tolower(unique(state.name[match(regdat$state, state.abb)]))
+states <- states[!is.na(states)]  
+
+twenty_map4 <- county_choropleth(modtwenty_res4,
+                 title      = NULL, state_zoom = states)
+     
+                
+twenty_map4 <- twenty_map4 + scale_fill_brewer(palette = "RdYlBu", direction = -1) + 
+  theme_tufte(base_size = 10)+ 
+  xlab("Climate Precipitation Residuals (20-year)") + ylab(NULL) + theme(legend.position = "none",
+                       axis.text.x = element_blank(),
+                       axis.text.y = element_blank(),
+                       axis.ticks.x = element_blank(),
+                       axis.ticks.y = element_blank(),
+                       panel.border = element_rect(fill = NA)) 
+  
+twenty_map4
+
+
 
 plot_grid(twenty_map1, twenty_map2, twenty_map3, ncol = 3)
 
@@ -473,6 +561,49 @@ ten_map3 <- ten_map3 + scale_fill_brewer(palette = "RdYlBu", direction = -1) +
   
 ten_map3
 
+
+# Climate
+# Residual checks
+modten_4 <- felm(prec_ten ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
+                trend1_al + trend1_ar + 
+  trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + trend1_ky + trend1_md + 
+  trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + trend1_nc + trend1_nd + 
+  trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + trend1_tn + trend1_tx + 
+  trend1_va + trend1_wi  +
+       trend2_al + trend2_ar + 
+  trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
+  trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
+  trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
+  trend2_va + trend2_wi | fips + ten| 0 | state, 
+            data = regdat, weights = regdat$w, psdef = FALSE)
+summary(modten_4)
+
+modten_res4 <- data.frame(value = residuals(modten_4))
+modten_res4$region <- regdat$fips
+
+modten_res4 <- modten_res4 %>% 
+  group_by(region) %>% 
+  summarise(value = mean(prec_ten))
+
+regdat$state <- toupper(factor(regdat$state))
+states <- tolower(unique(state.name[match(regdat$state, state.abb)]))
+states <- states[!is.na(states)]  
+
+ten_map4 <- county_choropleth(modten_res4,
+                 title      = NULL, state_zoom = states)
+     
+                
+ten_map4 <- ten_map4 + scale_fill_brewer(palette = "GnYlBu", direction = -1) + 
+  theme_tufte(base_size = 10)+ 
+  xlab("Climate Precipitation Residuals (10-year)") + ylab(NULL) + theme(legend.position = "none",
+                       axis.text.x = element_blank(),
+                       axis.text.y = element_blank(),
+                       axis.ticks.x = element_blank(),
+                       axis.ticks.y = element_blank(),
+                       panel.border = element_rect(fill = NA)) 
+  
+ten_map4
+
 plot_grid(ten_map1, ten_map2, ten_map3, ncol = 3)
 
 #-----------------------------------------------------------------------------
@@ -601,7 +732,6 @@ mdat3_state_p <- ggplot(mdat3_state, aes(state, sum)) + geom_bar(stat = "identit
   geom_text(data = filter(mdat3_state, sum < 0), aes(x=state, y=sum, label=state), vjust=1.5) +
   ylab("Sum of differences \n (mean state DD30C residuals)") +
   xlab(NULL) +
-   ylim(ymin, ymax) +
   theme_tufte(base_size = 10) +
   annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
   annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
@@ -610,14 +740,60 @@ mdat3_state_p <- ggplot(mdat3_state, aes(state, sum)) + geom_bar(stat = "identit
         axis.ticks = element_blank())
 mdat3_state_p
 
-ymax <- max(mdat1_state$sum, mdat2_state$sum, mdat3_state$sum) + 10
-ymin <- min(mdat1_state$sum, mdat2_state$sum, mdat3_state$sum) -10
+# Precipitation
+mdat4 <- data.frame(region = modthirty_res4$region,
+                    value = modthirty_res4$value - modten_res4$value)
+
+
+mdat4_map <- county_choropleth(mdat4,
+                 title      = NULL, state_zoom = states)
+
+mdat4_map <- mdat4_map + scale_fill_brewer(palette = "RdYlBu", direction = -1) +
+  theme_tufte(base_size = 10)+
+  xlab("Differences in Climate and Weather (Precipitation Residuals)") + ylab(NULL) + theme(legend.position = "none",
+                       axis.text.x = element_blank(),
+                       axis.text.y = element_blank(),
+                       axis.ticks.x = element_blank(),
+                       axis.ticks.y = element_blank(),
+                       panel.border = element_rect(fill = NA))
+mdat4_map
+
+mdat4_state <- left_join(mdat4, fs, by = c("region"))
+mdat4_state <- mdat4_state %>%
+  group_by(state) %>%
+  summarise(sum = sum(value))
+
+mdat4_state
+total <- data.frame(state = "Total", sum = sum(mdat4_state$sum))
+mdat4_state <- rbind(mdat4_state, total)
+
+mdat4_state_p <- ggplot(mdat4_state, aes(state, sum)) + geom_bar(stat = "identity") +
+  geom_text(data = filter(mdat4_state, sum >0), aes(x=state, y=sum, label=state), vjust=-1) +
+  geom_text(data = filter(mdat4_state, sum < 0), aes(x=state, y=sum, label=state), vjust=1.5) +
+  ylab("Sum of differences \n (mean state precipitation residuals)") +
+  xlab(NULL) +
+  theme_tufte(base_size = 10) +
+  annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
+  annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey", alpha = 0.5) +
+  theme(axis.text.x = element_blank(),
+        axis.ticks = element_blank())
+mdat4_state_p
+
+
+
+
+ymax <- max(mdat1_state$sum, mdat2_state$sum, mdat3_state$sum, mdat4_state$sum) + 10
+ymin <- min(mdat1_state$sum, mdat2_state$sum, mdat3_state$sum, mdat4_state$sum) -10
 
 mdat1_state_p <- mdat1_state_p + ylim(ymin, ymax)
 mdat2_state_p <- mdat2_state_p + ylim(ymin, ymax)
 mdat3_state_p <- mdat3_state_p + ylim(ymin, ymax)
 
-mdat2_state_p <- mdat2_state_p + ylab(NULL)
-mdat3_state_p <- mdat3_state_p + ylab(NULL)
+# mdat2_state_p <- mdat2_state_p + ylab(NULL)
+# mdat3_state_p <- mdat3_state_p + ylab(NULL)
+# mdat4_state_p <- mdat4_state_p + ylab(NULL)
 
-plot_grid(mdat1_map, mdat2_map, mdat3_map, mdat1_state_p, mdat2_state_p, mdat3_state_p, ncol = 3)
+plot_grid(mdat1_map, mdat2_map, mdat3_map, mdat4_map, ncol = 2)
+          
+plot_grid(mdat1_state_p, mdat2_state_p, mdat3_state_p, mdat4_state_p, ncol = 2)
