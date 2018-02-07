@@ -201,7 +201,7 @@ ggplot(pdat, aes(temp, change)) +
   #     legend.justification = c("left", "top"), 
   #     legend.box.background = element_rect(colour = "grey"), 
   #     legend.title = element_blank(), legend.key = element_blank()) +
-  facet_wrap(type~crop, ncol = 5) +
+  facet_wrap(type~crop, ncol = 5, scales = "free") +
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey")
 
 ggsave("figures/sur_crop_share_predictions.pdf", width = 6, height = 5)

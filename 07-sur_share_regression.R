@@ -62,12 +62,7 @@ mod1 <- z_corn_a ~ dday0_10_ten + dday10_30_ten + dday30_ten + prec_ten + prec_s
   trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + trend1_ky + trend1_md + 
   trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + trend1_nc + trend1_nd + 
   trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + trend1_tn + trend1_tx + 
-  trend1_va + trend1_wi + trend1_wv +
-      trend2_al + trend2_ar + 
-  trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
-  trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
-  trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
-  trend2_va + trend2_wi + trend2_wv - 1
+  trend1_va + trend1_wi + trend1_wv  - 1
 
 
 mod2 <- z_cotton_a ~  dday0_10_ten + dday10_30_ten + dday30_ten + prec_ten + prec_sq_ten +
@@ -75,12 +70,7 @@ mod2 <- z_cotton_a ~  dday0_10_ten + dday10_30_ten + dday30_ten + prec_ten + pre
   trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + trend1_ky + trend1_md + 
   trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + trend1_nc + trend1_nd + 
   trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + trend1_tn + trend1_tx + 
-  trend1_va + trend1_wi + trend1_wv +
-      trend2_al + trend2_ar + 
-  trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
-  trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
-  trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
-  trend2_va + trend2_wi + trend2_wv - 1
+  trend1_va + trend1_wi + trend1_wv  - 1
  
 
 mod3 <- z_hay_a ~ dday0_10_ten + dday10_30_ten + dday30_ten + prec_ten + prec_sq_ten +
@@ -88,12 +78,7 @@ mod3 <- z_hay_a ~ dday0_10_ten + dday10_30_ten + dday30_ten + prec_ten + prec_sq
   trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + trend1_ky + trend1_md + 
   trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + trend1_nc + trend1_nd + 
   trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + trend1_tn + trend1_tx + 
-  trend1_va + trend1_wi + trend1_wv +
-      trend2_al + trend2_ar + 
-  trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
-  trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
-  trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
-  trend2_va + trend2_wi + trend2_wv - 1
+  trend1_va + trend1_wi + trend1_wv  - 1
 
 
 mod4 <- z_soybean_a ~ dday0_10_ten + dday10_30_ten + dday30_ten + prec_ten + prec_sq_ten +
@@ -101,12 +86,7 @@ mod4 <- z_soybean_a ~ dday0_10_ten + dday10_30_ten + dday30_ten + prec_ten + pre
   trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + trend1_ky + trend1_md + 
   trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + trend1_nc + trend1_nd + 
   trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + trend1_tn + trend1_tx + 
-  trend1_va + trend1_wi + trend1_wv +
-      trend2_al + trend2_ar + 
-  trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
-  trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
-  trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
-  trend2_va + trend2_wi + trend2_wv - 1
+  trend1_va + trend1_wi + trend1_wv  - 1
 
 
 
@@ -115,12 +95,7 @@ mod5 <- z_wheat_a ~ dday0_10_ten + dday10_30_ten + dday30_ten + prec_ten + prec_
   trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + trend1_ky + trend1_md + 
   trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + trend1_nc + trend1_nd + 
   trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + trend1_tn + trend1_tx + 
-  trend1_va + trend1_wi + trend1_wv +
-      trend2_al + trend2_ar + 
-  trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
-  trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
-  trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
-  trend2_va + trend2_wi + trend2_wv  - 1
+  trend1_va + trend1_wi + trend1_wv   - 1
 
 ten_mod <- systemfit(list(corn = mod1, 
                        cotton = mod2, 
@@ -195,13 +170,7 @@ mod1 <- z_corn_a ~ dday0_10_twenty + dday10_30_twenty + dday30_twenty + prec_twe
   trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + trend1_ky + trend1_md + 
   trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + trend1_nc + trend1_nd + 
   trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + trend1_tn + trend1_tx + 
-  trend1_va + trend1_wi + trend1_wv +
-      trend2_al + trend2_ar + 
-  trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
-  trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
-  trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
-  trend2_va + trend2_wi + trend2_wv - 1d2_sc + trend2_sd + trend2_tn + trend2_tx + 
-  trend2_va + trend2_wi + trend2_wv  - 1
+  trend1_va + trend1_wi + trend1_wv   - 1
 
 
 mod2 <- z_cotton_a ~  dday0_10_twenty + dday10_30_twenty + dday30_twenty + prec_twenty + prec_sq_twenty +
@@ -209,12 +178,7 @@ mod2 <- z_cotton_a ~  dday0_10_twenty + dday10_30_twenty + dday30_twenty + prec_
   trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + trend1_ky + trend1_md + 
   trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + trend1_nc + trend1_nd + 
   trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + trend1_tn + trend1_tx + 
-  trend1_va + trend1_wi + trend1_wv +
-      trend2_al + trend2_ar + 
-  trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
-  trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
-  trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
-  trend2_va + trend2_wi + trend2_wv  - 1
+  trend1_va + trend1_wi + trend1_wv   - 1
  
 
 mod3 <- z_hay_a ~   dday0_10_twenty + dday10_30_twenty + dday30_twenty + prec_twenty + prec_sq_twenty +
@@ -222,12 +186,7 @@ mod3 <- z_hay_a ~   dday0_10_twenty + dday10_30_twenty + dday30_twenty + prec_tw
   trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + trend1_ky + trend1_md + 
   trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + trend1_nc + trend1_nd + 
   trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + trend1_tn + trend1_tx + 
-  trend1_va + trend1_wi + trend1_wv +
-      trend2_al + trend2_ar + 
-  trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
-  trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
-  trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
-  trend2_va + trend2_wi + trend2_wv  - 1
+  trend1_va + trend1_wi + trend1_wv   - 1
 
 
 mod4 <- z_soybean_a ~  dday0_10_twenty + dday10_30_twenty + dday30_twenty + prec_twenty + prec_sq_twenty +
@@ -235,12 +194,7 @@ mod4 <- z_soybean_a ~  dday0_10_twenty + dday10_30_twenty + dday30_twenty + prec
   trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + trend1_ky + trend1_md + 
   trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + trend1_nc + trend1_nd + 
   trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + trend1_tn + trend1_tx + 
-  trend1_va + trend1_wi + trend1_wv +
-      trend2_al + trend2_ar + 
-  trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
-  trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
-  trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
-  trend2_va + trend2_wi + trend2_wv - 1
+  trend1_va + trend1_wi + trend1_wv  - 1
 
 
 
@@ -249,12 +203,7 @@ mod5 <- z_wheat_a ~  dday0_10_twenty + dday10_30_twenty + dday30_twenty + prec_t
   trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + trend1_ky + trend1_md + 
   trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + trend1_nc + trend1_nd + 
   trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + trend1_tn + trend1_tx + 
-  trend1_va + trend1_wi + trend1_wv +
-      trend2_al + trend2_ar + 
-  trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
-  trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
-  trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
-  trend2_va + trend2_wi + trend2_wv  - 1
+  trend1_va + trend1_wi + trend1_wv   - 1
 
 twenty_mod <- systemfit(list(corn = mod1, 
                        cotton = mod2, 
@@ -330,12 +279,7 @@ mod1 <- z_corn_a ~ dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thi
   trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + trend1_ky + trend1_md + 
   trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + trend1_nc + trend1_nd + 
   trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + trend1_tn + trend1_tx + 
-  trend1_va + trend1_wi + trend1_wv +
-      trend2_al + trend2_ar + 
-  trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
-  trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
-  trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
-  trend2_va + trend2_wi + trend2_wv - 1
+  trend1_va + trend1_wi + trend1_wv  - 1
 
 
 mod2 <- z_cotton_a ~ dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty +
@@ -343,12 +287,7 @@ mod2 <- z_cotton_a ~ dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_t
   trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + trend1_ky + trend1_md + 
   trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + trend1_nc + trend1_nd + 
   trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + trend1_tn + trend1_tx + 
-  trend1_va + trend1_wi + trend1_wv +
-      trend2_al + trend2_ar + 
-  trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
-  trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
-  trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
-  trend2_va + trend2_wi + trend2_wv - 1
+  trend1_va + trend1_wi + trend1_wv  - 1
  
 
 mod3 <- z_hay_a ~ dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty +
@@ -356,12 +295,7 @@ mod3 <- z_hay_a ~ dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thir
   trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + trend1_ky + trend1_md + 
   trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + trend1_nc + trend1_nd + 
   trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + trend1_tn + trend1_tx + 
-  trend1_va + trend1_wi + trend1_wv +
-      trend2_al + trend2_ar + 
-  trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
-  trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
-  trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
-  trend2_va + trend2_wi + trend2_wv  - 1
+  trend1_va + trend1_wi + trend1_wv   - 1
 
 
 mod4 <- z_soybean_a ~ dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty +
@@ -369,12 +303,7 @@ mod4 <- z_soybean_a ~ dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_
   trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + trend1_ky + trend1_md + 
   trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + trend1_nc + trend1_nd + 
   trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + trend1_tn + trend1_tx + 
-  trend1_va + trend1_wi + trend1_wv +
-      trend2_al + trend2_ar + 
-  trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
-  trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
-  trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
-  trend2_va + trend2_wi + trend2_wv - 1
+  trend1_va + trend1_wi + trend1_wv  - 1
 
 
 mod5 <- z_wheat_a ~  dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty +
@@ -382,12 +311,7 @@ mod5 <- z_wheat_a ~  dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_t
   trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + trend1_ky + trend1_md + 
   trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + trend1_nc + trend1_nd + 
   trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + trend1_tn + trend1_tx + 
-  trend1_va + trend1_wi + trend1_wv +
-      trend2_al + trend2_ar + 
-  trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
-  trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
-  trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
-  trend2_va + trend2_wi + trend2_wv - 1
+  trend1_va + trend1_wi + trend1_wv  - 1
 
 
 thirty_mod <- systemfit(list(corn = mod1, 

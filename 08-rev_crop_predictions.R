@@ -14,14 +14,14 @@ modten <- readRDS("models/rev_crop_modten.rds")
 modtwenty <- readRDS("models/rev_crop_modtwenty.rds")
 modthirty <- readRDS("models/rev_crop_modthirty.rds")
 
-wcterms_ten = c("dday0_10", "dday10_30", "dday30","prec", "prec_sq", "dday0_10_ten", "dday10_30_ten", "dday30_ten")
-wcterms_twenty = c("dday0_10", "dday10_30", "dday30","prec", "prec_sq", "dday0_10_twenty", "dday10_30_twenty", "dday30_twenty")
-wcterms_thirty = c("dday0_10", "dday10_30", "dday30","prec", "prec_sq", "dday0_10_thirty", "dday10_30_thirty", "dday30_thirty")
+wcterms_ten = c("dday0_10", "dday10_30", "dday30","prec", "prec_sq", "dday0_10_ten", "dday10_30_ten", "dday30_ten", "prec_ten", "prec_sq_ten")
+wcterms_twenty = c("dday0_10", "dday10_30", "dday30","prec", "prec_sq", "dday0_10_twenty", "dday10_30_twenty", "dday30_twenty", "prec_twenty", "prec_sq_twenty")
+wcterms_thirty = c("dday0_10", "dday10_30", "dday30","prec", "prec_sq", "dday0_10_thirty", "dday10_30_thirty", "dday30_thirty", "prec_thirty", "prec_sq_thirty")
 
 wterms <- c("dday0_10", "dday10_30", "dday30","prec", "prec_sq")
-cterms_ten <- c("dday0_10_ten", "dday10_30_ten", "dday30_ten")
-cterms_twenty <- c("dday0_10_twenty", "dday10_30_twenty", "dday30_twenty")
-cterms_thirty <- c("dday0_10_thirty", "dday10_30_thirty", "dday30_thirty")
+cterms_ten <- c("dday0_10_ten", "dday10_30_ten", "dday30_ten", "prec_ten", "prec_sq_ten")
+cterms_twenty <- c("dday0_10_twenty", "dday10_30_twenty", "dday30_twenty", "prec_twenty", "prec_sq_twenty")
+cterms_thirty <- c("dday0_10_thirty", "dday10_30_thirty", "dday30_thirty", "prec_thirty", "prec_sq_thirty")
 
 # Load changes in degree day data
 p1 <- readRDS("data/degree_day_changes/panel_adapt_regression_data_1C.rds")
@@ -58,6 +58,13 @@ wcmodten_p2_ci <- sum(exp(wcmodten_2p$felm.se.fit) - 1)
 wcmodten_p3_ci <- sum(exp(wcmodten_3p$felm.se.fit) - 1)
 wcmodten_p4_ci <- sum(exp(wcmodten_4p$felm.se.fit) - 1)
 wcmodten_p5_ci <- sum(exp(wcmodten_5p$felm.se.fit) - 1)
+
+wcmodten_p0_se <- as.numeric(unlist(exp(wcmodten_0p$felm.se.fit))) - 1
+wcmodten_p1_se <- as.numeric(unlist(exp(wcmodten_1p$felm.se.fit))) - 1
+wcmodten_p2_se <- as.numeric(unlist(exp(wcmodten_2p$felm.se.fit))) - 1
+wcmodten_p3_se <- as.numeric(unlist(exp(wcmodten_3p$felm.se.fit))) - 1
+wcmodten_p4_se <- as.numeric(unlist(exp(wcmodten_4p$felm.se.fit))) - 1
+wcmodten_p5_se <- as.numeric(unlist(exp(wcmodten_5p$felm.se.fit))) - 1
 
 wcmodten_p0_fit <- exp(wcmodten_0p$fit + wcmodten_0p$res + wcmodten_0p$effect) - 1
 wcmodten_p1_fit <- exp(wcmodten_1p$fit + wcmodten_1p$res + wcmodten_1p$effect) - 1
@@ -101,6 +108,13 @@ wcmodtwenty_p3_ci <- sum(exp(wcmodtwenty_3p$felm.se.fit) - 1)
 wcmodtwenty_p4_ci <- sum(exp(wcmodtwenty_4p$felm.se.fit) - 1)
 wcmodtwenty_p5_ci <- sum(exp(wcmodtwenty_5p$felm.se.fit) - 1)
 
+wcmodtwenty_p0_se <- as.numeric(unlist(exp(wcmodtwenty_0p$felm.se.fit))) - 1
+wcmodtwenty_p1_se <- as.numeric(unlist(exp(wcmodtwenty_1p$felm.se.fit))) - 1
+wcmodtwenty_p2_se <- as.numeric(unlist(exp(wcmodtwenty_2p$felm.se.fit))) - 1
+wcmodtwenty_p3_se <- as.numeric(unlist(exp(wcmodtwenty_3p$felm.se.fit))) - 1
+wcmodtwenty_p4_se <- as.numeric(unlist(exp(wcmodtwenty_4p$felm.se.fit))) - 1
+wcmodtwenty_p5_se <- as.numeric(unlist(exp(wcmodtwenty_5p$felm.se.fit))) - 1
+
 wcmodtwenty_p0_fit <- exp(wcmodtwenty_0p$fit + wcmodtwenty_0p$res + wcmodtwenty_0p$effect) - 1
 wcmodtwenty_p1_fit <- exp(wcmodtwenty_1p$fit + wcmodtwenty_1p$res + wcmodtwenty_1p$effect) - 1
 wcmodtwenty_p2_fit <- exp(wcmodtwenty_2p$fit + wcmodtwenty_2p$res + wcmodtwenty_2p$effect) - 1
@@ -141,6 +155,13 @@ wcmodthirty_p2_ci <- sum(exp(wcmodthirty_2p$felm.se.fit) - 1)
 wcmodthirty_p3_ci <- sum(exp(wcmodthirty_3p$felm.se.fit) - 1)
 wcmodthirty_p4_ci <- sum(exp(wcmodthirty_4p$felm.se.fit) - 1)
 wcmodthirty_p5_ci <- sum(exp(wcmodthirty_5p$felm.se.fit) - 1)
+
+wcmodthirty_p0_se <- as.numeric(unlist(exp(wcmodthirty_0p$felm.se.fit))) - 1
+wcmodthirty_p1_se <- as.numeric(unlist(exp(wcmodthirty_1p$felm.se.fit))) - 1
+wcmodthirty_p2_se <- as.numeric(unlist(exp(wcmodthirty_2p$felm.se.fit))) - 1
+wcmodthirty_p3_se <- as.numeric(unlist(exp(wcmodthirty_3p$felm.se.fit))) - 1
+wcmodthirty_p4_se <- as.numeric(unlist(exp(wcmodthirty_4p$felm.se.fit))) - 1
+wcmodthirty_p5_se <- as.numeric(unlist(exp(wcmodthirty_5p$felm.se.fit))) - 1
 
 wcmodthirty_p0_fit <- exp(wcmodthirty_0p$fit + wcmodthirty_0p$res + wcmodthirty_0p$effect) - 1
 wcmodthirty_p1_fit <- exp(wcmodthirty_1p$fit + wcmodthirty_1p$res + wcmodthirty_1p$effect) - 1
@@ -187,6 +208,13 @@ wmodten_p3_ci <- sum(exp(wmodten_3p$felm.se.fit) - 1)
 wmodten_p4_ci <- sum(exp(wmodten_4p$felm.se.fit) - 1)
 wmodten_p5_ci <- sum(exp(wmodten_5p$felm.se.fit) - 1)
 
+wmodten_p0_se <- as.numeric(unlist(exp(wmodten_0p$felm.se.fit))) - 1
+wmodten_p1_se <- as.numeric(unlist(exp(wmodten_1p$felm.se.fit))) - 1
+wmodten_p2_se <- as.numeric(unlist(exp(wmodten_2p$felm.se.fit))) - 1
+wmodten_p3_se <- as.numeric(unlist(exp(wmodten_3p$felm.se.fit))) - 1
+wmodten_p4_se <- as.numeric(unlist(exp(wmodten_4p$felm.se.fit))) - 1
+wmodten_p5_se <- as.numeric(unlist(exp(wmodten_5p$felm.se.fit))) - 1
+
 wmodten_p0_fit <- exp(wmodten_0p$fit + wmodten_0p$res + wmodten_0p$effect) - 1
 wmodten_p1_fit <- exp(wmodten_1p$fit + wmodten_1p$res + wmodten_1p$effect) - 1
 wmodten_p2_fit <- exp(wmodten_2p$fit + wmodten_2p$res + wmodten_2p$effect) - 1
@@ -229,6 +257,13 @@ wmodtwenty_p3_ci <- sum(exp(wmodtwenty_3p$felm.se.fit) - 1)
 wmodtwenty_p4_ci <- sum(exp(wmodtwenty_4p$felm.se.fit) - 1)
 wmodtwenty_p5_ci <- sum(exp(wmodtwenty_5p$felm.se.fit) - 1)
 
+wmodtwenty_p0_se <- as.numeric(unlist(exp(wmodtwenty_0p$felm.se.fit))) - 1
+wmodtwenty_p1_se <- as.numeric(unlist(exp(wmodtwenty_1p$felm.se.fit))) - 1
+wmodtwenty_p2_se <- as.numeric(unlist(exp(wmodtwenty_2p$felm.se.fit))) - 1
+wmodtwenty_p3_se <- as.numeric(unlist(exp(wmodtwenty_3p$felm.se.fit))) - 1
+wmodtwenty_p4_se <- as.numeric(unlist(exp(wmodtwenty_4p$felm.se.fit))) - 1
+wmodtwenty_p5_se <- as.numeric(unlist(exp(wmodtwenty_5p$felm.se.fit))) - 1
+
 wmodtwenty_p0_fit <- exp(wmodtwenty_0p$fit + wmodtwenty_0p$res + wmodtwenty_0p$effect) - 1
 wmodtwenty_p1_fit <- exp(wmodtwenty_1p$fit + wmodtwenty_1p$res + wmodtwenty_1p$effect) - 1
 wmodtwenty_p2_fit <- exp(wmodtwenty_2p$fit + wmodtwenty_2p$res + wmodtwenty_2p$effect) - 1
@@ -270,6 +305,13 @@ wmodthirty_p3_ci <- sum(exp(wmodthirty_3p$felm.se.fit) - 1)
 wmodthirty_p4_ci <- sum(exp(wmodthirty_4p$felm.se.fit) - 1)
 wmodthirty_p5_ci <- sum(exp(wmodthirty_5p$felm.se.fit) - 1)
 
+wmodthirty_p0_se <- as.numeric(unlist(exp(wmodthirty_0p$felm.se.fit))) - 1
+wmodthirty_p1_se <- as.numeric(unlist(exp(wmodthirty_1p$felm.se.fit))) - 1
+wmodthirty_p2_se <- as.numeric(unlist(exp(wmodthirty_2p$felm.se.fit))) - 1
+wmodthirty_p3_se <- as.numeric(unlist(exp(wmodthirty_3p$felm.se.fit))) - 1
+wmodthirty_p4_se <- as.numeric(unlist(exp(wmodthirty_4p$felm.se.fit))) - 1
+wmodthirty_p5_se <- as.numeric(unlist(exp(wmodthirty_5p$felm.se.fit))) - 1
+
 wmodthirty_p0_fit <- exp(wmodthirty_0p$fit + wmodthirty_0p$res + wmodthirty_0p$effect) - 1
 wmodthirty_p1_fit <- exp(wmodthirty_1p$fit + wmodthirty_1p$res + wmodthirty_1p$effect) - 1
 wmodthirty_p2_fit <- exp(wmodthirty_2p$fit + wmodthirty_2p$res + wmodthirty_2p$effect) - 1
@@ -292,16 +334,36 @@ head(pdat_wmodthirty)
 
 # Predicted Effects
 adat <- data.frame(effect = "Weather-climate-effect", 
-                   modten_rev.pred = c(wcmodten_p0_fit, wcmodten_p1_fit, wcmodten_p2_fit, wcmodten_p3_fit, wcmodten_p4_fit, wcmodten_p5_fit),
-                   modtwenty_rev.pred = c(wcmodtwenty_p0_fit, wcmodtwenty_p1_fit, wcmodtwenty_p2_fit, wcmodtwenty_p3_fit, wcmodtwenty_p4_fit, wcmodtwenty_p5_fit),
-                   modthirty_rev.pred = c(wcmodthirty_p0_fit, wcmodthirty_p1_fit, wcmodthirty_p2_fit, wcmodthirty_p3_fit, wcmodthirty_p4_fit, wcmodthirty_p5_fit),
-                   temp = rep(c(0, 1, 2, 3, 4, 5), each = length(wcmodten_p0_fit)))
+                   interval = rep(c("10-year", "20-year", "30-year"), each = length(wcmodten_p0_fit)*6),
+                   temp = rep(c(0, 1, 2, 3, 4, 5), 3, each = length(wcmodten_p0_fit)),
+                   rev.pred = c(wcmodten_p0_fit, wcmodten_p1_fit, wcmodten_p2_fit, wcmodten_p3_fit, wcmodten_p4_fit, wcmodten_p5_fit, 
+                                wcmodtwenty_p0_fit, wcmodtwenty_p1_fit, wcmodtwenty_p2_fit, wcmodtwenty_p3_fit, wcmodtwenty_p4_fit, wcmodtwenty_p5_fit,
+                                wcmodthirty_p0_fit, wcmodthirty_p1_fit, wcmodthirty_p2_fit, wcmodthirty_p3_fit, wcmodthirty_p4_fit, wcmodthirty_p5_fit),
+                   rev.se = c(wcmodten_p0_se, wcmodten_p1_se, wcmodten_p2_se, wcmodten_p3_se, wcmodten_p4_se, wcmodten_p5_se,
+                               wcmodtwenty_p0_se, wcmodtwenty_p1_se, wcmodtwenty_p2_se, wcmodtwenty_p3_se, wcmodtwenty_p4_se, wcmodtwenty_p5_se,
+                               wcmodthirty_p0_se, wcmodthirty_p1_se, wcmodthirty_p2_se, wcmodthirty_p3_se, wcmodthirty_p4_se, wcmodthirty_p5_se))
+
+head(adat)
 
 bdat <- data.frame(effect = "Weather-effect", 
-                   modten_rev.pred = c(wmodten_p0_fit, wmodten_p1_fit, wmodten_p2_fit, wmodten_p3_fit, wmodten_p4_fit, wmodten_p5_fit),
-                   modtwenty_rev.pred = c(wmodtwenty_p0_fit, wmodtwenty_p1_fit, wmodtwenty_p2_fit, wmodtwenty_p3_fit, wmodtwenty_p4_fit, wmodtwenty_p5_fit),
-                   modthirty_rev.pred = c(wmodthirty_p0_fit, wmodthirty_p1_fit, wmodthirty_p2_fit, wmodthirty_p3_fit, wmodthirty_p4_fit, wmodthirty_p5_fit),
-                   temp = rep(c(0, 1, 2, 3, 4, 5), each = length(wmodten_p0_fit)))
+                   interval = rep(c("10-year", "20-year", "30-year"), each = length(wmodten_p0_fit)*6),
+                   temp = rep(c(0, 1, 2, 3, 4, 5), 3, each = length(wmodten_p0_fit)),
+                   rev.pred = c(wmodten_p0_fit, wmodten_p1_fit, wmodten_p2_fit, wmodten_p3_fit, wmodten_p4_fit, wmodten_p5_fit, 
+                                wmodtwenty_p0_fit, wmodtwenty_p1_fit, wmodtwenty_p2_fit, wmodtwenty_p3_fit, wmodtwenty_p4_fit, wmodtwenty_p5_fit,
+                                wmodthirty_p0_fit, wmodthirty_p1_fit, wmodthirty_p2_fit, wmodthirty_p3_fit, wmodthirty_p4_fit, wmodthirty_p5_fit),
+                   rev.se = c(wmodten_p0_se, wmodten_p1_se, wmodten_p2_se, wmodten_p3_se, wmodten_p4_se, wmodten_p5_se,
+                               wmodtwenty_p0_se, wmodtwenty_p1_se, wmodtwenty_p2_se, wmodtwenty_p3_se, wmodtwenty_p4_se, wmodtwenty_p5_se,
+                               wmodthirty_p0_se, wmodthirty_p1_se, wmodthirty_p2_se, wmodthirty_p3_se, wmodthirty_p4_se, wmodthirty_p5_se))
+
+
+# bdat <- data.frame(effect = "Weather-effect", 
+#                    modten_rev.pred = c(wmodten_p0_fit, wmodten_p1_fit, wmodten_p2_fit, wmodten_p3_fit, wmodten_p4_fit, wmodten_p5_fit),
+#                    modtwenty_rev.pred = c(wmodtwenty_p0_fit, wmodtwenty_p1_fit, wmodtwenty_p2_fit, wmodtwenty_p3_fit, wmodtwenty_p4_fit, wmodtwenty_p5_fit),
+#                    modthirty_rev.pred = c(wmodthirty_p0_fit, wmodthirty_p1_fit, wmodthirty_p2_fit, wmodthirty_p3_fit, wmodthirty_p4_fit, wmodthirty_p5_fit),
+#                    modten_rev.se = c(wmodten_p0_se, wmodten_p1_se, wmodten_p2_se, wmodten_p3_se, wmodten_p4_se, wmodten_p5_se),
+#                    modtwenty_rev.se = c(wmodtwenty_p0_se, wmodtwenty_p1_se, wmodtwenty_p2_se, wmodtwenty_p3_se, wmodtwenty_p4_se, wmodtwenty_p5_se),
+#                    modthirty_rev.se = c(wmodthirty_p0_se, wmodthirty_p1_se, wmodthirty_p2_se, wmodthirty_p3_se, wmodthirty_p4_se, wmodthirty_p5_se),
+#                    temp = rep(c(0, 1, 2, 3, 4, 5), each = length(wmodten_p0_fit)))
 
 head(adat)
 head(bdat)

@@ -29,7 +29,7 @@ regdat <- as.data.frame(regdat)
 # Ten year differences 1950-1980 & 1980-2010
 
 modten_1 <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-              dday0_10_ten + dday10_30_ten + dday30_ten +
+              dday0_10_ten + dday10_30_ten + dday30_ten + prec_ten + prec_sq_ten +
  trend1_al + trend1_ar + 
   trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + trend1_ky + trend1_md + 
   trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + trend1_nc + trend1_nd + 
@@ -44,7 +44,7 @@ saveRDS(modten_1, "models/rev_crop_modten.rds")
 
 # Twenty year differences 1950-1980 & 1980-2010
 modtwenty_1 <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-              dday0_10_twenty + dday10_30_twenty + dday30_twenty +  
+              dday0_10_twenty + dday10_30_twenty + dday30_twenty +  prec_twenty + prec_sq_twenty +
  trend1_al + trend1_ar + 
   trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + trend1_ky + trend1_md + 
   trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + trend1_nc + trend1_nd + 
@@ -59,7 +59,7 @@ saveRDS(modtwenty_1, "models/rev_crop_modtwenty.rds")
 
 # Thirty year differences 1950-1980 & 1980-2010
 modthirty_1 <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-              dday0_10_thirty + dday10_30_thirty + dday30_thirty + 
+              dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty +
  trend1_al + trend1_ar + 
   trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + trend1_ky + trend1_md + 
   trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + trend1_nc + trend1_nd + 

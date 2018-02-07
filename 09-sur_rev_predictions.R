@@ -54,7 +54,7 @@ newdata_list <- list(p0 = p0_dm,
                      p4 = p4_dm,
                      p5 = p5_dm)
 
-terms = c("dday0_10", "dday10_30", "dday30","prec", "prec_sq")
+terms = c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq")
 
 # Predictions
 prev0 <- predictSUR(sur_rev, newdata = p0_dm, var.terms = terms)

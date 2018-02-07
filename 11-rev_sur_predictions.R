@@ -6,6 +6,7 @@
 library(cowplot)
 library(boot)
 library(dplyr)
+library(ggthemes)
 # library(doParallel)
 library(tidyr)
 
@@ -61,9 +62,128 @@ nmdat <- select(cropdat, fips)
 nmdat <- left_join(nmdat, mdat, by = "fips")
 head(nmdat)
 
-constant_acres <- (nmdat$avg_corn_grain_a + nmdat$avg_cotton_a + nmdat$avg_hay_a + nmdat$avg_soybean_a + nmdat$avg_wheat_a)
-sum(constant_acres)
-sum(cropdat$acres)
+
+#----------------------------------------------------------------------------------------------
+#Aggregate revenue per as.character
+#
+head(rev_crop_pred)
+
+rev_crop_pred$rev_max <- rev_crop_pred$rev.pred + 1.96*rev_crop_pred$rev.se
+rev_crop_pred$rev_min <- rev_crop_pred$rev.pred - 1.96*rev_crop_pred$rev.se
+
+
+pdat1 <- rev_crop_pred %>% 
+  group_by(effect, interval, temp) %>% 
+  summarise_all(sum) %>% 
+  group_by(effect, interval) %>%
+  mutate(change = 100*(rev.pred - first(rev.pred))/first(rev.pred),
+         change_max = 100*(rev_max - first(rev.pred))/first(rev.pred),
+         change_min = 100*(rev_min - first(rev.pred))/first(rev.pred))
+
+head(pdat1)
+
+
+ggplot(pdat1, aes(temp, change, group = effect)) + 
+  geom_ribbon(aes(ymax = change_max, ymin = change_min, x = temp), fill = "#C0CCD9", alpha = 0.5 ) +
+  geom_line(aes(color = effect)) +
+  geom_point(aes(color = effect), size = 0.5) +
+  theme_tufte(base_size = 10) +
+  ylab("% Change in Revenue per acre") +
+  xlab("Change in Temperature (C)") +
+  annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
+  annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
+  scale_x_continuous(breaks = 0:5, labels = c("+0C", "+1C", "+2C", "+3C", "+4C", "+5C")) +
+  theme(legend.position = "top",
+    # legend.justification = c("left", "top"),
+    legend.box.background = element_rect(colour = "grey"),
+    legend.title = element_blank(), legend.key = element_blank()) +
+  facet_wrap(~interval, ncol = 3) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey", alpha = 0.5) 
+  
+
+# Weather effect from SUR rev model
+head(sur_rev)
+sur_rev$total_rev <- rowSums(sur_rev[, 2:6])
+
+pdat2 <- sur_rev %>% 
+  group_by(temp) %>% 
+  summarise_all(sum) %>% 
+  ungroup() %>% 
+  mutate(change = 100*(total_rev - first(total_rev))/first(total_rev))
+
+head(pdat2)
+pdat2$effect <- "Weather-effect"
+
+ggplot(pdat2, aes(temp, change)) + geom_line() 
+
+head(sur_rev)
+
+
+# Multiply by acres to get Total rev, then weight by predicted share of acres
+sur_rev$corn_climate_ten <- (sur_rev$corn_rev*cropdat$corn_grain_a)/(cten$predictions$corn.pred*cropdat$acres)
+sur_rev$cotton_climate_ten <- (sur_rev$cotton_rev*cropdat$cotton_a)/(cten$predictions$cotton.pred*cropdat$acres)
+sur_rev$hay_climate_ten <- (sur_rev$hay_rev*cropdat$hay_a)/(cten$predictions$hay.pred*cropdat$acres)
+sur_rev$soybean_climate_ten <- (sur_rev$soybean_rev*cropdat$soybean_a)/(cten$predictions$soybean.pred*cropdat$acres)
+sur_rev$wheat_climate_ten <- (sur_rev$wheat_rev*cropdat$wheat_a)/(cten$predictions$wheat.pred*cropdat$acres)
+
+sur_rev$corn_climate_twenty <- (sur_rev$corn_rev*cropdat$corn_grain_a)/(ctwenty$predictions$corn.pred*cropdat$acres)
+sur_rev$cotton_climate_twenty <- (sur_rev$cotton_rev*cropdat$cotton_a)/(ctwenty$predictions$cotton.pred*cropdat$acres)
+sur_rev$hay_climate_twenty <- (sur_rev$hay_rev*cropdat$hay_a)/(ctwenty$predictions$hay.pred*cropdat$acres)
+sur_rev$soybean_climate_twenty <- (sur_rev$soybean_rev*cropdat$soybean_a)/(ctwenty$predictions$soybean.pred*cropdat$acres)
+sur_rev$wheat_climate_twenty <- (sur_rev$wheat_rev*cropdat$wheat_a)/(ctwenty$predictions$wheat.pred*cropdat$acres)
+
+sur_rev$corn_climate_thirty <- (sur_rev$corn_rev*cropdat$corn_grain_a)/(cthirty$predictions$corn.pred*cropdat$acres)
+sur_rev$cotton_climate_thirty <- (sur_rev$cotton_rev*cropdat$cotton_a)/(cthirty$predictions$cotton.pred*cropdat$acres)
+sur_rev$hay_climate_thirty <- (sur_rev$hay_rev*cropdat$hay_a)/(cthirty$predictions$hay.pred*cropdat$acres)
+sur_rev$soybean_climate_thirty <- (sur_rev$soybean_rev*cropdat$soybean_a)/(cthirty$predictions$soybean.pred*cropdat$acres)
+sur_rev$wheat_climate_thirty <- (sur_rev$wheat_rev*cropdat$wheat_a)/(cthirty$predictions$wheat.pred*cropdat$acres)
+
+head(sur_rev)
+sur_rev$total_rev_ten <- rowSums(sur_rev[, c("corn_climate_ten", "cotton_climate_ten", "hay_climate_ten", "soybean_climate_ten", "wheat_climate_ten")], na.rm = TRUE)
+sur_rev$total_rev_twenty <- rowSums(sur_rev[, c("corn_climate_twenty", "cotton_climate_twenty", "hay_climate_twenty", "soybean_climate_twenty", "wheat_climate_twenty")], na.rm = TRUE)
+sur_rev$total_rev_thirty <- rowSums(sur_rev[, c("corn_climate_thirty", "cotton_climate_thirty", "hay_climate_thirty", "soybean_climate_thirty", "wheat_climate_thirty")], na.rm = TRUE)
+
+sur_rev$total_rev_ten <- ifelse(is.infinite(sur_rev$total_rev_ten), NA, sur_rev$total_rev_ten)
+sur_rev$total_rev_twenty <- ifelse(is.infinite(sur_rev$total_rev_twenty), NA, sur_rev$total_rev_twenty)
+sur_rev$total_rev_thirty <- ifelse(is.infinite(sur_rev$total_rev_thirty), NA, sur_rev$total_rev_thirty)
+
+pdat3 <- sur_rev %>% 
+  group_by(temp) %>% 
+  summarise(total_rev_ten = sum(total_rev_ten, na.rm = TRUE),
+            total_rev_twenty = sum(total_rev_twenty, na.rm = TRUE),
+            total_rev_thirty = sum(total_rev_thirty, na.rm = TRUE)) %>% 
+  ungroup() %>% 
+  mutate(change_ten = 100*(total_rev_ten - first(total_rev_ten))/first(total_rev_ten),
+         change_twenty = 100*(total_rev_twenty - first(total_rev_twenty))/first(total_rev_twenty),
+         change_thirty = 100*(total_rev_thirty - first(total_rev_thirty))/first(total_rev_thirty))
+
+head(pdat3)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #-----------------------------------------------------------------------------------
 # Total-effect
