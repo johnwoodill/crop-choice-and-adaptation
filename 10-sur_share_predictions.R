@@ -104,6 +104,8 @@ ten_climate_terms_v = c("dday0_10_ten", "dday10_30_ten", "dday30_ten", "prec_ten
 twenty_climate_terms_v = c("dday0_10_twenty", "dday10_30_twenty", "dday30_twenty", "prec_twenty", "prec_sq_twenty")
 thirty_climate_terms_v = c("dday0_10_thirty", "dday10_30_thirty", "dday30_thirty", "prec_thirty", "prec_sq_thirty")
 
+
+
 #-------------------------------------
 # Ten-year
 

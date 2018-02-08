@@ -99,12 +99,12 @@ predictSUR.clean <- function(mod, newdata_list, acres, fips, var.terms = NULL, c
                       soybean.pred = soybean5.pred,
                       wheat.pred = wheat5.pred)
   
-  temp0[temp0 <0 ] <- 0
-  temp1[temp1 <0 ] <- 0
-  temp2[temp2 <0 ] <- 0
-  temp3[temp3 <0 ] <- 0
-  temp4[temp4 <0 ] <- 0
-  temp5[temp5 <0 ] <- 0
+  temp0[temp0 < 0 ] <- 0
+  temp1[temp1 < 0 ] <- 0
+  temp2[temp2 < 0 ] <- 0
+  temp3[temp3 < 0 ] <- 0
+  temp4[temp4 < 0 ] <- 0
+  temp5[temp5 < 0 ] <- 0
   
   temp0[, 2:6] <- temp0[, 2:6] / rowSums(temp0[, 2:6])
   temp1[, 2:6] <- temp1[, 2:6] / rowSums(temp1[, 2:6])

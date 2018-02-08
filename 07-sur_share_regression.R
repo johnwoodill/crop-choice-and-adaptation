@@ -17,8 +17,8 @@ setwd("/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/")
 # setwd("/home/johnw/Projects/adaptation-and-crop-choice/")
 
 # Setup parallel for bootstrapping
-cl <- makeCluster(25)
-registerDoParallel(cl)
+# cl <- makeCluster(25)
+# registerDoParallel(cl)
 
 # # Crop data
 # download.file("https://www.dropbox.com/s/u0e0wah5jnmqtf9/full_ag_data.rds?raw=1",
@@ -39,7 +39,7 @@ cropdat$thirty <- factor(cropdat$thirty)
 
 
 dmdat <- select(cropdat, z_corn_a, z_cotton_a, z_hay_a, z_soybean_a, z_wheat_a, 
-                dday0_10, dday10_30, dday30, prec, prec_sq,
+                dday0_10, dday10_30, dday30, prec, prec_sq, trend, trend_sq,
                 dday0_10_ten , dday10_30_ten , dday30_ten , prec_ten , prec_sq_ten, 
 trend1_al , trend1_ar , trend1_ga , trend1_ia , trend1_il , trend1_in , trend1_ks , 
   trend1_ky , trend1_md , trend1_mi , trend1_mn , trend1_mo , trend1_ms , trend1_mt , 
@@ -58,44 +58,24 @@ cropdat_means <- demeanlist(dmdat, fl = list(fips = factor(cropdat$fips),
 
 
 mod1 <- z_corn_a ~ dday0_10_ten + dday10_30_ten + dday30_ten + prec_ten + prec_sq_ten +
-  trend1_al + trend1_ar + 
-  trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + trend1_ky + trend1_md + 
-  trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + trend1_nc + trend1_nd + 
-  trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + trend1_tn + trend1_tx + 
-  trend1_va + trend1_wi + trend1_wv  - 1
+trend + trend_sq  - 1
 
 
 mod2 <- z_cotton_a ~  dday0_10_ten + dday10_30_ten + dday30_ten + prec_ten + prec_sq_ten +
-  trend1_al + trend1_ar + 
-  trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + trend1_ky + trend1_md + 
-  trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + trend1_nc + trend1_nd + 
-  trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + trend1_tn + trend1_tx + 
-  trend1_va + trend1_wi + trend1_wv  - 1
+trend + trend_sq  - 1
  
 
 mod3 <- z_hay_a ~ dday0_10_ten + dday10_30_ten + dday30_ten + prec_ten + prec_sq_ten +
-  trend1_al + trend1_ar + 
-  trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + trend1_ky + trend1_md + 
-  trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + trend1_nc + trend1_nd + 
-  trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + trend1_tn + trend1_tx + 
-  trend1_va + trend1_wi + trend1_wv  - 1
+trend + trend_sq  - 1
 
 
 mod4 <- z_soybean_a ~ dday0_10_ten + dday10_30_ten + dday30_ten + prec_ten + prec_sq_ten +
-  trend1_al + trend1_ar + 
-  trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + trend1_ky + trend1_md + 
-  trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + trend1_nc + trend1_nd + 
-  trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + trend1_tn + trend1_tx + 
-  trend1_va + trend1_wi + trend1_wv  - 1
+trend + trend_sq  - 1
 
 
 
 mod5 <- z_wheat_a ~ dday0_10_ten + dday10_30_ten + dday30_ten + prec_ten + prec_sq_ten +
-  trend1_al + trend1_ar + 
-  trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + trend1_ky + trend1_md + 
-  trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + trend1_nc + trend1_nd + 
-  trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + trend1_tn + trend1_tx + 
-  trend1_va + trend1_wi + trend1_wv   - 1
+trend + trend_sq   - 1
 
 ten_mod <- systemfit(list(corn = mod1, 
                        cotton = mod2, 
@@ -146,7 +126,7 @@ saveRDS(ten_mod, "models/sur_share_model_ten.rds")
 
 
 dmdat <- select(cropdat, z_corn_a, z_cotton_a, z_hay_a, z_soybean_a, z_wheat_a, 
-                   dday0_10, dday10_30, dday30, prec, prec_sq,
+                   dday0_10, dday10_30, dday30, prec, prec_sq, trend, trend_sq,
                 dday0_10_twenty , dday10_30_twenty , dday30_twenty , prec_twenty , prec_sq_twenty, 
   trend1_al , trend1_ar , trend1_ga , trend1_ia , trend1_il , trend1_in , trend1_ks , 
   trend1_ky , trend1_md , trend1_mi , trend1_mn , trend1_mo , trend1_ms , trend1_mt , 
@@ -166,44 +146,24 @@ cropdat_means <- demeanlist(dmdat, fl = list(fips = factor(cropdat$fips),
 
 
 mod1 <- z_corn_a ~ dday0_10_twenty + dday10_30_twenty + dday30_twenty + prec_twenty + prec_sq_twenty +
-  trend1_al + trend1_ar + 
-  trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + trend1_ky + trend1_md + 
-  trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + trend1_nc + trend1_nd + 
-  trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + trend1_tn + trend1_tx + 
-  trend1_va + trend1_wi + trend1_wv   - 1
+trend + trend_sq   - 1
 
 
 mod2 <- z_cotton_a ~  dday0_10_twenty + dday10_30_twenty + dday30_twenty + prec_twenty + prec_sq_twenty +
-  trend1_al + trend1_ar + 
-  trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + trend1_ky + trend1_md + 
-  trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + trend1_nc + trend1_nd + 
-  trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + trend1_tn + trend1_tx + 
-  trend1_va + trend1_wi + trend1_wv   - 1
+trend + trend_sq   - 1
  
 
 mod3 <- z_hay_a ~   dday0_10_twenty + dday10_30_twenty + dday30_twenty + prec_twenty + prec_sq_twenty +
-  trend1_al + trend1_ar + 
-  trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + trend1_ky + trend1_md + 
-  trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + trend1_nc + trend1_nd + 
-  trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + trend1_tn + trend1_tx + 
-  trend1_va + trend1_wi + trend1_wv   - 1
+trend + trend_sq   - 1
 
 
 mod4 <- z_soybean_a ~  dday0_10_twenty + dday10_30_twenty + dday30_twenty + prec_twenty + prec_sq_twenty +
-  trend1_al + trend1_ar + 
-  trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + trend1_ky + trend1_md + 
-  trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + trend1_nc + trend1_nd + 
-  trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + trend1_tn + trend1_tx + 
-  trend1_va + trend1_wi + trend1_wv  - 1
+trend + trend_sq  - 1
 
 
 
 mod5 <- z_wheat_a ~  dday0_10_twenty + dday10_30_twenty + dday30_twenty + prec_twenty + prec_sq_twenty +
-  trend1_al + trend1_ar + 
-  trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + trend1_ky + trend1_md + 
-  trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + trend1_nc + trend1_nd + 
-  trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + trend1_tn + trend1_tx + 
-  trend1_va + trend1_wi + trend1_wv   - 1
+trend + trend_sq   - 1
 
 twenty_mod <- systemfit(list(corn = mod1, 
                        cotton = mod2, 
@@ -255,7 +215,7 @@ saveRDS(twenty_mod, "models/sur_share_model_twenty.rds")
 # Thirty-year
 
 dmdat <- select(cropdat, z_corn_a, z_cotton_a, z_hay_a, z_soybean_a, z_wheat_a, 
-                   dday0_10, dday10_30, dday30, prec, prec_sq,
+                   dday0_10, dday10_30, dday30, prec, prec_sq, trend, trend_sq,
                 dday0_10_thirty , dday10_30_thirty , dday30_thirty , prec_thirty , prec_sq_thirty, 
   trend1_al , trend1_ar , trend1_ga , trend1_ia , trend1_il , trend1_in , trend1_ks , 
   trend1_ky , trend1_md , trend1_mi , trend1_mn , trend1_mo , trend1_ms , trend1_mt , 
@@ -275,43 +235,23 @@ cropdat_means <- demeanlist(dmdat, fl = list(fips = factor(cropdat$fips),
 
 
 mod1 <- z_corn_a ~ dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty +
-  trend1_al + trend1_ar + 
-  trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + trend1_ky + trend1_md + 
-  trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + trend1_nc + trend1_nd + 
-  trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + trend1_tn + trend1_tx + 
-  trend1_va + trend1_wi + trend1_wv  - 1
+trend + trend_sq  - 1
 
 
 mod2 <- z_cotton_a ~ dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty +
-  trend1_al + trend1_ar + 
-  trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + trend1_ky + trend1_md + 
-  trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + trend1_nc + trend1_nd + 
-  trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + trend1_tn + trend1_tx + 
-  trend1_va + trend1_wi + trend1_wv  - 1
+trend + trend_sq  - 1
  
 
 mod3 <- z_hay_a ~ dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty +
-  trend1_al + trend1_ar + 
-  trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + trend1_ky + trend1_md + 
-  trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + trend1_nc + trend1_nd + 
-  trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + trend1_tn + trend1_tx + 
-  trend1_va + trend1_wi + trend1_wv   - 1
+trend + trend_sq   - 1
 
 
 mod4 <- z_soybean_a ~ dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty +
-  trend1_al + trend1_ar + 
-  trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + trend1_ky + trend1_md + 
-  trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + trend1_nc + trend1_nd + 
-  trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + trend1_tn + trend1_tx + 
-  trend1_va + trend1_wi + trend1_wv  - 1
+trend + trend_sq  - 1
 
 
 mod5 <- z_wheat_a ~  dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty +
-  trend1_al + trend1_ar + 
-  trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + trend1_ky + trend1_md + 
-  trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + trend1_nc + trend1_nd + 
-  trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + trend1_tn + trend1_tx + 
-  trend1_va + trend1_wi + trend1_wv  - 1
+trend + trend_sq - 1
 
 
 thirty_mod <- systemfit(list(corn = mod1, 
