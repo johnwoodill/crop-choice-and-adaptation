@@ -107,9 +107,7 @@ crop_prices <- filter(crop_prices, year >= 1900)
 # soybean_price: $/bu   soybean_p: bu
 
 # Adjust cotton price
-#crop_prices$`COTTON, UPLAND - PRICE RECEIVED, MEASURED IN $ / LB` <- crop_prices$`COTTON, UPLAND - PRICE RECEIVED, MEASURED IN $ / LB`*480
-
-crop_prices$cotton_nprice <- crop_prices$cotton_nprice*480
+# crop_prices$cotton_nprice <- crop_prices$cotton_nprice*480
 
 # Nominal to Real prices using GDP product index deflator (base=2010)
 def <- read.csv("data/gdp_def_base2009.csv")
@@ -348,14 +346,14 @@ fulldat <- left_join(cropdat, crop_prices, by = c("year", "state"))
 
 # Yield
 fulldat$corn_yield <- fulldat$corn_grain_p/fulldat$corn_grain_a
-fulldat$cotton_yield <- fulldat$cotton_p/fulldat$cotton_a
+fulldat$cotton_yield <- (fulldat$cotton_p*480)/fulldat$cotton_a
 fulldat$hay_yield <- fulldat$hay_p/fulldat$hay_a
 fulldat$wheat_yield <- fulldat$wheat_p/fulldat$wheat_a
 fulldat$soybean_yield <- fulldat$soybean_p/fulldat$soybean_a
 
 # # Real revenue per acre
 fulldat$corn_rrev <- (fulldat$corn_grain_p*fulldat$corn_rprice)/fulldat$corn_grain_a
-fulldat$cotton_rrev <- (fulldat$cotton_p*fulldat$cotton_rprice)/fulldat$cotton_a
+fulldat$cotton_rrev <- (fulldat$cotton_p*480*fulldat$cotton_rprice)/fulldat$cotton_a
 fulldat$hay_rrev <- (fulldat$hay_p*fulldat$hay_rprice)/fulldat$hay_a
 fulldat$wheat_rrev <- (fulldat$wheat_p*fulldat$wheat_rprice)/fulldat$wheat_a
 fulldat$soybean_rrev <- (fulldat$soybean_p*fulldat$soybean_rprice)/fulldat$soybean_a
@@ -683,23 +681,29 @@ cropdat$ln_rev <- log(1 + cropdat$rev)
 # Remove inf to na
 is.na(cropdat) <- do.call(cbind, lapply(cropdat, is.infinite))
 
-# Spline through acres to smooth out weights
+# Rolling mean through acres to smooth out weights
 cropdat <- cropdat %>% 
   group_by(fips) %>% 
   arrange(year) %>% 
-  mutate(w = loess(acres ~ year)$fitted,
-         corn_w = loess(corn_grain_a ~ year)$fitted,
-         cotton_w = loess(cotton_a ~ year)$fitted,
-         hay_w = loess(hay_a ~ year)$fitted,
-         soybean_w = loess(soybean_a ~ year)$fitted,
-         wheat_w = loess(wheat_a ~ year)$fitted)
+  mutate(w = rollmean(acres, k = 2, fill = acres))
 
-cropdat$w <- ifelse(cropdat$w < 0 , 0, cropdat$w)
-cropdat$corn_w <- ifelse(cropdat$corn_w < 0 , 0, cropdat$corn_w)
-cropdat$cotton_w <- ifelse(cropdat$cotton_w < 0 , 0, cropdat$cotton_w)
-cropdat$hay_w <- ifelse(cropdat$hay_w < 0 , 0, cropdat$hay_w)
-cropdat$soybean_w <- ifelse(cropdat$soybean_w < 0 , 0, cropdat$soybean_w)
-cropdat$wheat_w <- ifelse(cropdat$wheat_w < 0 , 0, cropdat$wheat_w)
+# Spline through acres to smooth out weights
+ # cropdat <- cropdat %>%
+ #   group_by(fips) %>%
+ #   arrange(year) %>%
+ #   mutate(w = loess(acres ~ year)$fitted,
+ #          corn_w = loess(corn_grain_a ~ year)$fitted,
+ #          cotton_w = loess(cotton_a ~ year)$fitted,
+ #          hay_w = loess(hay_a ~ year)$fitted,
+ #          soybean_w = loess(soybean_a ~ year)$fitted,
+ #          wheat_w = loess(wheat_a ~ year)$fitted)
+ # 
+ # cropdat$w <- ifelse(cropdat$w < 0 , 0, cropdat$w)
+ # cropdat$corn_w <- ifelse(cropdat$corn_w < 0 , 0, cropdat$corn_w)
+ # cropdat$cotton_w <- ifelse(cropdat$cotton_w < 0 , 0, cropdat$cotton_w)
+ # cropdat$hay_w <- ifelse(cropdat$hay_w < 0 , 0, cropdat$hay_w)
+ # cropdat$soybean_w <- ifelse(cropdat$soybean_w < 0 , 0, cropdat$soybean_w)
+ # cropdat$wheat_w <- ifelse(cropdat$wheat_w < 0 , 0, cropdat$wheat_w)
 
 cropdat$dday0_10 <- cropdat$dday0C - cropdat$dday10C
 cropdat$dday10_30 <- cropdat$dday10C - cropdat$dday30C
