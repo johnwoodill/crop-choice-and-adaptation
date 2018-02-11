@@ -56,8 +56,7 @@ predictFelm <- function(felm.fit, newdata = NULL, var.terms = NULL, cons.terms =
       clm.fit <- update(lm.fit, paste0("~ - 1 +", paste(cons.terms, collapse = " +" )))
       cpred <- predict(clm.fit, newdata = cterms)
       }
-    #head(cpred)
-    #head(cterms)
+
   
     # Predict with var.terms and no cons.terms
     if(!is.null(var.terms) & is.null(cons.terms)){
@@ -81,7 +80,7 @@ predictFelm <- function(felm.fit, newdata = NULL, var.terms = NULL, cons.terms =
       pred$felm.se.fit <- fit.se
     }
   
-    pred$res <- felm.fit$residuals
+    # pred$res <- felm.fit$residuals
     
     
     # Return pred if no fixed-effects

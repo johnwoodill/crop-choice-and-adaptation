@@ -211,15 +211,9 @@ mdat <- left_join(mdat, hdat, by = c("fips", "year"))
 head(mdat)
 
 names(mdat)[3:10] <- c("corn_grain_a", "corn_grain_p", "cotton_a", "cotton_p", "hay_a", "hay_p", "wheat_a", "wheat_p")
-# 
-# newdat <- newdat[rowSums(is.na(newdat[,c(4,6,8,10)]))!=4, ]
-# fips <- unique(newdat$fips)
-# years <- 1910:1997
-# 
-# mdat <- expand.grid(years, fips)
-# names(mdat) <- c("year", "fips")
-# mdat <- left_join(mdat, newdat, by = c("year", "fips"))
-# 
+ 
+
+
 mdat <- mdat %>%   
   group_by(fips) %>%
   arrange(year) %>%

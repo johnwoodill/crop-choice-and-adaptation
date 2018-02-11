@@ -15,8 +15,8 @@ modtwenty <- readRDS("models/rev_crop_modtwenty.rds")
 modthirty <- readRDS("models/rev_crop_modthirty.rds")
 
 wcterms_ten = c("dday0_10", "dday10_30", "dday30","prec", "prec_sq", "dday0_10_ten", "dday10_30_ten", "dday30_ten", "prec_ten", "prec_sq_ten")
-wcterms_twenty = c("dday0_10", "dday10_30", "dday30","prec", "prec_sq", "dday0_10_twenty", "dday10_30_twenty", "dday30_twenty", "prec_twenty", "prec_sq_twenty")
-wcterms_thirty = c("dday0_10", "dday10_30", "dday30","prec", "prec_sq", "dday0_10_thirty", "dday10_30_thirty", "dday30_thirty", "prec_thirty", "prec_sq_thirty")
+wcterms_twenty = c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq", "dday0_10_twenty", "dday10_30_twenty", "dday30_twenty", "prec_twenty", "prec_sq_twenty")
+wcterms_thirty = c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq", "dday0_10_thirty", "dday10_30_thirty", "dday30_thirty", "prec_thirty", "prec_sq_thirty")
 
 wterms <- c("dday0_10", "dday10_30", "dday30","prec", "prec_sq")
 cterms_ten <- c("dday0_10_ten", "dday10_30_ten", "dday30_ten", "prec_ten", "prec_sq_ten")
