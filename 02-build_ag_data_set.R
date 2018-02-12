@@ -1,14 +1,19 @@
 library(tidyverse)
+
 library(rms)
 library(noncensus)
 library(maps)
 library(lubridate)
+
 library(stringr)
+
 library(foreign)
 library(haven)
 library(zoo)
 
 setwd("/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/")
+
+
 
 dummyCreator <- function(invec, prefix = NULL) {
      L <- length(invec)
@@ -21,8 +26,12 @@ dummyCreator <- function(invec, prefix = NULL) {
 }
 
 # Function to extract data
+
+
 data(county.fips) 
+
 county.fips$state <- sapply(str_split(county.fips$polyname, ","),'[',1)
+
 county.fips$county <- sapply(str_split(county.fips$polyname, ","),'[',2)
 county.fips <- select(county.fips, fips, county, state)
 

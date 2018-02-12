@@ -7,51 +7,45 @@ output: pdf_document
 
 \subsection{Model Setup}
 
-We start with a simple model of output and temperature where temperature, $z_{it}$, in a given year, $t$, for a farm, $i$, is defined as a function, $y_{it} = f(x_{it}, z_{it})$. In this setup, we do not model an explicit decision, but assume a variety of decisions are made on the farm implicitly that are reflected in $y_{it}$. Therefore, farm-level decisions are a function of temperatures where our simple model transforms to $y_{it} = f(x_{it}(z_{it}), z_{it})$. By implying farm-level decisions are reflected in output, we can model a quadratic production function with respect to temperature as,
+We start with a simple model of output and temperature where output, $y_{it}$, in a given year, $t$, for a farm, $i$, is defined as a function, $y_{it} = f(x_{it}, z_{it})$. In this setup, we do not model an explicit decision, but assume a variety of decisions are made on the farm implicitly that are reflected in $y_{it}$. Therefore, farm-level decisions are a function of temperatures where our simple model transforms to $y_{it} = f(x_{it}(z_{it}), z_{it})$. By implying farm-level decisions are reflected in output, we can model a quadratic production function with respect to temperature as,
 
 $$
 y_{it} = \beta_0 + \beta_1 z_{it} + \beta_2 z_{it}^2
 $$
 
-To model how output changes based on crop-switching practices, we now explicitly model the decision variable, $x_{it}$. In a given year, $t$, a farmer, $i$, faces a decision each year to plant a variety of five crops, $c$. The decision, $x_{it}^c$, is based on the proportion of acres designated by the farmer, $P(a_{it}^c)$, for each crop, where $x_{it}^c \in [0, 1]$ and $x_{it}^c = P(a_{it}^c) = \frac{a_{it}^c}{\sum_{c=1}^5 a_{it}^c}$. A farmer could chose to plant 20\% of each crop, so their decision variable for each crop would be $x_{it}^c = .20$. As a result, the proportion of total crop acres sum to one for each farmer in each year. The aggregate output is defined as $y_{it} = f(x_{it}^c, z_{it})$ where $z_{it}$ is the temperature on the farm in a given year. We assume a farmer's decision is not random and therefore relies on expectation about the temperature, which further effects the output of each crop. Formally, we define a new quadratic production function that includes a decision variable with respect to temperature as,
+Equation 1 provides aggregate output for all crops on the farm, which can also be described as the sum of individual crop output, as
 
 \begin{equation}
-y_{it} = \sum_{c=1}^5 x_{it}^c (\beta_0^c + \beta_{1}^c z_{it} + \beta_{2}^c z_{it}^2)
+y_{it} =\sum_{c=1}^C y_{it}^c =  \beta_0 + \beta_1 z_{it} + \beta_2 z_{it}^2
 \end{equation}
 
-For each crop, the farmer maximizes expected output and will choose the proportion of each crop as long as the expectation of crop production is greater than zero.
+where $y_{it}$ is now related to the sum of all crop, $c$, output as $y_{it}^c$. 
+
+In this simple model, output, $y_{it}$, is equal to production per acre $y_{it} = \frac{q_{it}}{a_{it}}$. Output is calculated as production of crops, $q_{it}$, divided by acres, $a_{it}$, which is dependent on the weather. If farmers are becoming more productivity, then production is increasing at a higher rate than planted acres, thus increasing output. The decision by the farmer in this case is how many total acres to plant in a given year. A farmer will also make decisions about how many acres to devote to individual crops. In this model, output is dependent on the weather, thus farmers make decisions about what to plant based on their expectations about the weather. If temperatures are expected to increase, then the farmer will be faced with the decision to devote more acres to crops less sensitive to heat and devote fewer acres to crops more sensitive. 
+
+In this setup, if temperature is invariant across time, the farmer will optimize their aggregate production once and continue to plant the same variety given a fixed number of available acres. However, if temperatures change the farmer's decision changes based on expectations about the temperature effect on each variety. Increases in temperatures will shift expectations about crop production and therefore shift the proportion of acres designated for each crop, also known as crop-switching. In the short-run, these changes will vary from year-to-year and may not be permanent; however, a permanent shift in behavior means the farmer's decision to plant a proportion of each crop changes in the long-run. We define this permanent shift in crop acres as adaptation to climate change.
+
+To model how output changes based on crop-switching practices, we explicitly model the decision variable, $x_{it}$. In a given year, $t$, a farmer, $i$, faces a decision each year to plant a variety of five crops, $c$. The decision, $x_{it}^c$, is based on the proportion of acres designated by the farmer, $P(a_{it}^c)$, for each crop, where $x_{it}^c \in [0, 1]$ and $x_{it}^c = P(a_{it}^c) = \frac{a_{it}^c}{\sum_{c=1}^5 a_{it}^c}$. A farmer could chose to plant 20\% of each crop, so their decision variable for each crop would be $x_{it}^c = .20$. As a result, the proportion of total crop acres sum to one for each farmer in each year, $\sum_{c=1}^5 P(a_{it}^c) = 1$. The aggregate output is defined as $y_{it} = f(x_{it}^c, z_{it})$ where $z_{it}$ is the temperature on the farm in a given year. 
+
+A farmer's decision to shift acres in the long-run are disaggregated from aggregate output and we associate the response to long-run changes in temperature by averaging over a time interval, $d$ (e.g. 1950-1980 \& 1980-2010). We define acreage decisions, $x_{it}^c$ for farm $i$, crop $c$, at time $t$ as $x_{it}^c = f(\overline{z_{id}})$ where the proportion of acres is based on a decision, $x_{it}^c$, in time period $t$ given long-run changes in temperature, $\overline{z_{id}}$, over a time interval $d$. Similar to the production function, for each crop, decisions about proportion of acreage is defined as,
 
 $$
-E[x_{it}^c(\beta_0^c + \beta_1^c z_{it} + \beta_2^c z_{it}^2)] > 0
+P(a_{id}^c) = \beta_0^c + \beta_{1}^c \overline{z_{id}} + \beta_{2}^c \overline{z_{id}}^2
 $$
 
-In this setup, if temperature is invariant across time, the farmer will optimize their aggregate production once and continue to plant the same variety given a fixed number of available acres. However, if temperatures change the farmer's decision changes based on expectations about the temperature effect on each variety. Increases in temperatures will shift expectations about crop production and therefore shift the proportion of acres designated for each crop. In the short-run, these changes will vary from year-to-year and may not be permanent. A permanent  shift in behavior means the farmer's decision to plant a proportion of each crop changes in the long-run. We define this permanent shift in crop acres as adaptation to climate.
-
-To model the farmer's decision to shift acres in the long-run, we disaggregate acreage decisions from aggregate output and associate the response to long-run changes in temperature by averaging over a time interval, $d$, (20-years). We define acreage decisions, $x_{it}^c$ for farm $i$, crop $c$, at time $t$ as $x_{it}^c = f(\overline{z_{id}})$ where the proportion of acres is based on a decision, $x_{it}^c$, in time period $t$ given long-run changes in temperature, $\overline{z_{id}}$, over a time interval $d$. Similar to the production function, for each crop, decisions about proportion of acreage is defined as,
-
-$$
-a_{id}^c = \beta_0^c + \beta_{1}^c \overline{z_{id}} + \beta_{2}^c \overline{z_{id}}^2
-$$
-
-An important feature of this setup is to consider a finite number of acres on a farm, which the farmer must allocate based on expectations about temperature. As a result, changes in proportion of individual crop acres is correlated across all crops (increase in corn acres decreases at least one other crop acres on the farm). Therefore, each crop is considered in a system of equations,
+An important feature of this setup is to consider a finite number of acres on a farm, which the farmer must allocate based on expectations about temperature. As a result, changes in proportion of individual crop acres are correlated across all crops (i.g. an increase in corn acres decreases at least one other crop acres on the farm). Therefore, each crop is considered in a system of equations,
 
 \begin{equation}
-x_{id} = \sum_{c=1}^5 x_{id}^c =
-\begin{cases} x_{id}^1 = \beta_0^1 + \beta_{1}^1 \overline{z_{id}} + \beta_{2}^1 \overline{z_{id}}^2 \\ 
+a_{id} = \sum_{c=1}^5 P(a_{id}^c) \cdot a_{id} =
+\begin{cases} a_{id}^1 = \beta_0^1 + \beta_{1}^1 \overline{z_{id}} + \beta_{2}^1 \overline{z_{id}}^2 \\ 
 \hspace{2mm} \vdots \\
-x_{id}^5 = \beta_0^5 + \beta_{1}^5 \overline{z_{id}} + \beta_{2}^5 \overline{z_{id}}^2
+a_{id}^5 = \beta_0^5 + \beta_{1}^5 \overline{z_{id}} + \beta_{2}^5 \overline{z_{id}}^2
 \end{cases}
 \end{equation}
 
 Results from this system provide decisions about crop acres on a farm, which can then be used to calculate proportions for each crop as $P(a_{it}^c) = \frac{a_{id}^c}{\sum_{c=1}^5 a_{id}^c}$ to arrive at our decision variable, $x_{id}^c$. 
 
-If a farm is making decisions that have a positive benefit on aggregate output in the long-run, the decision variable modeled across intervals should increase aggregate output, $y_{it}$. Therefore, positive benefits from adaptation for each crop can be shown as the inequality,
-
-$$
-E[x_{id}^c(\beta_0^c + \beta_1^c \overline{z_{id}} + \beta_2^c \overline{z_{id}}^2)] > E[x_{it}^c(\beta_0^c + \beta_1^c z_{it} + \beta_2^c z_{it}^2)] 
-$$
-
-We also seek to disggregate individual crop output from aggregate output. Similar to crop choice, crop output will also be correlated across all crops (increase in corn production in a year decreases at least one other crop production). We model individual crop output in a system of equations as,  
+We also seek to disggregate individual crop output from aggregate output. Similar to crop choice, crop output will also be correlated across all crops (i.g. increases in corn productivity in a year decreases at least one other crop productivity). We model individual crop output in a system of equations as,  
 
 \begin{equation}
 y_{it} = \sum_{c=1}^5 y_{it}^c =  
@@ -61,12 +55,12 @@ y_{it}^5 = \beta_0^5 + \beta_{1}^5 z_{it} + \beta_{2}^5 z_{it}^2
 \end{cases}
 \end{equation}
 
-Using equation 1, 2, 3 above, we can now identify the effects of crop switching on a farm from short to long-run changes in temperature. First, we estimate aggregate output per acre in response to weather and climate changes in equation 1 which can capture adjustments in production practices, such as planting times, double-cropping, and rotations. These estimates are then used as a baseline to compare against crop-switching using equation 2 and 3. First we use crop shares from equation 2 to estimate individual crop acre changes as the climate changes over interval, $d$. We then use crop-specific output per acre in equation 3 to estimate crop output responses to weather, holding land allocation and production practices fixed. 
+Using equation 1, 2, 3 above, we can now identify the effects of crop switching on a farm from short to long-run changes in temperature. First, we estimate aggregate output per acre in response to weather and climate changes in equation 1 which can capture adjustments in production practices, such as planting times, double-cropping, and rotations. These estimates are then used as a baseline to compare against crop-switching using equation 2 and 3. Next, we use crop shares from equation 2 to estimate individual crop acre changes as the climate changes over interval, $d$. We then use crop-specific output per acre in equation 3 to estimate crop output responses to weather, holding land allocation and production practices fixed. 
 
-The estimates are combined to compare output per acre with crop-switching, $y_{it}^{\text{crop-switching}}$, versus aggregate crop output per acre, $y_{it}^{\text{aggregate}}$. We average farm-level output per acre in the aggregate and individual to make these comparisons. As a result, if crop-switching is beneficial we expect,
+The estimates from equation 2 and 3 are combined to compare output per acre with crop-switching, $y_{it}^{\text{crop-switching}}$, versus aggregate crop output per acre from equation 1, $y_{it}^{\text{aggregate}}$. We average farm-level output per acre in the aggregate to make these comparisons. As a result, if crop-switching is beneficial we expect the sum of average farm-level output to be greater than the sum of aggregate output,
 
 $$
-\overline{y}_{i}^{\text{crop-switching}} > \overline{y}_{i}^{\text{aggregate}}
+\underbrace{\frac{1}{N} \sum_{i=1}^N \frac{1}{T} \sum_{t=1}^T y_{it}}_{\text{\text{Eq. 2 \& 3}}} = \overline{y}_{it}^{\text{\hspace{.5mm} Crop-switching}} >  \overline{y}_{}^{\text{\hspace{.5mm} Aggregate}} = \underbrace{\frac{1}{N} \sum_{i=1}^N \frac{1}{T} \sum_{t=1}^T y_{it}}_{\text{\text{Eq.} 1}}
 $$
 
 
