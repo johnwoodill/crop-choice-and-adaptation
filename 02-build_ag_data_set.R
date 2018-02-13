@@ -187,6 +187,7 @@ cropdat <- left_join(cropdat, hay, by = c("state", "fips", "year"))
 cropdat <- left_join(cropdat, wheat, by = c("state", "fips", "year"))
 cropdat <- left_join(cropdat, soybean, by = c("state", "fips", "year"))
 
+#-----------------------------------------------------
 # Merge historical Haines data
 hdat <- read_dta("data/DustBowl_All_base1910.dta")
 hdat <- select(hdat, year, fips, corn_grain_a, corn_grain_y, cotton_a, cotton_y, hay_a, hay_y, wheat_a, wheat_y)
@@ -205,25 +206,25 @@ names(mdat) <- c("year", "fips")
 
 
 # Merge historical with current census data
-# mdat <- left_join(mdat, hains_dat, by = c("fips", "year")) %>% 
-#    left_join(cropland, by = c("fips", "year")) %>% 
-#    mutate(harvested_cropland_a = ifelse(is.na(harvested_cropland_a.x), harvested_cropland_a.y, harvested_cropland_a.x)) %>% 
+# mdat <- left_join(mdat, hains_dat, by = c("fips", "year")) %>%
+#    left_join(cropland, by = c("fips", "year")) %>%
+#    mutate(harvested_cropland_a = ifelse(is.na(harvested_cropland_a.x), harvested_cropland_a.y, harvested_cropland_a.x)) %>%
 #    select(-harvested_cropland_a.x, -harvested_cropland_a.y)
-#  
-# mdatt <- mdat %>%   
-#     group_by(fips) %>% 
-#     arrange(year) %>% 
-#     mutate(harvested_cropland_a = na.approx(harvested_cropland_a, na.rm = FALSE)) %>% 
+#
+# mdatt <- mdat %>%
+#     group_by(fips) %>%
+#     arrange(year) %>%
+#     mutate(harvested_cropland_a = na.approx(harvested_cropland_a, na.rm = FALSE)) %>%
 #    ungroup()
 
 mdat <- left_join(mdat, hdat, by = c("fips", "year"))
 head(mdat)
 
 names(mdat)[3:10] <- c("corn_grain_a", "corn_grain_p", "cotton_a", "cotton_p", "hay_a", "hay_p", "wheat_a", "wheat_p")
- 
 
 
-mdat <- mdat %>%   
+
+mdat <- mdat %>%
   group_by(fips) %>%
   arrange(year) %>%
   mutate(corn_grain_a = na.approx(corn_grain_a, na.rm = FALSE),
@@ -251,9 +252,9 @@ cropdat <- left_join(cropdat, mdat, by = c("fips", "year")) %>%
          -hay_a.x, -hay_a.y, -hay_p.x, -hay_p.y,
          -wheat_a.x, -wheat_a.y, -wheat_p.x, -wheat_p.y)
 head(cropdat)
- 
+
 # Interpolated historical data and new data
-cropdat <- cropdat %>%   
+cropdat <- cropdat %>%
   group_by(fips) %>%
   arrange(year) %>%
   mutate(corn_grain_a = na.approx(corn_grain_a, na.rm = FALSE),
@@ -268,6 +269,7 @@ cropdat <- cropdat %>%
          soybean_p = na.approx(soybean_p, na.rm = FALSE)) %>%
    ungroup()
 head(cropdat)
+#-----------------------------------------------------
 
 # Aggregate county-level degree days -----------------------------------------------
 

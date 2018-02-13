@@ -51,7 +51,7 @@ cropdat_means <- demeanlist(dmdat, fl = list(fips = factor(cropdat$fips)), means
 
 
 mod1 <- ln_rev_corn ~ dday0_10 + dday10_30 + dday30 +  prec + prec_sq +
-trend + trend_sq - 1
+trend + trend_sq- 1
 
 
 mod2 <- ln_rev_cotton ~    dday0_10 + dday10_30 + dday30 +  prec + prec_sq +
@@ -67,7 +67,7 @@ trend + trend_sq  - 1
 
 
 mod5 <- ln_rev_wheat ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
-trend + trend_sq  - 1
+trend + trend_sq- 1
 
 mod <- systemfit(list(corn = mod1, 
                        cotton = mod2, 

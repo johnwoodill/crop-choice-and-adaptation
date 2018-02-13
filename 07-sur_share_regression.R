@@ -58,7 +58,7 @@ cropdat_means <- demeanlist(dmdat, fl = list(fips = factor(cropdat$fips),
 
 
 mod1 <- z_corn_a ~ dday0_10_ten + dday10_30_ten + dday30_ten + prec_ten + prec_sq_ten +
-trend + trend_sq  - 1
+trend + trend_sq- 1
 
 
 mod2 <- z_cotton_a ~  dday0_10_ten + dday10_30_ten + dday30_ten + prec_ten + prec_sq_ten +
@@ -66,7 +66,7 @@ trend + trend_sq  - 1
  
 
 mod3 <- z_hay_a ~ dday0_10_ten + dday10_30_ten + dday30_ten + prec_ten + prec_sq_ten +
-trend + trend_sq  - 1
+trend + trend_sq - 1
 
 
 mod4 <- z_soybean_a ~ dday0_10_ten + dday10_30_ten + dday30_ten + prec_ten + prec_sq_ten +
@@ -75,7 +75,7 @@ trend + trend_sq  - 1
 
 
 mod5 <- z_wheat_a ~ dday0_10_ten + dday10_30_ten + dday30_ten + prec_ten + prec_sq_ten +
-trend + trend_sq   - 1
+trend + trend_sq  - 1
 
 ten_mod <- systemfit(list(corn = mod1, 
                        cotton = mod2, 
@@ -146,7 +146,7 @@ cropdat_means <- demeanlist(dmdat, fl = list(fips = factor(cropdat$fips),
 
 
 mod1 <- z_corn_a ~ dday0_10_twenty + dday10_30_twenty + dday30_twenty + prec_twenty + prec_sq_twenty +
-trend + trend_sq   - 1
+trend + trend_sq  - 1
 
 
 mod2 <- z_cotton_a ~  dday0_10_twenty + dday10_30_twenty + dday30_twenty + prec_twenty + prec_sq_twenty +
@@ -154,16 +154,16 @@ trend + trend_sq   - 1
  
 
 mod3 <- z_hay_a ~   dday0_10_twenty + dday10_30_twenty + dday30_twenty + prec_twenty + prec_sq_twenty +
-trend + trend_sq   - 1
+trend + trend_sq  - 1
 
 
 mod4 <- z_soybean_a ~  dday0_10_twenty + dday10_30_twenty + dday30_twenty + prec_twenty + prec_sq_twenty +
-trend + trend_sq  - 1
+trend + trend_sq - 1
 
 
 
 mod5 <- z_wheat_a ~  dday0_10_twenty + dday10_30_twenty + dday30_twenty + prec_twenty + prec_sq_twenty +
-trend + trend_sq   - 1
+trend + trend_sq  - 1
 
 twenty_mod <- systemfit(list(corn = mod1, 
                        cotton = mod2, 
@@ -235,11 +235,11 @@ cropdat_means <- demeanlist(dmdat, fl = list(fips = factor(cropdat$fips),
 
 
 mod1 <- z_corn_a ~ dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty +
-trend + trend_sq  - 1
+trend + trend_sq - 1
 
 
 mod2 <- z_cotton_a ~ dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty +
-trend + trend_sq  - 1
+trend + trend_sq - 1
  
 
 mod3 <- z_hay_a ~ dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty +

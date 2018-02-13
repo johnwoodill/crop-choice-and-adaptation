@@ -174,19 +174,26 @@ thirty_map2
 
 # Climate
 # Residual checks
-modthirty_3 <- felm(dday30_thirty ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
+modthirty_3 <- felm(dday30_thirty ~ dday0_10 +d foday10_30 + dday30 + prec + prec_sq + 
                 trend1_al + trend1_ar + 
   trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + trend1_ky + trend1_md + 
   trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + trend1_nc + trend1_nd + 
   trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + trend1_tn + trend1_tx + 
   trend1_va + trend1_wi  +
-       trend2_al + trend2_ar + 
+  trend2_al + trend2_ar + 
   trend2_ga + trend2_ia + trend2_il + trend2_in + trend2_ks + trend2_ky + trend2_md + 
   trend2_mi + trend2_mn + trend2_mo + trend2_ms + trend2_mt + trend2_nc + trend2_nd + 
   trend2_ne + trend2_oh + trend2_ok + trend2_sc + trend2_sd + trend2_tn + trend2_tx + 
   trend2_va + trend2_wi | fips + thirty| 0 | state, 
             data = regdat, weights = regdat$w, psdef = FALSE)
 summary(modthirty_3)
+pm <- predictFelm(modthirty_3, newdata = regdat)
+test <- data.frame(fit = pm$fit, fips = regdat$fips)
+test <- test %>% 
+  group_by(fips) %>% 
+  summarise(fit = mean(fit))
+head(test)
+View(test)
 
 modthirty_res3 <- data.frame(value = residuals(modthirty_3))
 modthirty_res3$region <- regdat$fips
@@ -204,7 +211,7 @@ thirty_map3 <- county_choropleth(modthirty_res3,
      
                 
 thirty_map3 <- thirty_map3 + scale_fill_brewer(palette = "RdYlBu", direction = -1) + 
-  theme_tufte(base_size = 10)+ 
+  theme_tufte(base_size = 10) + 
   xlab("Climate Degree Day 30C Residuals (30-year)") + ylab(NULL) + theme(legend.position = "none",
                        axis.text.x = element_blank(),
                        axis.text.y = element_blank(),

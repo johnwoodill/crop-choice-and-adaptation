@@ -300,7 +300,7 @@ ggplot(pdat, aes(temp, change, color = effect)) + geom_line() +
   facet_wrap(type~interval)
 
 
-
+ggsave("figures/main_plot.pdf", width = 6, height = 4)
 
 
 
