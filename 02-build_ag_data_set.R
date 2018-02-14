@@ -4,7 +4,6 @@ library(rms)
 library(noncensus)
 library(maps)
 library(lubridate)
-
 library(stringr)
 
 library(foreign)
@@ -187,6 +186,8 @@ cropdat <- left_join(cropdat, hay, by = c("state", "fips", "year"))
 cropdat <- left_join(cropdat, wheat, by = c("state", "fips", "year"))
 cropdat <- left_join(cropdat, soybean, by = c("state", "fips", "year"))
 
+
+
 #-----------------------------------------------------
 # Merge historical Haines data
 hdat <- read_dta("data/DustBowl_All_base1910.dta")
@@ -206,17 +207,6 @@ names(mdat) <- c("year", "fips")
 
 
 # Merge historical with current census data
-# mdat <- left_join(mdat, hains_dat, by = c("fips", "year")) %>%
-#    left_join(cropland, by = c("fips", "year")) %>%
-#    mutate(harvested_cropland_a = ifelse(is.na(harvested_cropland_a.x), harvested_cropland_a.y, harvested_cropland_a.x)) %>%
-#    select(-harvested_cropland_a.x, -harvested_cropland_a.y)
-#
-# mdatt <- mdat %>%
-#     group_by(fips) %>%
-#     arrange(year) %>%
-#     mutate(harvested_cropland_a = na.approx(harvested_cropland_a, na.rm = FALSE)) %>%
-#    ungroup()
-
 mdat <- left_join(mdat, hdat, by = c("fips", "year"))
 head(mdat)
 
@@ -282,7 +272,6 @@ head(cropdat)
  dd_dat <- filter(dd_dat, month >= 3 & month <= 10)
  
  dd_dat$X1 <- NULL
- 
  dd_dat <- dd_dat %>%
    group_by(year, fips) %>%
    summarise(dday0C = sum(dday0C),
@@ -344,10 +333,74 @@ head(cropdat)
  #              tavg = mean(tAvg))
  # 
 
+dd_dat$dday0_10 <- dd_dat$dday0C - dd_dat$dday10C
+dd_dat$dday10_30 <- dd_dat$dday10C - dd_dat$dday30C
+dd_dat$dday30 <- dd_dat$dday30C
+dd_dat$prec_sq <- dd_dat$prec^2
 
+dd_dat <- select(dd_dat, year, fips, dday0_10, dday10_30, dday30, prec, prec_sq)
+
+#--------------------------------------------------
+# Roll.mean intervals
+
+#40-year
+dd_dat <- dd_dat %>%
+  group_by(fips) %>%
+  arrange(year) %>%
+  mutate(dday0_10_rm_fifty = rollmean(dday0_10, k = 50, align = "right", fill = "NA"),
+         dday10_30_rm_fifty = rollmean(dday10_30, k = 50, align = "right", fill = "NA"),
+         dday30_rm_fifty = rollmean(dday30, k = 50, align = "right", fill = "NA"),
+         prec_rm_fifty = rollmean(prec, k = 50, align = "right", fill = "NA"),
+         prec_sq_rm_fifty = prec_rm_fifty^2)
+
+#40-year
+dd_dat <- dd_dat %>%
+  group_by(fips) %>%
+  arrange(year) %>%
+  mutate(dday0_10_rm_fourty = rollmean(dday0_10, k = 40, align = "right", fill = "NA"),
+         dday10_30_rm_fourty = rollmean(dday10_30, k = 40, align = "right", fill = "NA"),
+         dday30_rm_fourty = rollmean(dday30, k = 40, align = "right", fill = "NA"),
+         prec_rm_fourty = rollmean(prec, k = 40, align = "right", fill = "NA"),
+         prec_sq_rm_fourty = prec_rm_fourty^2)
+
+#30-year
+dd_dat <- dd_dat %>%
+  group_by(fips) %>%
+  arrange(year) %>%
+  mutate(dday0_10_rm_thirty = rollmean(dday0_10, k = 30, align = "right", fill = "NA"),
+         dday10_30_rm_thirty = rollmean(dday10_30, k = 30, align = "right", fill = "NA"),
+         dday30_rm_thirty = rollmean(dday30, k = 30, align = "right", fill = "NA"),
+         prec_rm_thirty = rollmean(prec, k = 30, align = "right", fill = "NA"),
+         prec_sq_rm_thirty = prec_rm_thirty^2)
+
+# 20 year intervals
+dd_dat <- dd_dat %>%
+  group_by(fips) %>%
+  arrange(year) %>%
+  mutate(dday0_10_rm_twenty = rollmean(dday0_10, k = 20, align = "right", fill = "NA"),
+         dday10_30_rm_twenty = rollmean(dday10_30, k = 20, align = "right", fill = "NA"),
+         dday30_rm_twenty = rollmean(dday30, k = 20, align = "right", fill = "NA"),
+         prec_rm_twenty = rollmean(prec, k = 20, align = "right", fill = "NA"),
+         prec_sq_rm_twenty = prec_rm_twenty^2)
+
+dd_dat <- dd_dat %>%
+  group_by(fips) %>%
+  arrange(year) %>%
+  mutate(dday0_10_rm_ten = rollmean(dday0_10, k = 10, align = "right", fill = "NA"),
+         dday10_30_rm_ten = rollmean(dday10_30, k = 10, align = "right", fill = "NA"),
+         dday30_rm_ten = rollmean(dday30, k = 10, align = "right", fill = "NA"),
+         prec_rm_ten = rollmean(prec, k = 10, align = "right", fill = "NA"),
+         prec_sq_rm_ten = prec_rm_ten^2)
+
+ 
 # Merge ag prices, ag crop data, and degree day data ----------------------
 
 fulldat <- left_join(cropdat, crop_prices, by = c("year", "state"))
+ 
+# Import region data file
+region_dat <- read_csv("data/ResourceRegionCRDfips.csv")
+names(region_dat) <- c("fips", "ers_region", "crd")
+fulldat <- left_join(fulldat, region_dat, by = "fips")
 
 # Yield
 fulldat$corn_yield <- fulldat$corn_grain_p/fulldat$corn_grain_a
@@ -378,12 +431,13 @@ fulldat$wheat_nrev <- (fulldat$wheat_p*fulldat$wheat_nprice)/fulldat$wheat_a
 fulldat$soybean_nrev <- (fulldat$soybean_p*fulldat$soybean_nprice)/fulldat$soybean_a
 
 # Organize before degree day merge
-fulldat <- select(fulldat, year, state, fips, lat, long, gdp_price_def, 
+fulldat <- select(fulldat, year, state, fips, ers_region, crd, lat, long, gdp_price_def, 
                   corn_grain_a, corn_grain_p, corn_yield, corn_nprice, corn_rprice, corn_mrev, corn_rrev, corn_nrev,
                   cotton_a, cotton_p, cotton_yield, cotton_nprice, cotton_rprice, cotton_mrev, cotton_rrev, cotton_nrev,
                   hay_a, hay_p, hay_yield, hay_nprice, hay_rprice, hay_mrev, hay_rrev, hay_nrev,
                   wheat_a, wheat_p, wheat_yield, wheat_nprice, wheat_rprice, wheat_mrev, wheat_rrev, wheat_nrev,
                   soybean_a, soybean_p, soybean_yield, soybean_nprice, soybean_rprice, soybean_mrev, soybean_rrev, soybean_nrev)
+
 
 # Merge degree days
 fulldat <- left_join(fulldat, dd_dat, by = c("year", "fips"))
@@ -399,156 +453,15 @@ fulldat <- left_join(fulldat, dd_dat, by = c("year", "fips"))
 fulldat <- do.call(data.frame,lapply(fulldat, function(x) replace(x, is.infinite(x),NA)))
 
 
-# # Label names
-# attr(fulldat$year, "label") <- "year"
-# attr(fulldat$state, "label") <- "state"
-# attr(fulldat$fips, "label") <- "fips code"
-# attr(fulldat$lat, "label") <- "latitude"
-# attr(fulldat$long, "label") <- "longitude"
-# attr(fulldat$gdp_price_def, "label") <- "gdp price def (base = 2010)"
-# attr(fulldat$corn_grain_a, "label") <- "corn grain acres"
-# attr(fulldat$corn_grain_p, "label") <- "corn grain production"
-# attr(fulldat$corn_yield, "label") <- "corn yield (p/a)"
-# attr(fulldat$corn_nprice, "label") <- "nominal corn price"
-# attr(fulldat$corn_rprice, "label") <- "real corn price"
-# attr(fulldat$corn_rrev, "label") <- "real corn revenue per acre"
-# attr(fulldat$corn_nrev, "label") <- "nominal corn revenue per acre"
-# 
-# attr(fulldat$cotton_a, "label") <- "cotton acres"
-# attr(fulldat$cotton_p, "label") <- "cotton production"
-# attr(fulldat$cotton_yield, "label") <- "cotton yield (p/a)"
-# attr(fulldat$cotton_nprice, "label") <- "nominal cotton price"
-# attr(fulldat$cotton_rprice, "label") <- "real cotton price"
-# attr(fulldat$cotton_rrev, "label") <- "real cotton revenue per acre"
-# attr(fulldat$cotton_nrev, "label") <- "nominal cotton revenue per acre"
-# 
-# attr(fulldat$hay_a, "label") <- "hay acres"
-# attr(fulldat$hay_p, "label") <- "hay production"
-# attr(fulldat$hay_yield, "label") <- "hay yield (p/a)"
-# attr(fulldat$hay_nprice, "label") <- "nominal hay price"
-# attr(fulldat$hay_rprice, "label") <- "real hay price"
-# attr(fulldat$hay_rrev, "label") <- "real hay revenue per acre"
-# attr(fulldat$hay_nrev, "label") <- "nominal hay revenue per acre"
-# 
-# attr(fulldat$wheat_a, "label") <- "wheat acres"
-# attr(fulldat$wheat_p, "label") <- "wheat production"
-# attr(fulldat$wheat_yield, "label") <- "wheat yield (p/a)"
-# attr(fulldat$wheat_nprice, "label") <- "nominal wheat price"
-# attr(fulldat$wheat_rprice, "label") <- "real wheat price"
-# attr(fulldat$wheat_rrev, "label") <- "real wheat revenue per acre"
-# attr(fulldat$wheat_nrev, "label") <- "nominal wheat revenue per acre"
-# 
-# attr(fulldat$soybean_a, "label") <- "soybean acres"
-# attr(fulldat$soybean_p, "label") <- "soybean production"
-# attr(fulldat$soybean_yield, "label") <- "soybean yield (p/a)"
-# attr(fulldat$soybean_nprice, "label") <- "nominal soybean price"
-# attr(fulldat$soybean_rprice, "label") <- "real soybean price"
-# attr(fulldat$soybean_rrev, "label") <- "real soybean revenue per acre"
-# attr(fulldat$soybean_nrev, "label") <- "nominal soybean revenue per acre"
-
-# attr(fulldat$dday0C, "label") <- "degree day 0c"
-# attr(fulldat$dday1C, "label") <- "degree day 1C"
-# attr(fulldat$dday2C, "label") <- "degree day 2C"
-# attr(fulldat$dday3C, "label") <- "degree day 3C"
-# attr(fulldat$dday4C, "label") <- "degree day 4C"
-# attr(fulldat$dday5C, "label") <- "degree day 5C"
-# attr(fulldat$dday6C, "label") <- "degree day 6C"
-# attr(fulldat$dday7C, "label") <- "degree day 7C"
-# attr(fulldat$dday8C, "label") <- "degree day 8C"
-# attr(fulldat$dday9C, "label") <- "degree day 9C"
-# attr(fulldat$dday10C, "label") <- "degree day 10C"
-# attr(fulldat$dday11C, "label") <- "degree day 11C"
-# attr(fulldat$dday12C, "label") <- "degree day 12C"
-# attr(fulldat$dday13C, "label") <- "degree day 13C"
-# attr(fulldat$dday14C, "label") <- "degree day 14C"
-# attr(fulldat$dday15C, "label") <- "degree day 15C"
-# attr(fulldat$dday16C, "label") <- "degree day 16C"
-# attr(fulldat$dday17C, "label") <- "degree day 17C"
-# attr(fulldat$dday18C, "label") <- "degree day 18C"
-# attr(fulldat$dday19C, "label") <- "degree day 19C"
-# attr(fulldat$dday20C, "label") <- "degree day 20C"
-# attr(fulldat$dday21C, "label") <- "degree day 21C"
-# attr(fulldat$dday22C, "label") <- "degree day 22C"
-# attr(fulldat$dday23C, "label") <- "degree day 23C"
-# attr(fulldat$dday24C, "label") <- "degree day 24C"
-# attr(fulldat$dday25C, "label") <- "degree day 25C"
-# attr(fulldat$dday26C, "label") <- "degree day 26C"
-# attr(fulldat$dday27C, "label") <- "degree day 27C"
-# attr(fulldat$dday28C, "label") <- "degree day 28C"
-# attr(fulldat$dday29C, "label") <- "degree day 29C"
-# attr(fulldat$dday30C, "label") <- "degree day 30C"
-# attr(fulldat$dday31C, "label") <- "degree day 31C"
-# attr(fulldat$dday32C, "label") <- "degree day 32C"
-# attr(fulldat$dday33C, "label") <- "degree day 33C"
-# attr(fulldat$dday34C, "label") <- "degree day 34C"
-# attr(fulldat$dday35C, "label") <- "degree day 35C"
-# attr(fulldat$ndday0C, "label") <- "degree days < 0C"
-# attr(fulldat$prec, "label") <- "precipitation"
-# attr(fulldat$tmin, "label") <- "minimum temp"
-# attr(fulldat$tmax, "label") <- "maximum temp"
-# attr(fulldat$tavg, "label") <- "average temp"
-# attr(fulldat$population, "label") <- "population"
-# attr(fulldat$pop_dens, "label") <- "population density per sq mi"
-# attr(fulldat$land_sqm, "label") <- "county area sq mile"
-# attr(fulldat$ipc, "label") <- "income per capita"
-
-#write.csv(fulldat, "data/full_ag_data.csv", row.names = FALSE)
-
-# # Balance panel
-# balanced<-function(data, ID, TIME, VARS, required=c("all","shared")) {
-#     if(is.character(ID)) {
-#         ID <- match(ID, names(data))
-#     }
-#     if(is.character(TIME)) {
-#         TIME <- match(TIME, names(data))
-#     }
-#     if(missing(VARS)) { 
-#         VARS <- setdiff(1:ncol(data), c(ID,TIME))
-#     } else if (is.character(VARS)) {
-#         VARS <- match(VARS, names(data))
-#     }
-#     required <- match.arg(required)
-#     idf <- do.call(interaction, c(data[, ID, drop=FALSE], drop=TRUE))
-#     timef <- do.call(interaction, c(data[, TIME, drop=FALSE], drop=TRUE))
-#     complete <- complete.cases(data[, VARS])
-#     tbl <- table(idf[complete], timef[complete])
-#     if (required=="all") {
-#         keep <- which(rowSums(tbl==1)==ncol(tbl))
-#         idx <- as.numeric(idf) %in% keep
-#     } else if (required=="shared") {
-#         keep <- which(colSums(tbl==1)==nrow(tbl))
-#         idx <- as.numeric(timef) %in% keep
-#     }
-#     data[idx, ]
-# }
-# bd <- select(fulldat, fips, year, corn_grain_a, cotton_a, hay_a, wheat_a, soybean_a)
-# #bd <- make.pbalanced(bd, "fill", index = c("fips", "year"))
-# test <- bd[complete.cases(bd),]
-# View(test)
-# head(bd)
-# 
-# mw <- function(x) min(which(!is.na(x)))
-# bdd <- bd %>% 
-#   group_by(fips) %>%
-#   arrange(year) %>% 
-#   summarise(corn = year[mw(corn_grain_a)],
-#             cotton = year[mw(cotton_a)],
-#             hay = year[mw(hay_a)],
-#             wheat = year[mw(wheat_a)],
-#             soybean = year[mw(soybean_a)])
-#   
-# head(bdd)
-# table(bdd$cotton)
-# test <- filter(bdd, cotton == 1943)
-# head(test)
-
-
-
-states <-  c("al","ar","ct","dc","fl","ga","il","in","ia","ks","ky","la","me","md","ma","mi","mn","ms","mo","mt",
+states <-  c("al","ar","ct","dc", "de", "fl","ga","il","in","ia","ks","ky","la","me","md","ma","mi","mn","ms","mo","mt",
 "ne","nh","nj","ny","nc","nd","oh","ok","pa","ri","sc","sd","tn","tx","vt","va","wv","wi")
 
+# 
+# states <-  c("al","ar","ct","dc","fl","ga","il","in","ia","ks","ky","la","me","md","ma","mi","mn","ms","mo","mt",
+# "ne","nh","nj","ny","nc","nd","oh","ok","pa","ri","sc","sd","tn","tx","vt","va","wv","wi")
+
 data <- filter(fulldat, state %in% states)
-data <- filter(data, year >= 1950 & year <= 2009)
+data <- filter(data, year >= 1950 & year <= 2010)
 
 # Keep only those counties with acres in 1950-2009
 data$acres <- rowSums(data[, c("corn_grain_a", "cotton_a", "hay_a", "soybean_a", "wheat_a")], na.rm = TRUE)
@@ -558,82 +471,16 @@ check <- data %>%
   filter(acres > 0 & !is.na(acres)) %>% 
   group_by(fips) %>% 
   summarise(nroww = n()) %>% 
-  filter(nroww == 60)
+  filter(nroww == 61)
 
 head(check)
+length(check$fips)
 fipss <- unique(check$fips)
 data <- filter(data, fips %in% fipss)
 
-# gr <- filter(data, year == 1950)
-# gr <- select(gr, fips, corn_grain_a, cotton_a, hay_a, soybean_a, wheat_a)
-# gr$sums <- rowSums(gr[, 2:6], na.rm = TRUE)
-# gr <- filter(gr, sums > 0 & !is.na(sums))
-# fipss <- unique(gr$fips)
-# data <- filter(data, fips %in% fipss)
-
-# 
-
-# dat <- data %>% 
-#   group_by(fips) %>% 
-#   summarise(corn_a_c = length(which(!is.na(corn_grain_a))),
-#             cotton_a_c = length(which(!is.na(cotton_a))),
-#             hay_a_c = length(which(!is.na(hay_a))),
-#             wheat_a_c = length(which(!is.na(wheat_a))),
-#             soybean_a_c = length(which(!is.na(soybean_a))))
-# 
-# dat <- filter(dat, corn_a_c >= 1 &
-#                 cotton_a_c >= 1 &
-#                 hay_a_c >= 1 &
-#                 wheat_a_c >= 1 &
-#                 soybean_a_c >= 1)
-# 
-# fips.dat <- unique(dat$fips)
-# length(fips.dat)
-# data <- filter(data, fips %in% fips.dat)
-# table(data$year)
-# 
-# mw <- function(x) min(which(!is.na(x)))
-# bdd <- data %>% 
-#   group_by(fips) %>%
-#   arrange(year) %>% 
-#   summarise(corn = year[mw(corn_grain_a)],
-#             cotton = year[mw(cotton_a)],
-#             hay = year[mw(hay_a)],
-#             wheat = year[mw(wheat_a)],
-#             soybean = year[mw(soybean_a)])
-# 
-# head(bdd)
-
-
-# corn <- filter(fulldat, corn_grain_a >= 0)
-# corn.y <- data.frame(table(corn$year))
-# 
-# cotton <- filter(fulldat, cotton_a >= 0)
-# cotton.y <- data.frame(table(cotton$year))
-# 
-# 
-# hay <- filter(fulldat, hay_a >= 0)
-# hay.y <- data.frame(table(hay$year))
-# 
-# wheat <- filter(fulldat, wheat_a >= 0)
-# wheat.y <- data.frame(table(wheat$year))
-# 
-# soybean <- filter(fulldat, soybean_a >= 0)
-# soybean.y <- data.frame(table(soybean$year))
-# 
-# d <- left_join(corn.y, cotton.y, by = "Var1") %>% 
-#   left_join(., hay.y, by = "Var1") %>% 
-#   left_join(., wheat.y, by = "Var1") %>% 
-#   left_join(., soybean.y, by = "Var1")
-# 
-# names(d) <- c("year", "corn", "cotton", "hay", "wheat", "soybean")
-# d$c.diff <- d$corn - d$cotton
-
-
-
 
 # Build data set for regression estimates
-cropdat <- filter(data, year < 2010)
+cropdat <- filter(data, year <= 2010)
   
 cropdat$corn_mprice <- mean(cropdat$corn_rprice, na.rm = TRUE)
 cropdat$cotton_mprice <- mean(cropdat$cotton_rprice, na.rm = TRUE)
@@ -710,11 +557,9 @@ cropdat <- cropdat %>%
  # cropdat$soybean_w <- ifelse(cropdat$soybean_w < 0 , 0, cropdat$soybean_w)
  # cropdat$wheat_w <- ifelse(cropdat$wheat_w < 0 , 0, cropdat$wheat_w)
 
-cropdat$dday0_10 <- cropdat$dday0C - cropdat$dday10C
-cropdat$dday10_30 <- cropdat$dday10C - cropdat$dday30C
-cropdat$dday30 <- cropdat$dday30C
-cropdat$prec_sq <- cropdat$prec^2
 
+#---------------------------------------------------
+# Average Intervals
 # 60 year intervals
 cropdat <- cropdat %>% 
   group_by(fips) %>% 
@@ -735,7 +580,7 @@ cropdat <- cropdat %>%
          prec_thirty = mean(prec, na.rm = TRUE),
          prec_sq_thirty = prec_thirty^2)
 
-# 20 year intervals
+# # 20 year intervals
 cropdat$twenty <- 0
 cropdat$twenty <- ifelse(cropdat$year %in% seq(1950, 1969, 1), 1950, cropdat$twenty)
 cropdat$twenty <- ifelse(cropdat$year %in% seq(1970, 1989, 1), 1970, cropdat$twenty)
@@ -799,15 +644,15 @@ cropdat$z_wheat_a <- qnorm(cropdat$cp_wheat_a)
 cropdat <- as.data.frame(cropdat)
 
 # Remove de because 180 total obs.
-cropdat <- filter(cropdat, state != "de")
-cropdat <- filter(cropdat, state != "dc")
-cropdat <- filter(cropdat, state != "me")
-cropdat <- filter(cropdat, state != "nh")
-cropdat <- filter(cropdat, state != "ri")
-cropdat <- filter(cropdat, state != "vt")
-cropdat <- filter(cropdat, state != "nj")
-cropdat <- filter(cropdat, state != "ma")
-cropdat <- filter(cropdat, state != "ct")
+# cropdat <- filter(cropdat, state != "de")
+# cropdat <- filter(cropdat, state != "dc")
+# cropdat <- filter(cropdat, state != "me")
+# cropdat <- filter(cropdat, state != "nh")
+# cropdat <- filter(cropdat, state != "ri")
+# cropdat <- filter(cropdat, state != "vt")
+# cropdat <- filter(cropdat, state != "nj")
+# cropdat <- filter(cropdat, state != "ma")
+# cropdat <- filter(cropdat, state != "ct")
 
 
 # State-level time trends

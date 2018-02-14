@@ -12,7 +12,7 @@ source("R/predictSUR.R")
 cropdat <- readRDS("data/full_ag_data.rds")
 
 cropdat <- as.data.frame(cropdat)
-cropdat$fips <- factor(cropdat$fips)
+cropdat$ers_region <- factor(cropdat$ers_region)
 
 #State-quad trend with weather and climate
 sur_rev <- readRDS("models/sur_rev_model.rds")
@@ -38,8 +38,8 @@ newdata_list <- list(p0 = p0,
 
 
 
-p0_dm <- demeanlist(p0, fl = list(fips = factor(cropdat$fips)))
-p0_means <- demeanlist(p0, fl = list(fips = factor(cropdat$fips)), means = TRUE)
+p0_dm <- demeanlist(p0, fl = list(ers_region = factor(cropdat$ers_region)))
+p0_means <- demeanlist(p0, fl = list(ers_region = factor(cropdat$ers_region)), means = TRUE)
 
 p1_dm <- p1 - p0_means
 p2_dm <- p2 - p0_means

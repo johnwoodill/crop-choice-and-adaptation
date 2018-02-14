@@ -14,14 +14,14 @@ modten <- readRDS("models/rev_crop_modten.rds")
 modtwenty <- readRDS("models/rev_crop_modtwenty.rds")
 modthirty <- readRDS("models/rev_crop_modthirty.rds")
 
-wcterms_ten = c("dday0_10", "dday10_30", "dday30","prec", "prec_sq", "dday0_10_ten", "dday10_30_ten", "dday30_ten", "prec_ten", "prec_sq_ten")
-wcterms_twenty = c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq", "dday0_10_twenty", "dday10_30_twenty", "dday30_twenty", "prec_twenty", "prec_sq_twenty")
-wcterms_thirty = c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq", "dday0_10_thirty", "dday10_30_thirty", "dday30_thirty", "prec_thirty", "prec_sq_thirty")
+wcterms_ten = c("dday0_10", "dday10_30", "dday30","prec", "prec_sq", "dday0_10_rm_ten", "dday10_30_rm_ten", "dday30_rm_ten", "prec_rm_ten", "prec_sq_rm_ten")
+wcterms_twenty = c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq", "dday0_10_rm_twenty", "dday10_30_rm_twenty", "dday30_rm_twenty", "prec_rm_twenty", "prec_sq_rm_twenty")
+wcterms_thirty = c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq", "dday0_10_rm_thirty", "dday10_30_rm_thirty", "dday30_rm_thirty", "prec_rm_thirty", "prec_sq_rm_thirty")
 
 wterms <- c("dday0_10", "dday10_30", "dday30","prec", "prec_sq")
-cterms_ten <- c("dday0_10_ten", "dday10_30_ten", "dday30_ten", "prec_ten", "prec_sq_ten")
-cterms_twenty <- c("dday0_10_twenty", "dday10_30_twenty", "dday30_twenty", "prec_twenty", "prec_sq_twenty")
-cterms_thirty <- c("dday0_10_thirty", "dday10_30_thirty", "dday30_thirty", "prec_thirty", "prec_sq_thirty")
+cterms_ten <- c("dday0_10_rm_ten", "dday10_30_rm_ten", "dday30_rm_ten", "prec_rm_ten", "prec_sq_rm_ten")
+cterms_twenty <- c("dday0_10_rm_twenty", "dday10_30_rm_twenty", "dday30_rm_twenty", "prec_rm_twenty", "prec_sq_rm_twenty")
+cterms_thirty <- c("dday0_10_rm_thirty", "dday10_30_rm_thirty", "dday30_rm_thirty", "prec_rm_thirty", "prec_sq_rm_thirty")
 
 # Load changes in degree day data
 p1 <- readRDS("data/degree_day_changes/panel_adapt_regression_data_1C.rds")
@@ -52,19 +52,19 @@ wcmodten_4p$sum <- sum(exp(wcmodten_4p$fit + wcmodten_4p$res + wcmodten_4p$effec
 wcmodten_5p$sum <- sum(exp(wcmodten_5p$fit + wcmodten_5p$res + wcmodten_5p$effect) - 1) 
 
 # Get standard errors of sum
-wcmodten_p0_ci <- sum(exp(wcmodten_0p$felm.se.fit) - 1)
-wcmodten_p1_ci <- sum(exp(wcmodten_1p$felm.se.fit) - 1)
-wcmodten_p2_ci <- sum(exp(wcmodten_2p$felm.se.fit) - 1)
-wcmodten_p3_ci <- sum(exp(wcmodten_3p$felm.se.fit) - 1)
-wcmodten_p4_ci <- sum(exp(wcmodten_4p$felm.se.fit) - 1)
-wcmodten_p5_ci <- sum(exp(wcmodten_5p$felm.se.fit) - 1)
+wcmodten_p0_ci <- sum(exp(wcmodten_0p$felm.se.fit + wcmodten_0p$res + wcmodten_0p$effect) - 1)
+wcmodten_p1_ci <- sum(exp(wcmodten_1p$felm.se.fit + wcmodten_1p$res + wcmodten_1p$effect) - 1)
+wcmodten_p2_ci <- sum(exp(wcmodten_2p$felm.se.fit + wcmodten_2p$res + wcmodten_2p$effect) - 1)
+wcmodten_p3_ci <- sum(exp(wcmodten_3p$felm.se.fit + wcmodten_3p$res + wcmodten_3p$effect) - 1)
+wcmodten_p4_ci <- sum(exp(wcmodten_4p$felm.se.fit + wcmodten_4p$res + wcmodten_4p$effect) - 1)
+wcmodten_p5_ci <- sum(exp(wcmodten_5p$felm.se.fit + wcmodten_5p$res + wcmodten_5p$effect) - 1)
 
-wcmodten_p0_se <- as.numeric(unlist(exp(wcmodten_0p$felm.se.fit))) - 1
-wcmodten_p1_se <- as.numeric(unlist(exp(wcmodten_1p$felm.se.fit))) - 1
-wcmodten_p2_se <- as.numeric(unlist(exp(wcmodten_2p$felm.se.fit))) - 1
-wcmodten_p3_se <- as.numeric(unlist(exp(wcmodten_3p$felm.se.fit))) - 1
-wcmodten_p4_se <- as.numeric(unlist(exp(wcmodten_4p$felm.se.fit))) - 1
-wcmodten_p5_se <- as.numeric(unlist(exp(wcmodten_5p$felm.se.fit))) - 1
+wcmodten_p0_se <- as.numeric(unlist(exp(wcmodten_0p$felm.se.fit + wcmodten_0p$res + wcmodten_0p$effect))) - 1
+wcmodten_p1_se <- as.numeric(unlist(exp(wcmodten_1p$felm.se.fit + wcmodten_1p$res + wcmodten_1p$effect))) - 1
+wcmodten_p2_se <- as.numeric(unlist(exp(wcmodten_2p$felm.se.fit + wcmodten_2p$res + wcmodten_2p$effect))) - 1
+wcmodten_p3_se <- as.numeric(unlist(exp(wcmodten_3p$felm.se.fit + wcmodten_3p$res + wcmodten_3p$effect))) - 1
+wcmodten_p4_se <- as.numeric(unlist(exp(wcmodten_4p$felm.se.fit + wcmodten_4p$res + wcmodten_4p$effect))) - 1
+wcmodten_p5_se <- as.numeric(unlist(exp(wcmodten_5p$felm.se.fit + wcmodten_5p$res + wcmodten_5p$effect))) - 1
 
 wcmodten_p0_fit <- exp(wcmodten_0p$fit + wcmodten_0p$res + wcmodten_0p$effect) - 1
 wcmodten_p1_fit <- exp(wcmodten_1p$fit + wcmodten_1p$res + wcmodten_1p$effect) - 1
@@ -369,7 +369,7 @@ head(adat)
 head(bdat)
 dat <- rbind(adat, bdat)
 saveRDS(dat, "data/rev_crop_predictions.rds")
-                              
+dat                              
 # Predicted percentage change
 pdat <- rbind(pdat_wcmodten, pdat_wcmodtwenty, pdat_wcmodthirty, pdat_wmodten, pdat_wmodtwenty, pdat_wmodthirty)
 pdat$change_min <- pdat$sum - pdat$ci*1.96

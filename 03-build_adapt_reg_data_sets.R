@@ -25,6 +25,8 @@ dd3c <- readRDS("data/degree_day_changes/fips_degree_days_3C_1900-2013.rds")
 dd4c <- readRDS("data/degree_day_changes/fips_degree_days_4C_1900-2013.rds")
 dd5c <- readRDS("data/degree_day_changes/fips_degree_days_5C_1900-2013.rds")
 
+
+
 # x <- dd1c
 prec <- read_csv("data/fips_precipitation_1900-2013.csv")
 names(prec)[4] <- "prec"
@@ -37,9 +39,9 @@ cropdat <- select(cropdat, year, fips, state, acres)
 
 # Panel function
 p_dat <- function(x, prec){
-  pdat <- filter(x, year >= 1950 & year <= 2009)
-  prec <- filter(prec, year >= 1950 & year <= 2009)
-  pdat <- left_join(pdat, prec, by = c("fips", "year", "month"))
+  
+  
+  pdat <- left_join(x, prec, by = c("fips", "year", "month"))
   pdat <- filter(pdat, fips %in% unique(cropdat$fips))
   
   pdat <- pdat %>%
@@ -60,6 +62,62 @@ p_dat <- function(x, prec){
   pdat$dday10_30 <- pdat$dday10C - pdat$dday30C
   pdat$dday30 <- pdat$dday30C
   pdat$prec_sq <- pdat$prec^2
+  
+  #--------------------------------------------------
+# Roll.mean intervals
+
+#40-year
+pdat <- pdat %>%
+  group_by(fips) %>%
+  arrange(year) %>%
+  mutate(dday0_10_rm_fifty = rollmean(dday0_10, k = 50, align = "right", fill = "NA"),
+         dday10_30_rm_fifty = rollmean(dday10_30, k = 50, align = "right", fill = "NA"),
+         dday30_rm_fifty = rollmean(dday30, k = 50, align = "right", fill = "NA"),
+         prec_rm_fifty = rollmean(prec, k = 50, align = "right", fill = "NA"),
+         prec_sq_rm_fifty = prec_rm_fifty^2)
+
+#40-year
+pdat <- pdat %>%
+  group_by(fips) %>%
+  arrange(year) %>%
+  mutate(dday0_10_rm_fourty = rollmean(dday0_10, k = 40, align = "right", fill = "NA"),
+         dday10_30_rm_fourty = rollmean(dday10_30, k = 40, align = "right", fill = "NA"),
+         dday30_rm_fourty = rollmean(dday30, k = 40, align = "right", fill = "NA"),
+         prec_rm_fourty = rollmean(prec, k = 40, align = "right", fill = "NA"),
+         prec_sq_rm_fourty = prec_rm_fourty^2)
+
+#30-year
+pdat <- pdat %>%
+  group_by(fips) %>%
+  arrange(year) %>%
+  mutate(dday0_10_rm_thirty = rollmean(dday0_10, k = 30, align = "right", fill = "NA"),
+         dday10_30_rm_thirty = rollmean(dday10_30, k = 30, align = "right", fill = "NA"),
+         dday30_rm_thirty = rollmean(dday30, k = 30, align = "right", fill = "NA"),
+         prec_rm_thirty = rollmean(prec, k = 30, align = "right", fill = "NA"),
+         prec_sq_rm_thirty = prec_rm_thirty^2)
+
+# 20 year intervals
+pdat <- pdat %>%
+  group_by(fips) %>%
+  arrange(year) %>%
+  mutate(dday0_10_rm_twenty = rollmean(dday0_10, k = 20, align = "right", fill = "NA"),
+         dday10_30_rm_twenty = rollmean(dday10_30, k = 20, align = "right", fill = "NA"),
+         dday30_rm_twenty = rollmean(dday30, k = 20, align = "right", fill = "NA"),
+         prec_rm_twenty = rollmean(prec, k = 20, align = "right", fill = "NA"),
+         prec_sq_rm_twenty = prec_rm_twenty^2)
+
+# 10-year interval
+pdat <- pdat %>%
+  group_by(fips) %>%
+  arrange(year) %>%
+  mutate(dday0_10_rm_ten = rollmean(dday0_10, k = 10, align = "right", fill = "NA"),
+         dday10_30_rm_ten = rollmean(dday10_30, k = 10, align = "right", fill = "NA"),
+         dday30_rm_ten = rollmean(dday30, k = 10, align = "right", fill = "NA"),
+         prec_rm_ten = rollmean(prec, k = 10, align = "right", fill = "NA"),
+         prec_sq_rm_ten = prec_rm_ten^2)
+  
+  pdat <- filter(pdat, year >= 1950 & year <= 2010)
+
 
   # 60 year intervals
   pdat <- pdat %>% 
@@ -186,9 +244,20 @@ p_dat <- function(x, prec){
   pdat <- select(pdat, #z_corn_a, z_cotton_a, z_hay_a, z_soybean_a, z_wheat_a,
                  dday0_10, dday10_30, dday30, prec, prec_sq, 
                  dday0_10_five, dday10_30_five, dday30_five, prec_five, prec_sq_five,
+                 
                  dday0_10_ten, dday10_30_ten, dday30_ten, prec_ten, prec_sq_ten,
+                 dday0_10_rm_ten, dday10_30_rm_ten, dday30_rm_ten, prec_rm_ten, prec_sq_rm_ten,
+                 
                  dday0_10_twenty, dday10_30_twenty, dday30_twenty, prec_twenty, prec_sq_twenty,
+                 dday0_10_rm_twenty, dday10_30_rm_twenty, dday30_rm_twenty, prec_rm_twenty, prec_sq_rm_twenty,
+                 
                  dday0_10_thirty, dday10_30_thirty, dday30_thirty, prec_thirty, prec_sq_thirty,
+                 dday0_10_rm_thirty, dday10_30_rm_thirty, dday30_rm_thirty, prec_rm_thirty, prec_sq_rm_thirty,
+                 
+                 dday0_10_rm_fourty, dday10_30_rm_fourty, dday30_rm_fourty, prec_rm_fourty, prec_sq_rm_fourty,
+                 
+                 dday0_10_rm_fifty, dday10_30_rm_fifty, dday30_rm_fifty, prec_rm_fifty, prec_sq_rm_fifty,
+                 
                 dday0_10_sixty, dday10_30_sixty, dday30_sixty, prec_sixty, prec_sq_sixty, trend, trend_sq)
   
   pdat <- cbind(pdat, depvar)
@@ -211,7 +280,7 @@ p_dat <- function(x, prec){
 }
 
 # Clean up data for new temp data
-p1 <- p_dat(dd1c, prec)
+p1 <- p_dat(x = dd1c, prec = prec)
 p2 <- p_dat(dd2c, prec)
 p3 <- p_dat(dd3c, prec)
 p4 <- p_dat(dd4c, prec)

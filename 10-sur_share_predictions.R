@@ -11,7 +11,7 @@ source("R/predictSUR.clean.R")
 # Crop data
 cropdat <- readRDS("data/full_ag_data.rds")
 cropdat <- as.data.frame(cropdat)
-cropdat$fips <- factor(cropdat$fips)
+cropdat$ers_region <- factor(cropdat$ers_region)
 cropdat$state <- factor(cropdat$state)
 cropdat$five <- factor(cropdat$five)
 cropdat$ten <- factor(cropdat$ten)
@@ -46,9 +46,9 @@ newdata_list <- list(p0 = p0,
 
 
 
-p0_ten <- demeanlist(p0, fl = list(fips = factor(cropdat$fips),
+p0_ten <- demeanlist(p0, fl = list(ers_region = factor(cropdat$ers_region),
                                          ten = factor(cropdat$ten)))
-p0_ten_means <- demeanlist(p0, fl = list(fips = factor(cropdat$fips),
+p0_ten_means <- demeanlist(p0, fl = list(ers_region = factor(cropdat$ers_region),
                                          ten = factor(cropdat$ten)), means = TRUE)
 
 p1_ten <- p1 - p0_ten_means
@@ -64,9 +64,9 @@ newdata_list_ten <- list(p0 = p0_ten,
                      p4 = p4_ten,
                      p5 = p5_ten)
 
-p0_twenty <- demeanlist(p0, fl = list(fips = factor(cropdat$fips),
+p0_twenty <- demeanlist(p0, fl = list(ers_region = factor(cropdat$ers_region),
                                          twenty = factor(cropdat$twenty)))
-p0_twenty_means <- demeanlist(p0, fl = list(fips = factor(cropdat$fips),
+p0_twenty_means <- demeanlist(p0, fl = list(ers_region = factor(cropdat$ers_region),
                                          twenty = factor(cropdat$twenty)), means = TRUE)
 
 p1_twenty <- p1 - p0_twenty_means
@@ -82,9 +82,9 @@ newdata_list_twenty <- list(p0 = p0_twenty,
                      p4 = p4_twenty,
                      p5 = p5_twenty)
 
-p0_thirty <- demeanlist(p0, fl = list(fips = factor(cropdat$fips),
+p0_thirty <- demeanlist(p0, fl = list(ers_region = factor(cropdat$ers_region),
                                          thirty = factor(cropdat$thirty)))
-p0_thirty_means <- demeanlist(p0, fl = list(fips = factor(cropdat$fips),
+p0_thirty_means <- demeanlist(p0, fl = list(ers_region = factor(cropdat$ers_region),
                                          thirty = factor(cropdat$thirty)), means = TRUE)
 
 p1_thirty <- p1 - p0_thirty_means
@@ -113,7 +113,7 @@ thirty_climate_terms_v = c("dday0_10_thirty", "dday10_30_thirty", "dday30_thirty
 
 cten <- predictSUR.clean(mod = sur_ten, 
                          acres = cropdat$acres,  
-                         fips = cropdat$fips,
+                         fips = cropdat$ers_region,
                          newdata_list = newdata_list_ten,
                          var.terms = ten_climate_terms_v,
                          type = "10-year", 
@@ -126,7 +126,7 @@ cten <- predictSUR.clean(mod = sur_ten,
 
 ctwenty <- predictSUR.clean(mod = sur_twenty, 
                             acres = cropdat$acres,  
-                            fips = cropdat$fips,
+                            fips = cropdat$ers_region,
                             newdata_list = newdata_list_twenty, 
                             var.terms = twenty_climate_terms_v,
                             type = "20-year", 
@@ -139,7 +139,7 @@ ctwenty <- predictSUR.clean(mod = sur_twenty,
 
 cthirty <- predictSUR.clean(sur_thirty, 
                             acres = cropdat$acres,  
-                            fips = cropdat$fips,
+                            fips = cropdat$ers_region,
                             newdata_list = newdata_list_thirty,
                             var.terms = thirty_climate_terms_v,
                             type = "30-year", 
