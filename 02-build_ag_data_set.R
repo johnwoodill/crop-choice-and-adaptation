@@ -34,6 +34,7 @@ county.fips$state <- sapply(str_split(county.fips$polyname, ","),'[',1)
 county.fips$county <- sapply(str_split(county.fips$polyname, ","),'[',2)
 county.fips <- select(county.fips, fips, county, state)
 
+
 data(zip_codes)
 zip_codes <- select(zip_codes, fips, latitude, longitude)
 zip_codes <- zip_codes[!duplicated(zip_codes[,1:3]),]
@@ -42,6 +43,7 @@ zip_codes <- zip_codes %>%
   group_by(county) %>% 
   summarise(lat = mean(lat, na.rm = TRUE),
             long = mean(long, na.rm = TRUE))
+
 
 # Function to extract data
 # Extract NASS crop data at state level
@@ -347,52 +349,53 @@ dd_dat <- select(dd_dat, year, fips, dday0_10, dday10_30, dday30, prec, prec_sq)
 dd_dat <- dd_dat %>%
   group_by(fips) %>%
   arrange(year) %>%
-  mutate(dday0_10_rm_fifty = rollmean(dday0_10, k = 50, align = "right", fill = "NA"),
-         dday10_30_rm_fifty = rollmean(dday10_30, k = 50, align = "right", fill = "NA"),
-         dday30_rm_fifty = rollmean(dday30, k = 50, align = "right", fill = "NA"),
-         prec_rm_fifty = rollmean(prec, k = 50, align = "right", fill = "NA"),
+  mutate(dday0_10_rm_fifty = lag(rollmean(dday0_10, k = 50, align = "right", fill = "NA")),
+         dday10_30_rm_fifty = lag(rollmean(dday10_30, k = 50, align = "right", fill = "NA")),
+         dday30_rm_fifty = lag(rollmean(dday30, k = 50, align = "right", fill = "NA")),
+         prec_rm_fifty = lag(rollmean(prec, k = 50, align = "right", fill = "NA")),
          prec_sq_rm_fifty = prec_rm_fifty^2)
 
 #40-year
 dd_dat <- dd_dat %>%
   group_by(fips) %>%
   arrange(year) %>%
-  mutate(dday0_10_rm_fourty = rollmean(dday0_10, k = 40, align = "right", fill = "NA"),
-         dday10_30_rm_fourty = rollmean(dday10_30, k = 40, align = "right", fill = "NA"),
-         dday30_rm_fourty = rollmean(dday30, k = 40, align = "right", fill = "NA"),
-         prec_rm_fourty = rollmean(prec, k = 40, align = "right", fill = "NA"),
+  mutate(dday0_10_rm_fourty = lag(rollmean(dday0_10, k = 40, align = "right", fill = "NA")),
+         dday10_30_rm_fourty = lag(rollmean(dday10_30, k = 40, align = "right", fill = "NA")),
+         dday30_rm_fourty = lag(rollmean(dday30, k = 40, align = "right", fill = "NA")),
+         prec_rm_fourty = lag(rollmean(prec, k = 40, align = "right", fill = "NA")),
          prec_sq_rm_fourty = prec_rm_fourty^2)
 
 #30-year
 dd_dat <- dd_dat %>%
   group_by(fips) %>%
   arrange(year) %>%
-  mutate(dday0_10_rm_thirty = rollmean(dday0_10, k = 30, align = "right", fill = "NA"),
-         dday10_30_rm_thirty = rollmean(dday10_30, k = 30, align = "right", fill = "NA"),
-         dday30_rm_thirty = rollmean(dday30, k = 30, align = "right", fill = "NA"),
-         prec_rm_thirty = rollmean(prec, k = 30, align = "right", fill = "NA"),
+  mutate(dday0_10_rm_thirty = lag(rollmean(dday0_10, k = 30, align = "right", fill = "NA")),
+         dday10_30_rm_thirty = lag(rollmean(dday10_30, k = 30, align = "right", fill = "NA")),
+         dday30_rm_thirty = lag(rollmean(dday30, k = 30, align = "right", fill = "NA")),
+         prec_rm_thirty = lag(rollmean(prec, k = 30, align = "right", fill = "NA")),
          prec_sq_rm_thirty = prec_rm_thirty^2)
 
 # 20 year intervals
 dd_dat <- dd_dat %>%
   group_by(fips) %>%
   arrange(year) %>%
-  mutate(dday0_10_rm_twenty = rollmean(dday0_10, k = 20, align = "right", fill = "NA"),
-         dday10_30_rm_twenty = rollmean(dday10_30, k = 20, align = "right", fill = "NA"),
-         dday30_rm_twenty = rollmean(dday30, k = 20, align = "right", fill = "NA"),
-         prec_rm_twenty = rollmean(prec, k = 20, align = "right", fill = "NA"),
+  mutate(dday0_10_rm_twenty = lag(rollmean(dday0_10, k = 20, align = "right", fill = "NA")),
+         dday10_30_rm_twenty = lag(rollmean(dday10_30, k = 20, align = "right", fill = "NA")),
+         dday30_rm_twenty = lag(rollmean(dday30, k = 20, align = "right", fill = "NA")),
+         prec_rm_twenty = lag(rollmean(prec, k = 20, align = "right", fill = "NA")),
          prec_sq_rm_twenty = prec_rm_twenty^2)
 
 dd_dat <- dd_dat %>%
   group_by(fips) %>%
   arrange(year) %>%
-  mutate(dday0_10_rm_ten = rollmean(dday0_10, k = 10, align = "right", fill = "NA"),
-         dday10_30_rm_ten = rollmean(dday10_30, k = 10, align = "right", fill = "NA"),
-         dday30_rm_ten = rollmean(dday30, k = 10, align = "right", fill = "NA"),
-         prec_rm_ten = rollmean(prec, k = 10, align = "right", fill = "NA"),
+  mutate(dday0_10_rm_ten = lag(rollmean(dday0_10, k = 10, align = "right", fill = "NA")),
+         dday10_30_rm_ten = lag(rollmean(dday10_30, k = 10, align = "right", fill = "NA")),
+         dday30_rm_ten = lag(rollmean(dday30, k = 10, align = "right", fill = "NA")),
+         prec_rm_ten = lag(rollmean(prec, k = 10, align = "right", fill = "NA")),
          prec_sq_rm_ten = prec_rm_ten^2)
 
- 
+
+
 # Merge ag prices, ag crop data, and degree day data ----------------------
 
 fulldat <- left_join(cropdat, crop_prices, by = c("year", "state"))
