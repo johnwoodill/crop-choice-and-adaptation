@@ -36,7 +36,7 @@ dd_dat$dday10_30 <- dd_dat$dday10C - dd_dat$dday30C
 dd_dat$dday30 <- dd_dat$dday30C
 dd_dat$prec_sq <- dd_dat$prec^2
 
-dd_dat <- select(dd_dat, year, fips, dday0_10, dday10_30, dday30, prec, prec_sq)
+dd_dat <- select(dd_dat, year, fips, dday0C, dday10C, dday30C, dday0_10, dday10_30, dday30, prec, prec_sq)
 
 data(county.fips)
 county.fips$state <- sapply(str_split(county.fips$polyname, ","),'[',1)
@@ -132,13 +132,20 @@ unique(factor(dd_dat$state))
 dd_dat <- dd_dat %>% 
   group_by(fips) %>% 
   distinct(year, .keep_all = TRUE)
- 
+
+dd_dat <- filter(dd_dat, !is.na(state))
+ddat <- table(dd_dat$fips)
+which(ddat != 61)
 saveRDS(dd_dat, "data/full_weather_data.rds")
 #-----------------------------------------------
 
 
 dd_dat <- readRDS("data/full_weather_data.rds")
+dd_dat <- filter(dd_dat, !is.na(state))
+saveRDS(dd_dat, "/home/john/Dropbox/eastern_weather_data.rds")
 cropdat <- readRDS("data/full_ag_data.rds")
+
+head(dd_dat)
 
 
 # nbal <- c(12091, 22099, 37053, 48167, 51001)
@@ -363,7 +370,10 @@ head(test)
 
 
 test <- filter(dd_dat, year == 2010)
-testdat <- data.frame(region = test$fips, dday30 = test$dday30)
+test <- dd_dat %>% 
+  group_by(fips) %>% 
+  summarise(value = mean(dday30_rm_thirty, na.rm = TRUE))
+testdat <- data.frame(region = test$fips, value = test$value)
 head(testdat)
 
 modmap <- county_choropleth(testdat,
@@ -371,11 +381,10 @@ modmap <- county_choropleth(testdat,
 
 modmap <- modmap + scale_fill_brewer(palette = "RdYlBu", direction = -1) + 
   theme_tufte(base_size = 10)+ 
-  xlab("Degree Day 30C Residuals (30-year) \n Temperature with County FE & ERS Region Quad Trend \n
-        dday30_rm_thirty ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + \n 
-       factor(fips) + ers_region:trend + ers_region:trend_sq") + ylab(NULL) + theme(legend.position = "none",
+  xlab("Average Rolling Degree Day 30C (30-year)") + ylab(NULL) + theme(legend.position = "none",
                        axis.text.x = element_blank(),
                        axis.text.y = element_blank(),
                        axis.ticks.x = element_blank(),
                        axis.ticks.y = element_blank(),
                        panel.border = element_rect(fill = NA)) 
+modmap
