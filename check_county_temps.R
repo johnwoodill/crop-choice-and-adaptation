@@ -125,6 +125,7 @@ unique(factor(dd_dat$state))
            prec_rm_ten = lag(rollmean(prec, k = 10, align = "right", fill = "NA")),
            prec_sq_rm_ten = prec_rm_ten^2)
 
+ 
  dd_dat <- filter(dd_dat, year >= 1950 & year <= 2010)
  dd_dat$trend <- dd_dat$year - 1949
  dd_dat$trend_sq <- dd_dat$trend^2
@@ -143,9 +144,22 @@ saveRDS(dd_dat, "data/full_weather_data.rds")
 dd_dat <- readRDS("data/full_weather_data.rds")
 dd_dat <- filter(dd_dat, !is.na(state))
 saveRDS(dd_dat, "/home/john/Dropbox/eastern_weather_data.rds")
+dd_dat <- readRDS("/home/john/Dropbox/eastern_weather_data.rds")
 cropdat <- readRDS("data/full_ag_data.rds")
 
 head(dd_dat)
+
+# 30 year intervals
+dd_dat$thirty <- dd_dat$year - (dd_dat$year %% 30)
+
+dd_dat <- dd_dat %>% 
+  group_by(fips, thirty) %>% 
+  mutate(dday0_10_thirty = mean(dday0_10, na.rm = TRUE),
+         dday10_30_thirty = mean(dday10_30, na.rm = TRUE),
+         dday30_thirty = mean(dday30, na.rm = TRUE),
+         prec_thirty = mean(prec, na.rm = TRUE),
+         prec_sq_thirty = prec_thirty^2)
+
 
 
 # nbal <- c(12091, 22099, 37053, 48167, 51001)
@@ -330,9 +344,12 @@ mod5_map <- mod5_map + scale_fill_brewer(palette = "RdYlBu", direction = -1) +
   
 mod5_map
 
-
-test <- filter(dd_dat, year == 2010)
-mod6 <- felm(dday30_rm_thirty ~ factor(fips) + factor(state)*I(year^2), data = dd_dat)
+# set.seed(1234)
+fdat <- select(cropdat, year, state, fips, acres)
+dd_dat <- left_join(dd_dat, fdat, by = c("year", "fips", "state"))
+dd_dat <- filter(dd_dat, !is.na(acres))
+mod6 <- felm(dday30_rm_thirty ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + factor(ers_region):trend + factor(ers_region):trend_sq - 1 | fips, 
+             data = dd_dat, weights = dd_dat$acres)
 sum(mod6$residuals)
 summary(mod6)
 
