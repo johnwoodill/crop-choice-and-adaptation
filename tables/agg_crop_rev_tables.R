@@ -26,7 +26,7 @@ attr(mod1$beta, "dimnames")[[1]] <- c("(Intercept)", "weather_dday0_10", "weathe
 attr(mod2$beta, "dimnames")[[1]] <- c("weather_dday0_10", "weather_dday10_30", "weather_dday30", "weather_prec", "weather_prec_sq",
                                       "climate_dday0_10", "climate_dday10_30", "climate_dday30", "climate_prec", "climate_prec_sq")
 
-attr(mod3$beta, "dimnames")[[1]] <- c("weather_dday0_10", "weather_dday10_30", "weather_dday30", "weather_prec", "weather_prec_sq",
+attr(mod3$beta, "dimnames")[[1]][1:10] <- c("weather_dday0_10", "weather_dday10_30", "weather_dday30", "weather_prec", "weather_prec_sq",
                                       "climate_dday0_10", "climate_dday10_30", "climate_dday30", "climate_prec", "climate_prec_sq")
 
 attr(mod4$beta, "dimnames")[[1]][1:10] <- c("weather_dday0_10", "weather_dday10_30", "weather_dday30", "weather_prec", "weather_prec_sq",
@@ -46,7 +46,7 @@ attr(mod1$coefficients, "dimnames")[[1]] <- c("(Intercept)", "weather_dday0_10",
 attr(mod2$coefficients, "dimnames")[[1]] <- c("weather_dday0_10", "weather_dday10_30", "weather_dday30", "weather_prec", "weather_prec_sq",
                                       "climate_dday0_10", "climate_dday10_30", "climate_dday30", "climate_prec", "climate_prec_sq")
 
-attr(mod3$coefficients, "dimnames")[[1]] <- c("weather_dday0_10", "weather_dday10_30", "weather_dday30", "weather_prec", "weather_prec_sq",
+attr(mod3$coefficients, "dimnames")[[1]][1:10] <- c("weather_dday0_10", "weather_dday10_30", "weather_dday30", "weather_prec", "weather_prec_sq",
                                       "climate_dday0_10", "climate_dday10_30", "climate_dday30", "climate_prec", "climate_prec_sq")
 
 attr(mod4$coefficients, "dimnames")[[1]][1:10] <- c("weather_dday0_10", "weather_dday10_30", "weather_dday30", "weather_prec", "weather_prec_sq",
@@ -77,8 +77,9 @@ star1 <- stargazer(mod1, mod2, mod3, mod4, mod5, mod6,
           apply.coef = multiply.100, apply.se = multiply.100,
           table.layout ="=dcm#-t-as=n",
           font.size = "footnotesize",
-          add.lines = list(c("Fixed-effect", "--", "County", "County, Interval", "County, Interval", "County, Interval", "County, Interval"),
-                           c("Quad. State-trend", "--", "--", "--", "Yes", "Yes", "Yes"),
+          add.lines = list(c("Fixed-effect", "--", "County", "County", "County", "County", "County"),
+                           c("National Quad. Trend", "--", "--", "Yes", "--", "--", "--"),
+                           c("Lat/Long Quad. Trend", "--", "--", "--", "Yes", "Yes", "Yes"),
                            c("Clusterd SE", "--", "--", "--", "State", "State", "State")),
           notes.append = FALSE, notes.align = "l")
 
@@ -102,8 +103,8 @@ star1 <- c(star_1, "\\hline \\\\[-1.8ex]", "\\textbf{Climate-effect}\\\\", "\\\\
 
 loc <- which(star1 == "\\end{tabular} ")
 star1 <- star1[1:loc-1]
-star1notes <- paste("\\parbox{6.8in}{Notes: Table reports regression coefficients for log crop revenue per acre using weather (year-to-year) and climate (average of decade interval) degree day and precipitation variables from 1950-2010.
-Crop revenue per acre is calculated by summing production (lbs) per acre times average crop price for corn, cotton, hay, soybean, and wheat. Climate variables are averaged over intervals from 10 to 30-years. Regression
+star1notes <- paste("\\parbox{5in}{Notes: Table reports regression coefficients for log crop revenue per acre using weather (year-to-year) and climate (rolling mean) degree day and precipitation variables from 1950-2010.
+Crop revenue per acre is calculated by summing production (lbs) per acre times average crop price for corn, cotton, hay, soybean, and wheat. Climate variables are averaged over a 'right' rolling mean from 10 to 30-years. Regression
 estimates are weighted by total county-level total acres (smoothed using a spline). Estimates in \\textbf{bold} are statistically significant at 95\\%. Coefficients have been multiplied by 100.}")
 
 star1 <- c(star1, "\\end{tabular}", star1notes)
@@ -122,4 +123,4 @@ system("pdflatex agg_crop_rev.tex")
 
 system("sed -r 's/([0-9\\.]+)\\$\\^\\{\\*{1,3}\\}\\$/\\\\textbf{\\1}/g' agg_crop_rev.tex > agg_crop_rev_out.tex")
 system("pdflatex agg_crop_rev_out.tex")
-
+# 

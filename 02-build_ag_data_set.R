@@ -345,7 +345,7 @@ dd_dat <- select(dd_dat, year, fips, dday0_10, dday10_30, dday30, prec, prec_sq)
 #--------------------------------------------------
 # Roll.mean intervals
 
-#40-year
+#50-year
 dd_dat <- dd_dat %>%
   group_by(fips) %>%
   arrange(year) %>%
@@ -385,6 +385,17 @@ dd_dat <- dd_dat %>%
          prec_rm_twenty = lag(rollmean(prec, k = 20, align = "right", fill = "NA")),
          prec_sq_rm_twenty = prec_rm_twenty^2)
 
+# 15 year intervals
+dd_dat <- dd_dat %>%
+  group_by(fips) %>%
+  arrange(year) %>%
+  mutate(dday0_10_rm_fifteen = lag(rollmean(dday0_10, k = 15, align = "right", fill = "NA")),
+         dday10_30_rm_fifteen = lag(rollmean(dday10_30, k = 15, align = "right", fill = "NA")),
+         dday30_rm_fifteen = lag(rollmean(dday30, k = 15, align = "right", fill = "NA")),
+         prec_rm_fifteen = lag(rollmean(prec, k = 15, align = "right", fill = "NA")),
+         prec_sq_rm_fifteen = prec_rm_fifteen^2)
+
+# 10 year Intervals
 dd_dat <- dd_dat %>%
   group_by(fips) %>%
   arrange(year) %>%
@@ -394,6 +405,15 @@ dd_dat <- dd_dat %>%
          prec_rm_ten = lag(rollmean(prec, k = 10, align = "right", fill = "NA")),
          prec_sq_rm_ten = prec_rm_ten^2)
 
+# 5-year intervals
+dd_dat <- dd_dat %>%
+  group_by(fips) %>%
+  arrange(year) %>%
+  mutate(dday0_10_rm_five = lag(rollmean(dday0_10, k = 5, align = "right", fill = "NA")),
+         dday10_30_rm_five = lag(rollmean(dday10_30, k = 5, align = "right", fill = "NA")),
+         dday30_rm_five = lag(rollmean(dday30, k = 5, align = "right", fill = "NA")),
+         prec_rm_five = lag(rollmean(prec, k = 5, align = "right", fill = "NA")),
+         prec_sq_rm_five = prec_rm_five^2)
 
 
 # Merge ag prices, ag crop data, and degree day data ----------------------
@@ -464,7 +484,7 @@ states <-  c("al","ar","ct","dc", "de", "fl","ga","il","in","ia","ks","ky","la",
 # "ne","nh","nj","ny","nc","nd","oh","ok","pa","ri","sc","sd","tn","tx","vt","va","wv","wi")
 
 data <- filter(fulldat, state %in% states)
-data <- filter(data, year >= 1950 & year <= 2010)
+data <- filter(data, year >= 1960 & year <= 2010)
 
 # Keep only those counties with acres in 1950-2009
 data$acres <- rowSums(data[, c("corn_grain_a", "cotton_a", "hay_a", "soybean_a", "wheat_a")], na.rm = TRUE)
@@ -474,7 +494,7 @@ check <- data %>%
   filter(acres > 0 & !is.na(acres)) %>% 
   group_by(fips) %>% 
   summarise(nroww = n()) %>% 
-  filter(nroww == 61)
+  filter(nroww == 51)
 
 head(check)
 length(check$fips)

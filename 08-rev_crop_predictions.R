@@ -8,6 +8,7 @@ source("R/predictFelm.R")
 
 cropdat <- readRDS("data/full_ag_data.rds")
 cropdat$trend_sq <- cropdat$trend^2
+cropdat$fips <- factor(cropdat$fips)
 
 # Load models
 modten <- readRDS("models/rev_crop_modten.rds")
@@ -59,12 +60,12 @@ wcmodten_p3_ci <- sum(exp(wcmodten_3p$felm.se.fit + wcmodten_3p$res + wcmodten_3
 wcmodten_p4_ci <- sum(exp(wcmodten_4p$felm.se.fit + wcmodten_4p$res + wcmodten_4p$effect) - 1)
 wcmodten_p5_ci <- sum(exp(wcmodten_5p$felm.se.fit + wcmodten_5p$res + wcmodten_5p$effect) - 1)
 
-wcmodten_p0_se <- as.numeric(unlist(exp(wcmodten_0p$felm.se.fit + wcmodten_0p$res + wcmodten_0p$effect))) - 1
-wcmodten_p1_se <- as.numeric(unlist(exp(wcmodten_1p$felm.se.fit + wcmodten_1p$res + wcmodten_1p$effect))) - 1
-wcmodten_p2_se <- as.numeric(unlist(exp(wcmodten_2p$felm.se.fit + wcmodten_2p$res + wcmodten_2p$effect))) - 1
-wcmodten_p3_se <- as.numeric(unlist(exp(wcmodten_3p$felm.se.fit + wcmodten_3p$res + wcmodten_3p$effect))) - 1
-wcmodten_p4_se <- as.numeric(unlist(exp(wcmodten_4p$felm.se.fit + wcmodten_4p$res + wcmodten_4p$effect))) - 1
-wcmodten_p5_se <- as.numeric(unlist(exp(wcmodten_5p$felm.se.fit + wcmodten_5p$res + wcmodten_5p$effect))) - 1
+wcmodten_p0_se <- as.numeric(unlist(exp(wcmodten_0p$felm.se.fit ))) - 1
+wcmodten_p1_se <- as.numeric(unlist(exp(wcmodten_1p$felm.se.fit ))) - 1
+wcmodten_p2_se <- as.numeric(unlist(exp(wcmodten_2p$felm.se.fit ))) - 1
+wcmodten_p3_se <- as.numeric(unlist(exp(wcmodten_3p$felm.se.fit ))) - 1
+wcmodten_p4_se <- as.numeric(unlist(exp(wcmodten_4p$felm.se.fit))) - 1
+wcmodten_p5_se <- as.numeric(unlist(exp(wcmodten_5p$felm.se.fit ))) - 1
 
 wcmodten_p0_fit <- exp(wcmodten_0p$fit + wcmodten_0p$res + wcmodten_0p$effect) - 1
 wcmodten_p1_fit <- exp(wcmodten_1p$fit + wcmodten_1p$res + wcmodten_1p$effect) - 1
@@ -369,7 +370,7 @@ head(adat)
 head(bdat)
 dat <- rbind(adat, bdat)
 saveRDS(dat, "data/rev_crop_predictions.rds")
-dat                              
+# dat                              
 # Predicted percentage change
 pdat <- rbind(pdat_wcmodten, pdat_wcmodtwenty, pdat_wcmodthirty, pdat_wmodten, pdat_wmodtwenty, pdat_wmodthirty)
 pdat$change_min <- pdat$sum - pdat$ci*1.96
@@ -393,7 +394,7 @@ saveRDS(pdat, "data/rev_crop_perc_change.rds")
 pdat <- readRDS("data/rev_crop_perc_change.rds")
 
 ggplot(pdat, aes(temp, change, group = effect)) + 
-  geom_ribbon(aes(ymax = change_max, ymin = change_min, x = temp), fill = "#C0CCD9", alpha = 0.5 ) +
+  # geom_ribbon(aes(ymax = change_max, ymin = change_min, x = temp), fill = "#C0CCD9", alpha = 0.5 ) +
   geom_line(aes(color = effect)) +
   geom_point(aes(color = effect), size = 0.5) +
   theme_tufte(base_size = 10) +

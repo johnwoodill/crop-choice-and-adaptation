@@ -33,8 +33,16 @@ predictFelm <- function(felm.fit, newdata = NULL, var.terms = NULL, cons.terms =
   dat <- as.data.frame(cbind(felm.fit$response, felm.fit$X))
   
   # Get demeaned data from felm object
+  
+  dmtrend <- data.frame(trend = newdata$trend,
+                        trend_sq = newdata$trend_sq,
+                        lat = newdata$lat,
+                        long = newdata$long)
+  
+  dmtrend <- demeanlist(dmtrend, fl = list(fips = factor(newdata$fips)))
   dmdat <- as.data.frame(cbind(felm.fit$cY, felm.fit$cX))
-       lm.fit       = lm( lm.formula, data=dmdat)
+  dmdat <- cbind(dmdat, dmtrend)
+  lm.fit       = lm( lm.formula, data=dmdat)
     
     
   # With weights and fixed-effects

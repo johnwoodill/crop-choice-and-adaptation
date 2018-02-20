@@ -25,6 +25,16 @@ dd3c <- readRDS("data/degree_day_changes/fips_degree_days_3C_1900-2013.rds")
 dd4c <- readRDS("data/degree_day_changes/fips_degree_days_4C_1900-2013.rds")
 dd5c <- readRDS("data/degree_day_changes/fips_degree_days_5C_1900-2013.rds")
 
+data(zip_codes)
+zip_codes <- select(zip_codes, fips, latitude, longitude)
+zip_codes <- zip_codes[!duplicated(zip_codes[,1:3]),]
+names(zip_codes) <- c("fips", "lat", "long")
+
+zip_codes <- zip_codes %>% 
+  group_by(fips) %>% 
+  summarise(lat = mean(lat, na.rm = TRUE),
+            long = mean(long, na.rm = TRUE))
+
 
 
 # x <- dd1c
@@ -62,6 +72,8 @@ p_dat <- function(x, prec){
   pdat$dday10_30 <- pdat$dday10C - pdat$dday30C
   pdat$dday30 <- pdat$dday30C
   pdat$prec_sq <- pdat$prec^2
+  
+  pdat <- left_join(pdat, zip_codes, by = "fips")
   
   #--------------------------------------------------
 # Roll.mean intervals
@@ -258,7 +270,7 @@ pdat <- pdat %>%
                  
                  dday0_10_rm_fifty, dday10_30_rm_fifty, dday30_rm_fifty, prec_rm_fifty, prec_sq_rm_fifty,
                  
-                dday0_10_sixty, dday10_30_sixty, dday30_sixty, prec_sixty, prec_sq_sixty, trend, trend_sq)
+                dday0_10_sixty, dday10_30_sixty, dday30_sixty, prec_sixty, prec_sq_sixty, trend, trend_sq, lat, long)
   
   pdat <- cbind(pdat, depvar)
   pdat <- cbind(pdat, state_trends, state_trends_sq)
