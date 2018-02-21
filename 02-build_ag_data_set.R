@@ -739,6 +739,11 @@ thirty_trend$thirty_sq <- NULL
 
 cropdat <- cbind(cropdat, ten_trend, twenty_trend, thirty_trend, ten_trend_sq, twenty_trend_sq, thirty_trend_sq)
 
+cropdat$trend_lat <- cropdat$trend*cropdat$lat
+cropdat$trend_long <- cropdat$trend*cropdat$long
+cropdat$trend_sq_long <- cropdat$trend_sq*cropdat$long
+cropdat$trend_sq_lat <- cropdat$trend_sq*cropdat$lat
+
 # Save cropdat
 cropdat$state <- factor(cropdat$state)
 saveRDS(cropdat, "data/full_ag_data.rds")

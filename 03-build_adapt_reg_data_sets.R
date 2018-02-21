@@ -1,6 +1,7 @@
 library(tidyverse)
 library(lfe)
-
+library(zoo)
+library(noncensus)
 setwd("/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/")
 
 dummyCreator <- function(invec, prefix = NULL) {
@@ -128,7 +129,7 @@ pdat <- pdat %>%
          prec_rm_ten = rollmean(prec, k = 10, align = "right", fill = "NA"),
          prec_sq_rm_ten = prec_rm_ten^2)
   
-  pdat <- filter(pdat, year >= 1950 & year <= 2010)
+  pdat <- filter(pdat, year >= 1960 & year <= 2010)
 
 
   # 60 year intervals
@@ -250,6 +251,11 @@ pdat <- pdat %>%
   twenty_trend$twenty_sq <- NULL
   thirty_trend$thirty_sq <- NULL
   
+  pdat$trend_lat <- pdat$trend*pdat$lat
+  pdat$trend_long <- pdat$trend*pdat$long
+  pdat$trend_sq_long <- pdat$trend_sq*pdat$long
+  pdat$trend_sq_lat <- pdat$trend_sq*pdat$lat
+  
   # pdat <- cbind(pdat, depvar)
   
   # Select columns
@@ -270,7 +276,8 @@ pdat <- pdat %>%
                  
                  dday0_10_rm_fifty, dday10_30_rm_fifty, dday30_rm_fifty, prec_rm_fifty, prec_sq_rm_fifty,
                  
-                dday0_10_sixty, dday10_30_sixty, dday30_sixty, prec_sixty, prec_sq_sixty, trend, trend_sq, lat, long)
+                dday0_10_sixty, dday10_30_sixty, dday30_sixty, prec_sixty, prec_sq_sixty, trend, trend_sq, lat, long,
+                trend_lat, trend_sq_lat, trend_long, trend_sq_long)
   
   pdat <- cbind(pdat, depvar)
   pdat <- cbind(pdat, state_trends, state_trends_sq)

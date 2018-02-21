@@ -382,7 +382,8 @@ mod7_map <- mod7_map + scale_fill_brewer(palette = "RdYlBu", direction = -1) +
                        axis.text.y = element_blank(),
                        axis.ticks.x = element_blank(),
                        axis.ticks.y = element_blank(),
-                       panel.border = element_rect(fill = NA)) 
+                       panel.border = element_rect(fill = NA),
+                       plot.margin = unit(c(0, 10, 0, 0), "cm")) 
   
 mod7_map
 
@@ -425,7 +426,7 @@ ggdraw() + draw_plot(mod7_map) + draw_plot(gghist, .7, .025, height = .2, width 
 ggsave(filename = "figures/residual_change_map.pdf", width = 6, height = 4)
 
 
-
+#----------------------------------
 # Mississippi delta
 msd <- filter(cropdat, state %in% c("la", "ar", "ms"))
 msd$location <- ifelse(msd$lat <= 32, "Southern Mississippi Delta", "Northen Mississippi Delta")
@@ -434,8 +435,8 @@ msd <- msd %>%
   group_by(year, location) %>%
   summarise(ln_rev_m = mean(ln_rev, na.rm = TRUE))
 
-ggplot(msd, aes(year, ln_rev_m, color = factor(location))) + geom_line() +
-  theme_tufte(base_size = 10) +
+msd_p1 <- ggplot(msd, aes(year, ln_rev_m, color = factor(location))) + geom_line() +
+  theme_tufte(base_size = 8) +
   ylab("log(Revenue per Acre)") +
   xlab(NULL) +
   annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
@@ -443,8 +444,9 @@ ggplot(msd, aes(year, ln_rev_m, color = factor(location))) + geom_line() +
   theme(legend.position = "top",
     # legend.justification = c("left", "top"),
     legend.box.background = element_rect(colour = "grey"),
-    legend.title = element_blank(), legend.key = element_blank()) 
-
+    legend.title = element_blank(), legend.key = element_blank()) +
+  scale_color_manual(values=c("#619CFF", "#F8766D"))
+msd_p1
 
 msd_crops <- filter(cropdat, state %in% c("la", "ar", "ms"))
 msd_crops <- filter(msd_crops, year <= 1969 | year >= 2000)
@@ -485,45 +487,136 @@ msd_crops <- gather(msd_crops, key = "crops", value = value, -location, -decade)
 head(msd_crops)  
 msd_crops$crops <- paste0(msd_crops$crops, msd_crops$decade)
 
-ggplot(msd_crops, aes(y=value, x=location, fill = crops)) + 
+msd_p2 <- ggplot(msd_crops, aes(y=value, x=location, fill = crops)) + 
   geom_bar(stat = "identity", position = "dodge", width = 1) +
-  geom_text(aes(label=paste(round(value, 2), "%")), position=position_dodge(width=0.9),   vjust=-0.25) +
-  geom_text(colour="darkgray", aes(y=-3, label=c("Corn", "Corn", "Corn", "Corn", "Cotton", "Cotton", "Cotton", "Cotton", 
-                                                 "Soybean", "Soybean", "Soybean", "Soybean","Wheat", "Wheat", "Wheat", "Wheat")),  position=position_dodge(width=1), col=gray) +
-  geom_text(colour="darkgray", aes(y=-4, label=c("1960", "1960", "2000", "2000", "1960", "1960", "2000", "2000", 
-                                                 "1960", "1960", "2000", "2000", "1960", "1960", "2000", "2000")),  position=position_dodge(width=1), col=gray ) +
-  theme_tufte(base_size = 10) +
+  geom_text(aes(label=paste(round(value, 2), "%")), position=position_dodge(width=1),   vjust=-0.25, size = 2) +
+  geom_text(aes(label=c("Corn", "Corn", "Corn", "Corn", "Cotton", "Cotton", "Cotton", "Cotton", 
+                                                 "Soybean", "Soybean", "Soybean", "Soybean","Wheat", "Wheat", "Wheat", "Wheat")), position=position_dodge(width=1), vjust=1.50, size = 2) +
+  geom_text(aes(label=c("1960", "1960", "2000", "2000", "1960", "1960", "2000", "2000", 
+                                                 "1960", "1960", "2000", "2000", "1960", "1960", "2000", "2000")), position=position_dodge(width=1),   vjust=2.60, size = 2) +
+  
+  
+  # geom_text(colour="darkgray", aes(y=-3, label=c("Corn", "Corn", "Corn", "Corn", "Cotton", "Cotton", "Cotton", "Cotton", 
+                                                 # "Soybean", "Soybean", "Soybean", "Soybean","Wheat", "Wheat", "Wheat", "Wheat")),  position=position_dodge(width=1), col=gray) +
+  # geom_text(colour="darkgray", aes(y=-4, label=c("1960", "1960", "2000", "2000", "1960", "1960", "2000", "2000", 
+                                                 # "1960", "1960", "2000", "2000", "1960", "1960", "2000", "2000")),  position=position_dodge(width=1), col=gray ) +
+  theme_tufte(base_size = 8) +
   ylab("Crop Share of Total Acres (%)") +
   xlab(NULL) +
   annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
   annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
-  # theme(legend.position = "none",
+  theme(legend.position = "none") +
+  ylim(-2, 60) +
   #   # legend.justification = c("left", "top"),
   #   legend.box.background = element_rect(colour = "grey"),
   #   legend.title = element_blank(), legend.key = element_blank()) +
-  scale_fill_manual("legend", values=c("yellow", "yellow", "grey", "grey", "orange", "orange", "brown", "brown"))
+  scale_fill_manual("legend", values=c("#8dd3c7", "#8dd3c7", "#ffffb3", "#ffffb3", "#bebada", "#bebada", "#fb8072", "#fb8072"))
+
+# ggsave("figures/ms_delta.pdf", width = 6, height = 4)
 
 
 
-group_by(fips) %>% 
-  arrange(-decade) %>%
-  mutate(corn_c = (first(corn_grain_a) - last(corn_grain_a)),
-         cotton_c = (first(cotton_a) - last(cotton_a)),
-         hay_c = (first(hay_a) - last(hay_a)),
-         soybean_c = (first(soybean_a) - last(soybean_a)),
-         wheat_c = (first(wheat_a) - last(wheat_a)))
-                     
-sum(msd_crops$corn_c)
-sum(msd_crops$cotton_c)
-sum(msd_crops$hay_c)                   
-sum(msd_crops$soybean_c)                   
-sum(msd_crops$wheat_c)                   
+plot_grid(mod7_map, msd_p1, msd_p2)
+ggdraw() + draw_plot(mod7_map, width = .85) + 
+  draw_plot(msd_p1, .46, .5, height = .5, width = .55) +
+  draw_plot(msd_p2, .46, .02, height = .5, width = .55)
+ggsave("figures/ms_delta.pdf", width = 10, height = 4)
+
+
+
+#----------------------------------
+# Illinois
+il <- filter(cropdat, state %in% c("il", "in"))
+il$location <- ifelse(il$lat <= 40.5, "Southern Illinois", "Northen Illinois")
+
+il <- il %>%
+  group_by(year, location) %>%
+  summarise(ln_rev_m = mean(ln_rev, na.rm = TRUE))
+
+il_p1 <- ggplot(il, aes(year, ln_rev_m, color = factor(location))) + geom_line() +
+  theme_tufte(base_size = 8) +
+  ylab("log(Revenue per Acre)") +
+  xlab(NULL) +
+  annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
+  annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
+  theme(legend.position = "top",
+    # legend.justification = c("left", "top"),
+    legend.box.background = element_rect(colour = "grey"),
+    legend.title = element_blank(), legend.key = element_blank()) +
+  scale_color_manual(values=c("#619CFF", "#F8766D"))
+il_p1
+
+il_crops <- filter(cropdat, state %in% c("il", "in"))
+il_crops <- filter(il_crops, year <= 1969 | year >= 2000)
+il_crops$location <- ifelse(il_crops$lat <= 40.5, "Southern Illinois", "Northen Illinois")
+il_crops$decade <- ifelse(il_crops$year <= 1969, 1, 2)
+il_crops <- il_crops %>% 
+  group_by(fips, decade, location) %>% 
+  summarise(corn_grain_a = mean(corn_grain_a, na.rm = TRUE),
+            hay_a = mean(hay_a, na.rm = TRUE),
+            soybean_a = mean(soybean_a, na.rm = TRUE),
+            wheat_a = mean(wheat_a, na.rm = TRUE)) %>% 
+  group_by(decade, location) %>% 
+    summarise(corn_grain_a = sum(corn_grain_a, na.rm = TRUE),
+            hay_a = sum(hay_a, na.rm = TRUE),
+            soybean_a = sum(soybean_a, na.rm = TRUE),
+            wheat_a = sum(wheat_a, na.rm = TRUE)) %>% 
+  ungroup()
+il_crops
+il_crops$acres <- il_crops$corn_grain_a + il_crops$hay_a + il_crops$soybean_a + il_crops$wheat_a
+
+il_crops$corn_p <- 100*il_crops$corn_grain_a/il_crops$acres
+il_crops$hay_p <- 100*il_crops$hay_a/il_crops$acres
+il_crops$soybean_p <- 100*il_crops$soybean_a/il_crops$acres
+il_crops$wheat_p <- 100*il_crops$wheat_a/il_crops$acres
+
+head(il_crops)  
+
+# 
+# group_by(location) %>% 
+#   arrange(-decade) %>%
+#   mutate(corn_c = 100*(first(corn_grain_a) - last(corn_grain_a))/last(corn_grain_a),
+#          cotton_c = 100*(first(hay_a) - last(hay_a))/last(hay_a),
+#          soybean_c = 100*(first(soybean_a) - last(soybean_a))/last(soybean_a),
+#          wheat_c = 100*(first(wheat_a) - last(wheat_a))/last(wheat_a)) %>% 
+#   filter(decade == 2)
+
+il_crops <- select(il_crops, decade, location, corn_p, hay_p, soybean_p, wheat_p)
+il_crops <- gather(il_crops, key = "crops", value = value, -location, -decade)
+head(il_crops)  
+il_crops$crops <- paste0(il_crops$crops, il_crops$decade)
+
+il_p2 <- ggplot(il_crops, aes(y=value, x=location, fill = crops)) + 
+  geom_bar(stat = "identity", position = "dodge", width = 1) +
+  geom_text(aes(label=paste(round(value, 2), "%")), position=position_dodge(width=1),   vjust=-0.25, size = 2) +
+  geom_text(aes(label=c("Corn", "Corn", "Corn", "Corn", "Hay", "Hay", "Hay", "Hay", 
+                                                 "Soybean", "Soybean", "Soybean", "Soybean","Wheat", "Wheat", "Wheat", "Wheat")), position=position_dodge(width=1), vjust=1.50, size = 2) +
+  geom_text(aes(label=c("1960", "1960", "2000", "2000", "1960", "1960", "2000", "2000", 
+                                                 "1960", "1960", "2000", "2000", "1960", "1960", "2000", "2000")), position=position_dodge(width=1),   vjust=2.60, size = 2) +
   
   
-  mutate(corn_c = (first(corn_grain_a) - last(corn_grain_a))/last(corn_grain_a),
-         cotton_c = (first(cotton_a) - last(cotton_a))/last(cotton_a),
-         hay_c = (first(hay_a) - last(hay_a))/last(hay_a),
-         soybean_c = (first(soybean_a) - last(soybean_a))/last(soybean_a),
-         wheat_c = (first(wheat_a) - last(wheat_a))/last(wheat_a),)
+  # geom_text(colour="darkgray", aes(y=-3, label=c("Corn", "Corn", "Corn", "Corn", "Cotton", "Cotton", "Cotton", "Cotton", 
+                                                 # "Soybean", "Soybean", "Soybean", "Soybean","Wheat", "Wheat", "Wheat", "Wheat")),  position=position_dodge(width=1), col=gray) +
+  # geom_text(colour="darkgray", aes(y=-4, label=c("1960", "1960", "2000", "2000", "1960", "1960", "2000", "2000", 
+                                                 # "1960", "1960", "2000", "2000", "1960", "1960", "2000", "2000")),  position=position_dodge(width=1), col=gray ) +
+  theme_tufte(base_size = 8) +
+  ylab("Crop Share of Total Acres (%)") +
+  xlab(NULL) +
+  annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
+  annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
+  theme(legend.position = "none") +
+  ylim(-5, max(il_crops$value)) +
+  #   # legend.justification = c("left", "top"),
+  #   legend.box.background = element_rect(colour = "grey"),
+  #   legend.title = element_blank(), legend.key = element_blank()) +
+  scale_fill_manual("legend", values=c("#8dd3c7", "#8dd3c7", "#ffffb3", "#ffffb3", "#bebada", "#bebada", "#fb8072", "#fb8072"))
+il_p2
+# ggsave("figures/ms_delta.pdf", width = 6, height = 4)
 
-sum(msd_crops$corn_c)
+
+
+ggdraw() + draw_plot(mod7_map, width = .85) + 
+  draw_plot(il_p1, .46, .5, height = .5, width = .55) +
+  draw_plot(il_p2, .46, .02, height = .5, width = .55)
+ggsave("figures/il.pdf", width = 10, height = 4)
+

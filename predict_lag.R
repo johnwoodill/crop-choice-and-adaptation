@@ -18,8 +18,8 @@ aicdat <- data.frame()
 for (j in 1950:2010){
   for (i in intervals){
   newdata <- filter(regdat, year == j )
-  form <- as.formula(paste0("dday30 ~", paste0("dday30_rm_",i), " + trend:(lat + long) + trend_sq:(lat + long) |fips"))
-  form1 <- as.formula(paste0("dday30 ~ dday30_rm_", i, "+ trend:(lat + long) + trend_sq:(lat + long) - 1"))
+  form <- as.formula(paste0("dday30 ~", paste0("dday30_rm_",i), "  |fips"))
+  form1 <- as.formula(paste0("dday30 ~ dday30_rm_", i, " - 1"))
   
   pmod <- felm(form, data = filter(regdat, year != j))
   moddat <- model.matrix(form1, data = newdata)
@@ -63,25 +63,26 @@ arrange(outdat, mse)
 head(retdat)
 arrange(aicdat, mse)
 
+library(stargazer)
+stargazer(outdat, summary = FALSE)
+
 # with trend:(lat + long) + trend_sq:(lat + long)
-#   interval      aic        r2
-# 1      two 25922.78 0.9190320
-# 2     five 29395.57 0.6702493
-# 3      ten 29936.76 0.5895827
-# 4  fifteen 29807.45 0.6104910
-# 5   twenty 29912.30 0.5936220
-# 6   thirty 29962.67 0.5852599
-# 7   fourty 29988.93 0.5808313
+#   interval   aic    r2   mse
+#   <fctr>   <dbl> <dbl> <dbl>
+# 1 ten      24897 0.679   658
+# 2 twenty   25057 0.666   685
+# 3 fifteen  25058 0.662   692
+# 4 thirty   25164 0.656   696
+# 5 fourty   25147 0.655   704
 
 # without trends
-#   interval      aic        r2
-# 1      two 26124.41 0.9124376
-# 2     five 29616.97 0.6405308
-# 3      ten 30261.78 0.5334481
-# 4  fifteen 30139.10 0.5560279
-# 5   twenty 30435.74 0.4994474
-# 6   thirty 30570.09 0.4715014
-# 7   fourty 30571.59 0.4711809
+#   interval   aic    r2   mse
+#   <fctr>   <dbl> <dbl> <dbl>
+# 1 ten      24933 0.689   637
+# 2 twenty   25103 0.668   674
+# 3 fifteen  25080 0.667   678
+# 4 thirty   25205 0.656   689
+# 5 fourty   25226 0.649   712
 
 ################
   modmap1_dat <- select(retdat, fips, ten)

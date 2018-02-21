@@ -96,7 +96,7 @@ head(pdat1)
 
 
 ggplot(pdat1, aes(temp, change, group = effect)) + 
-  geom_ribbon(aes(ymax = change_max, ymin = change_min, x = temp), fill = "#C0CCD9", alpha = 0.5 ) +
+  # geom_ribbon(aes(ymax = change_max, ymin = change_min, x = temp), fill = "#C0CCD9", alpha = 0.5 ) +
   geom_line(aes(color = effect)) +
   geom_point(aes(color = effect), size = 0.5) +
   theme_tufte(base_size = 10) +
@@ -128,6 +128,7 @@ nsur_rev <- sur_rev %>%
 fchange <- function(x) 100*(x - first(x))/first(x)
 
 sur_rev %>% 
+  select(-fips) %>% 
   group_by(temp) %>% 
   summarise_all(sum) %>% 
   mutate_all(fchange)
@@ -285,19 +286,19 @@ ggplot(pdat, aes(temp, change, color = effect)) + geom_line() +
   annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
   annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
   scale_x_continuous(breaks = 0:5, labels = c("+0C", "+1C", "+2C", "+3C", "+4C", "+5C")) +
-  scale_y_continuous(breaks = seq(50,-50, by = -10), labels = c("50%", "40%", "30%", "20%", "10%", "0", "-10%", "-20%", "-30%", "-40%", "-50%")) +
+  # scale_y_continuous(breaks = seq(50,-50, by = -10), labels = c("50%", "40%", "30%", "20%", "10%", "0", "-10%", "-20%", "-30%", "-40%", "-50%")) +
   guides(color = guide_legend(keywidth = 1.5, keyheight = 1,
                                 override.aes = list(linetype = c(1, 1),
                                                     size = 1.5,
                                                     shape = c(NA, NA)))) +
     facet_wrap(panel~interval, labeller = labeller(
-      panel = c('1' = 'Aggregate Revenue', '2' = 'Disaggregated Revenue'))) +
+      panel = c('1' = 'Aggregate Revenue', '2' = 'Disaggregated Revenue')), scales = "free") +
     theme(legend.position = "top",
         legend.box.background = element_rect(colour = "grey"),
         legend.title = element_blank(),
         legend.key = element_rect(fill = NA, color = NA),
         legend.text=element_text(size=8))
-  facet_wrap(type~interval)
+  facet_wrap(type~interval, scales = "free")
 
 
 ggsave("figures/main_plot.pdf", width = 6, height = 4)

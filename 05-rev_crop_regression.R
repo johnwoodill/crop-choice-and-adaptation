@@ -3,53 +3,37 @@ library(lfe)
 
 setwd("/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/")
 
-source("R/predictFelm.R")
-
-dummyCreator <- function(invec, prefix = NULL) {
-     L <- length(invec)
-     ColNames <- sort(unique(invec))
-     M <- matrix(0L, ncol = length(ColNames), nrow = L,
-                 dimnames = list(NULL, ColNames))
-     M[cbind(seq_len(L), match(invec, ColNames))] <- 1L
-     if (!is.null(prefix)) colnames(M) <- paste(prefix, colnames(M), sep = "_")
-     M
-} 
+# dummyCreator <- function(invec, prefix = NULL) {
+#      L <- length(invec)
+#      ColNames <- sort(unique(invec))
+#      M <- matrix(0L, ncol = length(ColNames), nrow = L,
+#                  dimnames = list(NULL, ColNames))
+#      M[cbind(seq_len(L), match(invec, ColNames))] <- 1L
+#      if (!is.null(prefix)) colnames(M) <- paste(prefix, colnames(M), sep = "_")
+#      M
+# } 
 
 # Crop data
 
 regdat <- readRDS("data/full_ag_data.rds")
-regdat <- as.data.frame(regdat)
-regdat$state <- factor(regdat$state)
-regdat$fips <- factor(regdat$fips)
-
-get_trends <- function(x){
-  trends <- ""
-  for (i in x){
-    strend <- paste0("trend1_", i)
-    trends <- paste0(trends, " + ", strend)
-  }
-  trends <- strsplit(trends, 2, length(x))
-  return(trends)
-}
-
-x <- levels(regdat$state)
-get_trends(x)
-
-# regdat <- regdat %>% 
-#   group_by(fips) %>% 
-#   arrange(-year) %>% 
-#   mutate(dday0_10_rm_thirty = lag(dday0_10_rm_thirty),
-#          dday10_30_rm_thirty = lag(dday10_30_rm_thirty),
-#          dday30_rm_thirty = lag(dday30_rm_thirty),
-#          prec_rm_thirty = lag(prec_rm_thirty),
-#          prec_sq_rm_thirty = lag(prec_sq_rm_thirty))
+# (regdat$year)
+# regdat <- as.data.frame(regdat)
+# regdat$state <- factor(regdat$state)
+# regdat$fips <- factor(regdat$fips)
 # 
-# regdat <- filter(regdat, year >= 1950 & year <= 2010)
-
-# trend1_al + trend1_ar + trend1_ga + trend1_ia + trend1_il + trend1_in + trend1_ks + 
-#   trend1_ky + trend1_md + trend1_mi + trend1_mn + trend1_mo + trend1_ms + trend1_mt + 
-#   trend1_nc + trend1_nd + trend1_ne + trend1_oh + trend1_ok + trend1_sc + trend1_sd + 
-#   trend1_tn + trend1_tx + trend1_va + trend1_wi + trend1_wv
+# get_trends <- function(x){
+#   trends <- ""
+#   for (i in x){
+#     strend <- paste0("trend1_", i)
+#     trends <- paste0(trends, " + ", strend)
+#   }
+#   trends <- strsplit(trends, 2, length(x))
+#   return(trends)
+# }
+# 
+# x <- levels(regdat$state)
+# get_trends(x)
+# 
 
 #---------------------------------------------------------------------------------------------
 # Regressions with state fe and trends
@@ -58,7 +42,7 @@ get_trends(x)
 
 modten_1 <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
               dday0_10_rm_ten + dday10_30_rm_ten + dday30_rm_ten + prec_rm_ten + prec_sq_rm_ten +
-                trend:(lat + long) + trend_sq:(lat + long) | fips | 0 | state, 
+              trend_lat + trend_long + trend_sq_lat + trend_sq_long | fips | 0 | state, 
             data = regdat, weights = regdat$w, psdef = FALSE)
 summary(modten_1)
 
@@ -67,7 +51,7 @@ saveRDS(modten_1, "models/rev_crop_modten.rds")
 # Twenty year differences 1950-1980 & 1980-2010
 modtwenty_1 <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
               dday0_10_rm_twenty + dday10_30_rm_twenty + dday30_rm_twenty + prec_rm_twenty + prec_sq_rm_twenty +
-trend:(lat + long) + trend_sq:(lat + long) | fips | 0 | state, 
+              trend_lat + trend_long + trend_sq_lat + trend_sq_long | fips | 0 | state, 
             data = regdat, weights = regdat$w, psdef = FALSE)
 summary(modtwenty_1)
 
@@ -77,13 +61,9 @@ saveRDS(modtwenty_1, "models/rev_crop_modtwenty.rds")
 
 modthirty_1 <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
               dday0_10_rm_thirty + dday10_30_rm_thirty + dday30_rm_thirty + prec_rm_thirty + prec_sq_rm_thirty +
-trend:(lat + long) + trend_sq:(lat + long) | fips | 0 | state, 
+              trend_lat + trend_long + trend_sq_lat + trend_sq_long | fips | 0 | state, 
             data = regdat, weights = regdat$w, psdef = FALSE)
 summary(modthirty_1)
-
-t(modthirty_1$coefficients)
-
-sum(modthirty_1$coefficients[1:10])
 
 saveRDS(modthirty_1, "models/rev_crop_modthirty.rds")
 

@@ -2,7 +2,7 @@
 # newdata  : new prediction data
 
 # Custom predict funciton for Felm object models
-predictFelm <- function(felm.fit, newdata = NULL, var.terms = NULL, cons.terms = NULL){
+predictFelm <- function(felm.fit, newdata = NULL, data = NULL, var.terms = NULL, cons.terms = NULL){
   felm.formula <- as.character(felm.fit$call[[2]])
   rhs          = felm.formula[3]
   last         = which(strsplit(rhs,"")[[1]]=="|")[1] - 1
@@ -34,14 +34,14 @@ predictFelm <- function(felm.fit, newdata = NULL, var.terms = NULL, cons.terms =
   
   # Get demeaned data from felm object
   
-  dmtrend <- data.frame(trend = newdata$trend,
-                        trend_sq = newdata$trend_sq,
-                        lat = newdata$lat,
-                        long = newdata$long)
+  # dmtrend <- data.frame(trend = newdata$trend,
+                        # trend_sq = newdata$trend_sq,
+                        # lat = newdata$lat,
+                        # long = newdata$long)
   
-  dmtrend <- demeanlist(dmtrend, fl = list(fips = factor(newdata$fips)))
+  # dmtrend <- demeanlist(dmtrend, fl = list(fips = factor(newdata$fips)))
   dmdat <- as.data.frame(cbind(felm.fit$cY, felm.fit$cX))
-  dmdat <- cbind(dmdat, dmtrend)
+  # dmdat <- cbind(dmdat, dmtrend)
   lm.fit       = lm( lm.formula, data=dmdat)
     
     

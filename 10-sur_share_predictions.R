@@ -11,7 +11,7 @@ source("R/predictSUR.clean.R")
 # Crop data
 cropdat <- readRDS("data/full_ag_data.rds")
 cropdat <- as.data.frame(cropdat)
-cropdat$ers_region <- factor(cropdat$ers_region)
+cropdat$fips <- factor(cropdat$fips)
 cropdat$state <- factor(cropdat$state)
 cropdat$five <- factor(cropdat$five)
 cropdat$ten <- factor(cropdat$ten)
@@ -46,63 +46,60 @@ newdata_list <- list(p0 = p0,
 
 
 
-p0_ten <- demeanlist(p0, fl = list(ers_region = factor(cropdat$ers_region),
-                                         ten = factor(cropdat$ten)))
-p0_ten_means <- demeanlist(p0, fl = list(ers_region = factor(cropdat$ers_region),
-                                         ten = factor(cropdat$ten)), means = TRUE)
+p0_dm <- demeanlist(p0, fl = list(fips = factor(cropdat$fips)))
+p0_means <- demeanlist(p0, fl = list(fips = factor(cropdat$fips)), means = TRUE)
 
-p1_ten <- p1 - p0_ten_means
-p2_ten <- p2 - p0_ten_means
-p3_ten <- p3 - p0_ten_means
-p4_ten <- p4 - p0_ten_means
-p5_ten <- p5 - p0_ten_means
+p1_dm <- p1 - p0_means
+p2_dm <- p2 - p0_means
+p3_dm <- p3 - p0_means
+p4_dm <- p4 - p0_means
+p5_dm <- p5 - p0_means
 
-newdata_list_ten <- list(p0 = p0_ten,
-                     p1 = p1_ten,
-                     p2 = p2_ten,
-                     p3 = p3_ten,
-                     p4 = p4_ten,
-                     p5 = p5_ten)
+newdata_list_dm <- list(p0 = p0_dm,
+                     p1 = p1_dm,
+                     p2 = p2_dm,
+                     p3 = p3_dm,
+                     p4 = p4_dm,
+                     p5 = p5_dm)
+# 
+# p0_twenty <- demeanlist(p0, fl = list(fips = factor(cropdat$fips)))
+# p0_twenty_means <- demeanlist(p0, fl = list(fips = factor(cropdat$fips)), means = TRUE)
+# 
+# p1_twenty <- p1 - p0_twenty_means
+# p2_twenty <- p2 - p0_twenty_means
+# p3_twenty <- p3 - p0_twenty_means
+# p4_twenty <- p4 - p0_twenty_means
+# p5_twenty <- p5 - p0_twenty_means
+# 
+# newdata_list_twenty <- list(p0 = p0_twenty,
+#                      p1 = p1_twenty,
+#                      p2 = p2_twenty,
+#                      p3 = p3_twenty,
+#                      p4 = p4_twenty,
+#                      p5 = p5_twenty)
+# 
+# p0_thirty <- demeanlist(p0, fl = list(fips = factor(cropdat$fips)))
+# p0_thirty_means <- demeanlist(p0, fl = list(fips = factor(cropdat$fips)), means = TRUE)
+# 
+# p1_thirty <- p1 - p0_thirty_means
+# p2_thirty <- p2 - p0_thirty_means
+# p3_thirty <- p3 - p0_thirty_means
+# p4_thirty <- p4 - p0_thirty_means
+# p5_thirty <- p5 - p0_thirty_means
+# 
+# newdata_list_thirty <- list(p0 = p0_thirty,
+#                      p1 = p1_thirty,
+#                      p2 = p2_thirty,
+#                      p3 = p3_thirty,
+#                      p4 = p4_thirty,
+#                      p5 = p5_thirty)
 
-p0_twenty <- demeanlist(p0, fl = list(ers_region = factor(cropdat$ers_region),
-                                         twenty = factor(cropdat$twenty)))
-p0_twenty_means <- demeanlist(p0, fl = list(ers_region = factor(cropdat$ers_region),
-                                         twenty = factor(cropdat$twenty)), means = TRUE)
-
-p1_twenty <- p1 - p0_twenty_means
-p2_twenty <- p2 - p0_twenty_means
-p3_twenty <- p3 - p0_twenty_means
-p4_twenty <- p4 - p0_twenty_means
-p5_twenty <- p5 - p0_twenty_means
-
-newdata_list_twenty <- list(p0 = p0_twenty,
-                     p1 = p1_twenty,
-                     p2 = p2_twenty,
-                     p3 = p3_twenty,
-                     p4 = p4_twenty,
-                     p5 = p5_twenty)
-
-p0_thirty <- demeanlist(p0, fl = list(ers_region = factor(cropdat$ers_region),
-                                         thirty = factor(cropdat$thirty)))
-p0_thirty_means <- demeanlist(p0, fl = list(ers_region = factor(cropdat$ers_region),
-                                         thirty = factor(cropdat$thirty)), means = TRUE)
-
-p1_thirty <- p1 - p0_thirty_means
-p2_thirty <- p2 - p0_thirty_means
-p3_thirty <- p3 - p0_thirty_means
-p4_thirty <- p4 - p0_thirty_means
-p5_thirty <- p5 - p0_thirty_means
-
-newdata_list_thirty <- list(p0 = p0_thirty,
-                     p1 = p1_thirty,
-                     p2 = p2_thirty,
-                     p3 = p3_thirty,
-                     p4 = p4_thirty,
-                     p5 = p5_thirty)
-
-ten_climate_terms_v = c("dday0_10_ten", "dday10_30_ten", "dday30_ten", "prec_ten", "prec_sq_ten")
-twenty_climate_terms_v = c("dday0_10_twenty", "dday10_30_twenty", "dday30_twenty", "prec_twenty", "prec_sq_twenty")
-thirty_climate_terms_v = c("dday0_10_thirty", "dday10_30_thirty", "dday30_thirty", "prec_thirty", "prec_sq_thirty")
+ten_climate_terms_v = c("dday0_10_rm_ten", "dday10_30_rm_ten", "dday30_rm_ten", 
+                        "prec_rm_ten", "prec_sq_rm_ten")
+twenty_climate_terms_v = c("dday0_10_rm_twenty", "dday10_30_rm_twenty", "dday30_rm_twenty", 
+                           "prec_rm_twenty", "prec_sq_rm_twenty")
+thirty_climate_terms_v = c("dday0_10_rm_thirty", "dday10_30_rm_thirty", "dday30_rm_thirty", 
+                           "prec_rm_thirty", "prec_sq_rm_thirty")
 
 
 
@@ -113,8 +110,8 @@ thirty_climate_terms_v = c("dday0_10_thirty", "dday10_30_thirty", "dday30_thirty
 
 cten <- predictSUR.clean(mod = sur_ten, 
                          acres = cropdat$acres,  
-                         fips = cropdat$ers_region,
-                         newdata_list = newdata_list_ten,
+                         fips = cropdat$fips,
+                         newdata_list = newdata_list_dm,
                          var.terms = ten_climate_terms_v,
                          type = "10-year", 
                          effect = "Climate-effect")
@@ -126,8 +123,8 @@ cten <- predictSUR.clean(mod = sur_ten,
 
 ctwenty <- predictSUR.clean(mod = sur_twenty, 
                             acres = cropdat$acres,  
-                            fips = cropdat$ers_region,
-                            newdata_list = newdata_list_twenty, 
+                            fips = cropdat$fips,
+                            newdata_list = newdata_list_dm, 
                             var.terms = twenty_climate_terms_v,
                             type = "20-year", 
                             effect = "Climate-effect")
@@ -137,10 +134,10 @@ ctwenty <- predictSUR.clean(mod = sur_twenty,
 
 # Climate-effect predictions
 
-cthirty <- predictSUR.clean(sur_thirty, 
+cthirty <- predictSUR.clean(mod = sur_thirty, 
                             acres = cropdat$acres,  
-                            fips = cropdat$ers_region,
-                            newdata_list = newdata_list_thirty,
+                            fips = cropdat$fips,
+                            newdata_list = newdata_list_dm,
                             var.terms = thirty_climate_terms_v,
                             type = "30-year", 
                             effect = "Climate-effect")
@@ -209,38 +206,38 @@ ggplot(pdat, aes(temp, change)) +
 ggsave("figures/sur_crop_share_predictions.pdf", width = 6, height = 5)
 
 # Average acres
-# ppdat <- pdat %>%
-#   # filter(effect == "Climate-effect") %>%
-#   group_by(temp, type, effect) %>%
-#   summarise(total = sum(sum)) %>%
-#   group_by(type, effect) %>%
-#   mutate(change = (total - first(total))/first(total))
-# ppdat$change <- ppdat$change*100
-# ppdat
-# 
-#  ggplot(ppdat, aes(temp, change, color = type)) +
-#    geom_line() +
-#    geom_point(size = 0.5) +
-#    facet_wrap(~effect, ncol = 3) +
-#    theme_tufte(base_size = 12) +
-#    ylab("Change in Proportion of Total Crop Acres") +
-#    xlab("Change in Temperature (C)") +
-#    annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
-#    annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
-#    scale_x_continuous(breaks = 0:5, labels = c("+0C", "+1C", "+2C", "+3C", "+4C", "+5C")) +
-#    theme(legend.position = "top",
-#         #legend.justification = c("left", "top"),
-#         legend.box.background = element_rect(colour = "grey"),
-#         legend.title = element_blank(), legend.key = element_blank()) +
-#    #theme(legend.position = c(.85,1),
-#    #     legend.justification = c("left", "top"),
-#    #     legend.box.background = element_rect(colour = "grey"),
-#    #     legend.title = element_blank(), legend.key = element_blank()) +
-#    geom_hline(yintercept = 0, linetype = "dashed", color = "grey")
-# 
-# 
-# 
-# 
-# 
-# 
-# 
+ ppdat <- pdat %>%
+   # filter(effect == "Climate-effect") %>%
+   group_by(temp, type, effect) %>%
+   summarise(total = sum(sum)) %>%
+   group_by(type, effect) %>%
+   mutate(change = (total - first(total))/first(total))
+ ppdat$change <- ppdat$change*100
+ ppdat
+
+  ggplot(ppdat, aes(temp, change, color = type)) +
+    geom_line() +
+    geom_point(size = 0.5) +
+    facet_wrap(~effect, ncol = 3) +
+    theme_tufte(base_size = 12) +
+    ylab("Change in Proportion of Total Crop Acres") +
+    xlab("Change in Temperature (C)") +
+    annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
+    annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
+    scale_x_continuous(breaks = 0:5, labels = c("+0C", "+1C", "+2C", "+3C", "+4C", "+5C")) +
+    theme(legend.position = "top",
+         #legend.justification = c("left", "top"),
+         legend.box.background = element_rect(colour = "grey"),
+         legend.title = element_blank(), legend.key = element_blank()) +
+    #theme(legend.position = c(.85,1),
+    #     legend.justification = c("left", "top"),
+    #     legend.box.background = element_rect(colour = "grey"),
+    #     legend.title = element_blank(), legend.key = element_blank()) +
+    geom_hline(yintercept = 0, linetype = "dashed", color = "grey")
+
+ 
+ 
+ 
+ 
+ 
+ 
