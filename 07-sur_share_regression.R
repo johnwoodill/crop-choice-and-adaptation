@@ -48,31 +48,55 @@ cropdat_dm <- demeanlist(dmdat, fl = list(fips = factor(cropdat$fips)))
 cropdat_means <- demeanlist(dmdat, fl = list(fips = factor(cropdat$fips)), means = TRUE)
 
 
-mod1 <- z_corn_a ~ dday0_10_rm_ten + dday10_30_rm_ten + dday30_rm_ten + prec_rm_ten + prec_sq_rm_ten +
-trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
+mod1 <- z_corn_a ~ 
+  dday0_10_rm_ten + dday10_30_rm_ten + dday30_rm_ten + prec_rm_ten + prec_sq_rm_ten +
+              trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
 
 
-mod2 <- z_cotton_a ~  dday0_10_rm_ten + dday10_30_rm_ten + dday30_rm_ten + prec_rm_ten + prec_sq_rm_ten +
-trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
+mod2 <- z_cotton_a ~  
+  dday0_10_rm_ten + dday10_30_rm_ten + dday30_rm_ten + prec_rm_ten + prec_sq_rm_ten +
+              trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
  
 
-mod3 <- z_hay_a ~ dday0_10_rm_ten + dday10_30_rm_ten + dday30_rm_ten + prec_rm_ten + prec_sq_rm_ten +
-trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
+mod3 <- z_hay_a ~ 
+  dday0_10_rm_ten + dday10_30_rm_ten + dday30_rm_ten + prec_rm_ten + prec_sq_rm_ten +
+              trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
 
 
-mod4 <- z_soybean_a ~ dday0_10_rm_ten + dday10_30_rm_ten + dday30_rm_ten + prec_rm_ten + prec_sq_rm_ten +
-trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
+mod4 <- z_soybean_a ~ 
+  dday0_10_rm_ten + dday10_30_rm_ten + dday30_rm_ten + prec_rm_ten + prec_sq_rm_ten +
+              trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
 
 
 
-mod5 <- z_wheat_a ~ dday0_10_rm_ten + dday10_30_rm_ten + dday30_rm_ten + prec_rm_ten + prec_sq_rm_ten +
-trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
+mod5 <- z_wheat_a ~ 
+  dday0_10_rm_ten + dday10_30_rm_ten + dday30_rm_ten + prec_rm_ten + prec_sq_rm_ten +
+              trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
+
+# res_terms <- c("corn_dday0_10_rm_ten  +   corn_dday10_30_rm_ten   + corn_dday30_rm_ten   +   corn_prec_rm_ten    +     corn_prec_sq_rm_ten    +  corn_trend_lat       +   corn_trend_long     +     corn_trend_sq_lat       + corn_trend_sq_long + cotton_dday0_10_rm_ten  + cotton_dday10_30_rm_ten  +cotton_dday30_rm_ten  +   cotton_prec_rm_ten    +   cotton_prec_sq_rm_ten  +  cotton_trend_lat     +  cotton_trend_long    +    cotton_trend_sq_lat    +  cotton_trend_sq_long  +   hay_dday0_10_rm_ten   +   hay_dday10_30_rm_ten  +   hay_dday30_rm_ten     +   hay_prec_rm_ten     +     hay_prec_sq_rm_ten    +   hay_trend_lat         +  hay_trend_long       +    hay_trend_sq_lat      +   hay_trend_sq_long       + soybean_dday0_10_rm_ten + soybean_dday10_30_rm_ten +soybean_dday30_rm_ten  +  soybean_prec_rm_ten   +   soybean_prec_sq_rm_ten +  soybean_trend_lat       + soybean_trend_long    +   soybean_trend_sq_lat   +  soybean_trend_sq_long   + wheat_dday0_10_rm_ten +   wheat_dday10_30_rm_ten +  wheat_dday30_rm_ten     + wheat_prec_rm_ten     +   wheat_prec_sq_rm_ten   +  wheat_trend_lat        +  wheat_trend_long      +   wheat_trend_sq_lat     +  wheat_trend_sq_long = 0")
+# 
+# res_terms <- c("corn_dday0_10_rm_ten + corn_dday10_30_rm_ten +  corn_dday30_rm_ten+  corn_prec_rm_ten    
+#                +     corn_prec_sq_rm_ten   +  corn_trend_lat + corn_trend_long        +       corn_trend_sq    +      
+#                cotton_dday0_10_rm_ten  + cotton_dday10_30_rm_ten + cotton_dday30_rm_ten  +   
+#                cotton_prec_rm_ten    +   cotton_prec_sq_rm_ten +   cotton_trend        +     
+#                cotton_trend_sq       +  hay_dday0_10_rm_ten   +   hay_dday10_30_rm_ten  +   
+#                hay_dday30_rm_ten    +    hay_prec_rm_ten    +      hay_prec_sq_rm_ten   +   
+#                hay_trend          +      hay_trend_sq       +   soybean_dday0_10_rm_ten + 
+#                soybean_dday10_30_rm_ten + soybean_dday30_rm_ten   + soybean_prec_rm_ten   +  
+#                soybean_prec_sq_rm_ten + soybean_trend       +    soybean_trend_sq     +   
+#                wheat_dday0_10_rm_ten  +  wheat_dday10_30_rm_ten  + wheat_dday30_rm_ten   + 
+#                wheat_prec_rm_ten     +   wheat_prec_sq_rm_ten +   wheat_trend          +    wheat_trend_sq = 0" )
+
+# res_terms <- c("corn_dday0_10  +             corn_dday10_30     +         corn_dday30         +  corn_prec      +             corn_prec_sq              +  corn_dday0_10_rm_ten    + corn_dday10_30_rm_ten  +  corn_dday30_rm_ten     +  corn_prec_rm_ten      +  corn_prec_sq_rm_ten   +   corn_trend_lat            +  corn_trend_long          +  corn_trend_sq_lat      +     corn_trend_sq_long        +  cotton_dday0_10           + cotton_dday10_30      +      cotton_dday30             +  cotton_prec             +   cotton_prec_sq        +      cotton_dday0_10_rm_ten +  cotton_dday10_30_rm_ten +cotton_dday30_rm_ten +    cotton_prec_rm_ten     +  cotton_prec_sq_rm_ten   +cotton_trend_lat       +     cotton_trend_long         +  cotton_trend_sq_lat        +cotton_trend_sq_long   +     hay_dday0_10              +  hay_dday10_30              +hay_dday30             +     hay_prec                  +  hay_prec_sq               + hay_dday0_10_rm_ten  +    hay_dday10_30_rm_ten   +  hay_dday30_rm_ten      + hay_prec_rm_ten      +    hay_prec_sq_rm_ten     +  hay_trend_lat             + hay_trend_long          +    hay_trend_sq_lat          +  hay_trend_sq_long         + soybean_dday0_10        +    soybean_dday10_30         +  soybean_dday30            + soybean_prec             +   soybean_prec_sq           +  soybean_dday0_10_rm_ten +soybean_dday10_30_rm_ten +soybean_dday30_rm_ten  +  soybean_prec_rm_ten    + soybean_prec_sq_rm_ten   +soybean_trend_lat         +  soybean_trend_long        + soybean_trend_sq_lat        +soybean_trend_sq_long    +   wheat_dday0_10            + wheat_dday10_30             +wheat_dday30              +  wheat_prec                + wheat_prec_sq               +wheat_dday0_10_rm_ten  +  wheat_dday10_30_rm_ten + wheat_dday30_rm_ten      +wheat_prec_rm_ten      +  wheat_prec_sq_rm_ten   + wheat_trend_lat             +wheat_trend_long          +  wheat_trend_sq_lat      +   wheat_trend_sq_long = 0") 
 
 ten_mod <- systemfit(list(corn = mod1, 
                        cotton = mod2, 
                        hay = mod3, 
                        soybean = mod4,
                        wheat = mod5), data = cropdat_dm, method = "SUR")
+
+sum(ten_mod$coefficients) 
+
 
 summary(ten_mod)
 sum(ten_mod$coefficients)
@@ -125,25 +149,61 @@ cropdat_dm <- demeanlist(dmdat, fl = list(fips = factor(cropdat$fips)))
 cropdat_means <- demeanlist(dmdat, fl = list(fips = factor(cropdat$fips)), means = TRUE)
 
 
-mod1 <- z_corn_a ~ dday0_10_rm_twenty + dday10_30_rm_twenty + dday30_rm_twenty + prec_rm_twenty + prec_sq_rm_twenty +
-trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
+mod1 <- z_corn_a ~ 
+  dday0_10_rm_twenty + dday10_30_rm_twenty + dday30_rm_twenty + prec_rm_twenty + prec_sq_rm_twenty +
+                  trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
 
 
-mod2 <- z_cotton_a ~  dday0_10_rm_twenty + dday10_30_rm_twenty + dday30_rm_twenty + prec_rm_twenty + prec_sq_rm_twenty +
-trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
+mod2 <- z_cotton_a ~ 
+  dday0_10_rm_twenty + dday10_30_rm_twenty + dday30_rm_twenty + prec_rm_twenty + prec_sq_rm_twenty +
+                  trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
  
 
-mod3 <- z_hay_a ~ dday0_10_rm_twenty + dday10_30_rm_twenty + dday30_rm_twenty + prec_rm_twenty + prec_sq_rm_twenty +
-trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
+mod3 <- z_hay_a ~  
+  dday0_10_rm_twenty + dday10_30_rm_twenty + dday30_rm_twenty + prec_rm_twenty + prec_sq_rm_twenty +
+                  trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
 
 
-mod4 <- z_soybean_a ~ dday0_10_rm_twenty + dday10_30_rm_twenty + dday30_rm_twenty + prec_rm_twenty + prec_sq_rm_twenty +
-trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
+mod4 <- z_soybean_a ~  
+  dday0_10_rm_twenty + dday10_30_rm_twenty + dday30_rm_twenty + prec_rm_twenty + prec_sq_rm_twenty +
+                  trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
 
+mod5 <- z_wheat_a ~ 
+  dday0_10_rm_twenty + dday10_30_rm_twenty + dday30_rm_twenty + prec_rm_twenty + prec_sq_rm_twenty +
+                  trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
 
+# "corn_dday0_10 + corn_dday10_30 + corn_dday30 + corn_prec + corn_prec_sq + cotton_dday0_10 + cotton_dday10_30 + cotton_dday30 + cotton_prec + cotton_prec_sq + hay_dday0_10 + hay_dday10_30 + hay_dday30 + hay_prec + hay_prec_sq + soybean_dday0_10 + soybean_dday10_30 + soybean_dday30 + soybean_prec + soybean_prec_sq + wheat_dday0_10 + wheat_dday10_30 + wheat_dday30 + wheat_prec + wheat_prec_sq
 
-mod5 <- z_wheat_a ~ dday0_10_rm_twenty + dday10_30_rm_twenty + dday30_rm_twenty + prec_rm_twenty + prec_sq_rm_twenty +
-trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
+# res_terms <- c("corn_dday0_10 + corn_dday10_30 + corn_dday30 + corn_prec + corn_prec_sq + corn_dday0_10_rm_twenty + corn_dday10_30_rm_twenty +  corn_dday30_rm_twenty+  corn_prec_rm_twenty    +     corn_prec_sq_rm_twenty   +  corn_trend_lat + corn_trend_long       +       corn_trend_sq    +  cotton_dday0_10 + cotton_dday10_30 + cotton_dday30 + cotton_prec + cotton_prec_sq +   cotton_dday0_10_rm_twenty  + cotton_dday10_30_rm_twenty + cotton_dday30_rm_twenty  +   cotton_prec_rm_twenty    +   cotton_prec_sq_rm_twenty +   cotton_trend        +     cotton_trend_sq + hay_dday0_10 + hay_dday10_30 + hay_dday30 + hay_prec + hay_prec_sq      +  hay_dday0_10_rm_twenty   +   hay_dday10_30_rm_twenty  +   hay_dday30_rm_twenty    +    hay_prec_rm_twenty    +      hay_prec_sq_rm_twenty   +    hay_trend          +      hay_trend_sq   + soybean_dday0_10 + soybean_dday10_30 + soybean_dday30 + soybean_prec + soybean_prec_sq    +   soybean_dday0_10_rm_twenty + soybean_dday10_30_rm_twenty + soybean_dday30_rm_twenty   + soybean_prec_rm_twenty   +   soybean_prec_sq_rm_twenty + soybean_trend       +    soybean_trend_sq  +  wheat_dday0_10 + wheat_dday10_30 + wheat_dday30 + wheat_prec + wheat_prec_sq   +    wheat_dday0_10_rm_twenty  +  wheat_dday10_30_rm_twenty  + wheat_dday30_rm_twenty   +   wheat_prec_rm_twenty     +   wheat_prec_sq_rm_twenty +   wheat_trend          +    wheat_trend_sq = 0" )
+
+# res_terms <- c(" corn_dday0_10 + corn_dday10_30 + corn_dday30 + corn_prec + corn_prec_sq + corn_dday0_10_rm_twenty  +   corn_dday10_30_rm_twenty   + corn_dday30_rm_twenty   +   corn_prec_rm_twenty    +     corn_prec_sq_rm_twenty    +  corn_trend_lat       +   corn_trend_long     +     corn_trend_sq_lat       + corn_trend_sq_long   + cotton_dday0_10 + cotton_dday10_30 + cotton_dday30 + cotton_prec + cotton_prec_sq +  cotton_dday0_10_rm_twenty  + cotton_dday10_30_rm_twenty  +cotton_dday30_rm_twenty  +   cotton_prec_rm_twenty    +   cotton_prec_sq_rm_twenty  +  cotton_trend_lat     +  cotton_trend_long    +    cotton_trend_sq_lat    +  cotton_trend_sq_long  + hay_dday0_10 + hay_dday10_30 + hay_dday30 + hay_prec + hay_prec_sq +  hay_dday0_10_rm_twenty   +   hay_dday10_30_rm_twenty  +   hay_dday30_rm_twenty     +   hay_prec_rm_twenty     +     hay_prec_sq_rm_twenty    +   hay_trend_lat         +  hay_trend_long       +    hay_trend_sq_lat      +   hay_trend_sq_long   + soybean_dday0_10 + soybean_dday10_30 + soybean_dday30 + soybean_prec + soybean_prec_sq    + soybean_dday0_10_rm_twenty + soybean_dday10_30_rm_twenty +soybean_dday30_rm_twenty  +  soybean_prec_rm_twenty   +   soybean_prec_sq_rm_twenty +  soybean_trend_lat       + soybean_trend_long    +   soybean_trend_sq_lat   +  soybean_trend_sq_long  + wheat_dday0_10 + wheat_dday10_30 + wheat_dday30 + wheat_prec + wheat_prec_sq + wheat_dday0_10_rm_twenty +   wheat_dday10_30_rm_twenty +  wheat_dday30_rm_twenty     + wheat_prec_rm_twenty     +   wheat_prec_sq_rm_twenty   +  wheat_trend_lat        +  wheat_trend_long      +   wheat_trend_sq_lat     +  wheat_trend_sq_long = 0")
+# 
+# # with weather terms
+# res_terms <- c("corn_dday0_10  +             corn_dday10_30     +         corn_dday30         +       
+# corn_prec      +             corn_prec_sq              +  corn_dday0_10_rm_twenty    +
+# corn_dday10_30_rm_twenty  +  corn_dday30_rm_twenty     +  corn_prec_rm_twenty      +  
+# corn_prec_sq_rm_twenty   +   corn_trend_lat            +  corn_trend_long          +  
+# corn_trend_sq_lat      +     corn_trend_sq_long        +  cotton_dday0_10           + 
+# cotton_dday10_30      +      cotton_dday30             +  cotton_prec             +   
+# cotton_prec_sq        +      cotton_dday0_10_rm_twenty +  cotton_dday10_30_rm_twenty +
+# cotton_dday30_rm_twenty +    cotton_prec_rm_twenty     +  cotton_prec_sq_rm_twenty   +
+# cotton_trend_lat       +     cotton_trend_long         +  cotton_trend_sq_lat        +
+# cotton_trend_sq_long   +     hay_dday0_10              +  hay_dday10_30              +
+# hay_dday30             +     hay_prec                  +  hay_prec_sq               + 
+# hay_dday0_10_rm_twenty  +    hay_dday10_30_rm_twenty   +  hay_dday30_rm_twenty      + 
+# hay_prec_rm_twenty      +    hay_prec_sq_rm_twenty     +  hay_trend_lat             + 
+# hay_trend_long          +    hay_trend_sq_lat          +  hay_trend_sq_long         + 
+# soybean_dday0_10        +    soybean_dday10_30         +  soybean_dday30            + 
+# soybean_prec             +   soybean_prec_sq           +  soybean_dday0_10_rm_twenty +
+# soybean_dday10_30_rm_twenty +soybean_dday30_rm_twenty  +  soybean_prec_rm_twenty    + 
+# soybean_prec_sq_rm_twenty   +soybean_trend_lat         +  soybean_trend_long        + 
+# soybean_trend_sq_lat        +soybean_trend_sq_long    +   wheat_dday0_10            + 
+# wheat_dday10_30             +wheat_dday30              +  wheat_prec                + 
+# wheat_prec_sq               +wheat_dday0_10_rm_twenty  +  wheat_dday10_30_rm_twenty + 
+# wheat_dday30_rm_twenty      +wheat_prec_rm_twenty      +  wheat_prec_sq_rm_twenty   + 
+# wheat_trend_lat             +wheat_trend_long          +  wheat_trend_sq_lat      +   
+# wheat_trend_sq_long = 0") 
+
 
 twenty_mod <- systemfit(list(corn = mod1, 
                        cotton = mod2, 
@@ -203,25 +263,57 @@ cropdat_dm <- demeanlist(dmdat, fl = list(fips = factor(cropdat$fips)))
 cropdat_means <- demeanlist(dmdat, fl = list(fips = factor(cropdat$fips)), means = TRUE)
 
 
-mod1 <- z_corn_a ~ dday0_10_rm_thirty + dday10_30_rm_thirty + dday30_rm_thirty + prec_rm_thirty + prec_sq_rm_thirty +
-trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
+mod1 <- z_corn_a ~ 
+  dday0_10_rm_thirty + dday10_30_rm_thirty + dday30_rm_thirty + prec_rm_thirty + prec_sq_rm_thirty +
+trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
 
 
-mod2 <- z_cotton_a ~  dday0_10_rm_thirty + dday10_30_rm_thirty + dday30_rm_thirty + prec_rm_thirty + prec_sq_rm_thirty +
-trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
+mod2 <- z_cotton_a ~  
+  dday0_10_rm_thirty + dday10_30_rm_thirty + dday30_rm_thirty + prec_rm_thirty + prec_sq_rm_thirty +
+trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
  
 
-mod3 <- z_hay_a ~ dday0_10_rm_thirty + dday10_30_rm_thirty + dday30_rm_thirty + prec_rm_thirty + prec_sq_rm_thirty +
-trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
+mod3 <- z_hay_a ~ 
+  dday0_10_rm_thirty + dday10_30_rm_thirty + dday30_rm_thirty + prec_rm_thirty + prec_sq_rm_thirty +
+trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
 
 
-mod4 <- z_soybean_a ~ dday0_10_rm_thirty + dday10_30_rm_thirty + dday30_rm_thirty + prec_rm_thirty + prec_sq_rm_thirty +
-trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
+mod4 <- z_soybean_a ~ 
+  dday0_10_rm_thirty + dday10_30_rm_thirty + dday30_rm_thirty + prec_rm_thirty + prec_sq_rm_thirty +
+trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
 
+mod5 <- z_wheat_a ~ 
+  dday0_10_rm_thirty + dday10_30_rm_thirty + dday30_rm_thirty + prec_rm_thirty + prec_sq_rm_thirty +
+  trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
 
-
-mod5 <- z_wheat_a ~ dday0_10_rm_thirty + dday10_30_rm_thirty + dday30_rm_thirty + prec_rm_thirty + prec_sq_rm_thirty +
-trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
+# res_terms <- c("corn_dday0_10_rm_thirty + corn_dday10_30_rm_thirty +  corn_dday30_rm_thirty+  corn_prec_rm_thirty    +     corn_prec_sq_rm_thirty   +  corn_trend_lat + corn_trend_long       +       corn_trend_sq    +      cotton_dday0_10_rm_thirty  + cotton_dday10_30_rm_thirty + cotton_dday30_rm_thirty  +   cotton_prec_rm_thirty    +   cotton_prec_sq_rm_thirty +   cotton_trend        +     cotton_trend_sq       +  hay_dday0_10_rm_thirty   +   hay_dday10_30_rm_thirty  +   hay_dday30_rm_thirty    +    hay_prec_rm_thirty    +      hay_prec_sq_rm_thirty   +    hay_trend          +      hay_trend_sq       +   soybean_dday0_10_rm_thirty + soybean_dday10_30_rm_thirty + soybean_dday30_rm_thirty   + soybean_prec_rm_thirty   +   soybean_prec_sq_rm_thirty + soybean_trend       +    soybean_trend_sq     +    wheat_dday0_10_rm_thirty  +  wheat_dday10_30_rm_thirty  + wheat_dday30_rm_thirty   +   wheat_prec_rm_thirty     +   wheat_prec_sq_rm_thirty +   wheat_trend          +    wheat_trend_sq = 0" )
+# 
+# res_terms <- c("corn_dday0_10_rm_thirty  +   corn_dday10_30_rm_thirty   + corn_dday30_rm_thirty   +   corn_prec_rm_thirty    +     corn_prec_sq_rm_thirty    +  corn_trend_lat       +   corn_trend_long     +     corn_trend_sq_lat       + corn_trend_sq_long   +   cotton_dday0_10_rm_thirty  + cotton_dday10_30_rm_thirty  +cotton_dday30_rm_thirty  +   cotton_prec_rm_thirty    +   cotton_prec_sq_rm_thirty  +  cotton_trend_lat     +  cotton_trend_long    +    cotton_trend_sq_lat    +  cotton_trend_sq_long  +   hay_dday0_10_rm_thirty   +   hay_dday10_30_rm_thirty  +   hay_dday30_rm_thirty     +   hay_prec_rm_thirty     +     hay_prec_sq_rm_thirty    +   hay_trend_lat         +  hay_trend_long       +    hay_trend_sq_lat      +   hay_trend_sq_long       + soybean_dday0_10_rm_thirty + soybean_dday10_30_rm_thirty +soybean_dday30_rm_thirty  +  soybean_prec_rm_thirty   +   soybean_prec_sq_rm_thirty +  soybean_trend_lat       + soybean_trend_long    +   soybean_trend_sq_lat   +  soybean_trend_sq_long   + wheat_dday0_10_rm_thirty +   wheat_dday10_30_rm_thirty +  wheat_dday30_rm_thirty     + wheat_prec_rm_thirty     +   wheat_prec_sq_rm_thirty   +  wheat_trend_lat        +  wheat_trend_long      +   wheat_trend_sq_lat     +  wheat_trend_sq_long = 0")
+# 
+# res_terms <- c("corn_dday0_10  +             corn_dday10_30     +         corn_dday30         +       
+# corn_prec      +             corn_prec_sq              +  corn_dday0_10_rm_thirty    +
+# corn_dday10_30_rm_thirty  +  corn_dday30_rm_thirty     +  corn_prec_rm_thirty      +  
+# corn_prec_sq_rm_thirty   +   corn_trend_lat            +  corn_trend_long          +  
+# corn_trend_sq_lat      +     corn_trend_sq_long        +  cotton_dday0_10           + 
+# cotton_dday10_30      +      cotton_dday30             +  cotton_prec             +   
+# cotton_prec_sq        +      cotton_dday0_10_rm_thirty +  cotton_dday10_30_rm_thirty +
+# cotton_dday30_rm_thirty +    cotton_prec_rm_thirty     +  cotton_prec_sq_rm_thirty   +
+# cotton_trend_lat       +     cotton_trend_long         +  cotton_trend_sq_lat        +
+# cotton_trend_sq_long   +     hay_dday0_10              +  hay_dday10_30              +
+# hay_dday30             +     hay_prec                  +  hay_prec_sq               + 
+# hay_dday0_10_rm_thirty  +    hay_dday10_30_rm_thirty   +  hay_dday30_rm_thirty      + 
+# hay_prec_rm_thirty      +    hay_prec_sq_rm_thirty     +  hay_trend_lat             + 
+# hay_trend_long          +    hay_trend_sq_lat          +  hay_trend_sq_long         + 
+# soybean_dday0_10        +    soybean_dday10_30         +  soybean_dday30            + 
+# soybean_prec             +   soybean_prec_sq           +  soybean_dday0_10_rm_thirty +
+# soybean_dday10_30_rm_thirty +soybean_dday30_rm_thirty  +  soybean_prec_rm_thirty    + 
+# soybean_prec_sq_rm_thirty   +soybean_trend_lat         +  soybean_trend_long        + 
+# soybean_trend_sq_lat        +soybean_trend_sq_long    +   wheat_dday0_10            + 
+# wheat_dday10_30             +wheat_dday30              +  wheat_prec                + 
+# wheat_prec_sq               +wheat_dday0_10_rm_thirty  +  wheat_dday10_30_rm_thirty + 
+# wheat_dday30_rm_thirty      +wheat_prec_rm_thirty      +  wheat_prec_sq_rm_thirty   + 
+# wheat_trend_lat             +wheat_trend_long          +  wheat_trend_sq_lat      +   
+# wheat_trend_sq_long = 0") 
 
 thirty_mod <- systemfit(list(corn = mod1, 
                        cotton = mod2, 

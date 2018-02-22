@@ -129,7 +129,7 @@ pdat <- pdat %>%
          prec_rm_ten = rollmean(prec, k = 10, align = "right", fill = "NA"),
          prec_sq_rm_ten = prec_rm_ten^2)
   
-  pdat <- filter(pdat, year >= 1960 & year <= 2010)
+  pdat <- filter(pdat, year >= 1950 & year <= 2010)
 
 
   # 60 year intervals

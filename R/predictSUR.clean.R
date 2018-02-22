@@ -13,12 +13,12 @@ predictSUR.clean <- function(mod, newdata_list, acres, fips, var.terms = NULL, c
   p4 <- newdata_list[[5]]
   p5 <- newdata_list[[6]]
     
-  indat0 <- predictSUR(systemfit.mod = mod, newdata = p0, fips = fips, var.terms = var.terms, cons.terms = cons.terms)
-  indat1 <- predictSUR(mod, newdata = p1, fips = fips, var.terms = var.terms, cons.terms = cons.terms)
-  indat2 <- predictSUR(mod, newdata = p2, fips = fips, var.terms = var.terms, cons.terms = cons.terms)
-  indat3 <- predictSUR(mod, newdata = p3, fips = fips, var.terms = var.terms, cons.terms = cons.terms)
-  indat4 <- predictSUR(mod, newdata = p4, fips = fips, var.terms = var.terms, cons.terms = cons.terms)
-  indat5 <- predictSUR(mod, newdata = p5, fips = fips, var.terms = var.terms, cons.terms = cons.terms)
+  indat0 <- predictSUR(mod, newdata = p0, var.terms = var.terms)
+  indat1 <- predictSUR(mod, newdata = p1, var.terms = var.terms)
+  indat2 <- predictSUR(mod, newdata = p2, var.terms = var.terms)
+  indat3 <- predictSUR(mod, newdata = p3, var.terms = var.terms)
+  indat4 <- predictSUR(mod, newdata = p4, var.terms = var.terms)
+  indat5 <- predictSUR(mod, newdata = p5, var.terms = var.terms)
   
   corn0.pred <- pnorm(indat0$corn_predict + resid(mod)[[1]] + mod$effects$corn.effect)*1.00101 - 0.001
   corn1.pred <- pnorm(indat1$corn_predict + resid(mod)[[1]] + mod$effects$corn.effect)*1.00101 - 0.001
@@ -41,7 +41,7 @@ predictSUR.clean <- function(mod, newdata_list, acres, fips, var.terms = NULL, c
   hay4.pred <- pnorm(indat4$hay_predict + resid(mod)[[3]] + mod$effects$hay.effect)*1.00101 - 0.001
   hay5.pred <- pnorm(indat5$hay_predict + resid(mod)[[3]] + mod$effects$hay.effect)*1.00101 - 0.001
   
-  soybean0.pred <- pnorm(indat0$soybean_predict + resid(mod)[[4]] + mod$effects$soybean.effect)*1.00101 - 0.001
+  soybean0.pred <- pnorm(indat0$soybean_predict+ resid(mod)[[4]] + mod$effects$soybean.effect)*1.00101 - 0.001
   soybean1.pred <- pnorm(indat1$soybean_predict + resid(mod)[[4]] + mod$effects$soybean.effect)*1.00101 - 0.001
   soybean2.pred <- pnorm(indat2$soybean_predict + resid(mod)[[4]] + mod$effects$soybean.effect)*1.00101 - 0.001
   soybean3.pred <- pnorm(indat3$soybean_predict + resid(mod)[[4]] + mod$effects$soybean.effect)*1.00101 - 0.001
@@ -105,7 +105,7 @@ predictSUR.clean <- function(mod, newdata_list, acres, fips, var.terms = NULL, c
   temp3[temp3 < 0 ] <- 0
   temp4[temp4 < 0 ] <- 0
   temp5[temp5 < 0 ] <- 0
-  
+
   temp0[, 2:6] <- temp0[, 2:6] / rowSums(temp0[, 2:6])
   temp1[, 2:6] <- temp1[, 2:6] / rowSums(temp1[, 2:6])
   temp2[, 2:6] <- temp2[, 2:6] / rowSums(temp2[, 2:6])

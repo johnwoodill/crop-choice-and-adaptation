@@ -560,7 +560,7 @@ is.na(cropdat) <- do.call(cbind, lapply(cropdat, is.infinite))
 cropdat <- cropdat %>% 
   group_by(fips) %>% 
   arrange(year) %>% 
-  mutate(w = rollmean(acres, k = 2, fill = acres))
+  mutate(w = rollmean(acres, k = 5, fill = acres))
 
 # Spline through acres to smooth out weights
  # cropdat <- cropdat %>%
@@ -640,7 +640,7 @@ cropdat <- cropdat %>%
          prec_sq_five = prec_five^2)
 
 # Build trends
-cropdat$trend <- cropdat$year - 1949
+cropdat$trend <- cropdat$year - (min(cropdat$year) - 1)
 cropdat$trend_sq <- cropdat$trend^2
 
 # Crop acres as percentage of total
@@ -738,6 +738,7 @@ twenty_trend$twenty_sq <- NULL
 thirty_trend$thirty_sq <- NULL
 
 cropdat <- cbind(cropdat, ten_trend, twenty_trend, thirty_trend, ten_trend_sq, twenty_trend_sq, thirty_trend_sq)
+
 
 cropdat$trend_lat <- cropdat$trend*cropdat$lat
 cropdat$trend_long <- cropdat$trend*cropdat$long

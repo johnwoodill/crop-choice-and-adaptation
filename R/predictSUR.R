@@ -83,12 +83,12 @@ predictSUR <- function(systemfit.mod,
       inmod <- model.matrix(eqlist[[k]], data = newdata)
       cinmod <- as.data.frame(model.matrix(ceqlist[[k]], data = newdata))
       
-      cinmod$fips <- fips
-      cinmod <- cinmod %>% 
-        group_by(fips) %>% 
-        mutate_all(mean)
-      head(cinmod)
-      cinmod$fips <- NULL
+      # cindat$fips <- fips
+      # cindat <- cindat %>% 
+      #   group_by(fips) %>% 
+      #   mutate_all(mean)
+      # head(cindat)
+      # cinmod$fips <- NULL
       
       modmat[[k]] <- inmod
       cmodmat[[k]] <- as.matrix(cinmod)
