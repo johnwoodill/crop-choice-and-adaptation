@@ -159,8 +159,8 @@ dd_dat <- dd_dat %>%
             prec_sq_rm_two = prec_rm_two^2)
 
 
-dd_dat <- filter(dd_dat, year >= 1950)
-dd_dat$trend <- dd_dat$year - 1949
+dd_dat <- filter(dd_dat, year >= 1960)
+dd_dat$trend <- dd_dat$year - 1959
 dd_dat$trend_sq <- dd_dat$trend^2
 #
 dd_dat <- dd_dat %>%
@@ -357,8 +357,8 @@ mod7_res1 <- data.frame(value = rep(0, nrow(dd_dat)),
 mod7_res1$value <- as.numeric(mod7$residuals)
 mod7_res1$region <- as.numeric(dd_dat$fips)
 mod7_res1$year <- dd_dat$year
-mod7_res50_00 <- filter(mod7_res1, (year >= 1960 & year <= 1959) | (year >= 2000 & year <= 2010))
-mod7_res50_00$decade <- ifelse(mod7_res50_00$year <= 1960, 1, 2)
+mod7_res50_00 <- filter(mod7_res1, (year >= 1960 & year <= 1969) | (year >= 2000 & year <= 2010))
+mod7_res50_00$decade <- ifelse(mod7_res50_00$year <= 1970, 1, 2)
 
 mod7_res50_00 <- mod7_res50_00 %>% 
   group_by(region, decade) %>% 
@@ -515,8 +515,8 @@ msd_p2 <- ggplot(msd_crops, aes(y=value, x=location, fill = crops)) +
 # ggsave("figures/ms_delta.pdf", width = 6, height = 4)
 
 
-
-plot_grid(mod7_map, msd_p1, msd_p2)
+library(cowplot)
+# plot_grid(mod7_map, msd_p1, msd_p2)
 ggdraw() + draw_plot(mod7_map, width = .85) + 
   draw_plot(msd_p1, .46, .5, height = .5, width = .55) +
   draw_plot(msd_p2, .46, .02, height = .5, width = .55)
@@ -527,7 +527,7 @@ ggsave("figures/ms_delta.pdf", width = 10, height = 4)
 #----------------------------------
 # Illinois
 il <- filter(cropdat, state %in% c("il", "in"))
-il$location <- ifelse(il$lat <= 40.5, "Southern Illinois", "Northen Illinois")
+il$location <- ifelse(il$lat <= 40.5, "Southern Illinois/Indiana", "Northen Illinois/Indiana")
 
 il <- il %>%
   group_by(year, location) %>%
@@ -548,7 +548,7 @@ il_p1
 
 il_crops <- filter(cropdat, state %in% c("il", "in"))
 il_crops <- filter(il_crops, year <= 1969 | year >= 2000)
-il_crops$location <- ifelse(il_crops$lat <= 40.5, "Southern Illinois", "Northen Illinois")
+il_crops$location <- ifelse(il_crops$lat <= 40.5, "Southern Illinois/Indiana", "Northen Illinois/Indiana")
 il_crops$decade <- ifelse(il_crops$year <= 1969, 1, 2)
 il_crops <- il_crops %>% 
   group_by(fips, decade, location) %>% 

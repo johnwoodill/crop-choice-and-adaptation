@@ -129,7 +129,7 @@ pdat <- pdat %>%
          prec_rm_ten = rollmean(prec, k = 10, align = "right", fill = "NA"),
          prec_sq_rm_ten = prec_rm_ten^2)
   
-  pdat <- filter(pdat, year >= 1950 & year <= 2010)
+  pdat <- filter(pdat, year >= 1960 & year <= 2010)
 
 
   # 60 year intervals
@@ -188,7 +188,7 @@ pdat <- pdat %>%
            prec_five = mean(prec, na.rm = TRUE),
            prec_sq_five = prec_five^2)
   
-  pdat$trend <- pdat$year - 1949
+  pdat$trend <- pdat$year - (min(pdat$year) - 1)
   pdat$trend_sq <- pdat$trend^2
   pdat <- as.data.frame(pdat)
   

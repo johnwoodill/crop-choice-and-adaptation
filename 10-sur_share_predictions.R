@@ -118,8 +118,8 @@ cten <- predictSUR.clean(mod = sur_ten,
                          effect = "Climate-effect")
 
 # head(cten$predictions)
- # cten_rs <- rowSums(cten$predictions)
-# length(which((cten_rs != 1) == FALSE))
+#  cten_rs <- rowSums(cten$predictions)
+#  length(which((cten_rs != 1) == FALSE))
 # 
 # cten <- predictSUR.clean(mod = sur_ten, acres = cropdat$acres, newdata_list = newdata_list_dm,type = "10-year", 
                          # effect = "Climate-effect")

@@ -233,7 +233,7 @@ cdat1 <- cdat1 %>%
          effect = "Weather-climate-effect") %>% 
   select(temp, interval, effect, change) %>% 
   ungroup()
-  
+
 cdat2 <- cdat2 %>% 
   group_by(temp) %>% 
   summarise_all(sum) %>% 
@@ -298,7 +298,7 @@ ggplot(pdat, aes(temp, change, color = effect)) + geom_line() +
         legend.title = element_blank(),
         legend.key = element_rect(fill = NA, color = NA),
         legend.text=element_text(size=8))
-  facet_wrap(type~interval, scales = "free")
+  # facet_wrap(type~interval, scales = "free")
 
 
 ggsave("figures/main_plot.pdf", width = 6, height = 4)
