@@ -484,23 +484,59 @@ states <-  c("al","ar","ct","dc", "de", "fl","ga","il","in","ia","ks","ky","la",
 # "ne","nh","nj","ny","nc","nd","oh","ok","pa","ri","sc","sd","tn","tx","vt","va","wv","wi")
 
 data <- filter(fulldat, state %in% states)
-data <- filter(data, year >= 1960 & year <= 2010)
+# data <- filter(data, year >= 1950 & year <= 2010)
 
 # Keep only those counties with acres in 1950-2009
-data$acres <- rowSums(data[, c("corn_grain_a", "cotton_a", "hay_a", "soybean_a", "wheat_a")], na.rm = TRUE)
-check <- data %>% 
-  group_by(year, fips) %>% 
-  summarise(acres = mean(acres, na.rm = TRUE)) %>% 
-  filter(acres > 0 & !is.na(acres)) %>% 
-  group_by(fips) %>% 
-  summarise(nroww = n()) %>% 
-  filter(nroww == 51)
+# data$acres <- rowSums(data[, c("corn_grain_a", "cotton_a", "hay_a", "soybean_a", "wheat_a")], na.rm = TRUE)
+# check <- data %>% 
+#   group_by(year, fips) %>% 
+#   summarise(acres = mean(acres, na.rm = TRUE)) %>% 
+#   filter(acres > 0 & !is.na(acres)) %>% 
+#   group_by(fips) %>% 
+#   summarise(nroww = n()) %>% 
+#   filter(nroww == 51)
+# 
+# head(check)
+# length(check$fips)
+# fipss <- unique(check$fips)
+# data <- filter(data, fips %in% fipss)
 
-head(check)
-length(check$fips)
-fipss <- unique(check$fips)
+
+# Extract NASS crop data at county level
+extract_d_county <- function(x){
+  x <- select(x, Year, fips, `Data Item`, Value)
+  names(x) <- c("year", "fips", "data_item", "value")
+  crop <- x
+  # crop$state <- tolower(crop$state)
+  # crop$county <- tolower(crop$county)
+  crop$fips <- as.numeric(crop$fips)
+  crop$row <- 1:nrow(crop)   # unique identifer
+  crop <- spread(crop, data_item, value = value, fill = NA)
+  crop$row <- NULL
+  #crop <- filter(crop, year >= 1900)
+  #crop <- crop[,c(1,2,4,7,10,13,16)]
+  crop <- crop %>% 
+    group_by(fips, year) %>% 
+    summarise_all(funs(sum(., na.rm=TRUE))) 
+  return(crop)
+}
+
+dat <- read_csv("data/1950_acres.csv")
+dat$fips <- paste(dat$`State ANSI`, dat$`County ANSI`, sep = "")
+head(dat)
+test <- extract_d_county(dat)
+names(test) <- c("fips", "year", "corn", "cotton", "hay", "soybean", "wheat")
+head(test)
+test$acres <- rowSums(test[, c("corn", "cotton", "hay", "soybean", "wheat")], na.rm = TRUE)
+head(test)
+test <- select(test, fips, acres)
+names(test) <- c("region", "value")
+test$region <- as.numeric(test$region)
+head(test)
+test <- as.data.frame(test)
+fipss <- test$region
 data <- filter(data, fips %in% fipss)
-
+data <- filter(data, year >= 1950 & year <= 2010)
 
 # Build data set for regression estimates
 cropdat <- filter(data, year <= 2010)

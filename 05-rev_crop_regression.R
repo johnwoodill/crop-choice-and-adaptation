@@ -43,7 +43,7 @@ regdat <- readRDS("data/full_ag_data.rds")
 modten_1 <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
               dday0_10_rm_ten + dday10_30_rm_ten + dday30_rm_ten + prec_rm_ten + prec_sq_rm_ten +
               trend_lat + trend_long + trend_sq_lat + trend_sq_long | fips | 0 | state, 
-            data = regdat, weights = regdat$w, psdef = FALSE)
+            data = regdat, weights = regdat$acres, psdef = FALSE)
 summary(modten_1)
 
 saveRDS(modten_1, "models/rev_crop_modten.rds")
@@ -52,7 +52,7 @@ saveRDS(modten_1, "models/rev_crop_modten.rds")
 modtwenty_1 <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
               dday0_10_rm_twenty + dday10_30_rm_twenty + dday30_rm_twenty + prec_rm_twenty + prec_sq_rm_twenty +
               trend_lat + trend_long + trend_sq_lat + trend_sq_long | fips | 0 | state, 
-            data = regdat, weights = regdat$w, psdef = FALSE)
+            data = regdat, weights = regdat$acres, psdef = FALSE)
 summary(modtwenty_1)
 
 saveRDS(modtwenty_1, "models/rev_crop_modtwenty.rds")
@@ -62,7 +62,7 @@ saveRDS(modtwenty_1, "models/rev_crop_modtwenty.rds")
 modthirty_1 <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
               dday0_10_rm_thirty + dday10_30_rm_thirty + dday30_rm_thirty + prec_rm_thirty + prec_sq_rm_thirty +
               trend_lat + trend_long + trend_sq_lat + trend_sq_long | fips | 0 | state, 
-            data = regdat, weights = regdat$w, psdef = FALSE)
+            data = regdat, weights = regdat$acres, psdef = FALSE)
 summary(modthirty_1)
 
 saveRDS(modthirty_1, "models/rev_crop_modthirty.rds")
