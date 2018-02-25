@@ -12,193 +12,193 @@ library(maps)
 library(haven)
 # # 
 # # 
-# dd <- read_csv("data/fips_degree_days_1900-2013.csv")
-# prec <- read_csv("data/fips_precipitation_1900-2013.csv")
-# 
-# 
-# dd$year <- as.integer(dd$year)
-# dd$fips <- as.integer(dd$fips)
-# dd$X1 <- NULL
-# 
-# dd <- left_join(dd, prec, by = c("fips", "year", "month"))
-# dd_dat <- filter(dd, month >= 3 & month <= 10)
-# 
-# dd_dat <- dd_dat %>%
-#     group_by(year, fips) %>%
-#     summarise(dday0C = sum(dday0C),
-#               dday10C = sum(dday10C),
-#               dday30C = sum(dday30C),
-#               prec = sum(ppt))
-# 
-# dd_dat$dday0_10 <- dd_dat$dday0C - dd_dat$dday10C
-# dd_dat$dday10_30 <- dd_dat$dday10C - dd_dat$dday30C
-# dd_dat$dday30 <- dd_dat$dday30C
-# dd_dat$prec_sq <- dd_dat$prec^2
-# 
-# dd_dat <- select(dd_dat, year, fips, dday0C, dday10C, dday30C, dday0_10, dday10_30, dday30, prec, prec_sq)
-# 
-# data(county.fips)
-# county.fips$state <- sapply(str_split(county.fips$polyname, ","),'[',1)
-# county.fips$county <- sapply(str_split(county.fips$polyname, ","),'[',2)
-# county.fips <- select(county.fips, fips, county, state)
-# head(county.fips)
-# 
-# states <- data.frame(state = tolower(state.name), stateabb = tolower(state.abb))
-# states
-# 
-# county.fips <- left_join(county.fips, states, by = "state")
-# county.fips <- select(county.fips, fips, stateabb)
-# 
-# names(county.fips) <- c("fips", "state")
-# dd_dat <- left_join(dd_dat, county.fips, by = "fips")
-# 
-# data(zip_codes)
-# zip_codes <- select(zip_codes, fips, latitude, longitude)
-# zip_codes <- zip_codes[!duplicated(zip_codes[,1:3]),]
-# names(zip_codes) <- c("fips", "lat", "long")
-# zip_codes <- zip_codes %>%
-#   group_by(fips) %>%
-#   summarise(lat = mean(lat, na.rm = TRUE),
-#             long = mean(long, na.rm = TRUE))
-# dd_dat <- left_join(dd_dat, zip_codes, by = "fips")
-# 
-# ers_region <- read_csv("data/ResourceRegionCRDfips.csv")
-# names(ers_region) <- c("fips", "ers_region", "crd")
-# dd_dat <- left_join(dd_dat, ers_region, by = "fips")
+dd <- read_csv("data/fips_degree_days_1900-2013.csv")
+prec <- read_csv("data/fips_precipitation_1900-2013.csv")
+
+
+dd$year <- as.integer(dd$year)
+dd$fips <- as.integer(dd$fips)
+dd$X1 <- NULL
+
+dd <- left_join(dd, prec, by = c("fips", "year", "month"))
+dd_dat <- filter(dd, month >= 3 & month <= 10)
+
+dd_dat <- dd_dat %>%
+    group_by(year, fips) %>%
+    summarise(dday0C = sum(dday0C),
+              dday10C = sum(dday10C),
+              dday30C = sum(dday30C),
+              prec = sum(ppt))
+
+dd_dat$dday0_10 <- dd_dat$dday0C - dd_dat$dday10C
+dd_dat$dday10_30 <- dd_dat$dday10C - dd_dat$dday30C
+dd_dat$dday30 <- dd_dat$dday30C
+dd_dat$prec_sq <- dd_dat$prec^2
+
+dd_dat <- select(dd_dat, year, fips, dday0C, dday10C, dday30C, dday0_10, dday10_30, dday30, prec, prec_sq)
+
+data(county.fips)
+county.fips$state <- sapply(str_split(county.fips$polyname, ","),'[',1)
+county.fips$county <- sapply(str_split(county.fips$polyname, ","),'[',2)
+county.fips <- select(county.fips, fips, county, state)
+head(county.fips)
+
+states <- data.frame(state = tolower(state.name), stateabb = tolower(state.abb))
+states
+
+county.fips <- left_join(county.fips, states, by = "state")
+county.fips <- select(county.fips, fips, stateabb)
+
+names(county.fips) <- c("fips", "state")
+dd_dat <- left_join(dd_dat, county.fips, by = "fips")
+
+data(zip_codes)
+zip_codes <- select(zip_codes, fips, latitude, longitude)
+zip_codes <- zip_codes[!duplicated(zip_codes[,1:3]),]
+names(zip_codes) <- c("fips", "lat", "long")
+zip_codes <- zip_codes %>%
+  group_by(fips) %>%
+  summarise(lat = mean(lat, na.rm = TRUE),
+            long = mean(long, na.rm = TRUE))
+dd_dat <- left_join(dd_dat, zip_codes, by = "fips")
+
+ers_region <- read_csv("data/ResourceRegionCRDfips.csv")
+names(ers_region) <- c("fips", "ers_region", "crd")
+dd_dat <- left_join(dd_dat, ers_region, by = "fips")
 # dd_dat <- filter(dd_dat, abs(long) <= 100)
-# # unique(factor(dd_dat$state))
+# unique(factor(dd_dat$state))
 # dd_dat <- filter(dd_dat, state %in% unique(cropdat$state))
-# #
-# #
-# # #--------------------------------------
-# # # Roll.mean intervals
-# #
-# # #50-year
-# dd_dat <- dd_dat %>%
-#        group_by(fips) %>%
-#        arrange(year) %>%
-#        mutate(dday0_10_rm_fifty = lag(rollmean(dday0_10, k = 50, align = "right", fill = "NA")),
-#               dday10_30_rm_fifty = lag(rollmean(dday10_30, k = 50, align = "right", fill = "NA")),
-#               dday30_rm_fifty = lag(rollmean(dday30, k = 50, align = "right", fill = "NA")),
-#               prec_rm_fifty = lag(rollmean(prec, k = 50, align = "right", fill = "NA")),
-#               prec_sq_rm_fifty = prec_rm_fifty^2)
-# 
-# 
-# # 40-year
-#  dd_dat <- dd_dat %>%
-#     group_by(fips) %>%
-#     arrange(year) %>%
-#     mutate(dday0_10_rm_fourty = lag(rollmean(dday0_10, k = 40, align = "right", fill = "NA")),
-#            dday10_30_rm_fourty = lag(rollmean(dday10_30, k = 40, align = "right", fill = "NA")),
-#            dday30_rm_fourty = lag(rollmean(dday30, k = 40, align = "right", fill = "NA")),
-#            prec_rm_fourty = lag(rollmean(prec, k = 40, align = "right", fill = "NA")),
-#            prec_sq_rm_fourty = prec_rm_fourty^2)
-# 
-# # # 30-year
-# dd_dat <- dd_dat %>%
-#       group_by(fips) %>%
-#       arrange(year) %>%
-#       mutate(dday0_10_rm_thirty = lag(rollmean(dday0_10, k = 30, align = "right", fill = "NA")),
-#              dday10_30_rm_thirty = lag(rollmean(dday10_30, k = 30, align = "right", fill = "NA")),
-#              dday30_rm_thirty = lag(rollmean(dday30, k = 30, align = "right", fill = "NA")),
-#              prec_rm_thirty = lag(rollmean(prec, k = 30, align = "right", fill = "NA")),
-#              prec_sq_rm_thirty = prec_rm_thirty^2)
-# 
-# # 20 year intervals
-# dd_dat <- dd_dat %>%
-#       group_by(fips) %>%
-#       arrange(year) %>%
-#       mutate(dday0_10_rm_twenty = lag(rollmean(dday0_10, k = 20, align = "right", fill = "NA")),
-#              dday10_30_rm_twenty = lag(rollmean(dday10_30, k = 20, align = "right", fill = "NA")),
-#              dday30_rm_twenty = lag(rollmean(dday30, k = 20, align = "right", fill = "NA")),
-#              prec_rm_twenty = lag(rollmean(prec, k = 20, align = "right", fill = "NA")),
-#              prec_sq_rm_twenty = prec_rm_twenty^2)
-# 
-# 
-# # 15 year intervals
-# dd_dat <- dd_dat %>%
-#       group_by(fips) %>%
-#       arrange(year) %>%
-#       mutate(dday0_10_rm_fifteen = lag(rollmean(dday0_10, k = 15, align = "right", fill = "NA")),
-#              dday10_30_rm_fifteen = lag(rollmean(dday10_30, k = 15, align = "right", fill = "NA")),
-#              dday30_rm_fifteen = lag(rollmean(dday30, k = 15, align = "right", fill = "NA")),
-#              prec_rm_fifteen = lag(rollmean(prec, k = 15, align = "right", fill = "NA")),
-#              prec_sq_rm_fifteen = prec_rm_fifteen^2)
-# 
-# # 10-year
-# dd_dat <- dd_dat %>%
-#       group_by(fips) %>%
-#       arrange(year) %>%
-#       mutate(dday0_10_rm_ten = lag(rollmean(dday0_10, k = 10, align = "right", fill = "NA")),
-#              dday10_30_rm_ten = lag(rollmean(dday10_30, k = 10, align = "right", fill = "NA")),
-#              dday30_rm_ten = lag(rollmean(dday30, k = 10, align = "right", fill = "NA")),
-#              prec_rm_ten = lag(rollmean(prec, k = 10, align = "right", fill = "NA")),
-#              prec_sq_rm_ten = prec_rm_ten^2)
-# # 5-year
-# dd_dat <- dd_dat %>%
-#       group_by(fips) %>%
-#       arrange(year) %>%
-#       mutate(dday0_10_rm_five = lag(rollmean(dday0_10, k = 5, align = "right", fill = "NA")),
-#              dday10_30_rm_five = lag(rollmean(dday10_30, k = 5, align = "right", fill = "NA")),
-#              dday30_rm_five = lag(rollmean(dday30, k = 5, align = "right", fill = "NA")),
-#              prec_rm_five = lag(rollmean(prec, k = 5, align = "right", fill = "NA")),
-#              prec_sq_rm_five = prec_rm_five^2)
-# 
-# # 2-year
-# dd_dat <- dd_dat %>%
-#       group_by(fips) %>%
-#       arrange(year) %>%
-#       mutate(dday0_10_rm_two = lag(rollmean(dday0_10, k = 2, align = "right", fill = "NA")),
-#              dday10_30_rm_two = lag(rollmean(dday10_30, k = 2, align = "right", fill = "NA")),
-#              dday30_rm_two = lag(rollmean(dday30, k = 2, align = "right", fill = "NA")),
-#              prec_rm_two = lag(rollmean(prec, k = 2, align = "right", fill = "NA")),
-#              prec_sq_rm_two = prec_rm_two^2)
-# 
-# 
-# dd_dat <- filter(dd_dat, year >= 1950)
-# dd_dat$trend <- dd_dat$year - 1949
-# dd_dat$trend_sq <- dd_dat$trend^2
-# 
-# dd_dat <- dd_dat %>%
-#   group_by(fips) %>%
-#   distinct(year, .keep_all = TRUE)
-# #
-# dd_dat <- filter(dd_dat, !is.na(state))
-# ddat <- table(dd_dat$fips)
-# which(ddat != 61)
-# dd_dat <- filter(dd_dat, !is.na(state))
-# 
-# # nbal <- c(12091, 22099, 37053, 48167, 51001)
-# # dd_dat <- filter(dd_dat, fips != 12091)
-# # dd_dat <- filter(dd_dat, fips != 22099)
-# # dd_dat <- filter(dd_dat, fips != 37053)
-# # dd_dat <- filter(dd_dat, fips != 48167)
-# # dd_dat <- filter(dd_dat, fips != 51001)
-# ddat <- table(dd_dat$fips)
-# # which(ddat != 63)
-# 
-# states <- toupper(factor(dd_dat$state))
-# states <- tolower(unique(state.name[match(states, state.abb)]))
-# states <- states[!is.na(states)]
-# 
-# dd_dat$region <- 0
-# dd_dat$region <- ifelse(dd_dat$ers_region == 1, "Heartland", dd_dat$region)
-# dd_dat$region <- ifelse(dd_dat$ers_region == 2, "Northern Crescent", dd_dat$region)
-# dd_dat$region <- ifelse(dd_dat$ers_region == 3, "Northern Great Plains", dd_dat$region)
-# dd_dat$region <- ifelse(dd_dat$ers_region == 4, "Prairie Gateway", dd_dat$region)
-# dd_dat$region <- ifelse(dd_dat$ers_region == 5, "Eastern Uplands", dd_dat$region)
-# dd_dat$region <- ifelse(dd_dat$ers_region == 6, "Southern Seaboard", dd_dat$region)
-# dd_dat$region <- ifelse(dd_dat$ers_region == 7, "Fruitful Rim", dd_dat$region)
-# dd_dat$region <- ifelse(dd_dat$ers_region == 8, "Basin and Range", dd_dat$region)
-# dd_dat$region <- ifelse(dd_dat$ers_region == 9, "Mississipi Portal", dd_dat$region)
-# #
-# dd_dat$state <- factor(dd_dat$state)
-# dd_dat$fips <- factor(dd_dat$fips)
-# dd_dat$ers_region <- factor(dd_dat$ers_region)
-# #
-# #
-# #
-#  saveRDS(dd_dat, "data/full_weather_data.rds")
+#
+#
+# #--------------------------------------
+# # Roll.mean intervals
+#
+# #50-year
+dd_dat <- dd_dat %>%
+       group_by(fips) %>%
+       arrange(year) %>%
+       mutate(dday0_10_rm_fifty = lag(rollmean(dday0_10, k = 50, align = "right", fill = "NA")),
+              dday10_30_rm_fifty = lag(rollmean(dday10_30, k = 50, align = "right", fill = "NA")),
+              dday30_rm_fifty = lag(rollmean(dday30, k = 50, align = "right", fill = "NA")),
+              prec_rm_fifty = lag(rollmean(prec, k = 50, align = "right", fill = "NA")),
+              prec_sq_rm_fifty = prec_rm_fifty^2)
+
+
+# 40-year
+ dd_dat <- dd_dat %>%
+    group_by(fips) %>%
+    arrange(year) %>%
+    mutate(dday0_10_rm_fourty = lag(rollmean(dday0_10, k = 40, align = "right", fill = "NA")),
+           dday10_30_rm_fourty = lag(rollmean(dday10_30, k = 40, align = "right", fill = "NA")),
+           dday30_rm_fourty = lag(rollmean(dday30, k = 40, align = "right", fill = "NA")),
+           prec_rm_fourty = lag(rollmean(prec, k = 40, align = "right", fill = "NA")),
+           prec_sq_rm_fourty = prec_rm_fourty^2)
+
+# # 30-year
+dd_dat <- dd_dat %>%
+      group_by(fips) %>%
+      arrange(year) %>%
+      mutate(dday0_10_rm_thirty = lag(rollmean(dday0_10, k = 30, align = "right", fill = "NA")),
+             dday10_30_rm_thirty = lag(rollmean(dday10_30, k = 30, align = "right", fill = "NA")),
+             dday30_rm_thirty = lag(rollmean(dday30, k = 30, align = "right", fill = "NA")),
+             prec_rm_thirty = lag(rollmean(prec, k = 30, align = "right", fill = "NA")),
+             prec_sq_rm_thirty = prec_rm_thirty^2)
+
+# 20 year intervals
+dd_dat <- dd_dat %>%
+      group_by(fips) %>%
+      arrange(year) %>%
+      mutate(dday0_10_rm_twenty = lag(rollmean(dday0_10, k = 20, align = "right", fill = "NA")),
+             dday10_30_rm_twenty = lag(rollmean(dday10_30, k = 20, align = "right", fill = "NA")),
+             dday30_rm_twenty = lag(rollmean(dday30, k = 20, align = "right", fill = "NA")),
+             prec_rm_twenty = lag(rollmean(prec, k = 20, align = "right", fill = "NA")),
+             prec_sq_rm_twenty = prec_rm_twenty^2)
+
+
+# 15 year intervals
+dd_dat <- dd_dat %>%
+      group_by(fips) %>%
+      arrange(year) %>%
+      mutate(dday0_10_rm_fifteen = lag(rollmean(dday0_10, k = 15, align = "right", fill = "NA")),
+             dday10_30_rm_fifteen = lag(rollmean(dday10_30, k = 15, align = "right", fill = "NA")),
+             dday30_rm_fifteen = lag(rollmean(dday30, k = 15, align = "right", fill = "NA")),
+             prec_rm_fifteen = lag(rollmean(prec, k = 15, align = "right", fill = "NA")),
+             prec_sq_rm_fifteen = prec_rm_fifteen^2)
+
+# 10-year
+dd_dat <- dd_dat %>%
+      group_by(fips) %>%
+      arrange(year) %>%
+      mutate(dday0_10_rm_ten = lag(rollmean(dday0_10, k = 10, align = "right", fill = "NA")),
+             dday10_30_rm_ten = lag(rollmean(dday10_30, k = 10, align = "right", fill = "NA")),
+             dday30_rm_ten = lag(rollmean(dday30, k = 10, align = "right", fill = "NA")),
+             prec_rm_ten = lag(rollmean(prec, k = 10, align = "right", fill = "NA")),
+             prec_sq_rm_ten = prec_rm_ten^2)
+# 5-year
+dd_dat <- dd_dat %>%
+      group_by(fips) %>%
+      arrange(year) %>%
+      mutate(dday0_10_rm_five = lag(rollmean(dday0_10, k = 5, align = "right", fill = "NA")),
+             dday10_30_rm_five = lag(rollmean(dday10_30, k = 5, align = "right", fill = "NA")),
+             dday30_rm_five = lag(rollmean(dday30, k = 5, align = "right", fill = "NA")),
+             prec_rm_five = lag(rollmean(prec, k = 5, align = "right", fill = "NA")),
+             prec_sq_rm_five = prec_rm_five^2)
+
+# 2-year
+dd_dat <- dd_dat %>%
+      group_by(fips) %>%
+      arrange(year) %>%
+      mutate(dday0_10_rm_two = lag(rollmean(dday0_10, k = 2, align = "right", fill = "NA")),
+             dday10_30_rm_two = lag(rollmean(dday10_30, k = 2, align = "right", fill = "NA")),
+             dday30_rm_two = lag(rollmean(dday30, k = 2, align = "right", fill = "NA")),
+             prec_rm_two = lag(rollmean(prec, k = 2, align = "right", fill = "NA")),
+             prec_sq_rm_two = prec_rm_two^2)
+
+
+dd_dat <- filter(dd_dat, year >= 1950)
+dd_dat$trend <- dd_dat$year - 1949
+dd_dat$trend_sq <- dd_dat$trend^2
+
+dd_dat <- dd_dat %>%
+  group_by(fips) %>%
+  distinct(year, .keep_all = TRUE)
+#
+dd_dat <- filter(dd_dat, !is.na(state))
+ddat <- table(dd_dat$fips)
+which(ddat != 61)
+dd_dat <- filter(dd_dat, !is.na(state))
+
+# nbal <- c(12091, 22099, 37053, 48167, 51001)
+# dd_dat <- filter(dd_dat, fips != 12091)
+# dd_dat <- filter(dd_dat, fips != 22099)
+# dd_dat <- filter(dd_dat, fips != 37053)
+# dd_dat <- filter(dd_dat, fips != 48167)
+# dd_dat <- filter(dd_dat, fips != 51001)
+ddat <- table(dd_dat$fips)
+# which(ddat != 63)
+
+states <- toupper(factor(dd_dat$state))
+states <- tolower(unique(state.name[match(states, state.abb)]))
+states <- states[!is.na(states)]
+
+dd_dat$region <- 0
+dd_dat$region <- ifelse(dd_dat$ers_region == 1, "Heartland", dd_dat$region)
+dd_dat$region <- ifelse(dd_dat$ers_region == 2, "Northern Crescent", dd_dat$region)
+dd_dat$region <- ifelse(dd_dat$ers_region == 3, "Northern Great Plains", dd_dat$region)
+dd_dat$region <- ifelse(dd_dat$ers_region == 4, "Prairie Gateway", dd_dat$region)
+dd_dat$region <- ifelse(dd_dat$ers_region == 5, "Eastern Uplands", dd_dat$region)
+dd_dat$region <- ifelse(dd_dat$ers_region == 6, "Southern Seaboard", dd_dat$region)
+dd_dat$region <- ifelse(dd_dat$ers_region == 7, "Fruitful Rim", dd_dat$region)
+dd_dat$region <- ifelse(dd_dat$ers_region == 8, "Basin and Range", dd_dat$region)
+dd_dat$region <- ifelse(dd_dat$ers_region == 9, "Mississipi Portal", dd_dat$region)
+#
+dd_dat$state <- factor(dd_dat$state)
+dd_dat$fips <- factor(dd_dat$fips)
+dd_dat$ers_region <- factor(dd_dat$ers_region)
+#
+#
+#
+ saveRDS(dd_dat, "data/full_weather_data.rds")
  #-----------------------------------------------
 dd_dat <- readRDS("data/full_weather_data.rds")
 cropdat <- readRDS("data/full_ag_data.rds")
