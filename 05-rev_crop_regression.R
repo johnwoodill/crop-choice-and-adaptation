@@ -41,8 +41,7 @@ regdat <- readRDS("data/full_ag_data.rds")
 # Ten year differences 1950-1980 & 1980-2010
 
 modten_1 <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-              dday0_10_rm_ten + dday10_30_rm_ten + dday30_rm_ten + prec_rm_ten + prec_sq_rm_ten +
-              trend_lat + trend_long + trend_sq_lat + trend_sq_long | fips | 0 | state, 
+              dday0_10_rm_12 + dday10_30_rm_12 + dday30_rm_12 | 0 | 0 | 0, 
             data = regdat, weights = regdat$acres, psdef = FALSE)
 summary(modten_1)
 

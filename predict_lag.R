@@ -134,13 +134,18 @@ plot_grid(modmap1, modmap2, labels = c("Predicted", "Real"))
 library(zoo)
 library(dplyr)
 library(ggplot2)
-download.file("https://www.dropbox.com/s/7illfcto1xxtixg/full_weather_data.rds?raw=1", 
-              destfile = "full_weather_data.rds", method = "auto")
-regdat <- readRDS("full_weather_data.rds")
-# regdat <- readRDS("regdat.rds")
+# download.file("https://www.dropbox.com/s/7illfcto1xxtixg/full_weather_data.rds?raw=1", 
+              # destfile = "full_weather_data.rds", method = "auto")
+download.file("https://www.dropbox.com/s/dxfxlfmhirooqil/eastern_weather_data.rds?raw=1", 
+              destfile = "regdat.rds", method = "auto")
+# regdat <- readRDS("full_weather_data.rds")
+
+regdat <- readRDS("regdat.rds")
 joe <- regdat
 joe$yr = joe$year - (min(joe$year) - 1)
+# fips.index = 1001
 fips.index = unique(joe$fips)
+# nfip = length(1001)
 nfip = length(fips.index)
 
 rollMean = function(vec, len){
@@ -168,6 +173,25 @@ allFipsRM = function(varName, len){
   y
 }
 
+outdat <- joe[, c("fips", "yr", "dday0_10", "dday10_30", "dday30", "prec")]
+for (j in 1:2){
+  mdat1 <- allFipsRM("dday0_10", j)
+  names(mdat1)[2] <- paste0("dday0_10_rm_", j)
+  mdat2 <- allFipsRM("dday10_30", j)
+  names(mdat2)[2] <- paste0("dday10_30_rm_", j)
+  mdat3 <- allFipsRM("dday30", j)
+  names(mdat3)[2] <- paste0("dday30_rm_", j)
+  mdat4 <- allFipsRM("prec", j)
+  names(mdat4)[2] <- paste0("prec_rm_", j)
+  outdat <- merge(outdat, mdat1, by=c("fips","yr"))
+  outdat <- merge(outdat, mdat2, by=c("fips","yr"))
+  outdat <- merge(outdat, mdat3, by=c("fips","yr"))
+  outdat <- merge(outdat, mdat4, by=c("fips","yr"))
+  print(j)
+}
+
+saveRDS(outdat, "data/outdat.rds")
+outdat$yr <- outdat$yr + 1949
 
 rm1 = allFipsRM("dday30",1)
 rm2 = allFipsRM("dday30",2)
@@ -271,7 +295,12 @@ rmTestDat = merge( rmTestDat, rm48, by=c("fips","yr") )
 rmTestDat = merge( rmTestDat, rm49, by=c("fips","yr") )
 rmTestDat = merge( rmTestDat, rm50, by=c("fips","yr") )
 
-
+saveRDS(rmTestDat, "data/rmTestDat.rds")
+test <- rmTestDat
+test$dday30 <- NULL
+test$year <- test$yr + 1949
+test$yr <- NULL
+cropdat <- left_join(cropdat, test, by = c("year", "fips"))
 outdat <- data.frame(rollmean = seq(1,50,1),
                      var = "dday30",
                      sd = rep(0, 50))
