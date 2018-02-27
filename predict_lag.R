@@ -351,14 +351,13 @@ for (i in 1:1){
   lab2 <- paste0("dday10_30_rm_", i)
   lab3 <- paste0("dday30_rm_", i)
   
+  test$dday30_rm_2 <- rollmean(test$dday30, k = 2, fill = "NA")
+  
   # Loop through each fips and calculate rollingmean
   regdat <- regdat %>%
       group_by(fips) %>%
       arrange(year) %>%
-      mutate(!!lab1 := lag(rollmean(dday0_10, k = i, align = "right", fill = "NA")),
-             !!lab2 := lag(roll
-                           mean(dday10_30, k = i, align = "right", fill = "NA")),
-             !!lab3 := lag(rollmean(dday30, k = i, align = "right", fill = "NA"))) %>% 
+      mutate(dday30_rm_2 = lag(rollmean(dday30, k = 4, align = "right", fill = "NA"))) %>% 
     ungroup()
   
   # Progress bar for loop

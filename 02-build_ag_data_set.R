@@ -188,7 +188,41 @@ cropdat <- left_join(cropdat, hay, by = c("state", "fips", "year"))
 cropdat <- left_join(cropdat, wheat, by = c("state", "fips", "year"))
 cropdat <- left_join(cropdat, soybean, by = c("state", "fips", "year"))
 
+# Extract NASS crop data at county level
+extract_d_county <- function(x){
+  x <- select(x, Year, fips, `Data Item`, Value)
+  names(x) <- c("year", "fips", "data_item", "value")
+  crop <- x
+  # crop$state <- tolower(crop$state)
+  # crop$county <- tolower(crop$county)
+  crop$fips <- as.numeric(crop$fips)
+  crop$row <- 1:nrow(crop)   # unique identifer
+  crop <- spread(crop, data_item, value = value, fill = NA)
+  crop$row <- NULL
+  #crop <- filter(crop, year >= 1900)
+  #crop <- crop[,c(1,2,4,7,10,13,16)]
+  crop <- crop %>% 
+    group_by(fips, year) %>% 
+    summarise_all(funs(sum(., na.rm=TRUE))) 
+  return(crop)
+}
 
+
+dat <- read_csv("data/1950_acres.csv")
+dat$fips <- paste(dat$`State ANSI`, dat$`County ANSI`, sep = "")
+head(dat)
+test <- extract_d_county(dat)
+names(test) <- c("fips", "year", "corn", "cotton", "hay", "soybean", "wheat")
+head(test)
+test$acres <- rowSums(test[, c("corn", "cotton", "hay", "soybean", "wheat")], na.rm = TRUE)
+head(test)
+test <- select(test, fips, acres)
+names(test) <- c("region", "value")
+test$region <- as.numeric(test$region)
+head(test)
+test <- as.data.frame(test)
+fipss <- test$region
+# cropdat <- filter(cropdat, fips %in% fipss)
 
 #-----------------------------------------------------
 # Merge historical Haines data
@@ -345,76 +379,27 @@ dd_dat <- select(dd_dat, year, fips, dday0_10, dday10_30, dday30, prec, prec_sq)
 #--------------------------------------------------
 # Roll.mean intervals
 
-#50-year
-dd_dat <- dd_dat %>%
-  group_by(fips) %>%
-  arrange(year) %>%
-  mutate(dday0_10_rm_fifty = lag(rollmean(dday0_10, k = 50, align = "right", fill = "NA")),
-         dday10_30_rm_fifty = lag(rollmean(dday10_30, k = 50, align = "right", fill = "NA")),
-         dday30_rm_fifty = lag(rollmean(dday30, k = 50, align = "right", fill = "NA")),
-         prec_rm_fifty = lag(rollmean(prec, k = 50, align = "right", fill = "NA")),
-         prec_sq_rm_fifty = prec_rm_fifty^2)
+allFipsRM = function(dat, varName, len){
+  do.call(rbind, lapply(split(dat, dat$fips), function(x) {
+    all.rm <- as.data.frame(sapply(len, function(l) c(rollmean(x[,varName], l), rep(NA, l-1))))
+    colnames(all.rm) <- paste0(varName, "_rm", len)
+    cbind(data.frame(fips=x$fips[1]), all.rm, data.frame(year=seq_len(nrow(x))-1))
+  }))
+}
 
-#40-year
-dd_dat <- dd_dat %>%
-  group_by(fips) %>%
-  arrange(year) %>%
-  mutate(dday0_10_rm_fourty = lag(rollmean(dday0_10, k = 40, align = "right", fill = "NA")),
-         dday10_30_rm_fourty = lag(rollmean(dday10_30, k = 40, align = "right", fill = "NA")),
-         dday30_rm_fourty = lag(rollmean(dday30, k = 40, align = "right", fill = "NA")),
-         prec_rm_fourty = lag(rollmean(prec, k = 40, align = "right", fill = "NA")),
-         prec_sq_rm_fourty = prec_rm_fourty^2)
 
-#30-year
-dd_dat <- dd_dat %>%
-  group_by(fips) %>%
-  arrange(year) %>%
-  mutate(dday0_10_rm_thirty = lag(rollmean(dday0_10, k = 30, align = "right", fill = "NA")),
-         dday10_30_rm_thirty = lag(rollmean(dday10_30, k = 30, align = "right", fill = "NA")),
-         dday30_rm_thirty = lag(rollmean(dday30, k = 30, align = "right", fill = "NA")),
-         prec_rm_thirty = lag(rollmean(prec, k = 30, align = "right", fill = "NA")),
-         prec_sq_rm_thirty = prec_rm_thirty^2)
-
-# 20 year intervals
-dd_dat <- dd_dat %>%
-  group_by(fips) %>%
-  arrange(year) %>%
-  mutate(dday0_10_rm_twenty = lag(rollmean(dday0_10, k = 20, align = "right", fill = "NA")),
-         dday10_30_rm_twenty = lag(rollmean(dday10_30, k = 20, align = "right", fill = "NA")),
-         dday30_rm_twenty = lag(rollmean(dday30, k = 20, align = "right", fill = "NA")),
-         prec_rm_twenty = lag(rollmean(prec, k = 20, align = "right", fill = "NA")),
-         prec_sq_rm_twenty = prec_rm_twenty^2)
-
-# 15 year intervals
-dd_dat <- dd_dat %>%
-  group_by(fips) %>%
-  arrange(year) %>%
-  mutate(dday0_10_rm_fifteen = lag(rollmean(dday0_10, k = 15, align = "right", fill = "NA")),
-         dday10_30_rm_fifteen = lag(rollmean(dday10_30, k = 15, align = "right", fill = "NA")),
-         dday30_rm_fifteen = lag(rollmean(dday30, k = 15, align = "right", fill = "NA")),
-         prec_rm_fifteen = lag(rollmean(prec, k = 15, align = "right", fill = "NA")),
-         prec_sq_rm_fifteen = prec_rm_fifteen^2)
-
-# 10 year Intervals
-dd_dat <- dd_dat %>%
-  group_by(fips) %>%
-  arrange(year) %>%
-  mutate(dday0_10_rm_ten = lag(rollmean(dday0_10, k = 10, align = "right", fill = "NA")),
-         dday10_30_rm_ten = lag(rollmean(dday10_30, k = 10, align = "right", fill = "NA")),
-         dday30_rm_ten = lag(rollmean(dday30, k = 10, align = "right", fill = "NA")),
-         prec_rm_ten = lag(rollmean(prec, k = 10, align = "right", fill = "NA")),
-         prec_sq_rm_ten = prec_rm_ten^2)
-
-# 5-year intervals
-dd_dat <- dd_dat %>%
-  group_by(fips) %>%
-  arrange(year) %>%
-  mutate(dday0_10_rm_five = lag(rollmean(dday0_10, k = 5, align = "right", fill = "NA")),
-         dday10_30_rm_five = lag(rollmean(dday10_30, k = 5, align = "right", fill = "NA")),
-         dday30_rm_five = lag(rollmean(dday30, k = 5, align = "right", fill = "NA")),
-         prec_rm_five = lag(rollmean(prec, k = 5, align = "right", fill = "NA")),
-         prec_sq_rm_five = prec_rm_five^2)
-
+rmdat1 <- allFipsRM(dd_dat, "dday0_10", c(10, 11, 12))
+rmdat2 <- allFipsRM(dd_dat, "dday10_30", c(10, 11, 12))
+rmdat3 <- allFipsRM(dd_dat, "dday30", c(10, 11, 12))
+rmdat4 <- allFipsRM(dd_dat, "prec", c(10, 11, 12))
+rmdat <- left_join(rmdat1, rmdat2, by = c("year", "fips"))
+rmdat <- left_join(rmdat, rmdat3, by = c("year", "fips"))
+rmdat <- left_join(rmdat, rmdat4, by = c("year", "fips"))
+rmdat$year <- rmdat$year + 1900
+rmdat$prec_sq_rm10 <- rmdat$prec_rm10^2
+rmdat$prec_sq_rm11 <- rmdat$prec_rm11^2
+rmdat$prec_sq_rm12 <- rmdat$prec_rm12^2
+dd_dat <- left_join(dd_dat, rmdat, by = c("year", "fips"))
 
 # Merge ag prices, ag crop data, and degree day data ----------------------
 
@@ -483,8 +468,15 @@ states <-  c("al","ar","ct","dc", "de", "fl","ga","il","in","ia","ks","ky","la",
 # states <-  c("al","ar","ct","dc","fl","ga","il","in","ia","ks","ky","la","me","md","ma","mi","mn","ms","mo","mt",
 # "ne","nh","nj","ny","nc","nd","oh","ok","pa","ri","sc","sd","tn","tx","vt","va","wv","wi")
 
-data <- filter(fulldat, state %in% states)
-# data <- filter(data, year >= 1950 & year <= 2010)
+# data <- filter(fulldat, state %in% states)
+data <- fulldat
+
+# Keep only those counties with acres in 1950
+
+data$acres <- rowSums(data[, c("corn_grain_a", "cotton_a", "hay_a", "soybean_a", "wheat_a")], na.rm = TRUE)
+check <- filter(data, year == 1950)
+check <- filter(check, !is.na(acres))
+length(unique(check$fips))
 
 # Keep only those counties with acres in 1950-2009
 # data$acres <- rowSums(data[, c("corn_grain_a", "cotton_a", "hay_a", "soybean_a", "wheat_a")], na.rm = TRUE)
@@ -502,40 +494,8 @@ data <- filter(fulldat, state %in% states)
 # data <- filter(data, fips %in% fipss)
 
 
-# Extract NASS crop data at county level
-extract_d_county <- function(x){
-  x <- select(x, Year, fips, `Data Item`, Value)
-  names(x) <- c("year", "fips", "data_item", "value")
-  crop <- x
-  # crop$state <- tolower(crop$state)
-  # crop$county <- tolower(crop$county)
-  crop$fips <- as.numeric(crop$fips)
-  crop$row <- 1:nrow(crop)   # unique identifer
-  crop <- spread(crop, data_item, value = value, fill = NA)
-  crop$row <- NULL
-  #crop <- filter(crop, year >= 1900)
-  #crop <- crop[,c(1,2,4,7,10,13,16)]
-  crop <- crop %>% 
-    group_by(fips, year) %>% 
-    summarise_all(funs(sum(., na.rm=TRUE))) 
-  return(crop)
-}
 
-dat <- read_csv("data/1950_acres.csv")
-dat$fips <- paste(dat$`State ANSI`, dat$`County ANSI`, sep = "")
-head(dat)
-test <- extract_d_county(dat)
-names(test) <- c("fips", "year", "corn", "cotton", "hay", "soybean", "wheat")
-head(test)
-test$acres <- rowSums(test[, c("corn", "cotton", "hay", "soybean", "wheat")], na.rm = TRUE)
-head(test)
-test <- select(test, fips, acres)
-names(test) <- c("region", "value")
-test$region <- as.numeric(test$region)
-head(test)
-test <- as.data.frame(test)
-fipss <- test$region
-data <- filter(data, fips %in% fipss)
+
 data <- filter(data, year >= 1950 & year <= 2010)
 
 # Build data set for regression estimates
@@ -617,63 +577,63 @@ cropdat <- cropdat %>%
  # cropdat$wheat_w <- ifelse(cropdat$wheat_w < 0 , 0, cropdat$wheat_w)
 
 
-#---------------------------------------------------
-# Average Intervals
-# 60 year intervals
-cropdat <- cropdat %>% 
-  group_by(fips) %>% 
-  mutate(dday0_10_sixty = mean(dday0_10, na.rm = TRUE),
-         dday10_30_sixty = mean(dday10_30, na.rm = TRUE),
-         dday30_sixty = mean(dday30, na.rm = TRUE),
-         prec_sixty = mean(prec, na.rm = TRUE),
-         prec_sq_sixty = prec^2)
-
-# 30 year intervals
-cropdat$thirty <- cropdat$year - (cropdat$year %% 30)
-
-cropdat <- cropdat %>% 
-  group_by(fips, thirty) %>% 
-  mutate(dday0_10_thirty = mean(dday0_10, na.rm = TRUE),
-         dday10_30_thirty = mean(dday10_30, na.rm = TRUE),
-         dday30_thirty = mean(dday30, na.rm = TRUE),
-         prec_thirty = mean(prec, na.rm = TRUE),
-         prec_sq_thirty = prec_thirty^2)
-
-# # 20 year intervals
-cropdat$twenty <- 0
-cropdat$twenty <- ifelse(cropdat$year %in% seq(1950, 1969, 1), 1950, cropdat$twenty)
-cropdat$twenty <- ifelse(cropdat$year %in% seq(1970, 1989, 1), 1970, cropdat$twenty)
-cropdat$twenty <- ifelse(cropdat$year %in% seq(1990, 2009, 1), 1990, cropdat$twenty)
-
-cropdat <- cropdat %>% 
-  group_by(fips, twenty) %>% 
-  mutate(dday0_10_twenty = mean(dday0_10, na.rm = TRUE),
-         dday10_30_twenty = mean(dday10_30, na.rm = TRUE),
-         dday30_twenty = mean(dday30, na.rm = TRUE),
-         prec_twenty = mean(prec, na.rm = TRUE),
-         prec_sq_twenty = prec_twenty^2)
-
-# 10 year intervals
-cropdat$ten <- cropdat$year - (cropdat$year %% 10)
-
-cropdat <- cropdat %>% 
-  group_by(fips, ten) %>% 
-  mutate(dday0_10_ten = mean(dday0_10, na.rm = TRUE),
-         dday10_30_ten = mean(dday10_30, na.rm = TRUE),
-         dday30_ten = mean(dday30, na.rm = TRUE),
-         prec_ten = mean(prec, na.rm = TRUE),
-         prec_sq_ten = prec_ten^2)
-
-# 5 year intervals
-cropdat$five <- cropdat$year - (cropdat$year %% 5)
-
-cropdat <- cropdat %>% 
-  group_by(fips, five) %>% 
-  mutate(dday0_10_five = mean(dday0_10, na.rm = TRUE),
-         dday10_30_five = mean(dday10_30, na.rm = TRUE),
-         dday30_five = mean(dday30, na.rm = TRUE),
-         prec_five = mean(prec, na.rm = TRUE),
-         prec_sq_five = prec_five^2)
+# #---------------------------------------------------
+# # Average Intervals
+# # 60 year intervals
+# cropdat <- cropdat %>% 
+#   group_by(fips) %>% 
+#   mutate(dday0_10_sixty = mean(dday0_10, na.rm = TRUE),
+#          dday10_30_sixty = mean(dday10_30, na.rm = TRUE),
+#          dday30_sixty = mean(dday30, na.rm = TRUE),
+#          prec_sixty = mean(prec, na.rm = TRUE),
+#          prec_sq_sixty = prec^2)
+# 
+# # 30 year intervals
+# cropdat$thirty <- cropdat$year - (cropdat$year %% 30)
+# 
+# cropdat <- cropdat %>% 
+#   group_by(fips, thirty) %>% 
+#   mutate(dday0_10_thirty = mean(dday0_10, na.rm = TRUE),
+#          dday10_30_thirty = mean(dday10_30, na.rm = TRUE),
+#          dday30_thirty = mean(dday30, na.rm = TRUE),
+#          prec_thirty = mean(prec, na.rm = TRUE),
+#          prec_sq_thirty = prec_thirty^2)
+# 
+# # # 20 year intervals
+# cropdat$twenty <- 0
+# cropdat$twenty <- ifelse(cropdat$year %in% seq(1950, 1969, 1), 1950, cropdat$twenty)
+# cropdat$twenty <- ifelse(cropdat$year %in% seq(1970, 1989, 1), 1970, cropdat$twenty)
+# cropdat$twenty <- ifelse(cropdat$year %in% seq(1990, 2009, 1), 1990, cropdat$twenty)
+# 
+# cropdat <- cropdat %>% 
+#   group_by(fips, twenty) %>% 
+#   mutate(dday0_10_twenty = mean(dday0_10, na.rm = TRUE),
+#          dday10_30_twenty = mean(dday10_30, na.rm = TRUE),
+#          dday30_twenty = mean(dday30, na.rm = TRUE),
+#          prec_twenty = mean(prec, na.rm = TRUE),
+#          prec_sq_twenty = prec_twenty^2)
+# 
+# # 10 year intervals
+# cropdat$ten <- cropdat$year - (cropdat$year %% 10)
+# 
+# cropdat <- cropdat %>% 
+#   group_by(fips, ten) %>% 
+#   mutate(dday0_10_ten = mean(dday0_10, na.rm = TRUE),
+#          dday10_30_ten = mean(dday10_30, na.rm = TRUE),
+#          dday30_ten = mean(dday30, na.rm = TRUE),
+#          prec_ten = mean(prec, na.rm = TRUE),
+#          prec_sq_ten = prec_ten^2)
+# 
+# # 5 year intervals
+# cropdat$five <- cropdat$year - (cropdat$year %% 5)
+# 
+# cropdat <- cropdat %>% 
+#   group_by(fips, five) %>% 
+#   mutate(dday0_10_five = mean(dday0_10, na.rm = TRUE),
+#          dday10_30_five = mean(dday10_30, na.rm = TRUE),
+#          dday30_five = mean(dday30, na.rm = TRUE),
+#          prec_five = mean(prec, na.rm = TRUE),
+#          prec_sq_five = prec_five^2)
 
 # Build trends
 cropdat$trend <- cropdat$year - (min(cropdat$year) - 1)
@@ -713,67 +673,67 @@ cropdat <- as.data.frame(cropdat)
 # cropdat <- filter(cropdat, state != "ma")
 # cropdat <- filter(cropdat, state != "ct")
 
-
-# State-level time trends
-# Linear
-state_trends <- as.data.frame(dummyCreator(cropdat$state, "trend1"))
-state_trends$trend <- cropdat$trend
-state_trends <- state_trends[, 1:length(state_trends)]*state_trends$trend
-state_trends$trend <- NULL
-
-# Quadratic
-state_trends_sq <- as.data.frame(dummyCreator(cropdat$state, "trend2"))
-state_trends_sq$trend_sq <- cropdat$trend^2
-state_trends_sq <- state_trends_sq[, 1:length(state_trends_sq)]*state_trends_sq$trend_sq
-state_trends_sq$trend_sq <- NULL
-
-cropdat <- cbind(cropdat, state_trends, state_trends_sq)
-
-# State-level interval trend 
-ten_trend <- as.data.frame(dummyCreator(cropdat$state, "ten_trend1"))
-twenty_trend <- as.data.frame(dummyCreator(cropdat$state, "twenty_trend1"))
-thirty_trend <- as.data.frame(dummyCreator(cropdat$state, "thirty_trend1"))
-
-ten_trend$ten <- ifelse(cropdat$ten == 1950, 1, ifelse(cropdat$ten == 1960, 2, ifelse(cropdat$ten == 1970, 3, ifelse(cropdat$ten == 1980, 4, 
-ifelse(cropdat$ten == 1990, 5, 6)))))
-
-twenty_trend$twenty <- ifelse(cropdat$twenty == 1950, 1, ifelse(cropdat$twenty == 1970, 2, 3))
-
-thirty_trend$thirty <- ifelse(cropdat$thirty == 1950, 1, 2)
-
-ten_trend <- ten_trend[, 1:length(ten_trend)]*ten_trend$ten
-twenty_trend <- twenty_trend[, 1:length(twenty_trend)]*twenty_trend$twenty
-thirty_trend <- thirty_trend[, 1:length(thirty_trend)]*thirty_trend$thirty
-
-
-# Quadratic
-ten_trend_sq <- as.data.frame(dummyCreator(cropdat$state, "ten_trend2"))
-twenty_trend_sq <- as.data.frame(dummyCreator(cropdat$state, "twenty_trend2"))
-thirty_trend_sq <- as.data.frame(dummyCreator(cropdat$state, "thirty_trend2"))
-
-ten_trend$ten <- ifelse(cropdat$ten == 1950, 1, ifelse(cropdat$ten == 1960, 2, ifelse(cropdat$ten == 1970, 3, ifelse(cropdat$ten == 1980, 4, 
-ifelse(cropdat$ten == 1990, 5, 6)))))
-
-twenty_trend$twenty <- ifelse(cropdat$twenty == 1950, 1, ifelse(cropdat$twenty == 1970, 2, 3))
-
-thirty_trend$thirty <- ifelse(cropdat$thirty == 1950, 1, 2)
-
-ten_trend_sq$ten_sq <- ten_trend$ten^2
-twenty_trend_sq$twenty_sq <- twenty_trend$twenty^2
-thirty_trend_sq$thirty_sq <- thirty_trend$thirty^2
-
-ten_trend_sq <- ten_trend_sq[, 1:length(ten_trend_sq)]*ten_trend_sq$ten_sq
-twenty_trend_sq <- twenty_trend_sq[, 1:length(twenty_trend_sq)]*twenty_trend_sq$twenty_sq
-thirty_trend_sq <- thirty_trend_sq[, 1:length(thirty_trend_sq)]*thirty_trend_sq$thirty_sq
-
-ten_trend$ten <- NULL
-twenty_trend$twenty <- NULL
-thirty_trend$thirty <- NULL
-ten_trend$ten_sq <- NULL
-twenty_trend$twenty_sq <- NULL
-thirty_trend$thirty_sq <- NULL
-
-cropdat <- cbind(cropdat, ten_trend, twenty_trend, thirty_trend, ten_trend_sq, twenty_trend_sq, thirty_trend_sq)
+# 
+# # State-level time trends
+# # Linear
+# state_trends <- as.data.frame(dummyCreator(cropdat$state, "trend1"))
+# state_trends$trend <- cropdat$trend
+# state_trends <- state_trends[, 1:length(state_trends)]*state_trends$trend
+# state_trends$trend <- NULL
+# 
+# # Quadratic
+# state_trends_sq <- as.data.frame(dummyCreator(cropdat$state, "trend2"))
+# state_trends_sq$trend_sq <- cropdat$trend^2
+# state_trends_sq <- state_trends_sq[, 1:length(state_trends_sq)]*state_trends_sq$trend_sq
+# state_trends_sq$trend_sq <- NULL
+# 
+# cropdat <- cbind(cropdat, state_trends, state_trends_sq)
+# 
+# # State-level interval trend 
+# ten_trend <- as.data.frame(dummyCreator(cropdat$state, "ten_trend1"))
+# twenty_trend <- as.data.frame(dummyCreator(cropdat$state, "twenty_trend1"))
+# thirty_trend <- as.data.frame(dummyCreator(cropdat$state, "thirty_trend1"))
+# 
+# ten_trend$ten <- ifelse(cropdat$ten == 1950, 1, ifelse(cropdat$ten == 1960, 2, ifelse(cropdat$ten == 1970, 3, ifelse(cropdat$ten == 1980, 4, 
+# ifelse(cropdat$ten == 1990, 5, 6)))))
+# 
+# twenty_trend$twenty <- ifelse(cropdat$twenty == 1950, 1, ifelse(cropdat$twenty == 1970, 2, 3))
+# 
+# thirty_trend$thirty <- ifelse(cropdat$thirty == 1950, 1, 2)
+# 
+# ten_trend <- ten_trend[, 1:length(ten_trend)]*ten_trend$ten
+# twenty_trend <- twenty_trend[, 1:length(twenty_trend)]*twenty_trend$twenty
+# thirty_trend <- thirty_trend[, 1:length(thirty_trend)]*thirty_trend$thirty
+# 
+# 
+# # Quadratic
+# ten_trend_sq <- as.data.frame(dummyCreator(cropdat$state, "ten_trend2"))
+# twenty_trend_sq <- as.data.frame(dummyCreator(cropdat$state, "twenty_trend2"))
+# thirty_trend_sq <- as.data.frame(dummyCreator(cropdat$state, "thirty_trend2"))
+# 
+# ten_trend$ten <- ifelse(cropdat$ten == 1950, 1, ifelse(cropdat$ten == 1960, 2, ifelse(cropdat$ten == 1970, 3, ifelse(cropdat$ten == 1980, 4, 
+# ifelse(cropdat$ten == 1990, 5, 6)))))
+# 
+# twenty_trend$twenty <- ifelse(cropdat$twenty == 1950, 1, ifelse(cropdat$twenty == 1970, 2, 3))
+# 
+# thirty_trend$thirty <- ifelse(cropdat$thirty == 1950, 1, 2)
+# 
+# ten_trend_sq$ten_sq <- ten_trend$ten^2
+# twenty_trend_sq$twenty_sq <- twenty_trend$twenty^2
+# thirty_trend_sq$thirty_sq <- thirty_trend$thirty^2
+# 
+# ten_trend_sq <- ten_trend_sq[, 1:length(ten_trend_sq)]*ten_trend_sq$ten_sq
+# twenty_trend_sq <- twenty_trend_sq[, 1:length(twenty_trend_sq)]*twenty_trend_sq$twenty_sq
+# thirty_trend_sq <- thirty_trend_sq[, 1:length(thirty_trend_sq)]*thirty_trend_sq$thirty_sq
+# 
+# ten_trend$ten <- NULL
+# twenty_trend$twenty <- NULL
+# thirty_trend$thirty <- NULL
+# ten_trend$ten_sq <- NULL
+# twenty_trend$twenty_sq <- NULL
+# thirty_trend$thirty_sq <- NULL
+# 
+# cropdat <- cbind(cropdat, ten_trend, twenty_trend, thirty_trend, ten_trend_sq, twenty_trend_sq, thirty_trend_sq)
 
 
 cropdat$trend_lat <- cropdat$trend*cropdat$lat
@@ -782,7 +742,10 @@ cropdat$trend_sq_long <- cropdat$trend_sq*cropdat$long
 cropdat$trend_sq_lat <- cropdat$trend_sq*cropdat$lat
 
 # Save cropdat
+
+cropdat <- filter(cropdat, abs(long) <= 100 )
 cropdat$state <- factor(cropdat$state)
+
 saveRDS(cropdat, "data/full_ag_data.rds")
 fulldat <- readRDS("data/full_ag_data.rds")
 

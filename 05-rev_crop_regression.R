@@ -16,6 +16,11 @@ setwd("/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/")
 # Crop data
 
 regdat <- readRDS("data/full_ag_data.rds")
+rm <- readRDS("data/full_rollmean_lag_variables.rds")
+rm <- select(rm, year, fips, dday0_10_rm10, dday10_30_rm10, dday30_rm10, prec_rm10, prec_sq_rm10,
+             dday0_10_rm20, dday10_30_rm20, dday30_rm20, prec_rm20, prec_sq_rm20,
+             dday0_10_rm30, dday10_30_rm30, dday30_rm30, prec_rm30, prec_sq_rm30)
+regdat <- left_join(regdat, rm, by = c("year", "fips"))
 # (regdat$year)
 # regdat <- as.data.frame(regdat)
 # regdat$state <- factor(regdat$state)
@@ -41,7 +46,8 @@ regdat <- readRDS("data/full_ag_data.rds")
 # Ten year differences 1950-1980 & 1980-2010
 
 modten_1 <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-              dday0_10_rm_12 + dday10_30_rm_12 + dday30_rm_12 | 0 | 0 | 0, 
+              dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
+                state:trend + state:trend_sq | fips | 0 | state, 
             data = regdat, weights = regdat$acres, psdef = FALSE)
 summary(modten_1)
 
@@ -49,8 +55,7 @@ saveRDS(modten_1, "models/rev_crop_modten.rds")
 
 # Twenty year differences 1950-1980 & 1980-2010
 modtwenty_1 <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-              dday0_10_rm_twenty + dday10_30_rm_twenty + dday30_rm_twenty + prec_rm_twenty + prec_sq_rm_twenty +
-              trend_lat + trend_long + trend_sq_lat + trend_sq_long | fips | 0 | state, 
+              dday0_10_rm20 + dday10_30_rm20 + dday30_rm20 + prec_rm20 + prec_sq_rm20 | fips | 0 | state, 
             data = regdat, weights = regdat$acres, psdef = FALSE)
 summary(modtwenty_1)
 
@@ -59,8 +64,7 @@ saveRDS(modtwenty_1, "models/rev_crop_modtwenty.rds")
 # Thirty year differences 1950-1980 & 1980-2010
 
 modthirty_1 <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-              dday0_10_rm_thirty + dday10_30_rm_thirty + dday30_rm_thirty + prec_rm_thirty + prec_sq_rm_thirty +
-              trend_lat + trend_long + trend_sq_lat + trend_sq_long | fips | 0 | state, 
+              dday0_10_rm30 + dday10_30_rm30 + dday30_rm30 + prec_rm30 + prec_sq_rm30 | fips | 0 | state, 
             data = regdat, weights = regdat$acres, psdef = FALSE)
 summary(modthirty_1)
 
@@ -69,15 +73,15 @@ saveRDS(modthirty_1, "models/rev_crop_modthirty.rds")
 # Build up regression
 
 mod_base_1 <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
-              dday0_10_rm_ten + dday10_30_rm_ten + dday30_rm_ten + prec_rm_ten + prec_sq_rm_ten,
+              dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10,
             data = regdat, weights = regdat$w)
 
 mod_base_2 <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
-              dday0_10_rm_ten + dday10_30_rm_ten + dday30_rm_ten + prec_rm_ten + prec_sq_rm_ten | fips | 0 | 0,
+              dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 | fips | 0 | 0,
             data = regdat, weights = regdat$w)
 
 mod_base_3 <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
-              dday0_10_rm_ten + dday10_30_rm_ten + dday30_rm_ten + prec_rm_ten + prec_sq_rm_ten +
+              dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
                 trend + trend_sq | fips | 0 | 0,
             data = regdat, weights = regdat$w)
 
