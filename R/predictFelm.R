@@ -49,11 +49,12 @@ predictFelm <- function(felm.fit, newdata = NULL, data = NULL, var.terms = NULL,
     
     # predictions for cons.terms
     if(!is.null(cons.terms)){
-      cterms <- select(newdata, cons.terms)
-      cterms <- cterms %>%
+      cterms <- select(newdata, fips, cons.terms, var.terms)
+      cterms <- newdata %>%
+        group_by(fips) %>%
         mutate_all(mean)
-      clm.fit <- update(lm.fit, paste0("~ - 1 +", paste(cons.terms, collapse = " +" )))
-      cpred <- predict(clm.fit, newdata = cterms)
+      # clm.fit <- update(lm.fit, paste0("~ - 1 +", paste(cons.terms, collapse = " +" )))
+      cpred <- predict(lm.fit, newdata = cterms, terms = cons.terms)
       }
 
   

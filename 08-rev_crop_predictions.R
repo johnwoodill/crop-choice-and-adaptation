@@ -186,12 +186,12 @@ head(pdat_wcmodthirty)
 #---------------------------------------------------------------------------------
 # 10-year
 # Get predictions for weather conditional on climate (restrict terms to weather)
-wmodten_0p <- predictFelm(modten, newdata = cropdat, var.terms = wterms)
-wmodten_1p <- predictFelm(modten, newdata = p1, var.terms = wterms)
-wmodten_2p <- predictFelm(modten, newdata = p2, var.terms = wterms)
-wmodten_3p <- predictFelm(modten, newdata = p3, var.terms = wterms)
-wmodten_4p <- predictFelm(modten, newdata = p4, var.terms = wterms)
-wmodten_5p <- predictFelm(modten, newdata = p5, var.terms = wterms)
+wmodten_0p <- predictFelm(felm.fit = modten, newdata = cropdat, var.terms = wterms, cons.terms = cterms_ten)
+wmodten_1p <- predictFelm(modten, newdata = p1, var.terms = wterms, cons.terms = cterms_ten)
+wmodten_2p <- predictFelm(modten, newdata = p2, var.terms = wterms, cons.terms = cterms_ten)
+wmodten_3p <- predictFelm(modten, newdata = p3, var.terms = wterms, cons.terms = cterms_ten)
+wmodten_4p <- predictFelm(modten, newdata = p4, var.terms = wterms, cons.terms = cterms_ten)
+wmodten_5p <- predictFelm(modten, newdata = p5, var.terms = wterms, cons.terms = cterms_ten)
 
 # Total predicted revenue per acre
 wmodten_0p$sum <- sum(exp(wmodten_0p$fit + wmodten_0p$res + wmodten_0p$effect) - 1)
@@ -235,12 +235,12 @@ head(pdat_wmodten)
 #---------------------------------------------------------------------------------
 # 20-year
 # Get predictions for weather conditional on climate (restrict terms to weather)
-wmodtwenty_0p <- predictFelm(modtwenty, newdata = cropdat, var.terms = wterms)
-wmodtwenty_1p <- predictFelm(modtwenty, newdata = p1, var.terms = wterms)
-wmodtwenty_2p <- predictFelm(modtwenty, newdata = p2, var.terms = wterms)
-wmodtwenty_3p <- predictFelm(modtwenty, newdata = p3, var.terms = wterms)
-wmodtwenty_4p <- predictFelm(modtwenty, newdata = p4, var.terms = wterms)
-wmodtwenty_5p <- predictFelm(modtwenty, newdata = p5, var.terms = wterms)
+wmodtwenty_0p <- predictFelm(modtwenty, newdata = cropdat, var.terms = wterms, cons.terms = cterms_twenty)
+wmodtwenty_1p <- predictFelm(modtwenty, newdata = p1, var.terms = wterms, cons.terms = cterms_twenty)
+wmodtwenty_2p <- predictFelm(modtwenty, newdata = p2, var.terms = wterms, cons.terms = cterms_twenty)
+wmodtwenty_3p <- predictFelm(modtwenty, newdata = p3, var.terms = wterms, cons.terms = cterms_twenty)
+wmodtwenty_4p <- predictFelm(modtwenty, newdata = p4, var.terms = wterms, cons.terms = cterms_twenty)
+wmodtwenty_5p <- predictFelm(modtwenty, newdata = p5, var.terms = wterms, cons.terms = cterms_twenty)
 
 # Total predicted revenue per acre
 wmodtwenty_0p$sum <- sum(exp(wmodtwenty_0p$fit + wmodtwenty_0p$res + wmodtwenty_0p$effect) - 1)
@@ -283,12 +283,12 @@ head(pdat_wmodtwenty)
 #---------------------------------------------------------------------------------
 # 30-year
 # Get predictions for weather conditional on climate (restrict terms to weather)
-wmodthirty_0p <- predictFelm(modthirty, newdata = cropdat, var.terms = wterms)
-wmodthirty_1p <- predictFelm(modthirty, newdata = p1, var.terms = wterms)
-wmodthirty_2p <- predictFelm(modthirty, newdata = p2, var.terms = wterms)
-wmodthirty_3p <- predictFelm(modthirty, newdata = p3, var.terms = wterms)
-wmodthirty_4p <- predictFelm(modthirty, newdata = p4, var.terms = wterms)
-wmodthirty_5p <- predictFelm(modthirty, newdata = p5, var.terms = wterms)
+wmodthirty_0p <- predictFelm(modthirty, newdata = cropdat, var.terms = wterms, cons.terms = cterms_thirty)
+wmodthirty_1p <- predictFelm(modthirty, newdata = p1, var.terms = wterms, cons.terms = cterms_thirty)
+wmodthirty_2p <- predictFelm(modthirty, newdata = p2, var.terms = wterms, cons.terms = cterms_thirty)
+wmodthirty_3p <- predictFelm(modthirty, newdata = p3, var.terms = wterms, cons.terms = cterms_thirty)
+wmodthirty_4p <- predictFelm(modthirty, newdata = p4, var.terms = wterms, cons.terms = cterms_thirty)
+wmodthirty_5p <- predictFelm(modthirty, newdata = p5, var.terms = wterms, cons.terms = cterms_thirty)
 
 # Total predicted revenue per acre
 wmodthirty_0p$sum <- sum(exp(wmodthirty_0p$fit + wmodthirty_0p$res + wmodthirty_0p$effect) - 1)

@@ -1,5 +1,7 @@
 regdat <- readRDS("data/full_weather_data.rds")
-
+regdat$fips <- as.numeric(as.character(regdat$fips))
+class(regdat$fips)
+head(regdat$fips)
 joe <- regdat
 joe$yr = joe$year - (min(joe$year) - 1)
 # fips.index = 1001
@@ -28,9 +30,22 @@ allFipsRM = function(varName, len){
     else y = rbind(y, x)
   }
   y = data.frame(y)
-  colnames(y) = c("fips",paste("rm",len,sep=""),"yr")
+  colnames(y) = c("fips",paste(varName, "_rm",len,sep=""),"yr")
   y
 }
+
+allFipsRM2 = function(dat, varName, len){
+  do.call(rbind, lapply(split(dat, dat$fips), function(x) {
+    all.rm <- as.data.frame(sapply(len, function(l) c(rollmean(x[,varName], l), rep(NA, l-1))))
+    colnames(all.rm) <- paste0(varName, "_rm", len)
+    cbind(data.frame(fips=x$fips[1]), all.rm, data.frame(year=seq_len(nrow(x))-1))
+  }))
+}
+
+dday0_10_rm1 = allFipsRM2(joe, "dday0_10",1)
+dday0_10_rm2 = allFipsRM2(joe, "dday0_10",2)
+dday0_10_rm33 = allFipsRM2(joe, "dday0_10",3)
+
 
 
 dday0_10_rm1 = allFipsRM("dday0_10",1)
