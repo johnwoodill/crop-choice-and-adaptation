@@ -4,6 +4,14 @@ library(zoo)
 library(noncensus)
 setwd("/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/")
 
+allFipsRM = function(dat, varName, len){
+  do.call(rbind, lapply(split(dat, dat$fips), function(x) {
+    all.rm <- as.data.frame(sapply(len, function(l) c(rollmean(x[,varName], l), rep(NA, l-1))))
+    colnames(all.rm) <- paste0("rm", len)
+    cbind(data.frame(fips=x$fips[1]), all.rm, data.frame(year=seq_len(nrow(x))-1))
+  }))
+}
+
 dummyCreator <- function(invec, prefix = NULL) {
      L <- length(invec)
      ColNames <- sort(unique(invec))
@@ -17,6 +25,11 @@ dummyCreator <- function(invec, prefix = NULL) {
 # Crop data
 cropdat <- readRDS("data/full_ag_data.rds")
 
+# rm data
+rm_dat <- readRDS("data/full_rollmean_lag_variables.rds")
+rm_dat <- select(rm_dat, year, fips, dday0_10_rm10, dday10_30_rm10, dday30_rm10, prec_rm10, prec_sq_rm10,
+                 dday0_10_rm11, dday10_30_rm11, dday30_rm11, prec_rm11, prec_sq_rm11,
+                 dday0_10_rm12, dday10_30_rm12, dday30_rm12, prec_rm12, prec_sq_rm12)
 # Degree day changes 1-5C
 
 # Load data
@@ -25,6 +38,7 @@ dd2c <- readRDS("data/degree_day_changes/fips_degree_days_2C_1900-2013.rds")
 dd3c <- readRDS("data/degree_day_changes/fips_degree_days_3C_1900-2013.rds")
 dd4c <- readRDS("data/degree_day_changes/fips_degree_days_4C_1900-2013.rds")
 dd5c <- readRDS("data/degree_day_changes/fips_degree_days_5C_1900-2013.rds")
+
 
 data(zip_codes)
 zip_codes <- select(zip_codes, fips, latitude, longitude)
@@ -78,179 +92,33 @@ p_dat <- function(x, prec){
   
   #--------------------------------------------------
 # Roll.mean intervals
-
-#40-year
-pdat <- pdat %>%
-  group_by(fips) %>%
-  arrange(year) %>%
-  mutate(dday0_10_rm_fifty = rollmean(dday0_10, k = 50, align = "right", fill = "NA"),
-         dday10_30_rm_fifty = rollmean(dday10_30, k = 50, align = "right", fill = "NA"),
-         dday30_rm_fifty = rollmean(dday30, k = 50, align = "right", fill = "NA"),
-         prec_rm_fifty = rollmean(prec, k = 50, align = "right", fill = "NA"),
-         prec_sq_rm_fifty = prec_rm_fifty^2)
-
-#40-year
-pdat <- pdat %>%
-  group_by(fips) %>%
-  arrange(year) %>%
-  mutate(dday0_10_rm_fourty = rollmean(dday0_10, k = 40, align = "right", fill = "NA"),
-         dday10_30_rm_fourty = rollmean(dday10_30, k = 40, align = "right", fill = "NA"),
-         dday30_rm_fourty = rollmean(dday30, k = 40, align = "right", fill = "NA"),
-         prec_rm_fourty = rollmean(prec, k = 40, align = "right", fill = "NA"),
-         prec_sq_rm_fourty = prec_rm_fourty^2)
-
-#30-year
-pdat <- pdat %>%
-  group_by(fips) %>%
-  arrange(year) %>%
-  mutate(dday0_10_rm_thirty = rollmean(dday0_10, k = 30, align = "right", fill = "NA"),
-         dday10_30_rm_thirty = rollmean(dday10_30, k = 30, align = "right", fill = "NA"),
-         dday30_rm_thirty = rollmean(dday30, k = 30, align = "right", fill = "NA"),
-         prec_rm_thirty = rollmean(prec, k = 30, align = "right", fill = "NA"),
-         prec_sq_rm_thirty = prec_rm_thirty^2)
-
-# 20 year intervals
-pdat <- pdat %>%
-  group_by(fips) %>%
-  arrange(year) %>%
-  mutate(dday0_10_rm_twenty = rollmean(dday0_10, k = 20, align = "right", fill = "NA"),
-         dday10_30_rm_twenty = rollmean(dday10_30, k = 20, align = "right", fill = "NA"),
-         dday30_rm_twenty = rollmean(dday30, k = 20, align = "right", fill = "NA"),
-         prec_rm_twenty = rollmean(prec, k = 20, align = "right", fill = "NA"),
-         prec_sq_rm_twenty = prec_rm_twenty^2)
-
-# 10-year interval
-pdat <- pdat %>%
-  group_by(fips) %>%
-  arrange(year) %>%
-  mutate(dday0_10_rm_ten = rollmean(dday0_10, k = 10, align = "right", fill = "NA"),
-         dday10_30_rm_ten = rollmean(dday10_30, k = 10, align = "right", fill = "NA"),
-         dday30_rm_ten = rollmean(dday30, k = 10, align = "right", fill = "NA"),
-         prec_rm_ten = rollmean(prec, k = 10, align = "right", fill = "NA"),
-         prec_sq_rm_ten = prec_rm_ten^2)
+pdat <- left_join(pdat, rm_dat, by = c("year", "fips"))
   
+  # pdat <- pdat %>% 
+  #   arrange(year) %>% 
+  #   group_by(fips) %>% 
+  #   mutate(dday0_10_rm10 = rollmean(dday0_10, 10, align = "left", fill = "NA"),
+  #          dday10_30_rm10 = rollmean(dday10_30, 10, align = "left", fill = "NA"),
+  #          dday30_rm10 = rollmean(dday30, 10, align = "left", fill = "NA"),
+  #          prec_rm10 = rollmean(prec, 10, align = "left", fill = "NA"),
+  #          prec_sq_rm10 = prec_rm10^2,
+  #          
+  #          dday0_10_rm11 = rollmean(dday0_10, 11, align = "left", fill = "NA"),
+  #          dday10_30_rm11 = rollmean(dday10_30, 11, align = "left", fill = "NA"),
+  #          dday30_rm11 = rollmean(dday30, 11, align = "left", fill = "NA"),
+  #          prec_rm11 = rollmean(prec, 11, align = "left", fill = "NA"),
+  #          prec_sq_rm11 = prec_rm11^2,
+  #          
+  #          dday0_10_rm12 = rollmean(dday0_10, 12, align = "left", fill = "NA"),
+  #          dday10_30_rm12 = rollmean(dday10_30, 12, align = "left", fill = "NA"),
+  #          dday30_rm12 = rollmean(dday30, 12, align = "left", fill = "NA"),
+  #          prec_rm12 = rollmean(prec, 12, align = "left", fill = "NA"),
+  #          prec_sq_rm12 = prec_rm12^2) %>% 
+  #   ungroup()
+
   pdat <- filter(pdat, year >= 1960 & year <= 2010)
-
-
-  # 60 year intervals
-  pdat <- pdat %>% 
-    group_by(fips) %>% 
-    mutate(dday0_10_sixty = mean(dday0_10, na.rm = TRUE),
-           dday10_30_sixty = mean(dday10_30, na.rm = TRUE),
-           dday30_sixty = mean(dday30, na.rm = TRUE),
-           prec_sixty = mean(prec, na.rm = TRUE),
-           prec_sq_sixty = prec^2)
-  
-  # 30 year intervals
-  pdat$thirty <- pdat$year - (pdat$year %% 30)
-  
-  pdat <- pdat %>% 
-    group_by(fips, thirty) %>% 
-    mutate(dday0_10_thirty = mean(dday0_10, na.rm = TRUE),
-           dday10_30_thirty = mean(dday10_30, na.rm = TRUE),
-           dday30_thirty = mean(dday30, na.rm = TRUE),
-           prec_thirty = mean(prec, na.rm = TRUE),
-           prec_sq_thirty = prec_thirty^2)
-  
-  # 20 year intervals
-  pdat$twenty <- 0
-  pdat$twenty <- ifelse(pdat$year %in% seq(1950, 1969, 1), 1950, pdat$twenty)
-  pdat$twenty <- ifelse(pdat$year %in% seq(1970, 1989, 1), 1970, pdat$twenty)
-  pdat$twenty <- ifelse(pdat$year %in% seq(1990, 2009, 1), 1990, pdat$twenty)
-  
-  pdat <- pdat %>% 
-    group_by(fips, twenty) %>% 
-    mutate(dday0_10_twenty = mean(dday0_10, na.rm = TRUE),
-           dday10_30_twenty = mean(dday10_30, na.rm = TRUE),
-           dday30_twenty = mean(dday30, na.rm = TRUE),
-           prec_twenty = mean(prec, na.rm = TRUE),
-           prec_sq_twenty = prec_twenty^2)
-  
-  # 10 year intervals
-  pdat$ten <- pdat$year - (pdat$year %% 10)
-  
-  pdat <- pdat %>% 
-    group_by(fips, ten) %>% 
-    mutate(dday0_10_ten = mean(dday0_10, na.rm = TRUE),
-           dday10_30_ten = mean(dday10_30, na.rm = TRUE),
-           dday30_ten = mean(dday30, na.rm = TRUE),
-           prec_ten = mean(prec, na.rm = TRUE),
-           prec_sq_ten = prec_ten^2)
-  
-  # 5 year intervals
-  pdat$five <- pdat$year - (pdat$year %% 5)
-  
-  pdat <- pdat %>% 
-    group_by(fips, five) %>% 
-    mutate(dday0_10_five = mean(dday0_10, na.rm = TRUE),
-           dday10_30_five = mean(dday10_30, na.rm = TRUE),
-           dday30_five = mean(dday30, na.rm = TRUE),
-           prec_five = mean(prec, na.rm = TRUE),
-           prec_sq_five = prec_five^2)
-  
   pdat$trend <- pdat$year - (min(pdat$year) - 1)
   pdat$trend_sq <- pdat$trend^2
-  pdat <- as.data.frame(pdat)
-  
-  # State-level time trends
-  # Linear
-  state_trends <- as.data.frame(dummyCreator(pdat$state, "trend1"))
-  state_trends$trend <- pdat$trend
-  state_trends <- state_trends[, 1:length(state_trends)]*state_trends$trend
-  state_trends$trend <- NULL
-  
-  # Quadratic
-  state_trends_sq <- as.data.frame(dummyCreator(pdat$state, "trend2"))
-  state_trends_sq$trend_sq <- pdat$trend^2
-  state_trends_sq <- state_trends_sq[, 1:length(state_trends_sq)]*state_trends_sq$trend_sq
-  state_trends_sq$trend_sq <- NULL
-  
-  pdat <- cbind(pdat, state_trends, state_trends_sq)
-  
-  # State-level interval trend 
-  ten_trend <- as.data.frame(dummyCreator(pdat$state, "ten_trend1"))
-  twenty_trend <- as.data.frame(dummyCreator(pdat$state, "twenty_trend1"))
-  thirty_trend <- as.data.frame(dummyCreator(pdat$state, "thirty_trend1"))
-  
-  ten_trend$ten <- ifelse(pdat$ten == 1950, 1, ifelse(pdat$ten == 1960, 2, ifelse(pdat$ten == 1970, 3, ifelse(pdat$ten == 1980, 4, 
-  ifelse(pdat$ten == 1990, 5, 6)))))
-  
-  twenty_trend$twenty <- ifelse(pdat$twenty == 1950, 1, ifelse(pdat$twenty == 1970, 2, 3))
-  
-  thirty_trend$thirty <- ifelse(pdat$thirty == 1950, 1, 2)
-  
-  ten_trend <- ten_trend[, 1:length(ten_trend)]*ten_trend$ten
-  twenty_trend <- twenty_trend[, 1:length(twenty_trend)]*twenty_trend$twenty
-  thirty_trend <- thirty_trend[, 1:length(thirty_trend)]*thirty_trend$thirty
-  
-  
-  # Quadratic
-  ten_trend_sq <- as.data.frame(dummyCreator(pdat$state, "ten_trend2"))
-  twenty_trend_sq <- as.data.frame(dummyCreator(pdat$state, "twenty_trend2"))
-  thirty_trend_sq <- as.data.frame(dummyCreator(pdat$state, "thirty_trend2"))
-  
-  ten_trend$ten <- ifelse(pdat$ten == 1950, 1, ifelse(pdat$ten == 1960, 2, ifelse(pdat$ten == 1970, 3, ifelse(pdat$ten == 1980, 4, 
-  ifelse(pdat$ten == 1990, 5, 6)))))
-  
-  twenty_trend$twenty <- ifelse(pdat$twenty == 1950, 1, ifelse(pdat$twenty == 1970, 2, 3))
-  
-  thirty_trend$thirty <- ifelse(pdat$thirty == 1950, 1, 2)
-  
-  ten_trend_sq$ten_sq <- ten_trend$ten^2
-  twenty_trend_sq$twenty_sq <- twenty_trend$twenty^2
-  thirty_trend_sq$thirty_sq <- thirty_trend$thirty^2
-  
-  ten_trend_sq <- ten_trend_sq[, 1:length(ten_trend_sq)]*ten_trend_sq$ten_sq
-  twenty_trend_sq <- twenty_trend_sq[, 1:length(twenty_trend_sq)]*twenty_trend_sq$twenty_sq
-  thirty_trend_sq <- thirty_trend_sq[, 1:length(thirty_trend_sq)]*thirty_trend_sq$thirty_sq
-  
-  ten_trend$ten <- NULL
-  twenty_trend$twenty <- NULL
-  thirty_trend$thirty <- NULL
-  ten_trend$ten_sq <- NULL
-  twenty_trend$twenty_sq <- NULL
-  thirty_trend$thirty_sq <- NULL
-  
   pdat$trend_lat <- pdat$trend*pdat$lat
   pdat$trend_long <- pdat$trend*pdat$long
   pdat$trend_sq_long <- pdat$trend_sq*pdat$long
@@ -261,39 +129,13 @@ pdat <- pdat %>%
   # Select columns
   pdat <- select(pdat, #z_corn_a, z_cotton_a, z_hay_a, z_soybean_a, z_wheat_a,
                  dday0_10, dday10_30, dday30, prec, prec_sq, 
-                 dday0_10_five, dday10_30_five, dday30_five, prec_five, prec_sq_five,
-                 
-                 dday0_10_ten, dday10_30_ten, dday30_ten, prec_ten, prec_sq_ten,
-                 dday0_10_rm_ten, dday10_30_rm_ten, dday30_rm_ten, prec_rm_ten, prec_sq_rm_ten,
-                 
-                 dday0_10_twenty, dday10_30_twenty, dday30_twenty, prec_twenty, prec_sq_twenty,
-                 dday0_10_rm_twenty, dday10_30_rm_twenty, dday30_rm_twenty, prec_rm_twenty, prec_sq_rm_twenty,
-                 
-                 dday0_10_thirty, dday10_30_thirty, dday30_thirty, prec_thirty, prec_sq_thirty,
-                 dday0_10_rm_thirty, dday10_30_rm_thirty, dday30_rm_thirty, prec_rm_thirty, prec_sq_rm_thirty,
-                 
-                 dday0_10_rm_fourty, dday10_30_rm_fourty, dday30_rm_fourty, prec_rm_fourty, prec_sq_rm_fourty,
-                 
-                 dday0_10_rm_fifty, dday10_30_rm_fifty, dday30_rm_fifty, prec_rm_fifty, prec_sq_rm_fifty,
-                 
-                dday0_10_sixty, dday10_30_sixty, dday30_sixty, prec_sixty, prec_sq_sixty, trend, trend_sq, lat, long,
+                 dday0_10_rm10, dday10_30_rm10, dday30_rm10, prec_rm10, prec_sq_rm10,
+                 dday0_10_rm11, dday10_30_rm11, dday30_rm11, prec_rm11, prec_sq_rm11,
+                 dday0_10_rm12, dday10_30_rm12, dday30_rm12, prec_rm12, prec_sq_rm12,
                 trend_lat, trend_sq_lat, trend_long, trend_sq_long)
   
-  pdat <- cbind(pdat, depvar)
-  pdat <- cbind(pdat, state_trends, state_trends_sq)
-  pdat <- cbind(pdat, ten_trend, twenty_trend, thirty_trend, ten_trend_sq, twenty_trend_sq, thirty_trend_sq)
+  # pdat <- cbind(pdat, depvar)
   
-  
-                  # trend1_al, trend1_ar, trend1_ga, trend1_ia, 
-                  # trend1_il, trend1_in, trend1_ks, trend1_ky, trend1_md, trend1_mi, 
-                  # trend1_mn, trend1_mo, trend1_ms, trend1_mt, trend1_nc, trend1_nd, 
-                  # trend1_ne, trend1_oh, trend1_ok, trend1_sc, trend1_sd, trend1_tn, 
-                  # trend1_va, trend1_wi,
-                  # trend2_al, trend2_ar, trend2_ga, trend2_ia, 
-                  # trend2_il, trend2_in, trend2_ks, trend2_ky, trend2_md, trend2_mi, 
-                  # trend2_mn, trend2_mo, trend2_ms, trend2_mt, trend2_nc, trend2_nd, 
-                  # trend2_ne, trend2_oh, trend2_ok, trend2_sc, trend2_sd, trend2_tn, 
-                  # trend2_va, trend2_wi)
   return(pdat)
   
 }

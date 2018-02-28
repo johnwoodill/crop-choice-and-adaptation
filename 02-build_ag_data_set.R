@@ -379,27 +379,34 @@ dd_dat <- select(dd_dat, year, fips, dday0_10, dday10_30, dday30, prec, prec_sq)
 #--------------------------------------------------
 # Roll.mean intervals
 
-allFipsRM = function(dat, varName, len){
-  do.call(rbind, lapply(split(dat, dat$fips), function(x) {
-    all.rm <- as.data.frame(sapply(len, function(l) c(rollmean(x[,varName], l), rep(NA, l-1))))
-    colnames(all.rm) <- paste0(varName, "_rm", len)
-    cbind(data.frame(fips=x$fips[1]), all.rm, data.frame(year=seq_len(nrow(x))-1))
-  }))
-}
-
-
-rmdat1 <- allFipsRM(dd_dat, "dday0_10", c(10, 11, 12))
-rmdat2 <- allFipsRM(dd_dat, "dday10_30", c(10, 11, 12))
-rmdat3 <- allFipsRM(dd_dat, "dday30", c(10, 11, 12))
-rmdat4 <- allFipsRM(dd_dat, "prec", c(10, 11, 12))
-rmdat <- left_join(rmdat1, rmdat2, by = c("year", "fips"))
-rmdat <- left_join(rmdat, rmdat3, by = c("year", "fips"))
-rmdat <- left_join(rmdat, rmdat4, by = c("year", "fips"))
-rmdat$year <- rmdat$year + 1900
-rmdat$prec_sq_rm10 <- rmdat$prec_rm10^2
-rmdat$prec_sq_rm11 <- rmdat$prec_rm11^2
-rmdat$prec_sq_rm12 <- rmdat$prec_rm12^2
-dd_dat <- left_join(dd_dat, rmdat, by = c("year", "fips"))
+rm_dat <- readRDS("data/full_rollmean_lag_variables.rds")
+rm_dat <- select(rm_dat, year, fips, dday0_10_rm10, dday10_30_rm10, dday30_rm10, prec_rm10, prec_sq_rm10,
+                 dday0_10_rm11, dday10_30_rm11, dday30_rm11, prec_rm11, prec_sq_rm11,
+                 dday0_10_rm12, dday10_30_rm12, dday30_rm12, prec_rm12, prec_sq_rm12)
+head(rm_dat)
+dd_dat <- left_join(dd_dat, rm_dat, by = c("year", "fips"))
+# 
+# allFipsRM = function(dat, varName, len){
+#   do.call(rbind, lapply(split(dat, dat$fips), function(x) {
+#     all.rm <- as.data.frame(sapply(len, function(l) c(rollmean(x[,varName], l), rep(NA, l-1))))
+#     colnames(all.rm) <- paste0(varName, "_rm", len)
+#     cbind(data.frame(fips=x$fips[1]), all.rm, data.frame(year=seq_len(nrow(x))-1))
+#   }))
+# }
+# 
+# 
+# rmdat1 <- allFipsRM(dd_dat, "dday0_10", c(10, 11, 12))
+# rmdat2 <- allFipsRM(dd_dat, "dday10_30", c(10, 11, 12))
+# rmdat3 <- allFipsRM(dd_dat, "dday30", c(10, 11, 12))
+# rmdat4 <- allFipsRM(dd_dat, "prec", c(10, 11, 12))
+# rmdat <- left_join(rmdat1, rmdat2, by = c("year", "fips"))
+# rmdat <- left_join(rmdat, rmdat3, by = c("year", "fips"))
+# rmdat <- left_join(rmdat, rmdat4, by = c("year", "fips"))
+# rmdat$year <- rmdat$year + 1900
+# rmdat$prec_sq_rm10 <- rmdat$prec_rm10^2
+# rmdat$prec_sq_rm11 <- rmdat$prec_rm11^2
+# rmdat$prec_sq_rm12 <- rmdat$prec_rm12^2
+# dd_dat <- left_join(dd_dat, rmdat, by = c("year", "fips"))
 
 # Merge ag prices, ag crop data, and degree day data ----------------------
 
@@ -468,15 +475,17 @@ states <-  c("al","ar","ct","dc", "de", "fl","ga","il","in","ia","ks","ky","la",
 # states <-  c("al","ar","ct","dc","fl","ga","il","in","ia","ks","ky","la","me","md","ma","mi","mn","ms","mo","mt",
 # "ne","nh","nj","ny","nc","nd","oh","ok","pa","ri","sc","sd","tn","tx","vt","va","wv","wi")
 
-# data <- filter(fulldat, state %in% states)
-data <- fulldat
+data <- filter(fulldat, state %in% states)
 
 # Keep only those counties with acres in 1950
-
 data$acres <- rowSums(data[, c("corn_grain_a", "cotton_a", "hay_a", "soybean_a", "wheat_a")], na.rm = TRUE)
-check <- filter(data, year == 1950)
-check <- filter(check, !is.na(acres))
+check <- filter(data, year == 1960)
+check <- filter(check, acres > 0)
 length(unique(check$fips))
+
+data <- filter(data, year >= unique(check$year) & year <= 2010)
+
+
 
 # Keep only those counties with acres in 1950-2009
 # data$acres <- rowSums(data[, c("corn_grain_a", "cotton_a", "hay_a", "soybean_a", "wheat_a")], na.rm = TRUE)
@@ -496,7 +505,7 @@ length(unique(check$fips))
 
 
 
-data <- filter(data, year >= 1950 & year <= 2010)
+
 
 # Build data set for regression estimates
 cropdat <- filter(data, year <= 2010)
@@ -554,9 +563,11 @@ is.na(cropdat) <- do.call(cbind, lapply(cropdat, is.infinite))
 
 # Rolling mean through acres to smooth out weights
 cropdat <- cropdat %>% 
-  group_by(fips) %>% 
   arrange(year) %>% 
-  mutate(w = rollmean(acres, k = 5, fill = acres))
+  group_by(fips) %>% 
+  mutate(w = rollmean(acres, k = 5, fill = acres),
+         w = abs(w))
+
 
 # Spline through acres to smooth out weights
  # cropdat <- cropdat %>%
