@@ -588,63 +588,6 @@ cropdat <- cropdat %>%
  # cropdat$wheat_w <- ifelse(cropdat$wheat_w < 0 , 0, cropdat$wheat_w)
 
 
-# #---------------------------------------------------
-# # Average Intervals
-# # 60 year intervals
-# cropdat <- cropdat %>% 
-#   group_by(fips) %>% 
-#   mutate(dday0_10_sixty = mean(dday0_10, na.rm = TRUE),
-#          dday10_30_sixty = mean(dday10_30, na.rm = TRUE),
-#          dday30_sixty = mean(dday30, na.rm = TRUE),
-#          prec_sixty = mean(prec, na.rm = TRUE),
-#          prec_sq_sixty = prec^2)
-# 
-# # 30 year intervals
-# cropdat$thirty <- cropdat$year - (cropdat$year %% 30)
-# 
-# cropdat <- cropdat %>% 
-#   group_by(fips, thirty) %>% 
-#   mutate(dday0_10_thirty = mean(dday0_10, na.rm = TRUE),
-#          dday10_30_thirty = mean(dday10_30, na.rm = TRUE),
-#          dday30_thirty = mean(dday30, na.rm = TRUE),
-#          prec_thirty = mean(prec, na.rm = TRUE),
-#          prec_sq_thirty = prec_thirty^2)
-# 
-# # # 20 year intervals
-# cropdat$twenty <- 0
-# cropdat$twenty <- ifelse(cropdat$year %in% seq(1950, 1969, 1), 1950, cropdat$twenty)
-# cropdat$twenty <- ifelse(cropdat$year %in% seq(1970, 1989, 1), 1970, cropdat$twenty)
-# cropdat$twenty <- ifelse(cropdat$year %in% seq(1990, 2009, 1), 1990, cropdat$twenty)
-# 
-# cropdat <- cropdat %>% 
-#   group_by(fips, twenty) %>% 
-#   mutate(dday0_10_twenty = mean(dday0_10, na.rm = TRUE),
-#          dday10_30_twenty = mean(dday10_30, na.rm = TRUE),
-#          dday30_twenty = mean(dday30, na.rm = TRUE),
-#          prec_twenty = mean(prec, na.rm = TRUE),
-#          prec_sq_twenty = prec_twenty^2)
-# 
-# # 10 year intervals
-# cropdat$ten <- cropdat$year - (cropdat$year %% 10)
-# 
-# cropdat <- cropdat %>% 
-#   group_by(fips, ten) %>% 
-#   mutate(dday0_10_ten = mean(dday0_10, na.rm = TRUE),
-#          dday10_30_ten = mean(dday10_30, na.rm = TRUE),
-#          dday30_ten = mean(dday30, na.rm = TRUE),
-#          prec_ten = mean(prec, na.rm = TRUE),
-#          prec_sq_ten = prec_ten^2)
-# 
-# # 5 year intervals
-# cropdat$five <- cropdat$year - (cropdat$year %% 5)
-# 
-# cropdat <- cropdat %>% 
-#   group_by(fips, five) %>% 
-#   mutate(dday0_10_five = mean(dday0_10, na.rm = TRUE),
-#          dday10_30_five = mean(dday10_30, na.rm = TRUE),
-#          dday30_five = mean(dday30, na.rm = TRUE),
-#          prec_five = mean(prec, na.rm = TRUE),
-#          prec_sq_five = prec_five^2)
 
 # Build trends
 cropdat$trend <- cropdat$year - (min(cropdat$year) - 1)
@@ -656,6 +599,13 @@ cropdat$p_cotton_a <- cropdat$cotton_a/cropdat$acres
 cropdat$p_hay_a <- cropdat$hay_a/cropdat$acres
 cropdat$p_soybean_a <- cropdat$soybean_a/cropdat$acres
 cropdat$p_wheat_a <- cropdat$wheat_a/cropdat$acres
+
+# Set acres to zero
+cropdat$p_corn_a <- ifelse(is.na(cropdat$p_corn_a), 0, cropdat$p_corn_a)
+cropdat$p_cotton_a <- ifelse(is.na(cropdat$p_cotton_a), 0, cropdat$p_cotton_a)
+cropdat$p_hay_a <- ifelse(is.na(cropdat$p_hay_a), 0, cropdat$p_hay_a)
+cropdat$p_wheat_a <- ifelse(is.na(cropdat$p_wheat_a), 0, cropdat$p_wheat_a)
+cropdat$p_soybean_a <- ifelse(is.na(cropdat$p_soybean_a), 0, cropdat$p_soybean_a)
 
 # First estimate between zero and 1
 cropdat$cp_corn_a <- (cropdat$p_corn_a + .001)/1.00101
@@ -683,69 +633,6 @@ cropdat <- as.data.frame(cropdat)
 # cropdat <- filter(cropdat, state != "nj")
 # cropdat <- filter(cropdat, state != "ma")
 # cropdat <- filter(cropdat, state != "ct")
-
-# 
-# # State-level time trends
-# # Linear
-# state_trends <- as.data.frame(dummyCreator(cropdat$state, "trend1"))
-# state_trends$trend <- cropdat$trend
-# state_trends <- state_trends[, 1:length(state_trends)]*state_trends$trend
-# state_trends$trend <- NULL
-# 
-# # Quadratic
-# state_trends_sq <- as.data.frame(dummyCreator(cropdat$state, "trend2"))
-# state_trends_sq$trend_sq <- cropdat$trend^2
-# state_trends_sq <- state_trends_sq[, 1:length(state_trends_sq)]*state_trends_sq$trend_sq
-# state_trends_sq$trend_sq <- NULL
-# 
-# cropdat <- cbind(cropdat, state_trends, state_trends_sq)
-# 
-# # State-level interval trend 
-# ten_trend <- as.data.frame(dummyCreator(cropdat$state, "ten_trend1"))
-# twenty_trend <- as.data.frame(dummyCreator(cropdat$state, "twenty_trend1"))
-# thirty_trend <- as.data.frame(dummyCreator(cropdat$state, "thirty_trend1"))
-# 
-# ten_trend$ten <- ifelse(cropdat$ten == 1950, 1, ifelse(cropdat$ten == 1960, 2, ifelse(cropdat$ten == 1970, 3, ifelse(cropdat$ten == 1980, 4, 
-# ifelse(cropdat$ten == 1990, 5, 6)))))
-# 
-# twenty_trend$twenty <- ifelse(cropdat$twenty == 1950, 1, ifelse(cropdat$twenty == 1970, 2, 3))
-# 
-# thirty_trend$thirty <- ifelse(cropdat$thirty == 1950, 1, 2)
-# 
-# ten_trend <- ten_trend[, 1:length(ten_trend)]*ten_trend$ten
-# twenty_trend <- twenty_trend[, 1:length(twenty_trend)]*twenty_trend$twenty
-# thirty_trend <- thirty_trend[, 1:length(thirty_trend)]*thirty_trend$thirty
-# 
-# 
-# # Quadratic
-# ten_trend_sq <- as.data.frame(dummyCreator(cropdat$state, "ten_trend2"))
-# twenty_trend_sq <- as.data.frame(dummyCreator(cropdat$state, "twenty_trend2"))
-# thirty_trend_sq <- as.data.frame(dummyCreator(cropdat$state, "thirty_trend2"))
-# 
-# ten_trend$ten <- ifelse(cropdat$ten == 1950, 1, ifelse(cropdat$ten == 1960, 2, ifelse(cropdat$ten == 1970, 3, ifelse(cropdat$ten == 1980, 4, 
-# ifelse(cropdat$ten == 1990, 5, 6)))))
-# 
-# twenty_trend$twenty <- ifelse(cropdat$twenty == 1950, 1, ifelse(cropdat$twenty == 1970, 2, 3))
-# 
-# thirty_trend$thirty <- ifelse(cropdat$thirty == 1950, 1, 2)
-# 
-# ten_trend_sq$ten_sq <- ten_trend$ten^2
-# twenty_trend_sq$twenty_sq <- twenty_trend$twenty^2
-# thirty_trend_sq$thirty_sq <- thirty_trend$thirty^2
-# 
-# ten_trend_sq <- ten_trend_sq[, 1:length(ten_trend_sq)]*ten_trend_sq$ten_sq
-# twenty_trend_sq <- twenty_trend_sq[, 1:length(twenty_trend_sq)]*twenty_trend_sq$twenty_sq
-# thirty_trend_sq <- thirty_trend_sq[, 1:length(thirty_trend_sq)]*thirty_trend_sq$thirty_sq
-# 
-# ten_trend$ten <- NULL
-# twenty_trend$twenty <- NULL
-# thirty_trend$thirty <- NULL
-# ten_trend$ten_sq <- NULL
-# twenty_trend$twenty_sq <- NULL
-# thirty_trend$thirty_sq <- NULL
-# 
-# cropdat <- cbind(cropdat, ten_trend, twenty_trend, thirty_trend, ten_trend_sq, twenty_trend_sq, thirty_trend_sq)
-
 
 cropdat$trend_lat <- cropdat$trend*cropdat$lat
 cropdat$trend_long <- cropdat$trend*cropdat$long

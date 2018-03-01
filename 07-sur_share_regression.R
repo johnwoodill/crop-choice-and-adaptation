@@ -28,10 +28,6 @@ cropdat <- readRDS("data/full_ag_data.rds")
 cropdat <- as.data.frame(cropdat)
 cropdat$fips <- factor(cropdat$fips)
 cropdat$state <- factor(cropdat$state)
-cropdat$five <- factor(cropdat$five)
-cropdat$ten <- factor(cropdat$ten)
-cropdat$twenty <- factor(cropdat$twenty)
-cropdat$thirty <- factor(cropdat$thirty)
 
 
 #-----------------------------------------------------------------------------------
@@ -40,7 +36,7 @@ cropdat$thirty <- factor(cropdat$thirty)
 
 dmdat <- select(cropdat, z_corn_a, z_cotton_a, z_hay_a, z_soybean_a, z_wheat_a, 
                 dday0_10, dday10_30, dday30, prec, prec_sq, trend, trend_sq,
-                dday0_10_rm_ten , dday10_30_rm_ten , dday30_rm_ten , prec_rm_ten , prec_sq_rm_ten, 
+                dday0_10_rm10 , dday10_30_rm10 , dday30_rm10 , prec_rm10 , prec_sq_rm10, 
                 trend_lat, trend_long, trend_sq_lat, trend_sq_long)
 
 cropdat_dm <- demeanlist(dmdat, fl = list(fips = factor(cropdat$fips)))
@@ -49,28 +45,28 @@ cropdat_means <- demeanlist(dmdat, fl = list(fips = factor(cropdat$fips)), means
 
 
 mod1 <- z_corn_a ~ 
-  dday0_10_rm_ten + dday10_30_rm_ten + dday30_rm_ten + prec_rm_ten + prec_sq_rm_ten +
+  dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
               trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
 
 
 mod2 <- z_cotton_a ~  
-  dday0_10_rm_ten + dday10_30_rm_ten + dday30_rm_ten + prec_rm_ten + prec_sq_rm_ten +
+  dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
               trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
  
 
 mod3 <- z_hay_a ~ 
-  dday0_10_rm_ten + dday10_30_rm_ten + dday30_rm_ten + prec_rm_ten + prec_sq_rm_ten +
+  dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
               trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
 
 
 mod4 <- z_soybean_a ~ 
-  dday0_10_rm_ten + dday10_30_rm_ten + dday30_rm_ten + prec_rm_ten + prec_sq_rm_ten +
+  dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
               trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
 
 
 
 mod5 <- z_wheat_a ~ 
-  dday0_10_rm_ten + dday10_30_rm_ten + dday30_rm_ten + prec_rm_ten + prec_sq_rm_ten +
+  dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
               trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
 
 # res_terms <- c("corn_dday0_10_rm_ten  +   corn_dday10_30_rm_ten   + corn_dday30_rm_ten   +   corn_prec_rm_ten    +     corn_prec_sq_rm_ten    +  corn_trend_lat       +   corn_trend_long     +     corn_trend_sq_lat       + corn_trend_sq_long + cotton_dday0_10_rm_ten  + cotton_dday10_30_rm_ten  +cotton_dday30_rm_ten  +   cotton_prec_rm_ten    +   cotton_prec_sq_rm_ten  +  cotton_trend_lat     +  cotton_trend_long    +    cotton_trend_sq_lat    +  cotton_trend_sq_long  +   hay_dday0_10_rm_ten   +   hay_dday10_30_rm_ten  +   hay_dday30_rm_ten     +   hay_prec_rm_ten     +     hay_prec_sq_rm_ten    +   hay_trend_lat         +  hay_trend_long       +    hay_trend_sq_lat      +   hay_trend_sq_long       + soybean_dday0_10_rm_ten + soybean_dday10_30_rm_ten +soybean_dday30_rm_ten  +  soybean_prec_rm_ten   +   soybean_prec_sq_rm_ten +  soybean_trend_lat       + soybean_trend_long    +   soybean_trend_sq_lat   +  soybean_trend_sq_long   + wheat_dday0_10_rm_ten +   wheat_dday10_30_rm_ten +  wheat_dday30_rm_ten     + wheat_prec_rm_ten     +   wheat_prec_sq_rm_ten   +  wheat_trend_lat        +  wheat_trend_long      +   wheat_trend_sq_lat     +  wheat_trend_sq_long = 0")
@@ -140,8 +136,7 @@ saveRDS(ten_mod, "models/sur_share_model_ten.rds")
 # twenty-year
 
 dmdat <- select(cropdat, z_corn_a, z_cotton_a, z_hay_a, z_soybean_a, z_wheat_a, 
-                dday0_10, dday10_30, dday30, prec, prec_sq, trend, trend_sq,
-                dday0_10_rm_twenty , dday10_30_rm_twenty , dday30_rm_twenty , prec_rm_twenty , prec_sq_rm_twenty, 
+                dday0_10_rm11 , dday10_30_rm11 , dday30_rm11 , prec_rm11 , prec_sq_rm11, 
                 trend_lat, trend_long, trend_sq_lat, trend_sq_long)
 
 cropdat_dm <- demeanlist(dmdat, fl = list(fips = factor(cropdat$fips)))
@@ -150,26 +145,26 @@ cropdat_means <- demeanlist(dmdat, fl = list(fips = factor(cropdat$fips)), means
 
 
 mod1 <- z_corn_a ~ 
-  dday0_10_rm_twenty + dday10_30_rm_twenty + dday30_rm_twenty + prec_rm_twenty + prec_sq_rm_twenty +
+  dday0_10_rm11 + dday10_30_rm11 + dday30_rm11 + prec_rm11 + prec_sq_rm11 +
                   trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
 
 
 mod2 <- z_cotton_a ~ 
-  dday0_10_rm_twenty + dday10_30_rm_twenty + dday30_rm_twenty + prec_rm_twenty + prec_sq_rm_twenty +
+  dday0_10_rm11 + dday10_30_rm11 + dday30_rm11 + prec_rm11 + prec_sq_rm11 +
                   trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
  
 
 mod3 <- z_hay_a ~  
-  dday0_10_rm_twenty + dday10_30_rm_twenty + dday30_rm_twenty + prec_rm_twenty + prec_sq_rm_twenty +
+  dday0_10_rm11 + dday10_30_rm11 + dday30_rm11 + prec_rm11 + prec_sq_rm11 +
                   trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
 
 
 mod4 <- z_soybean_a ~  
-  dday0_10_rm_twenty + dday10_30_rm_twenty + dday30_rm_twenty + prec_rm_twenty + prec_sq_rm_twenty +
+  dday0_10_rm11 + dday10_30_rm11 + dday30_rm11 + prec_rm11 + prec_sq_rm11 +
                   trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
 
 mod5 <- z_wheat_a ~ 
-  dday0_10_rm_twenty + dday10_30_rm_twenty + dday30_rm_twenty + prec_rm_twenty + prec_sq_rm_twenty +
+  dday0_10_rm11 + dday10_30_rm11 + dday30_rm11 + prec_rm11 + prec_sq_rm11 +
                   trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
 
 # "corn_dday0_10 + corn_dday10_30 + corn_dday30 + corn_prec + corn_prec_sq + cotton_dday0_10 + cotton_dday10_30 + cotton_dday30 + cotton_prec + cotton_prec_sq + hay_dday0_10 + hay_dday10_30 + hay_dday30 + hay_prec + hay_prec_sq + soybean_dday0_10 + soybean_dday10_30 + soybean_dday30 + soybean_prec + soybean_prec_sq + wheat_dday0_10 + wheat_dday10_30 + wheat_dday30 + wheat_prec + wheat_prec_sq
@@ -254,8 +249,7 @@ saveRDS(twenty_mod, "models/sur_share_model_twenty.rds")
 #-----------------------------------------------------------------------------------
 # Thirty-year
 dmdat <- select(cropdat, z_corn_a, z_cotton_a, z_hay_a, z_soybean_a, z_wheat_a, 
-                dday0_10, dday10_30, dday30, prec, prec_sq, trend, trend_sq,
-                dday0_10_rm_thirty , dday10_30_rm_thirty , dday30_rm_thirty , prec_rm_thirty , prec_sq_rm_thirty, 
+                dday0_10_rm12 , dday10_30_rm12 , dday30_rm12 , prec_rm12 , prec_sq_rm12, 
                 trend_lat, trend_long, trend_sq_lat, trend_sq_long)
 
 cropdat_dm <- demeanlist(dmdat, fl = list(fips = factor(cropdat$fips)))
@@ -264,26 +258,26 @@ cropdat_means <- demeanlist(dmdat, fl = list(fips = factor(cropdat$fips)), means
 
 
 mod1 <- z_corn_a ~ 
-  dday0_10_rm_thirty + dday10_30_rm_thirty + dday30_rm_thirty + prec_rm_thirty + prec_sq_rm_thirty +
+  dday0_10_rm12 + dday10_30_rm12 + dday30_rm12 + prec_rm12 + prec_sq_rm12 +
 trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
 
 
 mod2 <- z_cotton_a ~  
-  dday0_10_rm_thirty + dday10_30_rm_thirty + dday30_rm_thirty + prec_rm_thirty + prec_sq_rm_thirty +
+  dday0_10_rm12 + dday10_30_rm12 + dday30_rm12 + prec_rm12 + prec_sq_rm12 +
 trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
  
 
 mod3 <- z_hay_a ~ 
-  dday0_10_rm_thirty + dday10_30_rm_thirty + dday30_rm_thirty + prec_rm_thirty + prec_sq_rm_thirty +
+  dday0_10_rm12 + dday10_30_rm12 + dday30_rm12 + prec_rm12 + prec_sq_rm12 +
 trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
 
 
 mod4 <- z_soybean_a ~ 
-  dday0_10_rm_thirty + dday10_30_rm_thirty + dday30_rm_thirty + prec_rm_thirty + prec_sq_rm_thirty +
+  dday0_10_rm12 + dday10_30_rm12 + dday30_rm12 + prec_rm12 + prec_sq_rm12 +
 trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
 
 mod5 <- z_wheat_a ~ 
-  dday0_10_rm_thirty + dday10_30_rm_thirty + dday30_rm_thirty + prec_rm_thirty + prec_sq_rm_thirty +
+  dday0_10_rm12 + dday10_30_rm12 + dday30_rm12 + prec_rm12 + prec_sq_rm12 +
   trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
 
 # res_terms <- c("corn_dday0_10_rm_thirty + corn_dday10_30_rm_thirty +  corn_dday30_rm_thirty+  corn_prec_rm_thirty    +     corn_prec_sq_rm_thirty   +  corn_trend_lat + corn_trend_long       +       corn_trend_sq    +      cotton_dday0_10_rm_thirty  + cotton_dday10_30_rm_thirty + cotton_dday30_rm_thirty  +   cotton_prec_rm_thirty    +   cotton_prec_sq_rm_thirty +   cotton_trend        +     cotton_trend_sq       +  hay_dday0_10_rm_thirty   +   hay_dday10_30_rm_thirty  +   hay_dday30_rm_thirty    +    hay_prec_rm_thirty    +      hay_prec_sq_rm_thirty   +    hay_trend          +      hay_trend_sq       +   soybean_dday0_10_rm_thirty + soybean_dday10_30_rm_thirty + soybean_dday30_rm_thirty   + soybean_prec_rm_thirty   +   soybean_prec_sq_rm_thirty + soybean_trend       +    soybean_trend_sq     +    wheat_dday0_10_rm_thirty  +  wheat_dday10_30_rm_thirty  + wheat_dday30_rm_thirty   +   wheat_prec_rm_thirty     +   wheat_prec_sq_rm_thirty +   wheat_trend          +    wheat_trend_sq = 0" )

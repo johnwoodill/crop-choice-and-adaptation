@@ -13,10 +13,6 @@ cropdat <- readRDS("data/full_ag_data.rds")
 cropdat <- as.data.frame(cropdat)
 cropdat$fips <- factor(cropdat$fips)
 cropdat$state <- factor(cropdat$state)
-cropdat$five <- factor(cropdat$five)
-cropdat$ten <- factor(cropdat$ten)
-cropdat$twenty <- factor(cropdat$twenty)
-cropdat$thirty <- factor(cropdat$thirty)
 
 
 # Sur models
@@ -94,12 +90,12 @@ newdata_list_dm <- list(p0 = p0_dm,
 #                      p4 = p4_thirty,
 #                      p5 = p5_thirty)
 
-ten_climate_terms_v = c("dday0_10_rm_ten", "dday10_30_rm_ten", "dday30_rm_ten", 
-                        "prec_rm_ten", "prec_sq_rm_ten")
-twenty_climate_terms_v = c("dday0_10_rm_twenty", "dday10_30_rm_twenty", "dday30_rm_twenty", 
-                           "prec_rm_twenty", "prec_sq_rm_twenty")
-thirty_climate_terms_v = c("dday0_10_rm_thirty", "dday10_30_rm_thirty", "dday30_rm_thirty", 
-                           "prec_rm_thirty", "prec_sq_rm_thirty")
+ten_climate_terms_v = c("dday0_10_rm10", "dday10_30_rm10", "dday30_rm10", 
+                        "prec_rm10", "prec_sq_rm10")
+twenty_climate_terms_v = c("dday0_10_rm11", "dday10_30_rm11", "dday30_rm11", 
+                           "prec_rm11", "prec_sq_rm11")
+thirty_climate_terms_v = c("dday0_10_rm12", "dday10_30_rm12", "dday30_rm12", 
+                           "prec_rm12", "prec_sq_rm12")
 
 terms <- c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq")
 
@@ -135,7 +131,7 @@ ctwenty <- predictSUR.clean(mod = sur_twenty,
                             newdata_list = newdata_list_dm, 
                             var.terms = twenty_climate_terms_v,
                             # cons.terms = terms,
-                            type = "20-year", 
+                            type = "11-year", 
                             effect = "Climate-effect")
 
 # ctwenty <- predictSUR.clean(mod = sur_twenty, acres = cropdat$acres, newdata_list = newdata_list_dm,type = "20-year", 
@@ -151,12 +147,12 @@ cthirty <- predictSUR.clean(mod = sur_thirty,
                             fips = cropdat$fips,
                             newdata_list = newdata_list_dm,
                             var.terms = thirty_climate_terms_v,
-                            type = "30-year", 
+                            type = "12-year", 
                             effect = "Climate-effect")
 
-cthirty$predictions %>% 
-  group_by(temp) %>% 
-  summarise_all(mean)
+# cthirty$predictions %>% 
+  # group_by(temp) %>% 
+  # summarise_all(mean)
 
 # cthirty <- predictSUR.clean(mod = sur_thirty, acres = cropdat$acres, newdata_list = newdata_list_dm,type = "30-year", 
                          # effect = "Climate-effect")

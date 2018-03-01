@@ -124,10 +124,11 @@ pdat <- left_join(pdat, rm_dat, by = c("year", "fips"))
   pdat$trend_sq_long <- pdat$trend_sq*pdat$long
   pdat$trend_sq_lat <- pdat$trend_sq*pdat$lat
   
-  # pdat <- cbind(pdat, depvar)
+  pdat <- as.data.frame(pdat)
+  pdat <- cbind(pdat, depvar)
   
   # Select columns
-  pdat <- select(pdat, #z_corn_a, z_cotton_a, z_hay_a, z_soybean_a, z_wheat_a,
+  pdat <- select(pdat, z_corn_a, z_cotton_a, z_hay_a, z_soybean_a, z_wheat_a,
                  dday0_10, dday10_30, dday30, prec, prec_sq, 
                  dday0_10_rm10, dday10_30_rm10, dday30_rm10, prec_rm10, prec_sq_rm10,
                  dday0_10_rm11, dday10_30_rm11, dday30_rm11, prec_rm11, prec_sq_rm11,
@@ -152,4 +153,3 @@ saveRDS(p2, "data/degree_day_changes/panel_adapt_regression_data_2C.rds")
 saveRDS(p3, "data/degree_day_changes/panel_adapt_regression_data_3C.rds")
 saveRDS(p4, "data/degree_day_changes/panel_adapt_regression_data_4C.rds")
 saveRDS(p5, "data/degree_day_changes/panel_adapt_regression_data_5C.rds")
-
