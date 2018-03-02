@@ -72,7 +72,7 @@ terms <- c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq")
 # Ten-year
 
 # Climate-effect predictions
-
+# 
 mod = sur_ten
 acres = cropdat$acres
 fips = cropdat$fips
@@ -91,7 +91,6 @@ cten <- predictSUR.clean(mod = sur_ten,
                          type = "10-year", 
                          effect = "Climate-effect")
 
-head(cten$predictions)
 head(cten$agg_predictions)
 
 #  cten_rs <- rowSums(cten$predictions)

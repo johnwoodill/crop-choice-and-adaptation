@@ -249,7 +249,6 @@ head(mdat)
 names(mdat)[3:10] <- c("corn_grain_a", "corn_grain_p", "cotton_a", "cotton_p", "hay_a", "hay_p", "wheat_a", "wheat_p")
 
 
-
 mdat <- mdat %>%
   group_by(fips) %>%
   arrange(year) %>%
@@ -485,8 +484,11 @@ data <- filter(fulldat, state %in% states)
 data$acres <- rowSums(data[, c("corn_grain_a", "cotton_a", "hay_a", "soybean_a", "wheat_a")], na.rm = TRUE)
 check <- filter(data, year == 1960)
 check <- filter(check, acres > 0)
+check$state <- factor(check$state)
 length(unique(check$fips))
-
+unique(check$state)
+fipss <- unique(check$fips)
+data <- filter(data, fips %in% fipss)
 data <- filter(data, year >= unique(check$year) & year <= 2010)
 
 
@@ -503,10 +505,6 @@ data <- filter(data, year >= unique(check$year) & year <= 2010)
 # 
 # head(check)
 # length(check$fips)
-# fipss <- unique(check$fips)
-# data <- filter(data, fips %in% fipss)
-
-
 
 
 
