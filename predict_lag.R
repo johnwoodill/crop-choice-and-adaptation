@@ -343,27 +343,38 @@ cat("\\end{document}", file = "predict_lag1.tex", append = TRUE)
 # Compile pdf
 system("pdflatex predict_lag1.tex")
 }
+
+# lag check with dplyr
+regdat <- readRDS("data/full_weather_data.rds")
+regdat <- regdat %>% 
+  group_by(fips) %>% 
+  arrange(-year) %>% 
+  mutate(dday0_10_lag1 = lag(dday0_10),
+         dday10_30_lag1 = lag(dday10_30),
+         dday30_lag1 = lag(dday30))
+         
+# View(regdat)
 # Loop through 1 to 50 year right rolling mean
-for (i in 1:1){
+for (i in 1:50){
   
   # Create custom col labels
   lab1 <- paste0("dday0_10_rm_", i)
   lab2 <- paste0("dday10_30_rm_", i)
   lab3 <- paste0("dday30_rm_", i)
   
-  test$dday30_rm_2 <- rollmean(test$dday30, k = 2, fill = "NA")
-  
   # Loop through each fips and calculate rollingmean
   regdat <- regdat %>%
       group_by(fips) %>%
       arrange(year) %>%
-      mutate(dday30_rm_2 = lag(rollmean(dday30, k = 4, align = "right", fill = "NA"))) %>% 
+      mutate(!!lab1 := roll_mean(dday0_10_lag1, i, align = "left", fill = "NA"),
+             !!lab2 := roll_mean(dday10_30_lag1, i, align = "left", fill = "NA"),
+             !!lab3 := roll_mean(dday30_lag1, i, align = "left", fill = "NA")) %>% 
     ungroup()
   
   # Progress bar for loop
   print(i)
 }
-
+head(regdat$dday0_10_rm_1)
 # Create data.frame for calculating sd
 outdat <- data.frame(rollmean = rep(seq(1,50, 1), each = 3),
                      var = rep(c("dday0_10", "dday10_30", "dday30"), 50),
@@ -400,8 +411,7 @@ ggplot(outdat, aes(rollmean, sd, color = factor(var))) +
     legend.title = element_blank(), legend.key = element_blank()) +
   geom_vline(xintercept = 10, linetype = "dashed", color = "grey")
 
-ggsave("figures/predict_lag1.pdf", width = 6, height = 4)
-
++ggsave("figures/predict_lag1.pdf", width = 6, height = 4)
 
 
 

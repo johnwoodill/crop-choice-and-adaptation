@@ -75,74 +75,76 @@ dd_dat <- left_join(dd_dat, ers_region, by = "fips")
 # #--------------------------------------
    # Roll.mean intervals
 
-# 50-year
- dd_dat <- dd_dat %>%
-    group_by(fips) %>%
-    arrange(year) %>%
-    mutate(dday0_10_rm_fifty = lag(rollmean(dday0_10, k = 50, align = "right", fill = "NA")),
-           dday10_30_rm_fifty = lag(rollmean(dday10_30, k = 50, align = "right", fill = "NA")),
-           dday30_rm_fifty = lag(rollmean(dday30, k = 50, align = "right", fill = "NA")),
-           prec_rm_fifty = lag(rollmean(prec, k = 50, align = "right", fill = "NA")),
-           prec_sq_rm_fifty = prec_rm_fifty^2)
+# # 50-year
+#  dd_dat <- dd_dat %>%
+#     group_by(fips) %>%
+#     arrange(year) %>%
+#     mutate(dday0_10_rm_fifty = lag(rollmean(dday0_10, k = 50, align = "right", fill = "NA")),
+#            dday10_30_rm_fifty = lag(rollmean(dday10_30, k = 50, align = "right", fill = "NA")),
+#            dday30_rm_fifty = lag(rollmean(dday30, k = 50, align = "right", fill = "NA")),
+#            prec_rm_fifty = lag(rollmean(prec, k = 50, align = "right", fill = "NA")),
+#            prec_sq_rm_fifty = prec_rm_fifty^2)
+# 
+#  # 40-year
+#  dd_dat <- dd_dat %>%
+#     group_by(fips) %>%
+#     arrange(year) %>%
+#     mutate(dday0_10_rm_fourty = lag(rollmean(dday0_10, k = 40, align = "right", fill = "NA")),
+#            dday10_30_rm_fourty = lag(rollmean(dday10_30, k = 40, align = "right", fill = "NA")),
+#            dday30_rm_fourty = lag(rollmean(dday30, k = 40, align = "right", fill = "NA")),
+#            prec_rm_fourty = lag(rollmean(prec, k = 40, align = "right", fill = "NA")),
+#            prec_sq_rm_fourty = prec_rm_fourty^2)
+# 
+#  # 30-year
+#  dd_dat <- dd_dat %>%
+#     group_by(fips) %>%
+#     arrange(year) %>%
+#     mutate(dday0_10_rm_thirty = lag(rollmean(dday0_10, k = 30, align = "right", fill = "NA")),
+#            dday10_30_rm_thirty = lag(rollmean(dday10_30, k = 30, align = "right", fill = "NA")),
+#            dday30_rm_thirty = lag(rollmean(dday30, k = 30, align = "right", fill = "NA")),
+#            prec_rm_thirty = lag(rollmean(prec, k = 30, align = "right", fill = "NA")),
+#            prec_sq_rm_thirty = prec_rm_thirty^2)
+# 
+#  # 20 year intervals
+#  dd_dat <- dd_dat %>%
+#     group_by(fips) %>%
+#     arrange(year) %>%
+#     mutate(dday0_10_rm_twenty = lag(rollmean(dday0_10, k = 20, align = "right", fill = "NA")),
+#            dday10_30_rm_twenty = lag(rollmean(dday10_30, k = 20, align = "right", fill = "NA")),
+#            dday30_rm_twenty = lag(rollmean(dday30, k = 20, align = "right", fill = "NA")),
+#            prec_rm_twenty = lag(rollmean(prec, k = 20, align = "right", fill = "NA")),
+#            prec_sq_rm_twenty = prec_rm_twenty^2)
+# 
+#   # 10-year
+#  dd_dat <- dd_dat %>%
+#     group_by(fips) %>%
+#     arrange(year) %>%
+#     mutate(dday0_10_rm_ten = lag(rollmean(dday0_10, k = 10, align = "right", fill = "NA")),
+#            dday10_30_rm_ten = lag(rollmean(dday10_30, k = 10, align = "right", fill = "NA")),
+#            dday30_rm_ten = lag(rollmean(dday30, k = 10, align = "right", fill = "NA")),
+#            prec_rm_ten = lag(rollmean(prec, k = 10, align = "right", fill = "NA")),
+#            prec_sq_rm_ten = prec_rm_ten^2)
+# 
+#  
 
- # 40-year
- dd_dat <- dd_dat %>%
-    group_by(fips) %>%
-    arrange(year) %>%
-    mutate(dday0_10_rm_fourty = lag(rollmean(dday0_10, k = 40, align = "right", fill = "NA")),
-           dday10_30_rm_fourty = lag(rollmean(dday10_30, k = 40, align = "right", fill = "NA")),
-           dday30_rm_fourty = lag(rollmean(dday30, k = 40, align = "right", fill = "NA")),
-           prec_rm_fourty = lag(rollmean(prec, k = 40, align = "right", fill = "NA")),
-           prec_sq_rm_fourty = prec_rm_fourty^2)
-
- # 30-year
- dd_dat <- dd_dat %>%
-    group_by(fips) %>%
-    arrange(year) %>%
-    mutate(dday0_10_rm_thirty = lag(rollmean(dday0_10, k = 30, align = "right", fill = "NA")),
-           dday10_30_rm_thirty = lag(rollmean(dday10_30, k = 30, align = "right", fill = "NA")),
-           dday30_rm_thirty = lag(rollmean(dday30, k = 30, align = "right", fill = "NA")),
-           prec_rm_thirty = lag(rollmean(prec, k = 30, align = "right", fill = "NA")),
-           prec_sq_rm_thirty = prec_rm_thirty^2)
-
- # 20 year intervals
- dd_dat <- dd_dat %>%
-    group_by(fips) %>%
-    arrange(year) %>%
-    mutate(dday0_10_rm_twenty = lag(rollmean(dday0_10, k = 20, align = "right", fill = "NA")),
-           dday10_30_rm_twenty = lag(rollmean(dday10_30, k = 20, align = "right", fill = "NA")),
-           dday30_rm_twenty = lag(rollmean(dday30, k = 20, align = "right", fill = "NA")),
-           prec_rm_twenty = lag(rollmean(prec, k = 20, align = "right", fill = "NA")),
-           prec_sq_rm_twenty = prec_rm_twenty^2)
-
-  # 10-year
- dd_dat <- dd_dat %>%
-    group_by(fips) %>%
-    arrange(year) %>%
-    mutate(dday0_10_rm_ten = lag(rollmean(dday0_10, k = 10, align = "right", fill = "NA")),
-           dday10_30_rm_ten = lag(rollmean(dday10_30, k = 10, align = "right", fill = "NA")),
-           dday30_rm_ten = lag(rollmean(dday30, k = 10, align = "right", fill = "NA")),
-           prec_rm_ten = lag(rollmean(prec, k = 10, align = "right", fill = "NA")),
-           prec_sq_rm_ten = prec_rm_ten^2)
-
- 
- dd_dat <- filter(dd_dat, year >= 1950 & year <= 2010)
- dd_dat$trend <- dd_dat$year - 1949
- dd_dat$trend_sq <- dd_dat$trend^2
 
 dd_dat <- dd_dat %>% 
   group_by(fips) %>% 
   distinct(year, .keep_all = TRUE)
 
-dd_dat <- filter(dd_dat, !is.na(state))
-ddat <- table(dd_dat$fips)
-which(ddat != 61)
+
 saveRDS(dd_dat, "data/full_weather_data.rds")
 #-----------------------------------------------
 
 
 dd_dat <- readRDS("data/full_weather_data.rds")
 dd_dat <- filter(dd_dat, !is.na(state))
+ dd_dat <- filter(dd_dat, year >= 1950 & year <= 2010)
+dd_dat$trend <- dd_dat$year - 1949
+dd_dat$trend_sq <- dd_dat$trend^2
+dd_dat <- filter(dd_dat, !is.na(state))
+ddat <- table(dd_dat$fips)
+which(ddat != 61)
 # saveRDS(dd_dat, "/home/john/Dropbox/eastern_weather_data.rds")
 # dd_dat <- readRDS("/home/john/Dropbox/eastern_weather_data.rds")
 # cropdat <- readRDS("data/full_ag_data.rds")

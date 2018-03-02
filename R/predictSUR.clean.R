@@ -105,13 +105,20 @@ predictSUR.clean <- function(mod, newdata_list, acres, fips, var.terms = NULL, c
   temp3[temp3 < 0 ] <- 0
   temp4[temp4 < 0 ] <- 0
   temp5[temp5 < 0 ] <- 0
-
+  
   temp0[, 2:6] <- temp0[, 2:6] / rowSums(temp0[, 2:6])
   temp1[, 2:6] <- temp1[, 2:6] / rowSums(temp1[, 2:6])
   temp2[, 2:6] <- temp2[, 2:6] / rowSums(temp2[, 2:6])
   temp3[, 2:6] <- temp3[, 2:6] / rowSums(temp3[, 2:6])
   temp4[, 2:6] <- temp4[, 2:6] / rowSums(temp4[, 2:6])
   temp5[, 2:6] <- temp5[, 2:6] / rowSums(temp5[, 2:6])
+  
+  temp0[, 2:6] <- apply(temp0[, 2:6], 2, function(x) ifelse(is.na(x), 0, x))
+  temp1[, 2:6] <- apply(temp0[, 2:6], 2, function(x) ifelse(is.na(x), 0, x))
+  temp2[, 2:6] <- apply(temp0[, 2:6], 2, function(x) ifelse(is.na(x), 0, x))
+  temp3[, 2:6] <- apply(temp0[, 2:6], 2, function(x) ifelse(is.na(x), 0, x))
+  temp4[, 2:6] <- apply(temp0[, 2:6], 2, function(x) ifelse(is.na(x), 0, x))
+  temp5[, 2:6] <- apply(temp0[, 2:6], 2, function(x) ifelse(is.na(x), 0, x))
   
   indat0_corn <- sum(temp0$corn.pred*acres)
   indat1_corn <- sum(temp1$corn.pred*acres)

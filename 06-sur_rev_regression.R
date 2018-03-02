@@ -28,9 +28,6 @@ cropdat <- readRDS("data/full_ag_data.rds")
 cropdat <- as.data.frame(cropdat)
 cropdat$fips <- factor(cropdat$fips)
 cropdat$state <- factor(cropdat$state)
-cropdat$ten <- factor(cropdat$ten)
-cropdat$twenty <- factor(cropdat$twenty)
-cropdat$thirty <- factor(cropdat$thirty)
 
 
 #-----------------------------------------------------------------------------------

@@ -57,38 +57,7 @@ newdata_list_dm <- list(p0 = p0_dm,
                      p3 = p3_dm,
                      p4 = p4_dm,
                      p5 = p5_dm)
-# 
-# p0_twenty <- demeanlist(p0, fl = list(fips = factor(cropdat$fips)))
-# p0_twenty_means <- demeanlist(p0, fl = list(fips = factor(cropdat$fips)), means = TRUE)
-# 
-# p1_twenty <- p1 - p0_twenty_means
-# p2_twenty <- p2 - p0_twenty_means
-# p3_twenty <- p3 - p0_twenty_means
-# p4_twenty <- p4 - p0_twenty_means
-# p5_twenty <- p5 - p0_twenty_means
-# 
-# newdata_list_twenty <- list(p0 = p0_twenty,
-#                      p1 = p1_twenty,
-#                      p2 = p2_twenty,
-#                      p3 = p3_twenty,
-#                      p4 = p4_twenty,
-#                      p5 = p5_twenty)
-# 
-# p0_thirty <- demeanlist(p0, fl = list(fips = factor(cropdat$fips)))
-# p0_thirty_means <- demeanlist(p0, fl = list(fips = factor(cropdat$fips)), means = TRUE)
-# 
-# p1_thirty <- p1 - p0_thirty_means
-# p2_thirty <- p2 - p0_thirty_means
-# p3_thirty <- p3 - p0_thirty_means
-# p4_thirty <- p4 - p0_thirty_means
-# p5_thirty <- p5 - p0_thirty_means
-# 
-# newdata_list_thirty <- list(p0 = p0_thirty,
-#                      p1 = p1_thirty,
-#                      p2 = p2_thirty,
-#                      p3 = p3_thirty,
-#                      p4 = p4_thirty,
-#                      p5 = p5_thirty)
+
 
 ten_climate_terms_v = c("dday0_10_rm10", "dday10_30_rm10", "dday30_rm10", 
                         "prec_rm10", "prec_sq_rm10")
@@ -104,6 +73,15 @@ terms <- c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq")
 
 # Climate-effect predictions
 
+mod = sur_ten
+acres = cropdat$acres
+fips = cropdat$fips
+newdata_list = newdata_list_dm
+var.terms = ten_climate_terms_v
+# cons.terms = terms,
+type = "10-year"
+effect = "Climate-effect"
+
 cten <- predictSUR.clean(mod = sur_ten, 
                          acres = cropdat$acres,  
                          fips = cropdat$fips,
@@ -113,7 +91,9 @@ cten <- predictSUR.clean(mod = sur_ten,
                          type = "10-year", 
                          effect = "Climate-effect")
 
-# head(cten$predictions)
+head(cten$predictions)
+head(cten$agg_predictions)
+
 #  cten_rs <- rowSums(cten$predictions)
 #  length(which((cten_rs != 1) == FALSE))
 # 
@@ -150,9 +130,9 @@ cthirty <- predictSUR.clean(mod = sur_thirty,
                             type = "12-year", 
                             effect = "Climate-effect")
 
-# cthirty$predictions %>% 
-  # group_by(temp) %>% 
-  # summarise_all(mean)
+cthirty$predictions %>% 
+ group_by(temp) %>% 
+ summarise_all(mean)
 
 # cthirty <- predictSUR.clean(mod = sur_thirty, acres = cropdat$acres, newdata_list = newdata_list_dm,type = "30-year", 
                          # effect = "Climate-effect")

@@ -1,4 +1,8 @@
 regdat <- readRDS("data/full_weather_data.rds")
+library(tidyverse)
+library(zoo)
+library(RcppRoll)
+# regdat <- readRDS("data/degree_day_changes/fips_degree_days_1C_1900-2013.rds")
 regdat$fips <- as.numeric(as.character(regdat$fips))
 class(regdat$fips)
 head(regdat$fips)
@@ -10,8 +14,8 @@ fips.index = unique(joe$fips)
 nfip = length(fips.index)
 
 rollMean = function(vec, len){
-        n = length(vec)
-        n2 = n - len + 1
+        nn = length(vec)
+        n2 = nn - len + 1
         for( i in 1:n2 ) {
                 if (i==1) x = sum(vec[1:len])/len
                 else x = c(x, sum(vec[i:(len+(i-1))])/len)
@@ -34,19 +38,41 @@ allFipsRM = function(varName, len){
   y
 }
 
-allFipsRM2 = function(dat, varName, len){
+allFipsRM3 = function(dat, varName, len){
   do.call(rbind, lapply(split(dat, dat$fips), function(x) {
-    all.rm <- as.data.frame(sapply(len, function(l) c(rollmean(x[,varName], l), rep(NA, l-1))))
+    all.rm <- as.data.frame(sapply(len, function(l) c(roll_meanr(x[,varName], l), rep(NA, l-1))))
     colnames(all.rm) <- paste0(varName, "_rm", len)
     cbind(data.frame(fips=x$fips[1]), all.rm, data.frame(year=seq_len(nrow(x))-1))
   }))
 }
 
-dday0_10_rm1 = allFipsRM2(joe, "dday0_10",1)
-dday0_10_rm2 = allFipsRM2(joe, "dday0_10",2)
-dday0_10_rm33 = allFipsRM2(joe, "dday0_10",3)
+test <- joe %>% 
+  group_by(fips) %>% 
+  mutate(dday0_10_rm10 = roll_mean(dday0_10, 10, align = "left", fill = "NA")) %>% 
+  filter(!is.na(dday0_10_rm10) ) %>% 
+  arrange(fips) %>% 
+  ungroup()
+
+dday0_10_rm10 = allFipsRM("dday0_10",10)
+all.equal(test$dday0_10_rm10, dday0_10_rm10$dday0_10_rm10)
+head(test)
+head(dday0_10_rm10)
+head(test$dday0_10_rm10)
+head(dday0_10_rm10$dday0_10_rm10)
 
 
+which((test$dday0_10_rm10 - dday0_10_rm10$dday0_10_rm10) != 0)
+nrow(test)
+
+mean(test$dday0_10_rm10 - dday0_10_rm10$dday0_10_rm10)
+nrow(dday0_10_rm10)
+
+# dday0_10_rm1 = allFipsRM2(joe, "dday0_10",1)
+# dday0_10_rm2 = allFipsRM2(joe, "dday0_10",2)
+dday0_10_rm33 = allFipsRM3(joe, "dday30", 10)
+# sd(regdat$dday0_10 - dday0_10_rm33$dday0_10_rm2, na.rm = TRUE)
+head(dday0_10_rm33)
+dday0_10_rm33
 
 dday0_10_rm1 = allFipsRM("dday0_10",1)
 dday0_10_rm2 = allFipsRM("dday0_10",2)

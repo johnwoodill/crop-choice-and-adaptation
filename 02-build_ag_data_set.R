@@ -1,5 +1,5 @@
 library(tidyverse)
-
+library(RcppRoll)
 library(rms)
 library(noncensus)
 library(maps)
@@ -379,38 +379,42 @@ dd_dat <- select(dd_dat, year, fips, dday0_10, dday10_30, dday30, prec, prec_sq)
 #--------------------------------------------------
 # Roll.mean intervals
 
-rm_dat <- readRDS("data/full_rollmean_lag_variables.rds")
-rm_dat <- select(rm_dat, year, fips, dday0_10_rm10, dday10_30_rm10, dday30_rm10, prec_rm10, prec_sq_rm10,
-                 dday0_10_rm11, dday10_30_rm11, dday30_rm11, prec_rm11, prec_sq_rm11,
-                 dday0_10_rm12, dday10_30_rm12, dday30_rm12, prec_rm12, prec_sq_rm12)
-head(rm_dat)
-dd_dat <- left_join(dd_dat, rm_dat, by = c("year", "fips"))
-# 
-# allFipsRM = function(dat, varName, len){
-#   do.call(rbind, lapply(split(dat, dat$fips), function(x) {
-#     all.rm <- as.data.frame(sapply(len, function(l) c(rollmean(x[,varName], l), rep(NA, l-1))))
-#     colnames(all.rm) <- paste0(varName, "_rm", len)
-#     cbind(data.frame(fips=x$fips[1]), all.rm, data.frame(year=seq_len(nrow(x))-1))
-#   }))
-# }
-# 
-# 
-# rmdat1 <- allFipsRM(dd_dat, "dday0_10", c(10, 11, 12))
-# rmdat2 <- allFipsRM(dd_dat, "dday10_30", c(10, 11, 12))
-# rmdat3 <- allFipsRM(dd_dat, "dday30", c(10, 11, 12))
-# rmdat4 <- allFipsRM(dd_dat, "prec", c(10, 11, 12))
-# rmdat <- left_join(rmdat1, rmdat2, by = c("year", "fips"))
-# rmdat <- left_join(rmdat, rmdat3, by = c("year", "fips"))
-# rmdat <- left_join(rmdat, rmdat4, by = c("year", "fips"))
-# rmdat$year <- rmdat$year + 1900
-# rmdat$prec_sq_rm10 <- rmdat$prec_rm10^2
-# rmdat$prec_sq_rm11 <- rmdat$prec_rm11^2
-# rmdat$prec_sq_rm12 <- rmdat$prec_rm12^2
-# dd_dat <- left_join(dd_dat, rmdat, by = c("year", "fips"))
+# Lag one so current year is not included
+dd_dat <- dd_dat %>% 
+  group_by(fips) %>% 
+  arrange(-year) %>% 
+  mutate(dday0_10_lag1 = lag(dday0_10),
+         dday10_30_lag1 = lag(dday10_30),
+         dday30_lag1 = lag(dday30),
+         prec_lag1 = lag(prec))
+
+dd_dat <- dd_dat %>% 
+  group_by(fips) %>% 
+  arrange(year) %>% 
+  mutate(dday0_10_rm10 = roll_mean(dday0_10_lag1, 10, align = "right", fill = "NA"),
+         dday10_30_rm10 = roll_mean(dday10_30_lag1, 10, align = "right", fill = "NA"),
+         dday30_rm10 = roll_mean(dday30_lag1, 10, align = "right", fill = "NA"),
+         prec_rm10 = roll_mean(prec_lag1, 10, align = "right", fill = "NA"),
+         prec_sq_rm10 = prec_rm10^2,
+         
+         dday0_10_rm11 = roll_mean(dday0_10_lag1, 11, align = "right", fill = "NA"),
+         dday10_30_rm11 = roll_mean(dday10_30_lag1, 11, align = "right", fill = "NA"),
+         dday30_rm11 = roll_mean(dday30_lag1, 11, align = "right", fill = "NA"),
+         prec_rm11 = roll_mean(prec_lag1, 11, align = "right", fill = "NA"),
+         prec_sq_rm11 = prec_rm11^2,
+         
+         dday0_10_rm12 = roll_mean(dday0_10_lag1, 12, align = "right", fill = "NA"),
+         dday10_30_rm12 = roll_mean(dday10_30_lag1, 12, align = "right", fill = "NA"),
+         dday30_rm12 = roll_mean(dday30_lag1, 12, align = "right", fill = "NA"),
+         prec_rm12 = roll_mean(prec_lag1, 12, align = "right", fill = "NA"),
+         prec_sq_rm12 = prec_rm12^2) %>% 
+  ungroup()
+
+
 
 # Merge ag prices, ag crop data, and degree day data ----------------------
 
-fulldat <- left_join(cropdat, crop_prices, by = c("year", "state"))
+fulldat <- right_join(cropdat, crop_prices, by = c("year", "state"))
  
 # Import region data file
 region_dat <- read_csv("data/ResourceRegionCRDfips.csv")
