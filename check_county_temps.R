@@ -498,14 +498,29 @@ ggsave("figures/ms_delta.pdf", width = 10, height = 4)
 
 
 #----------------------------------
-# South Carolina (warming) Georgia (cooling)
-il <- filter(cropdat, state %in% c("ga"))
-il <- filter(il, fips %in% gac_fips$fips)
-il$location <- "Georgia (Cooling)"
+# Southern Seaboard
 
-ia <- filter(cropdat, state %in% c("sc"))
-ia <- filter(ia, fips %in% sc_fips$fips)
-ia$location <- "South Carolina (Warming)"
+al_fips <- filter(fdat, state == "al")
+# al_fips <- filter(al_fips, long >= -92.5)
+# al_fips <- filter(al_fips, long <= -90.5)
+# al_fips <- filter(al_fips, lat <= 32)
+
+al_fips <- filter(al_fips, lat <= 34)
+al_w_fips <- arrange(al_w_fips, -value)
+al_w_fips <- al_w_fips[1:30, c("fips", "value")]
+
+al_c_fips <- arrange(al_fips, value)
+al_c_fips <- al_c_fips[1:30, c("fips", "value")]
+
+check_map(al_w_fips)
+check_map(al_c_fips)
+
+# South Carolina (warming) Georgia (cooling)
+il <- filter(dd_dat, fips %in% al_w_fips$fips)
+il$location <- "Alabama (Warming)"
+
+ia <- filter(dd_dat, fips %in% al_c_fips$fips)
+ia$location <- "Alabama (Cooling)"
 il <- rbind(il, ia)
 
 # Log revenue
@@ -542,20 +557,14 @@ il_p3 <- ggplot(il, aes(year, log(1 + acres_m), color = factor(location))) + geo
   scale_color_manual(values=c("#619CFF", "#F8766D"))
 il_p3
 
-il_crops <- filter(cropdat, state %in% c("ga"))
-il_crops <- filter(il_crops, fips %in% gac_fips$fips)
-ia_crops <- filter(cropdat, state %in% c("sc"))
-ia_crops <- filter(ia_crops, fips %in% sc_fips$fips)
-il_crops$location <- "Georgia (Cooling)"
-ia_crops$location <- "South Carolina (Warming)"
+il_crops <- filter(dd_dat, fips %in% al_w_fips$fips)
+ia_crops <- filter(dd_dat, fips %in% al_c_fips$fips)
+il_crops$location <- "Alabama (Warming)"
+ia_crops$location <- "Alabama (Cooling)"
 
 il_crops <- rbind(il_crops, ia_crops)
-il_crops$decade <- ifelse(il_crops$year <= 1969, 1, 2)
+il_crops$decade <- ifelse(il_crops$year <= 1970, 1, 2)
 il_crops$decade <- ifelse(il_crops$year >= 1990, 3, il_crops$decade)
-# il_crops <- filter(cropdat, state %in% c("il", "in"))
-# il_crops <- filter(il_crops, year <= 1969 | year >= 2000)
-# il_crops$location <- ifelse(il_crops$lat <= 40.5, "Southern Illinois/Indiana", "Northen Illinois/Indiana")
-# il_crops$decade <- ifelse(il_crops$year <= 1969, 1, 2)
 il_crops <- il_crops %>% 
   group_by(fips, decade, location) %>% 
   summarise(corn_grain_a = mean(corn_grain_a, na.rm = TRUE),
@@ -616,18 +625,31 @@ il_p2
 ggdraw() + draw_plot(modmap_trend, width = .85) + 
   draw_plot(il_p1, .46, .5, height = .5, width = .55) +
   draw_plot(il_p2, .46, .02, height = .5, width = .55)
-ggsave("figures/sc_ga.pdf", width = 10, height = 4)
+ggsave("figures/southern_seaboard.pdf", width = 10, height = 4)
 
 
 #----------------------------------------------------------
-# Kentucky (warming and Cooling)
-il <- filter(cropdat, state %in% c("ky"))
-il <- filter(il, fips %in% ky_w_fips$fips)
-il$location <- "Kentucky (Warming)"
+# Praire
+# Oklahoma warming and  cooling
+ok_w_fips <- filter(fdat, state == c("ks"))
+ok_w_fips <- arrange(ok_w_fips, -value)
+ok_w_fips <- ok_w_fips[1:20, ]
+# in_fips <- filter(in_fips, value <= -9)
+nrow(ok_w_fips)
+check_map(ok_w_fips)
 
-ia <- filter(cropdat, state %in% c("ky"))
-ia <- filter(ia, fips %in% ky_c_fips$fips)
-ia$location <- "Kentucky (Cooling)"
+ok_c_fips <- filter(fdat, state == c("ks", "ok"))
+# ok_c_fips <- filter(ok_c_fips, long <= -97.5)
+ok_c_fips <- filter(ok_c_fips, lat <= 38)
+ok_c_fips <- arrange(ok_c_fips, value)
+ok_c_fips <- ok_c_fips[1:20, ]
+check_map(ok_c_fips)
+
+il <- filter(dd_dat, fips %in% ok_w_fips$fips)
+il$location <- "Prairie (Warming)"
+
+ia <- filter(dd_dat, fips %in% ok_c_fips$fips)
+ia$location <- "Prairie (Cooling)"
 il <- rbind(il, ia)
 
 # Log revenue
@@ -648,12 +670,10 @@ il_p1 <- ggplot(il, aes(year, ln_rev_m, color = factor(location))) + geom_line()
   scale_color_manual(values=c("#619CFF", "#F8766D"))
 il_p1
 
-il_crops <- filter(cropdat, state %in% c("ky"))
-il_crops <- filter(il_crops, fips %in% ky_w_fips$fips)
-ia_crops <- filter(cropdat, state %in% c("ky"))
-ia_crops <- filter(ia_crops, fips %in% ky_c_fips$fips)
-il_crops$location <- "Kentucky (Warming)"
-ia_crops$location <- "Kentucky (Cooling)"
+il_crops <- filter(dd_dat, fips %in% ok_w_fips$fips)
+ia_crops <- filter(dd_dat, fips %in% ok_c_fips$fips)
+il_crops$location <- "Oklahoma (Warming)"
+ia_crops$location <- "Oklahoma (Cooling)"
 
 il_crops <- rbind(il_crops, ia_crops)
 il_crops$decade <- ifelse(il_crops$year <= 1969, 1, 2)
