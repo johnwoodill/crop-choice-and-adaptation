@@ -11,77 +11,82 @@ library(maps)
 library(haven)
 
 
-# dd <- read_csv("data/fips_degree_days_1900-2013.csv")
-# prec <- read_csv("data/fips_precipitation_1900-2013.csv")
-# 
-# cropdat <- readRDS("data/full_ag_data.rds")
-# 
-# dd$year <- as.integer(dd$year)
-# dd$fips <- as.integer(dd$fips)
-# dd$X1 <- NULL
-# 
-# dd <- left_join(dd, prec, by = c("fips", "year", "month"))
-# 
-# dd_dat <- filter(dd, month >= 3 & month <= 10)
-# 
-# dd_dat <- dd_dat %>%
-#     group_by(year, fips) %>%
-#     summarise(dday0C = sum(dday0C),
-#              dday10C = sum(dday10C),
-#              dday30C = sum(dday30C),
-#              prec = sum(ppt))
-# 
-# dd_dat$dday0_10 <- dd_dat$dday0C - dd_dat$dday10C
-# dd_dat$dday10_30 <- dd_dat$dday10C - dd_dat$dday30C
-# dd_dat$dday30 <- dd_dat$dday30C
-# dd_dat$prec_sq <- dd_dat$prec^2
-# 
-# dd_dat <- select(dd_dat, year, fips, dday0C, dday10C, dday30C, dday0_10, dday10_30, dday30, prec, prec_sq)
-# 
-# data(county.fips)
-# county.fips$state <- sapply(str_split(county.fips$polyname, ","),'[',1)
-# county.fips$county <- sapply(str_split(county.fips$polyname, ","),'[',2)
-# county.fips <- select(county.fips, fips, county, state)
-# head(county.fips)
-# 
-# states <- data.frame(state = tolower(state.name), stateabb = tolower(state.abb))
-# states
-# 
-# county.fips <- left_join(county.fips, states, by = "state")
-# county.fips <- select(county.fips, fips, stateabb)
-# names(county.fips) <- c("fips", "state")
-# 
-# dd_dat <- left_join(dd_dat, county.fips, by = "fips")
-# 
-# data(zip_codes)
-# zip_codes <- select(zip_codes, fips, latitude, longitude)
-# zip_codes <- zip_codes[!duplicated(zip_codes[,1:3]),]
-# names(zip_codes) <- c("fips", "lat", "long")
-# zip_codes <- zip_codes %>% 
-#   group_by(fips) %>% 
-#   summarise(lat = mean(lat, na.rm = TRUE),
-#             long = mean(long, na.rm = TRUE))
-# 
-# dd_dat <- left_join(dd_dat, zip_codes, by = "fips")
-# 
-# ers_region <- read_csv("data/ResourceRegionCRDfips.csv")
-# names(ers_region) <- c("fips", "ers_region", "crd")
-# dd_dat <- left_join(dd_dat, ers_region, by = "fips")
-# dd_dat <- filter(dd_dat, abs(long) <= 100)
-# unique(factor(dd_dat$state))
-# dd_dat <- filter(dd_dat, state %in% unique(cropdat$state))
-# 
-# 
-# #--------------------------------------
-   # Roll.mean intervals
+ # dd <- read_csv("data/fips_degree_days_1900-2013.csv")
+ # prec <- read_csv("data/fips_precipitation_1900-2013.csv")
+ # 
+ # cropdat <- readRDS("data/full_ag_data.rds")
+ # 
+ # dd$year <- as.integer(dd$year)
+ # dd$fips <- as.integer(dd$fips)
+ # dd$X1 <- NULL
+ # 
+ # dd <- left_join(dd, prec, by = c("fips", "year", "month"))
+ # 
+ # dd_dat <- filter(dd, month >= 3 & month <= 10)
+ # 
+ # dd_dat <- dd_dat %>%
+ #     group_by(year, fips) %>%
+ #     summarise(dday0C = sum(dday0C),
+ #              dday10C = sum(dday10C),
+ #              dday30C = sum(dday30C),
+ #              prec = sum(ppt))
+ # 
+ # dd_dat$dday0_10 <- dd_dat$dday0C - dd_dat$dday10C
+ # dd_dat$dday10_30 <- dd_dat$dday10C - dd_dat$dday30C
+ # dd_dat$dday30 <- dd_dat$dday30C
+ # dd_dat$prec_sq <- dd_dat$prec^2
+ # 
+ # dd_dat <- select(dd_dat, year, fips, dday0C, dday10C, dday30C, dday0_10, dday10_30, dday30, prec, prec_sq)
+ # 
+ # data(county.fips)
+ # county.fips$state <- sapply(str_split(county.fips$polyname, ","),'[',1)
+ # county.fips$county <- sapply(str_split(county.fips$polyname, ","),'[',2)
+ # county.fips <- select(county.fips, fips, county, state)
+ # head(county.fips)
+ # 
+ # states <- data.frame(state = tolower(state.name), stateabb = tolower(state.abb))
+ # states
+ # 
+ # county.fips <- left_join(county.fips, states, by = "state")
+ # county.fips <- select(county.fips, fips, stateabb)
+ # names(county.fips) <- c("fips", "state")
+ # 
+ # dd_dat <- left_join(dd_dat, county.fips, by = "fips")
+ # 
+ # data(zip_codes)
+ # zip_codes <- select(zip_codes, fips, latitude, longitude)
+ # zip_codes <- zip_codes[!duplicated(zip_codes[,1:3]),]
+ # names(zip_codes) <- c("fips", "lat", "long")
+ # zip_codes <- zip_codes %>%
+ #   group_by(fips) %>%
+ #   summarise(lat = mean(lat, na.rm = TRUE),
+ #             long = mean(long, na.rm = TRUE))
+ # 
+ # dd_dat <- left_join(dd_dat, zip_codes, by = "fips")
+ # 
+ # ers_region <- read_csv("data/ResourceRegionCRDfips.csv")
+ # names(ers_region) <- c("fips", "ers_region", "crd")
+ # dd_dat <- left_join(dd_dat, ers_region, by = "fips")
+ # dd_dat <- filter(dd_dat, abs(long) <= 100)
+ # unique(factor(dd_dat$state))
+ # # dd_dat <- filter(dd_dat, state %in% unique(cropdat$state))
+ # 
 
+#--------------------------------------
+    #Roll.mean intervals
 
+# 
+#  dd_dat <- dd_dat %>%
+#    group_by(fips) %>%
+#    distinct(year, .keep_all = TRUE)
+# 
 # dd_dat <- dd_dat %>% 
 #   group_by(fips) %>% 
-#   distinct(year, .keep_all = TRUE)
+#   mutate(dday30_lag1 = lag(dday30)) %>% 
+#   arrange(year) %>% 
+#   mutate(dday30_rm10 = roll_mean(dday30_lag1, 10, align = "right", fill = "NA"))
 # 
-# 
-# saveRDS(dd_dat, "data/full_weather_data.rds")
+#  saveRDS(dd_dat, "data/full_weather_data.rds")
 #-----------------------------------------------
 
 
@@ -92,7 +97,6 @@ dd_dat <- filter(dd_dat, !is.na(state))
 dd_dat <- filter(dd_dat, year >= 1960 & year <= 2010)
 dd_dat$trend <- dd_dat$year - 1959
 dd_dat$trend_sq <- dd_dat$trend^2
-dd_dat <- filter(dd_dat, !is.na(state))
 ddat <- table(dd_dat$fips)
 which(ddat != 51)
 
@@ -130,12 +134,35 @@ ggdat <- gdat %>%
   group_by(region,  year) %>% 
   summarise(dday30_dm_m = mean(dday30_dm))
 
-ggplot(ggdat, aes(year, dday30_dm_m, color = factor(region))) + geom_line()
+ggplot(ggdat, aes(year, dday30_dm_m, color = factor(region))) + geom_line() +
+    theme_tufte(base_size = 8) +
+  ylab("Demeaned Degre Day 30C /n (10-year rolling mean)") +
+  xlab(NULL) +
+  ylim(min(ggdat$dday30_dm_m), max(ggdat$dday30_dm_m)) +
+  annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
+  annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
+  theme(legend.position = "none") +
+  # ylim(-2, max(il_crops$value)) +
+  geom_vline(xintercept = 1980, linetype = "dashed", color = "grey")
+
+# revenue by ers region
+gdat <- dd_dat %>% 
+  group_by(fips) %>% 
+  mutate(ln_rev_dm = ln_rev - mean(ln_rev))
+
+
+ggdat <- gdat %>% 
+  group_by(region,  year) %>% 
+  summarise(ln_rev_m = mean(ln_rev_dm))
+
+ggplot(ggdat, aes(year, ln_rev_m, color = factor(region))) + geom_line() 
+
 
 # Difference in residuals 1950 and 2000
 mod7 <- felm(dday30_rm10 ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
                trend:(lat + long) + trend_sq:(lat + long) | fips, 
              data = dd_dat)
+
 sum(mod7$residuals)
 summary(mod7)
 
@@ -147,7 +174,7 @@ mod7_res1$region <- as.numeric(as.character(dd_dat$fips))
 mod7_res1$year <- dd_dat$year
 
 mod7_res50_00 <- filter(mod7_res1, (year >= 1960 & year <= 1979) | (year >= 1980 & year <= 2010))
-mod7_res50_00$decade <- ifelse(mod7_res50_00$year <= 1980, 1, 2)
+mod7_res50_00$decade <- ifelse(mod7_res50_00$year <= 1979, 1, 2)
 
 mod7_res50_00 <- mod7_res50_00 %>% 
   group_by(region, decade) %>% 
@@ -199,6 +226,23 @@ check_map <- function(x){
   mod_map
 }
 
+# Summary Statistics
+sumstat <- dd_dat
+sumstat <- filter(sumstat, (year >= 1960 & year <= 1979) | (year >= 1980 & year <= 2010))
+sumstat$decade <- ifelse(sumstat$year <= 1979, 1, 2)
+
+sumstat <- sumstat %>% 
+  select(fips, decade, ln_rev) %>% 
+  group_by(fips, decade) %>% 
+  summarise(ln_rev = mean(ln_rev, na.rm = TRUE)) %>% 
+  arrange(-decade) %>% 
+  mutate(value = first(ln_rev) - last(ln_rev)) %>% 
+  filter(decade == 2) %>% 
+  ungroup() %>% 
+  select(fips, value)
+
+check_map(sumstat)
+
 # Get extreme counties
 fipm <- select(dd_dat, fips, ers_region, state, lat, long)
 head(fipm)
@@ -231,12 +275,20 @@ ms_c_fips <- ms_c_fips[1:10, c("fips", "value")]
 check_map(ms_w_fips)
 check_map(ms_c_fips)
 
-# Iowa extreme heat
-iowa_fips <- filter(fdat, state == "ia")
-iowa_fips <- arrange(iowa_fips, -value)
-iowa_fips <- iowa_fips[1:10, ]
-# iowa_fips <- filter(iowa_fips, value >= 3.30)
-nrow(iowa_fips)
+# KS NE Prairie
+ks_fips <- filter(fdat, state == c("ks"))
+# ks_w_fips <- filter(ks_fips, lat <= 32)
+# ks_w_fips <- filter(ks_w_fips, long <= -91.5)
+ks_w_fips <- arrange(ks_fips, -value)
+ks_w_fips <- ks_w_fips[1:20, c("fips", "value")]
+check_map(ks_w_fips)
+
+ks_c_fips <- filter(fdat, state == "ne")
+ks_c_fips <- filter(ks_c_fips, lat <= 41)
+ks_c_fips <- arrange(ks_c_fips, value)
+ks_c_fips <- ks_c_fips[1:20, c("fips", "value")]
+check_map(ks_c_fips)
+
 
 # Kentucky Warming
 ky_w_fips <- filter(fdat, state == "ky")
@@ -631,24 +683,10 @@ ggsave("figures/southern_seaboard.pdf", width = 10, height = 4)
 #----------------------------------------------------------
 # Praire
 # Oklahoma warming and  cooling
-ok_w_fips <- filter(fdat, state == c("ks"))
-ok_w_fips <- arrange(ok_w_fips, -value)
-ok_w_fips <- ok_w_fips[1:20, ]
-# in_fips <- filter(in_fips, value <= -9)
-nrow(ok_w_fips)
-check_map(ok_w_fips)
-
-ok_c_fips <- filter(fdat, state == c("ks", "ok"))
-# ok_c_fips <- filter(ok_c_fips, long <= -97.5)
-ok_c_fips <- filter(ok_c_fips, lat <= 38)
-ok_c_fips <- arrange(ok_c_fips, value)
-ok_c_fips <- ok_c_fips[1:20, ]
-check_map(ok_c_fips)
-
-il <- filter(dd_dat, fips %in% ok_w_fips$fips)
+il <- filter(dd_dat, fips %in% ks_w_fips$fips)
 il$location <- "Prairie (Warming)"
 
-ia <- filter(dd_dat, fips %in% ok_c_fips$fips)
+ia <- filter(dd_dat, fips %in% ks_c_fips$fips)
 ia$location <- "Prairie (Cooling)"
 il <- rbind(il, ia)
 
@@ -661,6 +699,7 @@ il_p1 <- ggplot(il, aes(year, ln_rev_m, color = factor(location))) + geom_line()
   theme_tufte(base_size = 8) +
   ylab("log(Revenue per Acre)") +
   xlab(NULL) +
+  ylim(0, max(il$ln_rev_m)) +
   annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
   annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
   theme(legend.position = "top",
@@ -670,8 +709,8 @@ il_p1 <- ggplot(il, aes(year, ln_rev_m, color = factor(location))) + geom_line()
   scale_color_manual(values=c("#619CFF", "#F8766D"))
 il_p1
 
-il_crops <- filter(dd_dat, fips %in% ok_w_fips$fips)
-ia_crops <- filter(dd_dat, fips %in% ok_c_fips$fips)
+il_crops <- filter(dd_dat, fips %in% ks_w_fips$fips)
+ia_crops <- filter(dd_dat, fips %in% ks_c_fips$fips)
 il_crops$location <- "Oklahoma (Warming)"
 ia_crops$location <- "Oklahoma (Cooling)"
 
@@ -742,17 +781,30 @@ il_p2
 ggdraw() + draw_plot(modmap_trend, width = .85) + 
   draw_plot(il_p1, .46, .5, height = .5, width = .55) +
   draw_plot(il_p2, .46, .02, height = .5, width = .55)
-ggsave("figures/ky.pdf", width = 10, height = 4)
-
+ggsave("figures/prairie.pdf", width = 10, height = 4)
 
 #----------------------------------------------------------
-# Oklahom (warming and cooling)
-il <- filter(cropdat, state %in% c("ok"))
-il <- filter(il, fips %in% ok_w_fips$fips)
-ia <- filter(cropdat, state %in% c("ok"))
-ia <- filter(ia, fips %in% ok_c_fips$fips)
-il$location <- "Oklahoma (Warming)"
-ia$location <- "Oklahoma (Cooling)"
+# Heartland
+# Illinois warming and  cooling
+il_w_fips <- filter(fdat, ers_region == 1)
+# il_w_fips <- filter(il_w_fips, long <= -98)
+il_w_fips <- arrange(il_w_fips, -value)
+il_w_fips <- il_w_fips[1:10, ]
+# in_fips <- filter(in_fips, value <= -9)
+nrow(il_w_fips)
+check_map(il_w_fips)
+
+il_c_fips <- filter(fdat, ers_region == 1)
+# il_c_fips <- filter(il_c_fips, lat <= 40)
+il_c_fips <- arrange(il_c_fips, value)
+il_c_fips <- il_c_fips[1:10, ]
+check_map(il_c_fips)
+
+il <- filter(dd_dat, fips %in% il_w_fips$fips)
+il$location <- "Heartland (Warming)"
+
+ia <- filter(dd_dat, fips %in% il_c_fips$fips)
+ia$location <- "Heartland (Cooling)"
 il <- rbind(il, ia)
 
 # Log revenue
@@ -764,9 +816,9 @@ il_p1 <- ggplot(il, aes(year, ln_rev_m, color = factor(location))) + geom_line()
   theme_tufte(base_size = 8) +
   ylab("log(Revenue per Acre)") +
   xlab(NULL) +
+  ylim(0, max(il$ln_rev_m)) +
   annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
   annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
-  ylim(0, max(il$ln_rev_m)) +
   theme(legend.position = "top",
     # legend.justification = c("left", "top"),
     legend.box.background = element_rect(colour = "grey"),
@@ -774,15 +826,14 @@ il_p1 <- ggplot(il, aes(year, ln_rev_m, color = factor(location))) + geom_line()
   scale_color_manual(values=c("#619CFF", "#F8766D"))
 il_p1
 
-il_crops <- filter(cropdat, state %in% c("ne"))
-il_crops <- filter(il_crops, fips %in% ne_fips$fips)
-ia_crops <- filter(cropdat, state %in% c("il"))
-ia_crops <- filter(ia_crops, fips %in% il_fips$fips)
-il_crops$location <- "Nebraska (Warming)"
-ia_crops$location <- "Illinois (Cooling)"
-il_crops <- rbind(il_crops, ia_crops)
-il_crops$decade <- ifelse(il_crops$year <= 1980, 1, 2)
+il_crops <- filter(dd_dat, fips %in% il_w_fips$fips)
+ia_crops <- filter(dd_dat, fips %in% il_c_fips$fips)
+il_crops$location <- "Heartland (Warming)"
+ia_crops$location <- "Heartland (Cooling)"
 
+il_crops <- rbind(il_crops, ia_crops)
+il_crops$decade <- ifelse(il_crops$year <= 1969, 1, 2)
+il_crops$decade <- ifelse(il_crops$year >= 1990, 3, il_crops$decade)
 # il_crops <- filter(cropdat, state %in% c("il", "in"))
 # il_crops <- filter(il_crops, year <= 1969 | year >= 2000)
 # il_crops$location <- ifelse(il_crops$lat <= 40.5, "Southern Illinois/Indiana", "Northen Illinois/Indiana")
@@ -820,14 +871,12 @@ il_crops$crops <- paste0(il_crops$crops, il_crops$decade)
 il_p2 <- ggplot(il_crops, aes(y=value, x=location, fill = factor(crops), group = factor(crops))) + 
   geom_bar( stat = "identity", position = position_dodge(width = 0.95), width = .95, alpha = 0.75) +
   geom_text(aes(label=paste(round(value, 2), "%")), position=position_dodge(width=.95),   vjust=-0.25, size = 1.5) +
-  geom_text(aes(label=c("Corn", "Corn", "Corn", "Corn", 
-                        "Hay", "Hay", "Hay", "Hay",
-                        "Soybean", "Soybean", "Soybean", "Soybean",
-                        "Wheat", "Wheat", "Wheat", "Wheat",
-                        "Cotton", "Cotton", "Cotton", "Cotton")), position=position_dodge(width=.95), vjust=1.50, size = 1.5) +
-  geom_text(aes(label=c("pre", "pre", "post", "post", "pre", "pre", "post", "post",
-                                                 "pre", "pre", "post", "post", "pre", "pre", "post", "post",
-                        "pre", "pre", "post", "post")), position=position_dodge(width=.95),   vjust=2.60, size = 1.5) +
+  geom_text(aes(label=c("Corn", "Corn", "Corn", "Corn", "Corn", "Corn", "Hay", "Hay", "Hay", "Hay","Hay", "Hay",
+                                                  "Soybean", "Soybean", "Soybean", "Soybean", "Soybean", "Soybean","Wheat", "Wheat", "Wheat", "Wheat","Wheat", "Wheat",
+                         "Cotton", "Cotton", "Cotton", "Cotton", "Cotton", "Cotton")), position=position_dodge(width=.95), vjust=1.50, size = 1.5) +
+  geom_text(aes(label=c("1960", "1960", "1980", "1980", "2000", "2000", "1960", "1960", "1980", "1980", "2000", "2000",
+                                                "1960", "1960", "1980", "1980", "2000", "2000", "1960", "1960", "1980", "1980", "2000", "2000",
+                         "1960", "1960", "1980", "1980", "2000", "2000")), position=position_dodge(width=.95),   vjust=2.60, size = 1.5) +
 
   theme_tufte(base_size = 8) +
   ylab("Crop Share of Total Acres (%)") +
@@ -849,129 +898,4 @@ il_p2
 ggdraw() + draw_plot(modmap_trend, width = .85) + 
   draw_plot(il_p1, .46, .5, height = .5, width = .55) +
   draw_plot(il_p2, .46, .02, height = .5, width = .55)
-ggsave("figures/ky.pdf", width = 10, height = 4)
-
-
-#----------------------------------------------------------
-# Sourthern Georgia versus Northern Georgia
-il <- filter(cropdat, state == "ga")
-il <- filter(il, fips %in% gaw_fips$fips)
-# il <- filter(il, lat <= 40.5)
-ia <- filter(cropdat, state %in% c("ga"))
-ia <- filter(ia, fips %in% gac_fips$fips)
-# ia <- filter(ia, long >= -93)
-# il$location <- ifelse(il$lat <= 40.5, "Southern Illinois/Indiana", "Northen Illinois/Indiana")
-il$location <- "Sourthern Georgia"
-ia$location <- "Northern Georgia"
-il <- rbind(il, ia)
-
-# Log revenue
-il <- il %>%
-  group_by(year, location) %>%
-  summarise(ln_rev_m = mean(ln_rev, na.rm = TRUE))
-
-il_p1 <- ggplot(il, aes(year, ln_rev_m, color = factor(location))) + geom_line() +
-  theme_tufte(base_size = 8) +
-  ylab("log(Revenue per Acre)") +
-  xlab(NULL) +
-  annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
-  annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
-  theme(legend.position = "top",
-    # legend.justification = c("left", "top"),
-    legend.box.background = element_rect(colour = "grey"),
-    legend.title = element_blank(), legend.key = element_blank()) +
-  scale_color_manual(values=c("#619CFF", "#F8766D"))
-il_p1
-
-il_crops <- filter(cropdat, state == "ga")
-il_crops <- filter(il_crops, fips %in% gaw_fips$fips)
-# il_crops <- filter(il_crops, lat <= 40.5)
-ia_crops <- filter(cropdat, state %in% c("ga"))
-ia_crops <- filter(ia_crops, fips %in% gac_fips$fips)
-# ia <- filter(ia_crops, long >= -93)
-# _cropsil$location <- ifelse(il$lat <= 40.5, "Southern Illinois/Indiana", "Northen Illinois/Indiana")
-il_crops$location <- "Sourthern Georgia"
-ia_crops$location <- "Northern Georgia"
-il_crops <- rbind(il_crops, ia_crops)
-# il_crops <- filter(il_crops, year <= 1969 | year >= 2000)
-il_crops$decade <- ifelse(il_crops$year <= 1980, 1, 2)
-
-# il_crops <- filter(cropdat, state %in% c("il", "in"))
-# il_crops <- filter(il_crops, year <= 1969 | year >= 2000)
-# il_crops$location <- ifelse(il_crops$lat <= 40.5, "Southern Illinois/Indiana", "Northen Illinois/Indiana")
-# il_crops$decade <- ifelse(il_crops$year <= 1969, 1, 2)
-il_crops <- il_crops %>% 
-  group_by(fips, decade, location) %>% 
-  summarise(corn_grain_a = mean(corn_grain_a, na.rm = TRUE),
-            hay_a = mean(hay_a, na.rm = TRUE),
-            soybean_a = mean(soybean_a, na.rm = TRUE),
-            wheat_a = mean(wheat_a, na.rm = TRUE),
-            cotton_a = mean(cotton_a,na.rm = TRUE)) %>% 
-  group_by(decade, location) %>% 
-    summarise(corn_grain_a = sum(corn_grain_a, na.rm = TRUE),
-            hay_a = sum(hay_a, na.rm = TRUE),
-            soybean_a = sum(soybean_a, na.rm = TRUE),
-            wheat_a = sum(wheat_a, na.rm = TRUE),
-            cotton_a = sum(cotton_a,na.rm = TRUE)) %>% 
-  ungroup()
-il_crops
-il_crops$acres <- rowSums(il_crops[, c("corn_grain_a", "hay_a", "soybean_a", "wheat_a", "cotton_a")], na.rm = TRUE)
-
-il_crops$corn_p <- 100*il_crops$corn_grain_a/il_crops$acres
-il_crops$hay_p <- 100*il_crops$hay_a/il_crops$acres
-il_crops$soybean_p <- 100*il_crops$soybean_a/il_crops$acres
-il_crops$wheat_p <- 100*il_crops$wheat_a/il_crops$acres
-il_crops$cotton_p <- 100*il_crops$cotton_a/il_crops$acres
-
-head(il_crops)  
-
-# 
-# group_by(location) %>% 
-#   arrange(-decade) %>%
-#   mutate(corn_c = 100*(first(corn_grain_a) - last(corn_grain_a))/last(corn_grain_a),
-#          cotton_c = 100*(first(hay_a) - last(hay_a))/last(hay_a),
-#          soybean_c = 100*(first(soybean_a) - last(soybean_a))/last(soybean_a),
-#          wheat_c = 100*(first(wheat_a) - last(wheat_a))/last(wheat_a)) %>% 
-#   filter(decade == 2)
-
-il_crops <- select(il_crops, decade, location, corn_p,soybean_p, wheat_p, cotton_p)
-il_crops <- gather(il_crops, key = "crops", value = value, -location, -decade)
-head(il_crops)  
-il_crops$crops <- paste0(il_crops$crops, il_crops$decade)
-
-il_p2 <- ggplot(il_crops, aes(y=value, x=location, fill = crops)) + 
-  geom_bar(stat = "identity", position = "dodge", width = 1) +
-  geom_text(aes(label=paste(round(value, 2), "%")), position=position_dodge(width=1),   vjust=-0.25, size = 2) +
-  geom_text(aes(label=c("Corn", "Corn", "Corn", "Corn",  
-                                                 "Soybean", "Soybean", "Soybean", "Soybean","Wheat", "Wheat", "Wheat", "Wheat", 
-                        "Cotton", "Cotton", "Cotton", "Cotton")), position=position_dodge(width=1), vjust=1.50, size = 2) +
-  geom_text(aes(label=c("1960", "1960", "2000", "2000", 
-                                                 "1960", "1960", "2000", "2000", "1960", "1960", "2000", "2000", "1960", "1960", "2000", "2000")), position=position_dodge(width=1),   vjust=2.60, size = 2) +
-  
-  
-  # geom_text(colour="darkgray", aes(y=-3, label=c("Corn", "Corn", "Corn", "Corn", "Cotton", "Cotton", "Cotton", "Cotton", 
-                                                 # "Soybean", "Soybean", "Soybean", "Soybean","Wheat", "Wheat", "Wheat", "Wheat")),  position=position_dodge(width=1), col=gray) +
-  # geom_text(colour="darkgray", aes(y=-4, label=c("1960", "1960", "2000", "2000", "1960", "1960", "2000", "2000", 
-                                                 # "1960", "1960", "2000", "2000", "1960", "1960", "2000", "2000")),  position=position_dodge(width=1), col=gray ) +
-  theme_tufte(base_size = 8) +
-  ylab("Crop Share of Total Acres (%)") +
-  xlab(NULL) +
-  annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
-  annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
-  theme(legend.position = "none") 
-  # ylim(-5, max(il_crops$value)) +
-  # #   # legend.justification = c("left", "top"),
-  # #   legend.box.background = element_rect(colour = "grey"),
-  # #   legend.title = element_blank(), legend.key = element_blank()) +
-  # scale_fill_manual("legend", values=c("#8dd3c7", "#8dd3c7", "#ffffb3", "#ffffb3", "#bebada", "#bebada", "#fb8072", "#fb8072"))
-il_p2
-# ggsave("figures/ms_delta.pdf", width = 6, height = 4)
-
-
-
-ggdraw() + draw_plot(, width = .85) + 
-  draw_plot(il_p1, .46, .5, height = .5, width = .55) +
-  draw_plot(il_p2, .46, .02, height = .5, width = .55)
-ggsave("figures/georgia.pdf", width = 10, height = 4)
-
-
+ggsave("figures/heartland.pdf", width = 10, height = 4)
