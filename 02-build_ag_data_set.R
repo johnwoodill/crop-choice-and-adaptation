@@ -225,7 +225,7 @@ fipss <- test$region
 # cropdat <- filter(cropdat, fips %in% fipss)
 
 #-----------------------------------------------------
-# Merge historical Haines data
+# # Merge historical Haines data
 hdat <- read_dta("data/DustBowl_All_base1910.dta")
 hdat <- select(hdat, year, fips, corn_grain_a, corn_grain_y, cotton_a, cotton_y, hay_a, hay_y, wheat_a, wheat_y)
 
@@ -650,4 +650,7 @@ saveRDS(cropdat, "data/full_ag_data.rds")
 fulldat <- readRDS("data/full_ag_data.rds")
 
 
-
+fit<- felm(ln_rev_corn ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
+             dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 + 
+             trend + trend_sq | fips | 0 |state, data = fulldat)
+summary(fit)

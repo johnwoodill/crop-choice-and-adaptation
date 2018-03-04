@@ -29,7 +29,6 @@ cropdat <- as.data.frame(cropdat)
 cropdat$fips <- factor(cropdat$fips)
 cropdat$state <- factor(cropdat$state)
 
-
 #-----------------------------------------------------------------------------------
 dmdat <- select(cropdat, ln_rev_corn, ln_rev_cotton, ln_rev_hay, ln_rev_soybean, ln_rev_wheat, 
                 dday0_10, dday10_30, dday30, prec, prec_sq, trend, trend_sq,
