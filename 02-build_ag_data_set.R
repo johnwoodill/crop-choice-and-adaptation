@@ -208,21 +208,21 @@ extract_d_county <- function(x){
 }
 
 
-dat <- read_csv("data/1950_acres.csv")
-dat$fips <- paste(dat$`State ANSI`, dat$`County ANSI`, sep = "")
-head(dat)
-test <- extract_d_county(dat)
-names(test) <- c("fips", "year", "corn", "cotton", "hay", "soybean", "wheat")
-head(test)
-test$acres <- rowSums(test[, c("corn", "cotton", "hay", "soybean", "wheat")], na.rm = TRUE)
-head(test)
-test <- select(test, fips, acres)
-names(test) <- c("region", "value")
-test$region <- as.numeric(test$region)
-head(test)
-test <- as.data.frame(test)
-fipss <- test$region
-# cropdat <- filter(cropdat, fips %in% fipss)
+# dat <- read_csv("data/1950_acres.csv")
+# dat$fips <- paste(dat$`State ANSI`, dat$`County ANSI`, sep = "")
+# head(dat)
+# test <- extract_d_county(dat)
+# names(test) <- c("fips", "year", "corn", "cotton", "hay", "soybean", "wheat")
+# head(test)
+# test$acres <- rowSums(test[, c("corn", "cotton", "hay", "soybean", "wheat")], na.rm = TRUE)
+# head(test)
+# test <- select(test, fips, acres)
+# names(test) <- c("region", "value")
+# test$region <- as.numeric(test$region)
+# head(test)
+# test <- as.data.frame(test)
+# fipss <- test$region
+# # cropdat <- filter(cropdat, fips %in% fipss)
 
 #-----------------------------------------------------
 # # Merge historical Haines data
@@ -491,24 +491,6 @@ fipss <- unique(check$fips)
 data <- filter(data, fips %in% fipss)
 data <- filter(data, year >= unique(check$year) & year <= 2010)
 
-
-
-# Keep only those counties with acres in 1950-2009
-# data$acres <- rowSums(data[, c("corn_grain_a", "cotton_a", "hay_a", "soybean_a", "wheat_a")], na.rm = TRUE)
-# check <- data %>% 
-#   group_by(year, fips) %>% 
-#   summarise(acres = mean(acres, na.rm = TRUE)) %>% 
-#   filter(acres > 0 & !is.na(acres)) %>% 
-#   group_by(fips) %>% 
-#   summarise(nroww = n()) %>% 
-#   filter(nroww == 51)
-# 
-# head(check)
-# length(check$fips)
-
-
-
-
 # Build data set for regression estimates
 cropdat <- filter(data, year <= 2010)
   
@@ -567,29 +549,8 @@ is.na(cropdat) <- do.call(cbind, lapply(cropdat, is.infinite))
 cropdat <- cropdat %>% 
   arrange(year) %>% 
   group_by(fips) %>% 
-  mutate(w = rollmean(acres, k = 5, fill = acres),
+  mutate(w = rollmean(acres, k = 3, fill = acres),
          w = abs(w))
-
-
-# Spline through acres to smooth out weights
- # cropdat <- cropdat %>%
- #   group_by(fips) %>%
- #   arrange(year) %>%
- #   mutate(w = loess(acres ~ year)$fitted,
- #          corn_w = loess(corn_grain_a ~ year)$fitted,
- #          cotton_w = loess(cotton_a ~ year)$fitted,
- #          hay_w = loess(hay_a ~ year)$fitted,
- #          soybean_w = loess(soybean_a ~ year)$fitted,
- #          wheat_w = loess(wheat_a ~ year)$fitted)
- # 
- # cropdat$w <- ifelse(cropdat$w < 0 , 0, cropdat$w)
- # cropdat$corn_w <- ifelse(cropdat$corn_w < 0 , 0, cropdat$corn_w)
- # cropdat$cotton_w <- ifelse(cropdat$cotton_w < 0 , 0, cropdat$cotton_w)
- # cropdat$hay_w <- ifelse(cropdat$hay_w < 0 , 0, cropdat$hay_w)
- # cropdat$soybean_w <- ifelse(cropdat$soybean_w < 0 , 0, cropdat$soybean_w)
- # cropdat$wheat_w <- ifelse(cropdat$wheat_w < 0 , 0, cropdat$wheat_w)
-
-
 
 # Build trends
 cropdat$trend <- cropdat$year - (min(cropdat$year) - 1)
@@ -651,6 +612,6 @@ fulldat <- readRDS("data/full_ag_data.rds")
 
 
 fit<- felm(ln_rev_corn ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-             dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 + 
-             trend + trend_sq | fips | 0 |state, data = fulldat)
+             dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
+             trend + trend_sq | fips | 0 |state, data = fulldat, weights = fulldat$acres)
 summary(fit)

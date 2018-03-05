@@ -142,8 +142,8 @@ pdat2 <- nsur_rev %>%
   ungroup()
 
 pdat2_1 <- pdat2; pdat2_1$interval = "10-year"
-pdat2_2 <- pdat2; pdat2_2$interval = "20-year"
-pdat2_3 <- pdat2; pdat2_3$interval = "30-year"
+pdat2_2 <- pdat2; pdat2_2$interval = "11-year"
+pdat2_3 <- pdat2; pdat2_3$interval = "12-year"
 
 pdat2 <- rbind(pdat2_1, pdat2_2, pdat2_3)
 pdat2 <- select(pdat2, temp, interval, effect, change)
@@ -245,7 +245,7 @@ cdat2 <- cdat2 %>%
   select(temp, corn, cotton, hay, soybean, wheat) %>% 
   mutate(total = corn + cotton + hay + soybean + wheat) %>% 
   mutate(change = 100*(total - first(total))/first(total),
-         interval = "20-year",
+         interval = "11-year",
          effect = "Weather-climate-effect") %>% 
   select(temp, interval, effect, change) %>% 
   ungroup()
@@ -261,7 +261,7 @@ cdat3 <- cdat3 %>%
   select(temp, corn, cotton, hay, soybean, wheat) %>% 
   mutate(total = corn + cotton + hay + soybean + wheat) %>% 
   mutate(change = 100*(total - first(total))/first(total),
-         interval = "30-year",
+         interval = "12-year",
          effect = "Weather-climate-effect") %>% 
   select(temp, interval, effect, change) %>% 
   ungroup()
@@ -292,7 +292,7 @@ ggplot(pdat, aes(temp, change, color = effect)) + geom_line() +
                                                     size = 1.5,
                                                     shape = c(NA, NA)))) +
     facet_wrap(panel~interval, labeller = labeller(
-      panel = c('1' = 'Aggregate Revenue', '2' = 'Disaggregated Revenue')), scales = "free") +
+      panel = c('1' = 'Aggregate Revenue', '2' = 'Disaggregated Revenue'))) +
     theme(legend.position = "top",
         legend.box.background = element_rect(colour = "grey"),
         legend.title = element_blank(),

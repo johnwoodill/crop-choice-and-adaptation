@@ -101,3 +101,16 @@ saveRDS(mod, "models/sur_rev_model.rds")
 
 
 # stopCluster(cl)
+
+# mod1 <- felm(ln_rev_wheat ~ dday0_10 + dday10_30 + dday30 +  prec + prec_sq +
+# trend_lat + trend_long + trend_sq_lat + trend_sq_long | fips | 0 | state, data = cropdat)
+# summary(mod1)
+# 
+# test <- predictFelm(mod1, newdata = cropdat, var.terms = c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq"))
+# test2 <- predictFelm(mod1, newdata = p1, var.terms = c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq"))
+# test3 <- predictFelm(mod1, newdata = p2, var.terms = c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq"))
+# test4 <- predictFelm(mod1, newdata = p3, var.terms = c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq"))
+# sum(test$fit)
+# sum(test2$fit)
+# sum(test3$fit)
+# sum(test4$fit)

@@ -7,7 +7,7 @@ setwd("/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/")
 
 source("R/predictSUR.R")
 source("R/predictSUR.clean.R")
-source("archive/predict_sur_leaveoneout.R")
+source("R/predict_sur_leaveoneout.R")
 
 # Crop data
 cropdat <- readRDS("data/full_ag_data.rds")
@@ -347,7 +347,7 @@ ggplot(pdat, aes(temp, change)) +
   #     legend.justification = c("left", "top"), 
   #     legend.box.background = element_rect(colour = "grey"), 
   #     legend.title = element_blank(), legend.key = element_blank()) +
-  facet_wrap(interval~crop, ncol = 5) +
+  facet_wrap(interval~crop, ncol = 5, scales = "free") +
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey")
 
 # ppdat <- pdat %>%

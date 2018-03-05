@@ -13,12 +13,12 @@ predictSUR.clean <- function(mod, newdata_list, acres, fips, var.terms = NULL, c
   p4 <- newdata_list[[5]]
   p5 <- newdata_list[[6]]
     
-  indat0 <- predictSUR(mod, newdata = p0, var.terms = var.terms)
-  indat1 <- predictSUR(mod, newdata = p1, var.terms = var.terms)
-  indat2 <- predictSUR(mod, newdata = p2, var.terms = var.terms)
-  indat3 <- predictSUR(mod, newdata = p3, var.terms = var.terms)
-  indat4 <- predictSUR(mod, newdata = p4, var.terms = var.terms)
-  indat5 <- predictSUR(mod, newdata = p5, var.terms = var.terms)
+  indat0 <- predictSUR(mod, newdata = p0, var.terms = var.terms, cons.terms = cons.terms)
+  indat1 <- predictSUR(mod, newdata = p1, var.terms = var.terms, cons.terms = cons.terms)
+  indat2 <- predictSUR(mod, newdata = p2, var.terms = var.terms, cons.terms = cons.terms)
+  indat3 <- predictSUR(mod, newdata = p3, var.terms = var.terms, cons.terms = cons.terms)
+  indat4 <- predictSUR(mod, newdata = p4, var.terms = var.terms, cons.terms = cons.terms)
+  indat5 <- predictSUR(mod, newdata = p5, var.terms = var.terms, cons.terms = cons.terms)
   
   corn0.pred <- pnorm(indat0$corn_predict + resid(mod)[[1]] + mod$effects$corn.effect)*1.00101 - 0.001
   corn1.pred <- pnorm(indat1$corn_predict + resid(mod)[[1]] + mod$effects$corn.effect)*1.00101 - 0.001

@@ -1,7 +1,8 @@
 library(tidyverse)
 library(lfe)
-# library(zoo)
+library(zoo)
 library(noncensus)
+library(RcppRoll)
 setwd("/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/")
 
 # Crop data
@@ -20,6 +21,8 @@ zip_codes <- zip_codes %>%
   summarise(lat = mean(lat, na.rm = TRUE),
             long = mean(long, na.rm = TRUE))
 
+# > sum(cropdat$prec)
+# [1] 3496644
 
 # Process data
 dd_temp <- function(x, prec){
@@ -30,19 +33,13 @@ dd_temp <- function(x, prec){
     filter(month >= 3 & month <= 10) %>%
     group_by(fips, year) %>%
     summarise(tavg = mean(tavg, na.rm = TRUE),
-            prec = sum(prec, na.rm = TRUE),
-            dday0C = sum(dday0C, na.rm = TRUE),
-            dday10C = sum(dday10C, na.rm = TRUE),
-            dday30C = sum(dday30C, na.rm = TRUE))%>% 
+              prec = sum(prec, na.rm = TRUE),
+              dday0C = sum(dday0C, na.rm = TRUE),
+              dday10C = sum(dday10C, na.rm = TRUE),
+              dday30C = sum(dday30C, na.rm = TRUE)) %>% 
     left_join(cropdat, by = c("fips", "year"))  %>% 
     ungroup()
-  # %>% 
-  # left_join(cropdat, by = c("fips", "year")) 
-  #   
-  # pdat <- pdat %>% 
-  #   group_by(fips) %>% 
-  #   mutate(acres = mean(acres, na.rm = TRUE))
-  
+
   pdat$dday0_10 <- pdat$dday0C - pdat$dday10C
   pdat$dday10_30 <- pdat$dday10C - pdat$dday30C
   pdat$dday30 <- pdat$dday30C
@@ -106,8 +103,6 @@ dd_temp <- function(x, prec){
                  dday0_10_rm12, dday10_30_rm12, dday30_rm12, prec_rm12, prec_sq_rm12,
                 trend_lat, trend_sq_lat, trend_long, trend_sq_long)
   
-  # pdat <- cbind(pdat, depvar)
-  
   return(pdat)
   
 }
@@ -124,6 +119,7 @@ dd4c <- readRDS("data/degree_day_changes/fips_degree_days_4C_1900-2013.rds")
 dd5c <- readRDS("data/degree_day_changes/fips_degree_days_5C_1900-2013.rds")
 
 prec <- read_csv("data/fips_precipitation_1900-2013.csv")
+prec <- as.data.frame(prec)
 names(prec)[4] <- "prec"
 
 p1 <- dd_temp(dd1c, prec)

@@ -160,6 +160,26 @@ ggdat <- gdat %>%
 
 ggplot(ggdat, aes(year, ln_rev_m, color = factor(region))) + geom_line() 
 
+region_dat <- dd_dat %>% 
+  group_by(year, region) %>% 
+  summarise(ln_rev = mean(ln_rev, na.rm = TRUE),
+            dday30_rm10 = mean(dday30_rm10, na.rm = TRUE))
+head(region_dat)
+
+ggplot(region_dat, aes(year, (ln_rev), color = region)) + geom_line() +
+  geom_line(aes(year, (dday30_rm10/10), color = region), linetype = "dashed") +
+  scale_y_continuous(sec.axis = sec_axis(~.*10, name = "Degree Day 30C  (10-year Rolling Mean) \n (dashed)")) +
+  expand_limits(y = 0) +
+  facet_wrap(~region, scales = "free") +
+  theme_tufte(base_size = 8) +
+  ylab("Log(Revenue per acre) \n (solid)") +
+  xlab(NULL) +
+  annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
+  annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
+  annotate("segment", x=Inf, xend=Inf, y=-Inf, yend=Inf, color = "grey") +
+  theme(legend.position = "none")
+
+range(region_dat$ln_rev)
 
 # Difference in residuals 1950 and 2000
 mod7 <- felm(dday30_rm10 ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
@@ -797,14 +817,14 @@ il_p1 <- ggplot(il, aes(year, ln_rev_m, color = factor(location))) + geom_line()
     # legend.justification = c("left", "top"),
     legend.box.background = element_rect(colour = "grey"),
     legend.title = element_blank(), legend.key = element_blank()) +
-  scale_color_manual(values=c("#F8766D", "#619CFF")) +
+  scale_color_manual(values=c("#619CFF", "#F8766D")) +
   scale_y_continuous(sec.axis = sec_axis(~.*10, name = "Degree Day 30C \n (10-year Rolling Mean) \n (dashed)")) 
 il_p1
 
 il_crops <- filter(dd_dat, fips %in% il_w_fips$fips)
 ia_crops <- filter(dd_dat, fips %in% il_c_fips$fips)
 il_crops$location <- "Heartland (Warming)"
-ia_crops$location <- "Heartlands (Cooling)"
+ia_crops$location <- "Heartland (Cooling)"
 
 il_crops <- rbind(il_crops, ia_crops)
 il_crops$decade <- ifelse(il_crops$year <= 1969, 1, 2)
@@ -842,8 +862,9 @@ il_crops <- select(il_crops, decade, location, corn_p, hay_p, soybean_p, wheat_p
 il_crops <- gather(il_crops, key = "crops", value = value, -location, -decade)
 head(il_crops)  
 il_crops$crops <- paste0(il_crops$crops, il_crops$decade)
+il_crops$location <- factor(il_crops$location, levels = c("Heartland (Cooling)", "Heartland (Warming)"))
 
-il_p2 <- ggplot(il_crops, aes(y=value, x=location, fill = factor(crops), group = factor(crops))) + 
+il_p2 <- ggplot(il_crops, aes(y=value, x=factor(location), fill = factor(crops), group = factor(crops))) + 
   geom_bar( stat = "identity", position = position_dodge(width = 0.95), width = .95, alpha = 0.75) +
   geom_text(aes(label=paste(round(value, 2), "%")), position=position_dodge(width=.95),   vjust=-0.25, size = 1.5) +
   geom_text(aes(label=c("Corn", "Corn", "Corn", "Corn", "Corn", "Corn", 
@@ -969,6 +990,7 @@ il_crops <- select(il_crops, decade, location, corn_p, hay_p, soybean_p, wheat_p
 il_crops <- gather(il_crops, key = "crops", value = value, -location, -decade)
 head(il_crops)  
 il_crops$crops <- paste0(il_crops$crops, il_crops$decade)
+il_crops$location <- factor(il_crops$location, c("Ohio (Cooling)", "Kentucky (Warming)"))
 
 il_p2 <- ggplot(il_crops, aes(y=value, x=location, fill = factor(crops), group = factor(crops))) + 
   geom_bar( stat = "identity", position = position_dodge(width = 0.95), width = .95, alpha = 0.75) +
