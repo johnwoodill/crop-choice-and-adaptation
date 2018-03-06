@@ -182,8 +182,11 @@ ggplot(region_dat, aes(year, (ln_rev), color = region)) + geom_line() +
 range(region_dat$ln_rev)
 
 # Difference in residuals 1950 and 2000
+dd_dat$pre <- ifelse(dd_dat$year <= 1970, 0, 1)
+dd_dat <- filter(dd_dat, year <= 1980)
+
 mod7 <- felm(dday30_rm10 ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
-               trend:(lat + long) + trend_sq:(lat + long) | fips, 
+               trend:(lat + long) + trend_sq:(lat + long) + pre| fips, 
              data = dd_dat)
 
 sum(mod7$residuals)
@@ -280,20 +283,20 @@ head(fdat)
 # Mississippi Delta
 
 ms_fips <- filter(fdat, ers_region == 9)
-# ms_fips <- filter(ms_fips, long >= -92.5)
-# ms_fips <- filter(ms_fips, long <= -90.5)
+ms_fips <- filter(ms_fips, long >= -92.5)
+ms_fips <- filter(ms_fips, long <= -90.5)
 # ms_fips <- filter(ms_fips, lat <= 32)
 
-ms_fips <- filter(ms_fips, state == "la")
-ms_w_fips <- filter(ms_fips, lat <= 32)
-ms_w_fips <- filter(ms_w_fips, long <= -91.5)
-ms_w_fips <- arrange(ms_w_fips, -value)
-ms_w_fips <- ms_w_fips[1:10, c("fips", "value")]
+# ms_fips <- filter(ms_fips, state == "la")
+# ms_w_fips <- filter(ms_fips, lat <= 32)
+# ms_w_fips <- filter(ms_w_fips, long <= -91.5)
+ms_w_fips <- arrange(ms_fips, -value)
+ms_w_fips <- ms_w_fips[1:30, c("fips", "value")]
 
-ms_c_fips <- filter(ms_fips, lat <= 31)
-ms_c_fips <- filter(ms_c_fips, long >= -91.5)
+# ms_c_fips <- filter(ms_fips, lat <= 31)
+# ms_c_fips <- filter(ms_c_fips, long >= -91.5)
 ms_c_fips <- arrange(ms_fips, value)
-ms_c_fips <- ms_c_fips[1:10, c("fips", "value")]
+ms_c_fips <- ms_c_fips[1:30, c("fips", "value")]
 
 check_map(ms_w_fips)
 check_map(ms_c_fips)
@@ -466,7 +469,8 @@ ia_crops$location <- "Mississippi Delta (Cooling)"
 
 il_crops <- rbind(il_crops, ia_crops)
 il_crops$decade <- ifelse(il_crops$year <= 1970, 1, 2)
-il_crops$decade <- ifelse(il_crops$year >= 1985, 3, il_crops$decade)
+il_crops <- filter(il_crops, year <= 1980)
+# il_crops$decade <- ifelse(il_crops$year >= 1985, 3, il_crops$decade)
 # il_crops <- filter(cropdat, state %in% c("il", "in"))
 # il_crops <- filter(il_crops, year <= 1969 | year >= 2000)
 # il_crops$location <- ifelse(il_crops$lat <= 40.5, "Southern Illinois/Indiana", "Northen Illinois/Indiana")
@@ -504,16 +508,17 @@ il_crops$crops <- paste0(il_crops$crops, il_crops$decade)
 il_p2 <- ggplot(il_crops, aes(y=value, x=location, fill = factor(crops), group = factor(crops))) + 
   geom_bar( stat = "identity", position = position_dodge(width = 0.95), width = .95, alpha = 0.75) +
   geom_text(aes(label=paste(round(value, 2), "%")), position=position_dodge(width=.95),   vjust=-0.25, size = 1.5) +
-  geom_text(aes(label=c("Corn", "Corn", "Corn", "Corn", "Corn", "Corn", 
-                        "Hay", "Hay", "Hay", "Hay","Hay", "Hay", 
-                        "Soybean", "Soybean", "Soybean", "Soybean", "Soybean", "Soybean",
-                        "Wheat", "Wheat", "Wheat", "Wheat","Wheat", "Wheat", 
-                        "Cotton", "Cotton", "Cotton", "Cotton", "Cotton", "Cotton")), position=position_dodge(width=.95), vjust=1.50, size = 1.5) +
-  geom_text(aes(label=c("1960", "1960", "1980", "1980", "2000", "2000", 
-                        "1960", "1960", "1980", "1980", "2000", "2000",
-                        "1960", "1960", "1980", "1980", "2000", "2000", 
-                        "1960", "1960", "1980", "1980", "2000", "2000",
-                        "1960", "1960", "1980", "1980", "2000", "2000")), position=position_dodge(width=.95),   vjust=2.60, size = 1.5) +
+  geom_text(aes(label=c("Corn", "Corn", "Corn", "Corn", 
+                        "Hay", "Hay", "Hay", "Hay",
+                        "Soybean", "Soybean", "Soybean", "Soybean",
+                        "Wheat", "Wheat", "Wheat", "Wheat",
+                        "Cotton", "Cotton", "Cotton", "Cotton")), 
+            position=position_dodge(width=.95), vjust=1.50, size = 1.5) +
+  geom_text(aes(label=c("1960", "1960", "1980", "1980", 
+                        "1960", "1960", "1980", "1980", 
+                        "1960", "1960", "1980", "1980", 
+                        "1960", "1960", "1980", "1980",
+                        "1960", "1960", "1980", "1980")), position=position_dodge(width=.95),   vjust=2.60, size = 1.5) +
 
   theme_tufte(base_size = 8) +
   ylab("Crop Share of Total Acres (%)") +
