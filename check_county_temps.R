@@ -185,8 +185,8 @@ range(region_dat$ln_rev)
 dd_dat$pre <- ifelse(dd_dat$year <= 1970, 0, 1)
 dd_dat <- filter(dd_dat, year <= 1980)
 
-mod7 <- felm(dday30_rm10 ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
-               trend:(lat + long) + trend_sq:(lat + long) + pre| fips, 
+mod7 <- felm(dday30_rm10 ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
+               trend:(lat + long) + trend_sq:(lat + long) + pre | fips, 
              data = dd_dat)
 
 sum(mod7$residuals)
@@ -199,8 +199,9 @@ mod7_res1$value <- as.numeric(mod7$residuals)
 mod7_res1$region <- as.numeric(as.character(dd_dat$fips))
 mod7_res1$year <- dd_dat$year
 
-mod7_res50_00 <- filter(mod7_res1, (year >= 1960 & year <= 1979) | (year >= 1980 & year <= 2010))
-mod7_res50_00$decade <- ifelse(mod7_res50_00$year <= 1979, 1, 2)
+# mod7_res50_00 <- filter(mod7_res1, (year >= 1960 & year <= 1979) | (year >= 1980 & year <= 2010))
+mod7_res50_00 <- mod7_res1
+mod7_res50_00$decade <- ifelse(mod7_res1$year <= 1970, 1, 2)
 
 mod7_res50_00 <- mod7_res50_00 %>% 
   group_by(region, decade) %>% 
@@ -208,7 +209,8 @@ mod7_res50_00 <- mod7_res50_00 %>%
   group_by(region) %>% 
   arrange(-decade) %>% 
   mutate(value = first(value) - last(value)) %>% 
-  filter(decade == 2)
+  filter(decade == 2) %>% 
+  ungroup()
 
 mod7_res50_00 <- select(mod7_res50_00, region, value)
 mod7_map <- county_choropleth(mod7_res50_00,
@@ -254,7 +256,7 @@ check_map <- function(x){
 
 # Summary Statistics
 sumstat <- dd_dat
-sumstat <- filter(sumstat, (year >= 1960 & year <= 1979) | (year >= 1980 & year <= 2010))
+sumstat <- filter(sumstat, (year >= 1960 & year <= 1980))
 sumstat$decade <- ifelse(sumstat$year <= 1979, 1, 2)
 
 sumstat <- sumstat %>% 
@@ -270,7 +272,7 @@ sumstat <- sumstat %>%
 check_map(sumstat)
 
 # Get extreme counties
-fipm <- select(dd_dat, fips, ers_region, state, lat, long)
+fipm <- select(dd_dat, year, fips, ers_region, state, lat, long)
 head(fipm)
 fipm <- fipm %>%
    distinct(fips, .keep_all = TRUE)
@@ -280,26 +282,7 @@ head(mdat)
 fdat <- left_join(mdat, fipm, by = c("fips"))
 head(fdat)
 
-# Mississippi Delta
 
-ms_fips <- filter(fdat, ers_region == 9)
-ms_fips <- filter(ms_fips, long >= -92.5)
-ms_fips <- filter(ms_fips, long <= -90.5)
-# ms_fips <- filter(ms_fips, lat <= 32)
-
-# ms_fips <- filter(ms_fips, state == "la")
-# ms_w_fips <- filter(ms_fips, lat <= 32)
-# ms_w_fips <- filter(ms_w_fips, long <= -91.5)
-ms_w_fips <- arrange(ms_fips, -value)
-ms_w_fips <- ms_w_fips[1:30, c("fips", "value")]
-
-# ms_c_fips <- filter(ms_fips, lat <= 31)
-# ms_c_fips <- filter(ms_c_fips, long >= -91.5)
-ms_c_fips <- arrange(ms_fips, value)
-ms_c_fips <- ms_c_fips[1:30, c("fips", "value")]
-
-check_map(ms_w_fips)
-check_map(ms_c_fips)
 
 # KS NE Prairie
 ks_fips <- filter(fdat, state == c("ks"))
@@ -435,6 +418,32 @@ ggsave(filename = "figures/residual_change_map.pdf", width = 6, height = 4)
 #----------------------------------
 # Mississippi delta north versus south
 # il <- filter(cropdat, state %in% c("ms", "la", "ar"))
+# Mississippi Delta
+
+test <- fdat %>% 
+  group_by(fips, year) %>% 
+  summarise(value = mean(value))
+ggplot(test, aes(year, value)) + geom_smooth()
+
+ms_fips <- filter(fdat, ers_region == 9)
+ms_fips <- filter(ms_fips, long >= -93.5)
+ms_fips <- filter(ms_fips, long <= -84.5)
+check_map(ms_fips)
+
+ms_w_fips <- filter(ms_fips, lat <= 33)
+ms_w_fips <- filter(ms_w_fips, lat >= 31)
+ms_w_fips <- arrange(ms_w_fips, -value)
+
+ms_w_fips <- ms_w_fips[1:30, c("fips", "value")]
+check_map(ms_w_fips)
+
+ms_c_fips <- filter(ms_fips, lat >= 33)
+ms_c_fips <- filter(ms_c_fips, long <= -89.5)
+ms_c_fips <- arrange(ms_c_fips, -value)
+ms_c_fips <- ms_c_fips[1:30, c("fips", "value")]
+
+check_map(ms_c_fips)
+
 il <- filter(dd_dat, fips %in% ms_w_fips$fips)
 il$location <- "Mississippi Delta (Warming)"
 
@@ -445,7 +454,7 @@ il <- rbind(il, ia)
 
 # Log revenue
 il <- il %>%
-  group_by(year, location) %>%
+  group_by(year, location, fips) %>%
   summarise(ln_rev_m = mean(ln_rev, na.rm = TRUE))
 
 il_p1 <- ggplot(il, aes(year, ln_rev_m, color = factor(location))) + geom_line() +
