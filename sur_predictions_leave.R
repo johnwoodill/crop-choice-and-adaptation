@@ -67,23 +67,28 @@ newdata_list_dm <- list(p0 = p0_dm,
 
 
 # Equations 10-year
-mod1 <- z_corn_a ~ dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
+mod1 <- z_corn_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
+  dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
 trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
 
 
-mod2 <- z_cotton_a ~ dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
+mod2 <- z_cotton_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
+  dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
 trend_lat + trend_long + trend_sq_lat + trend_sq_long- 1
  
 
-mod3 <- z_hay_a ~ dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
+mod3 <- z_hay_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
+  dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
 trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
 
 
-mod4 <- z_soybean_a ~ dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
+mod4 <- z_soybean_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
+  dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
 trend_lat + trend_long + trend_sq_lat + trend_sq_long- 1
 
 
-mod5 <- z_wheat_a ~ dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
+mod5 <- z_wheat_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
+  dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
 trend_lat + trend_long + trend_sq_lat + trend_sq_long- 1
 
 
@@ -97,39 +102,44 @@ basedata_means <- basedata_means
 
 
 terms <- c("dday0_10_rm10", "dday10_30_rm10", "dday30_rm10", "prec_rm10", "prec_sq_rm10")
-
+consterms = c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq")
 modlist = modlistten
 basedata = basedata
 newdata = p0_dm
 basedata_means = p0_means
 terms = terms
 
-ten_0 <- predictSUR_leave(modlist = modlistten, basedata = basedata, basedata_means = p0_means, newdata = p0_dm, terms = terms, acres = cropdat$acres)
-ten_1 <- predictSUR_leave(modlist = modlistten, basedata = basedata, basedata_means = p0_means, newdata = p1_dm, terms = terms, acres = cropdat$acres)
-ten_2 <- predictSUR_leave(modlist = modlistten, basedata = basedata, basedata_means = p0_means, newdata = p2_dm, terms = terms, acres = cropdat$acres)
-ten_3 <- predictSUR_leave(modlist = modlistten, basedata = basedata, basedata_means = p0_means, newdata = p3_dm, terms = terms, acres = cropdat$acres)
-ten_4 <- predictSUR_leave(modlist = modlistten, basedata = basedata, basedata_means = p0_means, newdata = p4_dm, terms = terms, acres = cropdat$acres)
-ten_5 <- predictSUR_leave(modlist = modlistten, basedata = basedata, basedata_means = p0_means, newdata = p5_dm, terms = terms, acres = cropdat$acres)
+ten_0 <- predictSUR_leave(modlist = modlistten, basedata = basedata, basedata_means = p0_means, newdata = p0_dm, var.terms = terms, cons.terms = consterms, acres = cropdat$acres)
+ten_1 <- predictSUR_leave(modlist = modlistten, basedata = basedata, basedata_means = p0_means, newdata = p1_dm, var.terms = terms, cons.terms = consterms, acres = cropdat$acres)
+ten_2 <- predictSUR_leave(modlist = modlistten, basedata = basedata, basedata_means = p0_means, newdata = p2_dm, var.terms = terms, cons.terms = consterms, acres = cropdat$acres)
+ten_3 <- predictSUR_leave(modlist = modlistten, basedata = basedata, basedata_means = p0_means, newdata = p3_dm, var.terms = terms, cons.terms = consterms, acres = cropdat$acres)
+ten_4 <- predictSUR_leave(modlist = modlistten, basedata = basedata, basedata_means = p0_means, newdata = p4_dm, var.terms = terms, cons.terms = consterms, acres = cropdat$acres)
+ten_5 <- predictSUR_leave(modlist = modlistten, basedata = basedata, basedata_means = p0_means, newdata = p5_dm, var.terms = terms, cons.terms = consterms, acres = cropdat$acres)
 
 
 # Equations 20-year
-mod1 <- z_corn_a ~ dday0_10_rm11 + dday10_30_rm11 + dday30_rm11 + prec_rm11 + prec_sq_rm11 +
+mod1 <- z_corn_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
+  dday0_10_rm11 + dday10_30_rm11 + dday30_rm11 + prec_rm11 + prec_sq_rm11 +
 trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
 
 
-mod2 <- z_cotton_a ~ dday0_10_rm11 + dday10_30_rm11 + dday30_rm11 + prec_rm11 + prec_sq_rm11 +
+mod2 <- z_cotton_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
+  dday0_10_rm11 + dday10_30_rm11 + dday30_rm11 + prec_rm11 + prec_sq_rm11 +
 trend_lat + trend_long + trend_sq_lat + trend_sq_long- 1
  
 
-mod3 <- z_hay_a ~ dday0_10_rm11 + dday10_30_rm11 + dday30_rm11 + prec_rm11 + prec_sq_rm11 +
+mod3 <- z_hay_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
+  dday0_10_rm11 + dday10_30_rm11 + dday30_rm11 + prec_rm11 + prec_sq_rm11 +
 trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
 
 
-mod4 <- z_soybean_a ~ dday0_10_rm11 + dday10_30_rm11 + dday30_rm11 + prec_rm11 + prec_sq_rm11 +
+mod4 <- z_soybean_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
+  dday0_10_rm11 + dday10_30_rm11 + dday30_rm11 + prec_rm11 + prec_sq_rm11 +
 trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
 
 
-mod5 <- z_wheat_a ~ dday0_10_rm11 + dday10_30_rm11 + dday30_rm11 + prec_rm11 + prec_sq_rm11 +
+mod5 <- z_wheat_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
+  dday0_10_rm11 + dday10_30_rm11 + dday30_rm11 + prec_rm11 + prec_sq_rm11 +
 trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
 
 
@@ -152,23 +162,28 @@ twenty_5 <- predictSUR_leave(modlist = modlisttwenty, basedata = basedata, based
 
 
 # Equations 30-year
-mod1 <- z_corn_a ~ dday0_10_rm12 + dday10_30_rm12 + dday30_rm12 + prec_rm12 + prec_sq_rm12 +
+mod1 <- z_corn_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
+  dday0_10_rm12 + dday10_30_rm12 + dday30_rm12 + prec_rm12 + prec_sq_rm12 +
 trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
 
 
-mod2 <- z_cotton_a ~ dday0_10_rm12 + dday10_30_rm12 + dday30_rm12 + prec_rm12 + prec_sq_rm12 +
+mod2 <- z_cotton_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
+  dday0_10_rm12 + dday10_30_rm12 + dday30_rm12 + prec_rm12 + prec_sq_rm12 +
 trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
  
 
-mod3 <- z_hay_a ~ dday0_10_rm12 + dday10_30_rm12 + dday30_rm12 + prec_rm12 + prec_sq_rm12 +
+mod3 <- z_hay_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
+  dday0_10_rm12 + dday10_30_rm12 + dday30_rm12 + prec_rm12 + prec_sq_rm12 +
 trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
 
 
-mod4 <- z_soybean_a ~ dday0_10_rm12 + dday10_30_rm12 + dday30_rm12 + prec_rm12 + prec_sq_rm12 +
+mod4 <- z_soybean_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
+  dday0_10_rm12 + dday10_30_rm12 + dday30_rm12 + prec_rm12 + prec_sq_rm12 +
 trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
 
 
-mod5 <- z_wheat_a ~ dday0_10_rm12 + dday10_30_rm12 + dday30_rm12 + prec_rm12 + prec_sq_rm12 +
+mod5 <- z_wheat_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
+  dday0_10_rm12 + dday10_30_rm12 + dday30_rm12 + prec_rm12 + prec_sq_rm12 +
 trend_lat + trend_long + trend_sq_lat + trend_sq_long- 1
 
 
@@ -195,35 +210,35 @@ thirty_5 <- predictSUR_leave(modlist = modlistthirty, basedata = basedata, based
 
 ten_dat <- data.frame(temp = rep(c(0, 1, 2, 3, 4, 5), each = length(ten_0$corn_predict)),
                        corn.pred = c(ten_0$corn_predict,
-                                ten_1$corn_predict,
-                                ten_2$corn_predict,
-                                ten_3$corn_predict,
-                                ten_4$corn_predict,
-                                ten_5$corn_predict),
+                                      ten_1$corn_predict,
+                                      ten_2$corn_predict,
+                                      ten_3$corn_predict,
+                                      ten_4$corn_predict,
+                                    ten_5$corn_predict),
                       cotton.pred = c(ten_0$cotton_predict,
-                                ten_1$cotton_predict,
-                                ten_2$cotton_predict,
-                                ten_3$cotton_predict,
-                                ten_4$cotton_predict,
-                                ten_5$cotton_predict),
+                                      ten_1$cotton_predict,
+                                      ten_2$cotton_predict,
+                                      ten_3$cotton_predict,
+                                      ten_4$cotton_predict,
+                                      ten_5$cotton_predict),
                       hay.pred = c(ten_0$hay_predict,
-                                ten_1$hay_predict,
-                                ten_2$hay_predict,
-                                ten_3$hay_predict,
-                                ten_4$hay_predict,
-                                ten_5$hay_predict),
+                                    ten_1$hay_predict,
+                                    ten_2$hay_predict,
+                                    ten_3$hay_predict,
+                                    ten_4$hay_predict,
+                                    ten_5$hay_predict),
                       soybean.pred = c(ten_0$soybean_predict,
-                                ten_1$soybean_predict,
-                                ten_2$soybean_predict,
-                                ten_3$soybean_predict,
-                                ten_4$soybean_predict,
-                                ten_5$soybean_predict),
+                                      ten_1$soybean_predict,
+                                      ten_2$soybean_predict,
+                                      ten_3$soybean_predict,
+                                      ten_4$soybean_predict,
+                                      ten_5$soybean_predict),
                       wheat.pred = c(ten_0$wheat_predict,
-                                ten_1$wheat_predict,
-                                ten_2$wheat_predict,
-                                ten_3$wheat_predict,
-                                ten_4$wheat_predict,
-                                ten_5$wheat_predict))
+                                      ten_1$wheat_predict,
+                                      ten_2$wheat_predict,
+                                      ten_3$wheat_predict,
+                                      ten_4$wheat_predict,
+                                      ten_5$wheat_predict))
 saveRDS(ten_dat, "data/cten.rds")
 # 
 pdat_ten <- gather(ten_dat, key = crop, value = sum, -temp)
@@ -233,6 +248,7 @@ pdat_ten <- pdat_ten %>%
   summarise_all(sum) %>%
   mutate(change = 100*(sum - first(sum))/first(sum))
 head(pdat_ten)
+pdat_ten
 # 
 # ggplot(pdat_ten, aes(temp, change)) + geom_line() + facet_wrap(~crop, scales = "free")
 

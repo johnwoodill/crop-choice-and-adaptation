@@ -142,6 +142,7 @@ ggplot(ggdat, aes(year, dday30_dm_m, color = factor(region))) + geom_line() +
   annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
   annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
   theme(legend.position = "none") +
+  geom_vline(xintercept = 1970, linetype = "dashed", color = "grey") +
   geom_vline(xintercept = 1980, linetype = "dashed", color = "grey") +
     theme(legend.position = "top",
     # legend.justification = c("right", "top"),
