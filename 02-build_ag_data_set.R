@@ -482,7 +482,7 @@ data <- filter(fulldat, state %in% states)
 
 # Keep only those counties with acres in 1950
 data$acres <- rowSums(data[, c("corn_grain_a", "cotton_a", "hay_a", "soybean_a", "wheat_a")], na.rm = TRUE)
-check <- filter(data, year == 1960)
+check <- filter(data, year == 1950)
 check <- filter(check, acres > 0)
 check$state <- factor(check$state)
 length(unique(check$fips))

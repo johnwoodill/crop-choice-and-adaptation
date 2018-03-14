@@ -84,7 +84,7 @@ dd_temp <- function(x, prec){
 
 
 
-  pdat <- filter(pdat, year >= 1960 & year <= 2010)
+  pdat <- filter(pdat, year >= 1950 & year <= 2010)
   pdat$trend <- pdat$year - (min(pdat$year) - 1)
   pdat$trend_sq <- pdat$trend^2
   pdat$trend_lat <- pdat$trend*pdat$lat

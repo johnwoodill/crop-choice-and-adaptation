@@ -73,12 +73,13 @@ terms <- c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq")
 
 # Climate-effect predictions
 # 
+
 # mod = sur_ten
 # acres = cropdat$acres
 # fips = cropdat$fips
 # newdata_list = newdata_list_dm
 # var.terms = ten_climate_terms_v
-# # cons.terms = terms,
+# # cons.terms = terms
 # type = "10-year"
 # effect = "Climate-effect"
 
@@ -87,7 +88,7 @@ cten <- predictSUR.clean(mod = sur_ten,
                          fips = cropdat$fips,
                          newdata_list = newdata_list_dm,
                          var.terms = ten_climate_terms_v,
-                         # cons.terms = terms,
+                         cons.terms = terms,
                          type = "10-year", 
                          effect = "Climate-effect")
 
@@ -98,7 +99,7 @@ test <- cten$agg_predictions %>%
   group_by(crop) %>% 
   mutate(change = 100*(sum - first(sum))/(first(sum)))
 
-View(test)
+# View(test)
 #  cten_rs <- rowSums(cten$predictions)
 #  length(which((cten_rs != 1) == FALSE))
 # 
@@ -115,7 +116,7 @@ ctwenty <- predictSUR.clean(mod = sur_twenty,
                             fips = cropdat$fips,
                             newdata_list = newdata_list_dm, 
                             var.terms = twenty_climate_terms_v,
-                            # cons.terms = terms,
+                            cons.terms = terms,
                             type = "11-year", 
                             effect = "Climate-effect")
 
@@ -132,7 +133,7 @@ cthirty <- predictSUR.clean(mod = sur_thirty,
                             fips = cropdat$fips,
                             newdata_list = newdata_list_dm,
                             var.terms = thirty_climate_terms_v,
-                            # cons.terms = terms,
+                            cons.terms = terms,
                             type = "12-year", 
                             effect = "Climate-effect")
 
@@ -174,35 +175,35 @@ ggplot(pdat, aes(temp, (sum/1000000), color = crop)) + geom_line() +
 
 pdat %>% group_by(temp, type) %>% summarise(nsum = sum(sum))
 
-pdat <- pdat %>% 
-  group_by(crop, type, effect) %>% 
-  mutate(change = (sum - first(sum))/first(sum))
-pdat
-pdat$change <- 100*pdat$change
-
-saveRDS(pdat, "data/sur_predictions.rds")
+# pdat <- pdat %>% 
+#   group_by(crop, type, effect) %>% 
+#   mutate(change = (sum - first(sum))/first(sum))
+# pdat
+# pdat$change <- 100*pdat$change
 # 
-ggplot(pdat, aes(temp, change)) +
-  geom_line() +
-  geom_point(size = .5) +
-  # geom_errorbar(aes(ymax = change_max, ymin = change_min, color = effect), width = .1) +
-  theme_tufte(base_size = 10) +
-  ylab("% Change in Proportion of Crop Acres") +
-  xlab("Change in Temperature (C)") +
-  annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
-  annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
-  scale_x_continuous(breaks = 0:5, labels = c("+0C", "+1C", "+2C", "+3C", "+4C", "+5C")) +
-  theme(legend.position = "top",
-       #legend.justification = c("left", "top"),
-       legend.box.background = element_rect(colour = "grey"),
-       legend.title = element_blank(), legend.key = element_blank(),
-       axis.text.x = element_text(angle = 45, hjust = 1)) +
-  #theme(legend.position = c(.85,1),
-  #     legend.justification = c("left", "top"),
-  #     legend.box.background = element_rect(colour = "grey"),
-  #     legend.title = element_blank(), legend.key = element_blank()) +
-  facet_wrap(type~crop, ncol = 5, scales = "free") +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "grey")
+# saveRDS(pdat, "data/sur_predictions.rds")
+# # 
+# ggplot(pdat, aes(temp, change)) +
+#   geom_line() +
+#   geom_point(size = .5) +
+#   # geom_errorbar(aes(ymax = change_max, ymin = change_min, color = effect), width = .1) +
+#   theme_tufte(base_size = 10) +
+#   ylab("% Change in Proportion of Crop Acres") +
+#   xlab("Change in Temperature (C)") +
+#   annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
+#   annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
+#   scale_x_continuous(breaks = 0:5, labels = c("+0C", "+1C", "+2C", "+3C", "+4C", "+5C")) +
+#   theme(legend.position = "top",
+#        #legend.justification = c("left", "top"),
+#        legend.box.background = element_rect(colour = "grey"),
+#        legend.title = element_blank(), legend.key = element_blank(),
+#        axis.text.x = element_text(angle = 45, hjust = 1)) +
+#   #theme(legend.position = c(.85,1),
+#   #     legend.justification = c("left", "top"),
+#   #     legend.box.background = element_rect(colour = "grey"),
+#   #     legend.title = element_blank(), legend.key = element_blank()) +
+#   facet_wrap(type~crop, ncol = 5, scales = "free") +
+#   geom_hline(yintercept = 0, linetype = "dashed", color = "grey")
 # 
 # ggsave("figures/sur_crop_share_predictions.pdf", width = 6, height = 5)
 # # 
