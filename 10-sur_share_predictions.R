@@ -91,8 +91,14 @@ cten <- predictSUR.clean(mod = sur_ten,
                          type = "10-year", 
                          effect = "Climate-effect")
 
-head(cten$agg_predictions)
+# head(cten$agg_predictions)
+# View(cten$agg_predictions)
 
+test <- cten$agg_predictions %>% 
+  group_by(crop) %>% 
+  mutate(change = 100*(sum - first(sum))/(first(sum)))
+
+View(test)
 #  cten_rs <- rowSums(cten$predictions)
 #  length(which((cten_rs != 1) == FALSE))
 # 
