@@ -6,6 +6,8 @@
 
 predictSUR.clean <- function(mod, newdata_list, acres, fips, var.terms = NULL, cons.terms = NULL, type, effect){
   
+  # ppnorm <- function(x) 1.0/(1.0+exp(-1.69897*(x-mean(x))/sd(x)))
+  
   p0 <- newdata_list[[1]]
   p1 <- newdata_list[[2]]
   p2 <- newdata_list[[3]]
