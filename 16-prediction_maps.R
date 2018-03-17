@@ -79,7 +79,7 @@ corn_map2 <- county_choropleth(corndat2 ,
                 
 corn_map2 <- corn_map2 + scale_fill_brewer(palette = "RdYlBu", direction = 1) + 
   theme_tufte(base_size = 10)+ 
-  xlab("Corn (+5C) 10-year") + ylab(NULL) + theme(legend.position = "none",
+  xlab("Change in Corn Acres with +2C") + ylab(NULL) + theme(legend.position = "none",
                        axis.text.x = element_blank(),
                        axis.text.y = element_blank(),
                        axis.ticks.x = element_blank(),
