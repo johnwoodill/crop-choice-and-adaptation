@@ -100,33 +100,33 @@ predictSUR.clean <- function(mod, newdata_list, acres, fips, var.terms = NULL, c
                       soybean.pred = soybean5.pred,
                       wheat.pred = wheat5.pred)
   
-  # temp0[temp0 < 0 ] <- 0
-  # temp1[temp1 < 0 ] <- 0
-  # temp2[temp2 < 0 ] <- 0
-  # temp3[temp3 < 0 ] <- 0
-  # temp4[temp4 < 0 ] <- 0
-  # temp5[temp5 < 0 ] <- 0
-  # 
-  # temp0[, 2:6] <- apply(temp0[, 2:6], 2, function(x) ifelse(x > 1, 1, x))
-  # temp1[, 2:6] <- apply(temp1[, 2:6], 2, function(x) ifelse(x > 1, 1, x))
-  # temp2[, 2:6] <- apply(temp2[, 2:6], 2, function(x) ifelse(x > 1, 1, x))
-  # temp3[, 2:6] <- apply(temp3[, 2:6], 2, function(x) ifelse(x > 1, 1, x))
-  # temp4[, 2:6] <- apply(temp4[, 2:6], 2, function(x) ifelse(x > 1, 1, x))
-  # temp5[, 2:6] <- apply(temp5[, 2:6], 2, function(x) ifelse(x > 1, 1, x))
-  # 
-  # temp0[, 2:6] <- temp0[, 2:6] / rowSums(temp0[, 2:6])
-  # temp1[, 2:6] <- temp1[, 2:6] / rowSums(temp1[, 2:6])
-  # temp2[, 2:6] <- temp2[, 2:6] / rowSums(temp2[, 2:6])
-  # temp3[, 2:6] <- temp3[, 2:6] / rowSums(temp3[, 2:6])
-  # temp4[, 2:6] <- temp4[, 2:6] / rowSums(temp4[, 2:6])
-  # temp5[, 2:6] <- temp5[, 2:6] / rowSums(temp5[, 2:6])
-  # 
-  # temp0[, 2:6] <- apply(temp0[, 2:6], 2, function(x) ifelse(is.na(x), 0, x))
-  # temp1[, 2:6] <- apply(temp1[, 2:6], 2, function(x) ifelse(is.na(x), 0, x))
-  # temp2[, 2:6] <- apply(temp2[, 2:6], 2, function(x) ifelse(is.na(x), 0, x))
-  # temp3[, 2:6] <- apply(temp3[, 2:6], 2, function(x) ifelse(is.na(x), 0, x))
-  # temp4[, 2:6] <- apply(temp4[, 2:6], 2, function(x) ifelse(is.na(x), 0, x))
-  # temp5[, 2:6] <- apply(temp5[, 2:6], 2, function(x) ifelse(is.na(x), 0, x))
+  temp0[temp0 < 0 ] <- 0
+  temp1[temp1 < 0 ] <- 0
+  temp2[temp2 < 0 ] <- 0
+  temp3[temp3 < 0 ] <- 0
+  temp4[temp4 < 0 ] <- 0
+  temp5[temp5 < 0 ] <- 0
+
+  temp0[, 2:6] <- apply(temp0[, 2:6], 2, function(x) ifelse(x > 1, 1, x))
+  temp1[, 2:6] <- apply(temp1[, 2:6], 2, function(x) ifelse(x > 1, 1, x))
+  temp2[, 2:6] <- apply(temp2[, 2:6], 2, function(x) ifelse(x > 1, 1, x))
+  temp3[, 2:6] <- apply(temp3[, 2:6], 2, function(x) ifelse(x > 1, 1, x))
+  temp4[, 2:6] <- apply(temp4[, 2:6], 2, function(x) ifelse(x > 1, 1, x))
+  temp5[, 2:6] <- apply(temp5[, 2:6], 2, function(x) ifelse(x > 1, 1, x))
+
+  temp0[, 2:6] <- temp0[, 2:6] / rowSums(temp0[, 2:6])
+  temp1[, 2:6] <- temp1[, 2:6] / rowSums(temp1[, 2:6])
+  temp2[, 2:6] <- temp2[, 2:6] / rowSums(temp2[, 2:6])
+  temp3[, 2:6] <- temp3[, 2:6] / rowSums(temp3[, 2:6])
+  temp4[, 2:6] <- temp4[, 2:6] / rowSums(temp4[, 2:6])
+  temp5[, 2:6] <- temp5[, 2:6] / rowSums(temp5[, 2:6])
+
+  temp0[, 2:6] <- apply(temp0[, 2:6], 2, function(x) ifelse(is.na(x), 0, x))
+  temp1[, 2:6] <- apply(temp1[, 2:6], 2, function(x) ifelse(is.na(x), 0, x))
+  temp2[, 2:6] <- apply(temp2[, 2:6], 2, function(x) ifelse(is.na(x), 0, x))
+  temp3[, 2:6] <- apply(temp3[, 2:6], 2, function(x) ifelse(is.na(x), 0, x))
+  temp4[, 2:6] <- apply(temp4[, 2:6], 2, function(x) ifelse(is.na(x), 0, x))
+  temp5[, 2:6] <- apply(temp5[, 2:6], 2, function(x) ifelse(is.na(x), 0, x))
   
   indat0_corn <- sum(temp0$corn.pred*acres)
   indat1_corn <- sum(temp1$corn.pred*acres)

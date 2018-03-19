@@ -173,6 +173,7 @@ ggplot(pdat, aes(temp, (sum/1000000), color = crop)) + geom_line() +
   #     legend.title = element_blank(), legend.key = element_blank()) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey") +
     facet_wrap(~type) 
+ggsave("figures/sur_crop_share_predictions.pdf", width = 6, height = 4)
 
 # pdat %>% group_by(temp, type) %>% summarise(nsum = sum(sum))
 

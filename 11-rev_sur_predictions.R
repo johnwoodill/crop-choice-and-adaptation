@@ -62,11 +62,11 @@ nmdat <- select(cropdat, fips)
 nmdat <- left_join(nmdat, mdat, by = "fips")
 head(nmdat)
 
-# sur_rev$corn_rev <- ifelse(sur_rev$corn_rev < 0, 0, sur_rev$corn_rev)
-# sur_rev$cotton_rev <- ifelse(sur_rev$cotton_rev < 0, 0, sur_rev$cotton_rev)
-# sur_rev$hay_rev <- ifelse(sur_rev$hay_rev < 0, 0, sur_rev$hay_rev)
-# sur_rev$soybean_rev <- ifelse(sur_rev$soybean_rev < 0, 0, sur_rev$soybean_rev)
-# sur_rev$wheat_rev <- ifelse(sur_rev$wheat_rev < 0, 0, sur_rev$wheat_rev)
+sur_rev$corn_rev <- ifelse(sur_rev$corn_rev < 0, 0, sur_rev$corn_rev)
+sur_rev$cotton_rev <- ifelse(sur_rev$cotton_rev < 0, 0, sur_rev$cotton_rev)
+sur_rev$hay_rev <- ifelse(sur_rev$hay_rev < 0, 0, sur_rev$hay_rev)
+sur_rev$soybean_rev <- ifelse(sur_rev$soybean_rev < 0, 0, sur_rev$soybean_rev)
+sur_rev$wheat_rev <- ifelse(sur_rev$wheat_rev < 0, 0, sur_rev$wheat_rev)
 
 
 #----------------------------------------------------------------------------------------------
@@ -221,23 +221,29 @@ cdat3 <- left_join(rev, cthirty_acres, by = c("temp", "fips"))
 cdat1 <- cdat1 %>% 
   group_by(temp) %>% 
   summarise_all(sum) %>% 
-  mutate(sum_rev = corn_rev + cotton_rev + hay_rev + soybean_rev + wheat_rev,
-         sum_a = corn_acres + cotton_acres + hay_acres + soybean_acres + wheat_acres,
-         total = sum_rev/sum_a) %>% 
+  mutate(corn = corn_rev/corn_acres,
+         cotton = cotton_rev/cotton_acres,
+         hay = hay_rev/hay_acres,
+         soybean = soybean_rev/soybean_acres,
+         wheat = wheat_rev/wheat_acres) %>% 
+  select(temp, corn, cotton, hay, soybean, wheat) %>% 
+  mutate(total = corn + cotton + hay + soybean + wheat) %>% 
   mutate(change = 100*(total - first(total))/first(total),
          interval = "10-year",
          effect = "Weather-climate-effect") %>% 
   select(temp, interval, effect, change) %>% 
   ungroup()
 
-cdat1
-
 cdat2 <- cdat2 %>% 
   group_by(temp) %>% 
   summarise_all(sum) %>% 
-  mutate(sum_rev = corn_rev + cotton_rev + hay_rev + soybean_rev + wheat_rev,
-         sum_a = corn_acres + cotton_acres + hay_acres + soybean_acres + wheat_acres,
-         total = sum_rev/sum_a) %>% 
+  mutate(corn = corn_rev/corn_acres,
+         cotton = cotton_rev/cotton_acres,
+         hay = hay_rev/hay_acres,
+         soybean = soybean_rev/soybean_acres,
+         wheat = wheat_rev/wheat_acres) %>% 
+  select(temp, corn, cotton, hay, soybean, wheat) %>% 
+  mutate(total = corn + cotton + hay + soybean + wheat) %>% 
   mutate(change = 100*(total - first(total))/first(total),
          interval = "11-year",
          effect = "Weather-climate-effect") %>% 
@@ -247,9 +253,13 @@ cdat2 <- cdat2 %>%
 cdat3 <- cdat3 %>% 
   group_by(temp) %>% 
   summarise_all(sum) %>% 
-  mutate(sum_rev = corn_rev + cotton_rev + hay_rev + soybean_rev + wheat_rev,
-         sum_a = corn_acres + cotton_acres + hay_acres + soybean_acres + wheat_acres,
-         total = sum_rev/sum_a) %>% 
+  mutate(corn = corn_rev/corn_acres,
+         cotton = cotton_rev/cotton_acres,
+         hay = hay_rev/hay_acres,
+         soybean = soybean_rev/soybean_acres,
+         wheat = wheat_rev/wheat_acres) %>% 
+  select(temp, corn, cotton, hay, soybean, wheat) %>% 
+  mutate(total = corn + cotton + hay + soybean + wheat) %>% 
   mutate(change = 100*(total - first(total))/first(total),
          interval = "12-year",
          effect = "Weather-climate-effect") %>% 
@@ -271,12 +281,13 @@ ggplot(pdat, aes(temp, change, color = effect)) + geom_line() +
   geom_point(aes(color = effect), size = 0.5) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey", alpha = 0.5) +
   theme_tufte(base_size = 10) +
-  ylab("% Change in Total Revenue/Acre") +
+  ylab("% Change in Revenue/Acre") +
   xlab("Change in Temperature (C)") +
   annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
   annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
   scale_x_continuous(breaks = 0:5, labels = c("+0C", "+1C", "+2C", "+3C", "+4C", "+5C")) +
   # scale_y_continuous(breaks = seq(50,-50, by = -10), labels = c("50%", "40%", "30%", "20%", "10%", "0", "-10%", "-20%", "-30%", "-40%", "-50%")) +
+  ylim(-60, 60) +
   guides(color = guide_legend(keywidth = 1.5, keyheight = 1,
                                 override.aes = list(linetype = c(1, 1),
                                                     size = 1.5,
@@ -292,5 +303,4 @@ ggplot(pdat, aes(temp, change, color = effect)) + geom_line() +
 
 
 ggsave("figures/main_plot.pdf", width = 6, height = 4)
-
 
