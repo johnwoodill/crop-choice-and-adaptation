@@ -155,7 +155,7 @@ pdat <- rbind(cten$agg_predictions, ctwenty$agg_predictions, cthirty$agg_predict
 head(pdat)
 
 ggplot(pdat, aes(temp, (sum/1000000), color = crop)) + geom_line() + 
-  geom_hline(yintercept = 12073232296/1000000, linetype = "dashed", color = "grey") +
+  # geom_hline(yintercept = 12073232296/1000000, linetype = "dashed", color = "grey") +
   theme_tufte(base_size = 10) +
   ylab("Total Acres \n (Millions)") +
   xlab("Change in Temperature (C)") +

@@ -59,12 +59,15 @@ ggplot(outdat, aes(rollmean, sd, shape = factor(var))) +
   geom_point(size = .8) +
   # geom_text(data = sorder, aes(x = rollmean, y = sd, label = order), vjust = -1.5, show.legend = FALSE) +
   # geom_point(data = sorder, aes(x = rollmean, y = sd), shape = 1, size = 5) +
-  theme_tufte(base_size = 8) +
+  annotate("text", x = 40, y = 135, label = "Degree Day (10-30C)", size = 3) +
+  annotate("text", x = 40, y = 55, label = "Degree Day (30C)", size = 3) +
+  annotate("text", x = 40, y = 35, label = "Degree Day (0-10C)", size = 3) +
+  theme_tufte(base_size = 10) +
   ylab("RMSE") +
   xlab("Rollmean Window Size") +
   annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
   annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
-  theme(legend.position = "top",
+  theme(legend.position = "none",
     legend.box.background = element_rect(colour = "grey"),
     legend.title = element_blank(), legend.key = element_blank()) +
   geom_vline(xintercept = 10, linetype = "dashed", color = "grey")

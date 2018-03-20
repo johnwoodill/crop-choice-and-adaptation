@@ -270,12 +270,13 @@ pdat3 <- rbind(cdat1, cdat2, cdat3)
 
 ggplot(pdat3, aes(temp, change, color = interval)) + geom_line()
 
-pdat1$panel = 1
-pdat2$panel = 2
-pdat3$panel = 2
+pdat1$panel = 2
+pdat2$panel = 1
+pdat3$panel = 1
 
 pdat <- rbind(pdat1, pdat2, pdat3)
 
+# pdat$
 
 ggplot(pdat, aes(temp, change, color = effect)) + geom_line() + 
   geom_point(aes(color = effect), size = 0.5) +
@@ -285,21 +286,28 @@ ggplot(pdat, aes(temp, change, color = effect)) + geom_line() +
   xlab("Change in Temperature (C)") +
   annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
   annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
+  #annotate("text", x = 3, y = 30, label = "asdf") +
+  geom_text(data = filter(pdat, temp == 3 & effect == "Weather-climate-effect" & panel == 1), aes(label = effect), 
+            vjust = -3, size = 2) + 
+  geom_text(data = filter(pdat, temp == 3 & effect == "Weather-effect" & panel == 1), aes(label = effect), 
+            vjust = 3, size = 2) + 
+  geom_text(data = filter(pdat, temp == 3 & effect == "Weather-climate-effect" & panel == 2), aes(label = effect), 
+            vjust = -1.5, size = 2, hjust = .3) + 
+  geom_text(data = filter(pdat, temp == 3 & effect == "Weather-effect" & panel == 2), aes(label = effect), 
+            vjust = 3, size = 2) + 
   scale_x_continuous(breaks = 0:5, labels = c("+0C", "+1C", "+2C", "+3C", "+4C", "+5C")) +
-  # scale_y_continuous(breaks = seq(50,-50, by = -10), labels = c("50%", "40%", "30%", "20%", "10%", "0", "-10%", "-20%", "-30%", "-40%", "-50%")) +
   ylim(-60, 60) +
-  guides(color = guide_legend(keywidth = 1.5, keyheight = 1,
-                                override.aes = list(linetype = c(1, 1),
-                                                    size = 1.5,
-                                                    shape = c(NA, NA)))) +
+  #guides(color = guide_legend(keywidth = 1.5, keyheight = 1,
+  #                              override.aes = list(linetype = c(1, 1),
+  #                                                  size = 1.5,
+  #                                                  shape = c(NA, NA)))) +
     facet_wrap(panel~interval, labeller = labeller(
-      panel = c('1' = 'Aggregate Revenue', '2' = 'Disaggregated Revenue'))) +
-    theme(legend.position = "top",
+      panel = c('1' = 'Disaggregated Revenue', '2' = 'Aggregate Revenue'))) +
+    theme(legend.position = "none",
         legend.box.background = element_rect(colour = "grey"),
         legend.title = element_blank(),
         legend.key = element_rect(fill = NA, color = NA),
         legend.text=element_text(size=8))
-  # facet_wrap(type~interval, scales = "free")
 
 
 ggsave("figures/main_plot.pdf", width = 6, height = 4)
