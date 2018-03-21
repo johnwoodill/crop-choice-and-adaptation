@@ -14,7 +14,6 @@ cropdat <- readRDS("data/full_ag_data.rds")
 cropdat <- as.data.frame(cropdat)
 cropdat$fips <- factor(cropdat$fips)
 
-#State-quad trend with weather and climate
 sur_rev <- readRDS("models/sur_rev_model.rds")
 
 # Prediction data 0C-5C
