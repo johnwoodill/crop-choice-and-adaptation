@@ -13,24 +13,24 @@ source("R/main_plot_bs.R")
 # setwd("/home/johnw/Projects/adaptation-and-crop-choice/")
 # dir.create("data")
 # 
-download.file("https://spideroak.com/share/NJXWQ3TXN5XWI2LMNQ/crop-choice-data/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/data/full_ag_data.rds",
-              destfile = "data/full_ag_data.rds", method = "auto")
-
-download.file("https://spideroak.com/share/NJXWQ3TXN5XWI2LMNQ/crop-choice-data/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/data/cten.rds",
-              destfile = "data/cten.rds", method = "auto")
-
-download.file("https://spideroak.com/share/NJXWQ3TXN5XWI2LMNQ/crop-choice-data/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/data/ctwenty.rds",
-              destfile = "data/ctwenty.rds", method = "auto")
-
-download.file("https://spideroak.com/share/NJXWQ3TXN5XWI2LMNQ/crop-choice-data/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/data/cthirty.rds",
-              destfile = "data/cthirty.rds", method = "auto")
-
-download.file("https://spideroak.com/share/NJXWQ3TXN5XWI2LMNQ/crop-choice-data/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/data/rev_crop_predictions.rds",
-              destfile = "data/rev_crop_predictions.rds", method = "auto")
-
-
-download.file("https://spideroak.com/share/NJXWQ3TXN5XWI2LMNQ/crop-choice-data/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/data/sur_rev_predictions.rds",
-              destfile = "data/sur_rev_predictions.rds", method = "auto")
+# download.file("https://spideroak.com/share/NJXWQ3TXN5XWI2LMNQ/crop-choice-data/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/data/full_ag_data.rds",
+#               destfile = "data/full_ag_data.rds", method = "auto")
+# 
+# download.file("https://spideroak.com/share/NJXWQ3TXN5XWI2LMNQ/crop-choice-data/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/data/cten.rds",
+#               destfile = "data/cten.rds", method = "auto")
+# 
+# download.file("https://spideroak.com/share/NJXWQ3TXN5XWI2LMNQ/crop-choice-data/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/data/ctwenty.rds",
+#               destfile = "data/ctwenty.rds", method = "auto")
+# 
+# download.file("https://spideroak.com/share/NJXWQ3TXN5XWI2LMNQ/crop-choice-data/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/data/cthirty.rds",
+#               destfile = "data/cthirty.rds", method = "auto")
+# 
+# download.file("https://spideroak.com/share/NJXWQ3TXN5XWI2LMNQ/crop-choice-data/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/data/rev_crop_predictions.rds",
+#               destfile = "data/rev_crop_predictions.rds", method = "auto")
+# 
+# 
+# download.file("https://spideroak.com/share/NJXWQ3TXN5XWI2LMNQ/crop-choice-data/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/data/sur_rev_predictions.rds",
+#               destfile = "data/sur_rev_predictions.rds", method = "auto")
 
 # Crop data
 cropdat <- readRDS("data/full_ag_data.rds")
@@ -87,7 +87,7 @@ pdat1 <- rev_crop_pred %>%
   mutate(change = 100*(rev.pred - first(rev.pred))/first(rev.pred),
          change_max = 100*(rev_max - first(rev.pred))/first(rev.pred),
          change_min = 100*(rev_min - first(rev.pred))/first(rev.pred)) %>% 
-  select(temp, interval, effect, change) %>% 
+  select(temp, interval, effect, change, change_min, change_max) %>% 
   ungroup()
 
 head(pdat1)
@@ -137,6 +137,8 @@ pdat2 <- nsur_rev %>%
   summarise_all(sum) %>% 
   ungroup() %>% 
   mutate(change = 100*(total_rev - first(total_rev))/first(total_rev),
+         change_max = NA,
+         change_min = NA,
          effect = "Weather-effect") %>% 
   ungroup()
 
@@ -145,7 +147,7 @@ pdat2_2 <- pdat2; pdat2_2$interval = "11-year"
 pdat2_3 <- pdat2; pdat2_3$interval = "12-year"
 
 pdat2 <- rbind(pdat2_1, pdat2_2, pdat2_3)
-pdat2 <- select(pdat2, temp, interval, effect, change)
+pdat2 <- select(pdat2, temp, interval, effect, change, change_min, change_max)
 
 ggplot(pdat2, aes(temp, change, color = interval)) + geom_line() 
 
@@ -179,6 +181,39 @@ cthirty$predictions$cotton_acres <- cthirty$predictions$cotton.pred*cropdat$acre
 cthirty$predictions$hay_acres<- cthirty$predictions$hay.pred*cropdat$acres
 cthirty$predictions$soybean_acres <- cthirty$predictions$soybean.pred*cropdat$acres
 cthirty$predictions$wheat_acres <- cthirty$predictions$wheat.pred*cropdat$acres
+
+# Bootstrap se
+# bs_se <- main_plot_bs(sur_rev, 
+#                       cten$predictions, 
+#                       ctwenty$predictions, 
+#                       cthirty$predictions, 
+#                       cropdat$year, 
+#                       rep = 5, 
+#                       cores = 1)
+
+# dput from %dopar% run
+bs_se <- structure(list(temp = c(0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 
+4, 4, 5, 5, 5), interval = c("10-year", "11-year", "12-year", 
+"10-year", "11-year", "12-year", "10-year", "11-year", "12-year", 
+"10-year", "11-year", "12-year", "10-year", "11-year", "12-year", 
+"10-year", "11-year", "12-year"), effect = c("Weather-climate-effect", 
+"Weather-climate-effect", "Weather-climate-effect", "Weather-climate-effect", 
+"Weather-climate-effect", "Weather-climate-effect", "Weather-climate-effect", 
+"Weather-climate-effect", "Weather-climate-effect", "Weather-climate-effect", 
+"Weather-climate-effect", "Weather-climate-effect", "Weather-climate-effect", 
+"Weather-climate-effect", "Weather-climate-effect", "Weather-climate-effect", 
+"Weather-climate-effect", "Weather-climate-effect"), se = c(1.10687426459601, 
+1.10019542674658, 1.11087909255267, 0.883431284603084, 0.866155733534474, 
+0.868790000057946, 0.849260420601032, 0.843845270909884, 0.867311791045779, 
+0.936412501678389, 0.941687062622815, 0.977774469763472, 1.13404345458505, 
+1.16723580604361, 1.20914286314339, 1.52255652793542, 1.49276437810352, 
+1.47889152862132)), .Names = c("temp", "interval", "effect", 
+"se"), class = c("grouped_df", "tbl_df", "tbl", "data.frame"), row.names = c(NA, 
+-18L), vars = c("temp", "interval"), drop = TRUE)
+
+head(bs_se)
+
+
 
 rev <- sur_rev %>% 
   group_by(temp, fips) %>% 
@@ -226,10 +261,13 @@ cdat1 <- cdat1 %>%
          wheat = wheat_rev/wheat_acres) %>% 
   select(temp, corn, cotton, hay, soybean, wheat) %>% 
   mutate(total = corn + cotton + hay + soybean + wheat) %>% 
+  left_join(filter(bs_se, interval == "10-year"), by = "temp") %>% 
   mutate(change = 100*(total - first(total))/first(total),
+         change_max = 100*((total + se*1.96)/first(total) - 1),
+         change_min = 100*((total - se*1.96)/first(total) - 1),
          interval = "10-year",
          effect = "Weather-climate-effect") %>% 
-  select(temp, interval, effect, change) %>% 
+  select(temp, interval, effect, change, change_min, change_max) %>% 
   ungroup()
 
 cdat2 <- cdat2 %>% 
@@ -242,10 +280,13 @@ cdat2 <- cdat2 %>%
          wheat = wheat_rev/wheat_acres) %>% 
   select(temp, corn, cotton, hay, soybean, wheat) %>% 
   mutate(total = corn + cotton + hay + soybean + wheat) %>% 
+  left_join(filter(bs_se, interval == "11-year"), by = "temp") %>% 
   mutate(change = 100*(total - first(total))/first(total),
+         change_max = 100*((total + se*1.96)/first(total) - 1),
+         change_min = 100*((total - se*1.96)/first(total) - 1),
          interval = "11-year",
          effect = "Weather-climate-effect") %>% 
-  select(temp, interval, effect, change) %>% 
+  select(temp, interval, effect, change, change_min, change_max) %>% 
   ungroup()
 
 cdat3 <- cdat3 %>% 
@@ -258,44 +299,17 @@ cdat3 <- cdat3 %>%
          wheat = wheat_rev/wheat_acres) %>% 
   select(temp, corn, cotton, hay, soybean, wheat) %>% 
   mutate(total = corn + cotton + hay + soybean + wheat) %>% 
+  left_join(filter(bs_se, interval == "12-year"), by = "temp") %>% 
   mutate(change = 100*(total - first(total))/first(total),
+         change_max = 100*((total + se*1.96)/first(total) - 1),
+         change_min = 100*((total - se*1.96)/first(total) - 1),
          interval = "12-year",
          effect = "Weather-climate-effect") %>% 
-  select(temp, interval, effect, change) %>% 
+  select(temp, interval, effect, change, change_min, change_max) %>% 
   ungroup()
-
 pdat3 <- rbind(cdat1, cdat2, cdat3)
 
-# Bootstrap se
-# bs_se <- main_plot_bs(sur_rev, 
-#                       cten$predictions, 
-#                       ctwenty$predictions, 
-#                       cthirty$predictions, 
-#                       cropdat$year, 
-#                       rep = 5, 
-#                       cores = 1)
 
-# dput from %dopar% run
-bs_se <- structure(list(temp = c(0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 
-4, 4, 5, 5, 5), interval = c("10-year", "11-year", "12-year", 
-"10-year", "11-year", "12-year", "10-year", "11-year", "12-year", 
-"10-year", "11-year", "12-year", "10-year", "11-year", "12-year", 
-"10-year", "11-year", "12-year"), effect = c("Weather-climate-effect", 
-"Weather-climate-effect", "Weather-climate-effect", "Weather-climate-effect", 
-"Weather-climate-effect", "Weather-climate-effect", "Weather-climate-effect", 
-"Weather-climate-effect", "Weather-climate-effect", "Weather-climate-effect", 
-"Weather-climate-effect", "Weather-climate-effect", "Weather-climate-effect", 
-"Weather-climate-effect", "Weather-climate-effect", "Weather-climate-effect", 
-"Weather-climate-effect", "Weather-climate-effect"), se = c(1.10687426459601, 
-1.10019542674658, 1.11087909255267, 0.883431284603084, 0.866155733534474, 
-0.868790000057946, 0.849260420601032, 0.843845270909884, 0.867311791045779, 
-0.936412501678389, 0.941687062622815, 0.977774469763472, 1.13404345458505, 
-1.16723580604361, 1.20914286314339, 1.52255652793542, 1.49276437810352, 
-1.47889152862132)), .Names = c("temp", "interval", "effect", 
-"se"), class = c("grouped_df", "tbl_df", "tbl", "data.frame"), row.names = c(NA, 
--18L), vars = c("temp", "interval"), drop = TRUE)
-
-head(bs_se)
 
 ggplot(pdat3, aes(temp, change, color = interval)) + geom_line()
 
@@ -308,8 +322,9 @@ pdat <- rbind(pdat1, pdat2, pdat3)
 # pdat$
 
 ggplot(pdat, aes(temp, change, color = effect)) + geom_line() + 
-  geom_point(aes(color = effect), size = 0.5) +
+  geom_point(aes(color = effect), size = 0.25) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey", alpha = 0.5) +
+  geom_ribbon(aes(ymax = change_max, ymin = change_min, x = temp, linetype = NA), fill = "#C0CCD9", alpha = 0.5) +
   theme_tufte(base_size = 10) +
   ylab("% Change in Revenue/Acre") +
   xlab("Change in Temperature (C)") +
