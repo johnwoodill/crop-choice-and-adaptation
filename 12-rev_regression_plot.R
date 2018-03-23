@@ -20,13 +20,13 @@ modthirty_cse <- modthirty$cse[-c(grep("trend", names(modthirty$cse)))]
 # Build data frame for plot
 # Weather effects
 pdat1 <- data.frame(var = rep(c("DD (0-10C)", "DD (10-30C)", "DD (30C)"), 3),
-                    interval = rep(c("10-year", "20-year", "30-year"), each = 3),
+                    interval = rep(c("10-year", "11-year", "12-year"), each = 3),
                     effect = "Weather-effect",
                     coef = c(modten_coef[1:3], modtwenty_coef[1:3], modthirty_coef[1:3]),
                     cse = c(modten_cse[1:3], modtwenty_cse[1:3], modthirty_cse[1:3]))
 
 pdat2 <- data.frame(var = rep(c("DD (0-10C)", "DD (10-30C)", "DD (30C)"), 3),
-                    interval = rep(c("10-year", "20-year", "30-year"), each = 3),
+                    interval = rep(c("10-year", "11-year", "12-year"), each = 3),
                     effect = "Climate-effect",
                     coef = c(modten_coef[6:8], modtwenty_coef[6:8], modthirty_coef[6:8]),
                     cse = c(modten_cse[6:8], modtwenty_cse[6:8], modthirty_cse[6:8]))

@@ -13,6 +13,8 @@ library(tidyverse)
 library(lfe)
 library(doParallel)
 
+source("R/clse_systemfit.R")
+
 # setwd("/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/")
 # setwd("/home/johnw/")
 
@@ -101,7 +103,7 @@ mod$effects <- list(ln_corn.effect = cropdat_means$ln_rev_corn,
 # mod$bs.se <- as.data.frame(apply(d, 2, sd))
 
 # Results from bs parallel run
-mod$bs.se <- structure(list(`apply(d, 2, sd)` = c(6.21686620327522e-05, 3.09294962076834e-05, 
+mod$bs_se <- structure(list(`apply(d, 2, sd)` = c(6.21686620327522e-05, 3.09294962076834e-05, 
 0.00015386340078004, 0.00233875977992693, 3.63037589084633e-05, 
 4.04562215231435e-05, 2.43775931459578e-05, 0.000134358482338491, 
 0.00199193811953618, 3.14259015478427e-05, 8.00367060093982e-05, 
@@ -118,6 +120,9 @@ mod$bs.se <- structure(list(`apply(d, 2, sd)` = c(6.21686620327522e-05, 3.092949
 "wheat_dday10_30", "wheat_dday30", "wheat_prec", "wheat_prec_sq"
 ), class = "data.frame")
 
+
+# Clustered s.e.
+mod$cl_se <- clse_systemfit(mod, cropdat$state)
 
 saveRDS(mod, "models/sur_rev_model.rds")
 

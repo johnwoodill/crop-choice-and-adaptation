@@ -13,6 +13,8 @@ library(tidyverse)
 library(lfe)
 library(doParallel)
 
+source("R/clse_systemfit.R")
+
 # Setup parallel for bootstrapping
 # cl <- makeCluster(14)
 # registerDoParallel(cl)
@@ -105,11 +107,11 @@ ten_mod$effects <- list(corn.effect = cropdat_means$z_corn_a,
 #   mdat
 # }
 # 
-# ten_mod$bs.se <- as.data.frame(apply(d, 2, sd))
+# ten_mod$bs_se <- as.data.frame(apply(d, 2, sd))
 
 
 # From parallel run
-ten_mod$bs.se <- structure(list(`apply(d, 2, sd)` = c(0.000210053668428398, 0.000107530699104682, 
+ten_mod$bs_se <- structure(list(`apply(d, 2, sd)` = c(0.000210053668428398, 0.000107530699104682, 
 0.000397022695507217, 0.0102568110764039, 0.000165599333645509, 
 0.000104969425904618, 6.64406137620295e-05, 0.000314516531319913, 
 0.00811069924659747, 0.000132947721802708, 0.000454872867061025, 
@@ -126,6 +128,9 @@ ten_mod$bs.se <- structure(list(`apply(d, 2, sd)` = c(0.000210053668428398, 0.00
 "soybean_dday10_30_rm10", "soybean_dday30_rm10", "soybean_prec_rm10", 
 "soybean_prec_sq_rm10", "wheat_dday0_10_rm10", "wheat_dday10_30_rm10", 
 "wheat_dday30_rm10", "wheat_prec_rm10", "wheat_prec_sq_rm10"), class = "data.frame")
+
+
+ten_mod$cl_se <- clse_systemfit(ten_mod, cropdat$state)
 
 saveRDS(ten_mod, "models/sur_share_model_ten.rds")
 
@@ -205,11 +210,11 @@ twenty_mod$effects <- list(corn.effect = cropdat_means$z_corn_a,
 #   mdat
 # }
 # 
-# twenty_mod$bs.se <- as.data.frame(apply(d, 2, sd))
+# twenty_mod$bs_se <- as.data.frame(apply(d, 2, sd))
 
 
 # From parallel run
-twenty_mod$bs.se <- structure(list(`apply(d, 2, sd)` = c(0.000214515010841551, 0.000111288235521924, 
+twenty_mod$bs_se <- structure(list(`apply(d, 2, sd)` = c(0.000214515010841551, 0.000111288235521924, 
 0.0004250061960508, 0.0110061571943664, 0.000176771923145687, 
 0.000104547761363737, 7.06154508449778e-05, 0.000317895652354432, 
 0.00844896585257001, 0.000139620296196725, 0.000477770656483317, 
@@ -227,6 +232,8 @@ twenty_mod$bs.se <- structure(list(`apply(d, 2, sd)` = c(0.000214515010841551, 0
 "soybean_prec_sq_rm11", "wheat_dday0_10_rm11", "wheat_dday10_30_rm11", 
 "wheat_dday30_rm11", "wheat_prec_rm11", "wheat_prec_sq_rm11"), class = "data.frame")
 
+
+twenty_mod$cl_se <- clse_systemfit(twenty_mod, cropdat$state)
 
 saveRDS(twenty_mod, "models/sur_share_model_twenty.rds")
 
@@ -307,10 +314,10 @@ thirty_mod$effects <- list(corn.effect = cropdat_means$z_corn_a,
 #   mdat
 # }
 # # 
-# thirty_mod$bs.se <- as.data.frame(apply(d, 2, sd))
+# thirty_mod$bs_se <- as.data.frame(apply(d, 2, sd))
 
 # From parallel run
-thirty_mod$bs.se <- structure(list(`apply(d, 2, sd)` = c(0.000224505455506903, 0.00011581865455546, 
+thirty_mod$bs_se <- structure(list(`apply(d, 2, sd)` = c(0.000224505455506903, 0.00011581865455546, 
 0.000440301826908184, 0.0117698404958115, 0.000189268785370906, 
 0.00010375779135024, 7.17926661797334e-05, 0.000343537030172129, 
 0.00890964890766199, 0.000146997716834564, 0.000514030618515879, 
@@ -328,7 +335,7 @@ thirty_mod$bs.se <- structure(list(`apply(d, 2, sd)` = c(0.000224505455506903, 0
 "soybean_prec_sq_rm12", "wheat_dday0_10_rm12", "wheat_dday10_30_rm12", 
 "wheat_dday30_rm12", "wheat_prec_rm12", "wheat_prec_sq_rm12"), class = "data.frame")
 
-
+thirty_mod$cl_se <- clse_systemfit(thirty_mod, cropdat$state)
 
 saveRDS(thirty_mod, "models/sur_share_model_thirty.rds")
 
