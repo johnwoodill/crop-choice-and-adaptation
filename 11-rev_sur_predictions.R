@@ -346,7 +346,7 @@ ggplot(pdat, aes(temp, change, color = effect)) + geom_line() +
   #                                                  size = 1.5,
   #                                                  shape = c(NA, NA)))) +
     facet_wrap(panel~interval, labeller = labeller(
-      panel = c('1' = 'Disaggregated Revenue', '2' = 'Aggregate Revenue'))) +
+      panel = c('1' = 'Disaggregate Revenue', '2' = 'Aggregate Revenue'))) +
     theme(legend.position = "none",
         legend.box.background = element_rect(colour = "grey"),
         legend.title = element_blank(),
