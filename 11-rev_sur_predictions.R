@@ -78,10 +78,10 @@ rev_crop_pred$rev_max <- rev_crop_pred$rev.pred + 1.96*rev_crop_pred$rev.se
 rev_crop_pred$rev_min <- rev_crop_pred$rev.pred - 1.96*rev_crop_pred$rev.se
 
 # Bootstrap standard errors
-a <- bs_pdat1(rev_crop_pred, 
-              rep = 2000, 
-              cluster = cropdat$state, 
-              cores = 15)
+# a <- bs_pdat1(rev_crop_pred, 
+#               rep = 2000, 
+#               cluster = cropdat$state, 
+#               cores = 15)
 
 # dput from run
 bs_se_pdat1 <- structure(list(temp = c(0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 2, 
@@ -150,9 +150,9 @@ head(sur_rev)
 sur_rev$fips <- cropdat$fips
 
 # Boostrap se
-bs_se_pdat2 <- bs_pdat2(sur_rev, 
-                             rep = 2000, 
-                             cores = 1)
+# bs_se_pdat2 <- bs_pdat2(sur_rev, 
+#                              rep = 2000, 
+#                              cores = 1)
 
 # dput from run
 bs_se_pdat2 <- structure(list(temp = c(0, 1, 2, 3, 4, 5), se = c(1.4414699285383, 

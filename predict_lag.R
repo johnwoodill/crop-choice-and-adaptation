@@ -62,7 +62,7 @@ ggplot(outdat, aes(rollmean, sd, shape = factor(var))) +
   annotate("text", x = 40, y = 135, label = "Degree Day (10-30C)", size = 3) +
   annotate("text", x = 40, y = 55, label = "Degree Day (30C)", size = 3) +
   annotate("text", x = 40, y = 35, label = "Degree Day (0-10C)", size = 3) +
-  theme_tufte(base_size = 10) +
+  theme_tufte(base_size = 12) +
   ylab("RMSE") +
   xlab("Rollmean Window Size") +
   annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
