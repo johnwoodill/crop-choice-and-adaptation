@@ -305,51 +305,15 @@ head(cropdat)
  dd$fips <- as.integer(dd$fips)
  dd_dat <- left_join(dd, prec, by = c("fips", "year", "month"))
  dd_dat <- filter(dd_dat, month >= 3 & month <= 10)
- 
+
  dd_dat$X1 <- NULL
  dd_dat <- dd_dat %>%
    group_by(year, fips) %>%
    summarise(dday0C = sum(dday0C),
-            dday1C = sum(dday1C),
-            dday2C = sum(dday2C),
-            dday3C = sum(dday3C),
-            dday4C = sum(dday4C),
-            dday5C = sum(dday5C),
-            dday6C = sum(dday6C),
-            dday7C = sum(dday7C),
-            dday8C = sum(dday8C),
-            dday9C = sum(dday9C),
             dday10C = sum(dday10C),
-            dday11C = sum(dday11C),
-            dday12C = sum(dday12C),
-            dday13C = sum(dday13C),
-            dday14C = sum(dday14C),
-            dday15C = sum(dday15C),
-            dday16C = sum(dday16C),
-            dday17C= sum(dday17C),
-            dday18C = sum(dday18C),
-            dday19C = sum(dday19C),
-            dday20C = sum(dday20C),
-            dday21C = sum(dday21C),
-            dday22C = sum(dday22C),
-            dday23C = sum(dday23C),
-            dday24C = sum(dday24C),
-            dday25C = sum(dday25C),
-            dday26C = sum(dday26C),
-            dday27C = sum(dday27C),
-            dday28C = sum(dday28C),
-            dday29C = sum(dday29C),
             dday30C = sum(dday30C),
-            dday31C = sum(dday31C),
-            dday32C = sum(dday32C),
-            dday33C = sum(dday33C),
-            dday34C = sum(dday34C),
-            dday35C = sum(dday35C),
-            ndday0C = sum(ndday0C),
             prec = sum(ppt),
-            tavg = mean(tavg),
-            tmax = mean(tmax),
-            tmin = mean(tmin))
+            tavg = mean(tavg))
 
 
 # Schlenker and Roberts data
@@ -366,6 +330,19 @@ head(cropdat)
  #              dday34C = sum(dday34C),
  #              prec = sum(prec),
  #              tavg = mean(tAvg))
+ 
+ 
+ # Schlenker data 1900-2016
+ # dd_dat <- readRDS("data/wolfram_full_degree_days.rds")
+ #  dd_dat$year <- as.integer(dd_dat$year)
+ #  dd_dat$fips <- as.integer(dd_dat$fips)
+ #  dd_dat <- dd_dat %>%
+ #    group_by(year, fips) %>%
+ #    summarise(dday0C = sum(dday0C),
+ #              dday10C = sum(dday10C),
+ #              dday30C = sum(dday30C),
+ #              prec = sum(prec),
+ #              tavg = mean(tavg))
  # 
 
 dd_dat$dday0_10 <- dd_dat$dday0C - dd_dat$dday10C

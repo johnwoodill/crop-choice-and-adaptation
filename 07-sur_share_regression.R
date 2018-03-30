@@ -340,3 +340,273 @@ thirty_mod$cl_se <- clse_systemfit(thirty_mod, cropdat$state)
 saveRDS(thirty_mod, "models/sur_share_model_thirty.rds")
 
 stopCluster(cl)
+
+#-------------------------------------------------------------------------------------------
+# Build up regressions (No fe or trends)
+mod1 <- ln_rev_corn ~ dday0_10 + dday10_30 + dday30 +  prec + prec_sq
+
+
+mod2 <- ln_rev_cotton ~      dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10
+
+
+mod3 <- ln_rev_hay ~     dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10
+
+
+mod4 <- ln_rev_soybean ~   dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10
+
+
+mod5 <- ln_rev_wheat ~  dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10
+
+mod <- systemfit(list(corn = mod1,
+                       cotton = mod2,
+                       hay = mod3,
+                       soybean = mod4,
+                       wheat = mod5), data = cropdat, method = "SUR")
+
+summary(mod)
+sum(mod$coefficients)
+
+mod$effects <- list(ln_corn.effect = cropdat_means$ln_rev_corn,
+                    ln_cotton.effect = cropdat_means$ln_rev_cotton,
+                    ln_hay.effect = cropdat_means$ln_rev_hay,
+                    ln_soybean.effect = cropdat_means$ln_rev_soybean,
+                    ln_wheat.effect = cropdat_means$ln_rev_wheat)
+
+# # Bootstrap standard errors
+# # bs_cropdat <- cropdat
+# # bs_cropdat$state <- cropdat$state
+# # 
+# # se_dat <- data.frame()
+# # 
+# # d <- foreach(i = 1:2000, .combine = rbind, .packages = c("dplyr", "systemfit")) %dopar% {
+# #   # Resample within interval
+# #   regdat <- bs_cropdat %>%
+# #     group_by(state) %>%
+# #     sample_frac(1, replace = TRUE)
+# # 
+# #   bsmod <- systemfit(list(corn = mod1,
+# #                        cotton = mod2,
+# #                        hay = mod3,
+# #                        soybean = mod4,
+# #                        wheat = mod5), data = regdat, method = "SUR")
+# # 
+# #   mdat <- as.data.frame(t(bsmod$coefficients))
+# #   names(mdat) <- names(bsmod$coefficients)
+# #   mdat <- select(mdat, -one_of(grep("trend", names(bsmod$coefficients), value = TRUE)))
+# #   mdat
+# # }
+# 
+# # mod$bs.se <- as.data.frame(apply(d, 2, sd))
+# 
+# # Results from bs parallel run
+mod$bs_se <- structure(list(`apply(d, 2, sd)` = c(0.086668023204253, 5.99956578574945e-05,
+2.34765963521534e-05, 0.00014309112648562, 0.0024199566484305, 
+3.84614396221551e-05, 0.152797055121084, 0.000111165979133228, 
+4.48111448037873e-05, 0.000272673713516631, 0.00582461565551548, 
+9.83986513054354e-05, 0.174434572023923, 0.000127921168228789, 
+5.10443246254796e-05, 0.000295945548216875, 0.00741517182820161, 
+0.000127604113086435, 0.189859055275208, 0.000143751478006533, 
+5.36394189230595e-05, 0.000320326636986507, 0.00783664307036346, 
+0.000130470071115274, 0.171964433621587, 0.000126654536547728, 
+4.66307387151972e-05, 0.000259521479152859, 0.00629047402567867, 
+0.000106656375003973)), .Names = "apply(d, 2, sd)", row.names = c("corn_(Intercept)", 
+"corn_dday0_10", "corn_dday10_30", "corn_dday30", "corn_prec", 
+"corn_prec_sq", "cotton_(Intercept)", "cotton_dday0_10_rm10", 
+"cotton_dday10_30_rm10", "cotton_dday30_rm10", "cotton_prec_rm10", 
+"cotton_prec_sq_rm10", "hay_(Intercept)", "hay_dday0_10_rm10", 
+"hay_dday10_30_rm10", "hay_dday30_rm10", "hay_prec_rm10", "hay_prec_sq_rm10", 
+"soybean_(Intercept)", "soybean_dday0_10_rm10", "soybean_dday10_30_rm10", 
+"soybean_dday30_rm10", "soybean_prec_rm10", "soybean_prec_sq_rm10", 
+"wheat_(Intercept)", "wheat_dday0_10_rm10", "wheat_dday10_30_rm10", 
+"wheat_dday30_rm10", "wheat_prec_rm10", "wheat_prec_sq_rm10"), class = "data.frame")
+# 
+#   
+saveRDS(mod, "models/sur_share_ten_model1.rds")
+# 
+# 
+# 
+# #-------------------------------------------------------------------------------------------
+# # Build up regressions (Fe no trends)
+# 
+dmdat <- select(cropdat, ln_rev_corn, ln_rev_cotton, ln_rev_hay, ln_rev_soybean, ln_rev_wheat,
+                dday0_10_rm10, dday10_30_rm10, dday30_rm10, prec_rm10, prec_sq_rm10, trend, trend_sq,
+                trend_lat, trend_long, trend_sq_lat, trend_sq_long)
+
+cropdat_dm <- demeanlist(dmdat, fl = list(fips = factor(cropdat$fips)))
+
+cropdat_means <- demeanlist(dmdat, fl = list(fips = factor(cropdat$fips)), means = TRUE)
+
+
+mod1 <- ln_rev_corn ~ dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10  - 1
+
+
+mod2 <- ln_rev_cotton ~   dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10  - 1
+
+
+mod3 <- ln_rev_hay ~   dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10  - 1
+
+
+mod4 <- ln_rev_soybean ~ dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10  - 1
+
+
+mod5 <- ln_rev_wheat ~ dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10  - 1
+
+mod <- systemfit(list(corn = mod1,
+                       cotton = mod2,
+                       hay = mod3,
+                       soybean = mod4,
+                       wheat = mod5), data = cropdat_dm, method = "SUR")
+
+summary(mod)
+sum(mod$coefficients)
+
+mod$effects <- list(ln_corn.effect = cropdat_means$ln_rev_corn,
+                    ln_cotton.effect = cropdat_means$ln_rev_cotton,
+                    ln_hay.effect = cropdat_means$ln_rev_hay,
+                    ln_soybean.effect = cropdat_means$ln_rev_soybean,
+                    ln_wheat.effect = cropdat_means$ln_rev_wheat)
+
+# # Bootstrap standard errors
+# # bs_cropdat_dm <- cropdat_dm
+# # bs_cropdat_dm$state <- cropdat$state
+# # 
+# # se_dat <- data.frame()
+# # 
+# # d <- foreach(i = 1:2000, .combine = rbind, .packages = c("dplyr", "systemfit")) %dopar% {
+# #   # Resample within interval
+# #   regdat <- bs_cropdat_dm %>%
+# #     group_by(state) %>%
+# #     sample_frac(1, replace = TRUE)
+# # 
+# #   bsmod <- systemfit(list(corn = mod1,
+# #                        cotton = mod2,
+# #                        hay = mod3,
+# #                        soybean = mod4,
+# #                        wheat = mod5), data = regdat, method = "SUR")
+# # 
+# #   mdat <- as.data.frame(t(bsmod$coefficients))
+# #   names(mdat) <- names(bsmod$coefficients)
+# #   mdat <- select(mdat, -one_of(grep("trend", names(bsmod$coefficients), value = TRUE)))
+# #   mdat
+# # }
+# 
+# # mod$bs.se <- as.data.frame(apply(d, 2, sd))
+# 
+# # Results from bs parallel run
+mod$bs_se <- structure(list(`apply(d, 2, sd)` = c(0.000230915566884734, 0.00010767330002322,
+0.000416417162828298, 0.0103858155148637, 0.000169428490576251, 
+0.000189028130347619, 8.77217464261196e-05, 0.000354976351161394, 
+0.00946139558538302, 0.000153721952033332, 0.00021366400038945, 
+0.000105489973300803, 0.000365643511259002, 0.0138459120563272, 
+0.000213584460572255, 0.00049203827665667, 0.000126437699501528, 
+0.000441863233613712, 0.0132367055387859, 0.000212841375728833, 
+0.0002454550627407, 0.000123942855268034, 0.000461619000272569, 
+0.014830493608128, 0.000234968077186706)), .Names = "apply(d, 2, sd)", row.names = c("corn_dday0_10_rm10", 
+"corn_dday10_30_rm10", "corn_dday30_rm10", "corn_prec_rm10", 
+"corn_prec_sq_rm10", "cotton_dday0_10_rm10", "cotton_dday10_30_rm10", 
+"cotton_dday30_rm10", "cotton_prec_rm10", "cotton_prec_sq_rm10", 
+"hay_dday0_10_rm10", "hay_dday10_30_rm10", "hay_dday30_rm10", 
+"hay_prec_rm10", "hay_prec_sq_rm10", "soybean_dday0_10_rm10", 
+"soybean_dday10_30_rm10", "soybean_dday30_rm10", "soybean_prec_rm10", 
+"soybean_prec_sq_rm10", "wheat_dday0_10_rm10", "wheat_dday10_30_rm10", 
+"wheat_dday30_rm10", "wheat_prec_rm10", "wheat_prec_sq_rm10"), class = "data.frame")
+# 
+#   
+saveRDS(mod, "models/sur_share_ten_model2.rds")
+# 
+# 
+# 
+# #-------------------------------------------------------------------------------------------
+# # Build up regressions (Fe with linear trends)
+# 
+dmdat <- select(cropdat, ln_rev_corn, ln_rev_cotton, ln_rev_hay, ln_rev_soybean, ln_rev_wheat,
+                dday0_10_rm10, dday10_30_rm10, dday30_rm10, prec_rm10, prec_sq_rm10, trend, trend_sq,
+                trend_lat, trend_long, trend_sq_lat, trend_sq_long)
+
+cropdat_dm <- demeanlist(dmdat, fl = list(fips = factor(cropdat$fips)))
+
+cropdat_means <- demeanlist(dmdat, fl = list(fips = factor(cropdat$fips)), means = TRUE)
+
+
+mod1 <- ln_rev_corn ~ dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10  +
+  trend_lat  + trend_long - 1
+
+
+mod2 <- ln_rev_cotton ~    dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10  +
+  trend_lat  + trend_long - 1
+
+mod3 <- ln_rev_hay ~   dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10  +
+  trend_lat  + trend_long - 1
+
+
+mod4 <- ln_rev_soybean ~ dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10  +
+  trend_lat  + trend_long - 1
+
+
+mod5 <- ln_rev_wheat ~ dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10  +
+  trend_lat  + trend_long - 1
+
+mod <- systemfit(list(corn = mod1,
+                       cotton = mod2,
+                       hay = mod3,
+                       soybean = mod4,
+                       wheat = mod5), data = cropdat_dm, method = "SUR")
+
+# summary(mod)
+# sum(mod$coefficients)
+# 
+mod$effects <- list(ln_corn.effect = cropdat_means$ln_rev_corn,
+                    ln_cotton.effect = cropdat_means$ln_rev_cotton,
+                    ln_hay.effect = cropdat_means$ln_rev_hay,
+                    ln_soybean.effect = cropdat_means$ln_rev_soybean,
+                    ln_wheat.effect = cropdat_means$ln_rev_wheat)
+
+# # Bootstrap standard errors
+# # bs_cropdat_dm <- cropdat_dm
+# # bs_cropdat_dm$state <- cropdat$state
+# # 
+# # se_dat <- data.frame()
+# 
+# # d <- foreach(i = 1:2000, .combine = rbind, .packages = c("dplyr", "systemfit")) %dopar% {
+# #   # Resample within interval
+# #   regdat <- bs_cropdat_dm %>%
+# #     group_by(state) %>%
+# #     sample_frac(1, replace = TRUE)
+# # 
+# #   bsmod <- systemfit(list(corn = mod1,
+# #                        cotton = mod2,
+# #                        hay = mod3,
+# #                        soybean = mod4,
+# #                        wheat = mod5), data = regdat, method = "SUR")
+# # 
+# #   mdat <- as.data.frame(t(bsmod$coefficients))
+# #   names(mdat) <- names(bsmod$coefficients)
+# #   mdat <- select(mdat, -one_of(grep("trend", names(bsmod$coefficients), value = TRUE)))
+# #   mdat
+# # }
+# 
+# # mod$bs.se <- as.data.frame(apply(d, 2, sd))
+# 
+# # Results from bs parallel run
+mod$bs_se <- structure(list(`apply(d, 2, sd)` = c(0.000198548503793061, 0.000107655372002748,
+0.000426858339263312, 0.0106263571753012, 0.00017194358996077, 
+0.000137886035213758, 8.19861368750322e-05, 0.000371996051499081, 
+0.00935243606097949, 0.000149735628298107, 0.000285676436117594, 
+0.000118820560920806, 0.000385594946986713, 0.0135850336279963, 
+0.000212634351837248, 0.000249503484142623, 0.000112747565280507, 
+0.000467578809132548, 0.0123225159924996, 0.000200190848248454, 
+0.000268734321823227, 0.000134273449737008, 0.000474278479831807, 
+0.0138924675120672, 0.000220053684356792)), .Names = "apply(d, 2, sd)", row.names = c("corn_dday0_10_rm10", 
+"corn_dday10_30_rm10", "corn_dday30_rm10", "corn_prec_rm10", 
+"corn_prec_sq_rm10", "cotton_dday0_10_rm10", "cotton_dday10_30_rm10", 
+"cotton_dday30_rm10", "cotton_prec_rm10", "cotton_prec_sq_rm10", 
+"hay_dday0_10_rm10", "hay_dday10_30_rm10", "hay_dday30_rm10", 
+"hay_prec_rm10", "hay_prec_sq_rm10", "soybean_dday0_10_rm10", 
+"soybean_dday10_30_rm10", "soybean_dday30_rm10", "soybean_prec_rm10", 
+"soybean_prec_sq_rm10", "wheat_dday0_10_rm10", "wheat_dday10_30_rm10", 
+"wheat_dday30_rm10", "wheat_prec_rm10", "wheat_prec_sq_rm10"), class = "data.frame")
+# 
+#   
+saveRDS(mod, "models/sur_share_ten_model3.rds")
+# 
+# 
