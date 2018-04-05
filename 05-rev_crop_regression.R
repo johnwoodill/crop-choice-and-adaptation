@@ -7,6 +7,7 @@ setwd("/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/")
 
 regdat <- readRDS("data/full_ag_data.rds")
 
+
 #---------------------------------------------------------------------------------------------
 # Regressions with state fe and trends
 
