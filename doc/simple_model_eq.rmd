@@ -182,9 +182,9 @@ R_{it,  \text{wheat}} =  f(weather)
 **Model 3**: Aggregate Crop Revenue: $R_{it} = f(weather, climate)$
 
 \begin{equation}
-\begin{array} {lcl} R_{itd} & = & DD_{it}^{0-10C} + DD_{it}^{10-30C} + DD_{it}^{30C} + P_{it} + P_{it}^2 + \\
+\begin{array} {lcl} Y_{itd} & = & LDD_{it} + MDD_{it} + HDD_{it} + P_{it} + P_{it}^2 + \\
 \\
-&  & \overline{DD_{id}}^{0-10C} + \overline{DD_{id}}^{10-30C} + \overline{DD_{id}}^{30C} + \overline{P_{id}} + \overline{P_{id}}^2  + c_i + t_s + t_s^2 + \delta_{d} + \epsilon_{itd} 
+&  & \overline{LDD_{id}} + \overline{MDD_{id}} + \overline{HDD_{id}} + \overline{P_{id}} + \overline{P_{id}}^2  + c_i + t_s + t_s^2 + \delta_{d} + \epsilon_{itd} 
 \end{array}
 \end{equation}
 

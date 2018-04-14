@@ -63,7 +63,7 @@ ggplot(outdat, aes(rollmean, sd, shape = factor(var))) +
   annotate("text", x = 40, y = 55, label = "Degree Day (30C)", size = 3) +
   annotate("text", x = 40, y = 35, label = "Degree Day (0-10C)", size = 3) +
   theme_tufte(base_size = 12) +
-  ylab("RMSE") +
+  ylab("MSE") +
   xlab("Rollmean Window Size") +
   annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
   annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
@@ -72,24 +72,24 @@ ggplot(outdat, aes(rollmean, sd, shape = factor(var))) +
     legend.title = element_blank(), legend.key = element_blank()) +
   geom_vline(xintercept = 10, linetype = "dashed", color = "grey")
 
-ggsave("figures/predict_lag1.pdf", width = 6, height = 4)
+ggsave("figures/predict_lag.pdf", width = 6, height = 4)
 
-
-
-
-tdat <- outdat
-tdat$sd <- round(tdat$sd, 2)
-# tdat$n <- 1:150
-tdat <- spread(tdat, key = var, value = round(sd, 5), -rollmean)
-rownames(tdat) <- NULL
-star1 <- stargazer(tdat, summary = FALSE, rownames = FALSE)
-setwd("/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/tables")          
-{
-cat("\\documentclass[10pt]{article}\n\\usepackage{graphicx}\n\\usepackage{pdflscape}\n\\usepackage{dcolumn}\n\\usepackage[a4paper, total={8in, 10in}]{geometry}\n\\begin{document}", file = "predict_lag1.tex")
-cat(star1, file = "predict_lag1.tex", sep = "\n", append = TRUE)
-cat("\\end{document}", file = "predict_lag1.tex", append = TRUE)
-# Compile pdf
-system("pdflatex predict_lag1.tex")
-
-}
-
+# 
+# 
+# 
+# tdat <- outdat
+# tdat$sd <- round(tdat$sd, 2)
+# # tdat$n <- 1:150
+# tdat <- spread(tdat, key = var, value = round(sd, 5), -rollmean)
+# rownames(tdat) <- NULL
+# star1 <- stargazer(tdat, summary = FALSE, rownames = FALSE)
+# setwd("/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/tables")          
+# {
+# cat("\\documentclass[10pt]{article}\n\\usepackage{graphicx}\n\\usepackage{pdflscape}\n\\usepackage{dcolumn}\n\\usepackage[a4paper, total={8in, 10in}]{geometry}\n\\begin{document}", file = "predict_lag1.tex")
+# cat(star1, file = "predict_lag1.tex", sep = "\n", append = TRUE)
+# cat("\\end{document}", file = "predict_lag1.tex", append = TRUE)
+# # Compile pdf
+# system("pdflatex predict_lag1.tex")
+# 
+# }
+# 

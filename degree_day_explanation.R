@@ -34,4 +34,4 @@ gg <- gg + geom_segment(aes(x = -0.5*pi, xend = 1.5*pi, y = 20, yend = 20), line
 gg + theme(axis.line=element_blank(), axis.text=element_text(size=10),axis.ticks=element_blank(), plot.title = element_text(size=10, face = "plain"),panel.border = element_rect(colour = "black", size=1, fill = NA))
   
 
-ggsave("figures/degree_day_explanatin.pdf", width=6, height=4)
+ggsave("figures/degree_day_explanation.pdf", width=6, height=4)
