@@ -283,7 +283,8 @@ bs_se_pdat3 <- structure(list(temp = c(0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4,
 -18L), vars = c("temp", "interval"), drop = TRUE)
 
 
-
+test <- data.frame()
+test$one <- 1:100
 
 rev <- sur_rev %>% 
   group_by(temp, fips) %>% 
@@ -322,15 +323,15 @@ cdat2 <- left_join(rev, ctwenty_acres, by = c("temp", "fips"))
 cdat3 <- left_join(rev, cthirty_acres, by = c("temp", "fips"))
 
 cdat1 <- cdat1 %>% 
-  group_by(temp) %>% 
-  summarise_all(sum) %>% 
+  group_by(temp) %>%
+  summarise_all(sum) %>%
   mutate(corn = corn_rev/corn_acres,
          cotton = cotton_rev/cotton_acres,
          hay = hay_rev/hay_acres,
          soybean = soybean_rev/soybean_acres,
          wheat = wheat_rev/wheat_acres) %>% 
   select(temp, corn, cotton, hay, soybean, wheat) %>% 
-  mutate(total = corn + cotton + hay + soybean + wheat) %>% 
+  mutate(total = rowSums(.[2:6], na.rm = TRUE)) %>% 
   left_join(filter(bs_se_pdat3, interval == "10-year"), by = "temp") %>% 
   mutate(change = 100*(total - first(total))/first(total),
          change_max = 100*((total + se*1.96)/first(total) - 1),
@@ -342,14 +343,14 @@ cdat1 <- cdat1 %>%
 
 cdat2 <- cdat2 %>% 
   group_by(temp) %>% 
-  summarise_all(sum) %>% 
+  summarise_all(sum) %>%
   mutate(corn = corn_rev/corn_acres,
          cotton = cotton_rev/cotton_acres,
          hay = hay_rev/hay_acres,
          soybean = soybean_rev/soybean_acres,
          wheat = wheat_rev/wheat_acres) %>% 
   select(temp, corn, cotton, hay, soybean, wheat) %>% 
-  mutate(total = corn + cotton + hay + soybean + wheat) %>% 
+  mutate(total = rowSums(.[2:6])) %>% 
   left_join(filter(bs_se_pdat3, interval == "11-year"), by = "temp") %>% 
   mutate(change = 100*(total - first(total))/first(total),
          change_max = 100*((total + se*1.96)/first(total) - 1),
@@ -361,14 +362,14 @@ cdat2 <- cdat2 %>%
 
 cdat3 <- cdat3 %>% 
   group_by(temp) %>% 
-  summarise_all(sum) %>% 
+  summarise_all(sum) %>%
   mutate(corn = corn_rev/corn_acres,
          cotton = cotton_rev/cotton_acres,
          hay = hay_rev/hay_acres,
          soybean = soybean_rev/soybean_acres,
          wheat = wheat_rev/wheat_acres) %>% 
   select(temp, corn, cotton, hay, soybean, wheat) %>% 
-  mutate(total = corn + cotton + hay + soybean + wheat) %>% 
+  mutate(total = rowSums(.[2:6])) %>% 
   left_join(filter(bs_se_pdat3, interval == "12-year"), by = "temp") %>% 
   mutate(change = 100*(total - first(total))/first(total),
          change_max = 100*((total + se*1.96)/first(total) - 1),
@@ -377,6 +378,7 @@ cdat3 <- cdat3 %>%
          effect = "Weather-climate-effect") %>% 
   select(temp, interval, effect, change, change_min, change_max) %>% 
   ungroup()
+
 pdat3 <- rbind(cdat1, cdat2, cdat3)
 
 

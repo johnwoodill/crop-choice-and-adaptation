@@ -466,10 +466,11 @@ length(unique(check$fips))
 unique(check$state)
 fipss <- unique(check$fips)
 data <- filter(data, fips %in% fipss)
-data <- filter(data, year >= unique(check$year) & year <= 2010)
+data <- filter(data, year >= unique(check$year))
 
 # Build data set for regression estimates
 cropdat <- filter(data, year <= 2010)
+
   
 cropdat$corn_mprice <- mean(cropdat$corn_rprice, na.rm = TRUE)
 cropdat$cotton_mprice <- mean(cropdat$cotton_rprice, na.rm = TRUE)

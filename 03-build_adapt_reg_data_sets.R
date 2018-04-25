@@ -11,6 +11,9 @@ depvar <- cropdat[, c("z_corn_a", "z_cotton_a", "z_hay_a", "z_soybean_a", "z_whe
 cropdat$acres <- rowSums(cropdat[, c("corn_grain_a", "cotton_a", "hay_a", "soybean_a", "wheat_a")], na.rm = TRUE)
 cropdat <- select(cropdat, year, fips, state, acres)
 
+# IV predictions
+acres_climate_iv <- readRDS("models/acres_climate_iv.rds")
+
 data(zip_codes)
 zip_codes <- select(zip_codes, fips, latitude, longitude)
 zip_codes <- zip_codes[!duplicated(zip_codes[,1:3]),]
@@ -102,6 +105,7 @@ dd_temp <- function(x, prec){
                  dday0_10_rm11, dday10_30_rm11, dday30_rm11, prec_rm11, prec_sq_rm11,
                  dday0_10_rm12, dday10_30_rm12, dday30_rm12, prec_rm12, prec_sq_rm12,
                 trend_lat, trend_sq_lat, trend_long, trend_sq_long)
+  pdat <- cbind(pdat, acres_climate_iv)
   
   return(pdat)
   

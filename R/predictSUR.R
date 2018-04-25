@@ -4,17 +4,20 @@
 # terms <- NULL
 # terms <- c("dday0_10", "dday10_30")
 
+# systemfit.mod = sur_rev
+# newdata = p0_dm
+# var.terms = terms
+# intercept = FALSE
+# IV = TRUE
+
 predictSUR <- function(systemfit.mod, 
                        newdata, 
                        fips = NULL,
                        var.terms = NULL, 
                        cons.terms = NULL, 
                        intercept = FALSE,
-                       leave.one.out = FALSE){
+                       IV = FALSE){
   
-  # var.terms = NULL
-  # cons.terms = NULL
-  #                      
   # n equations from system
   neq <- length(systemfit.mod$eq)
   
@@ -32,6 +35,11 @@ predictSUR <- function(systemfit.mod,
     for (j in 1:neq){
       eqlist[[j]] <- as.formula(paste0("~", paste0(var.terms, collapse = " + ")))
       if(intercept == FALSE) eqlist[[j]] <- update(eqlist[[j]], ~. - 1)
+      if(IV == TRUE){
+        iv_pred <- names(coef(systemfit.mod$eq[[j]]))
+        iv_pred <- iv_pred[grepl(".pred", iv_pred)]
+        eqlist[[j]] <- update(eqlist[[j]], paste0("~ ", iv_pred, " + ."))
+        }
     }}
   
   # Get formula with cons.terms
@@ -135,7 +143,7 @@ predictSUR <- function(systemfit.mod,
       # cmodmat[[k]] <- as.matrix(cinmod)
       
       # Set terms
-      varterms <- colnames(modmat[[1]])
+      varterms <- colnames(modmat[[k]])
       # consterms <- colnames(cmodmat[[1]])
       
       # Get coefficients

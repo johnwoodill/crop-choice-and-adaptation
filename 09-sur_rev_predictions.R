@@ -16,8 +16,12 @@ cropdat$fips <- factor(cropdat$fips)
 
 sur_rev <- readRDS("models/sur_rev_model.rds")
 
+acres_climate_iv <- readRDS("models/acres_climate_iv.rds")
+
 # Prediction data 0C-5C
 p0 <- cropdat
+p0 <- cbind(cropdat, acres_climate_iv)
+
 p1 <- readRDS("data/degree_day_changes/panel_adapt_regression_data_1C.rds")
 p2 <- readRDS("data/degree_day_changes/panel_adapt_regression_data_2C.rds")
 p3 <- readRDS("data/degree_day_changes/panel_adapt_regression_data_3C.rds")
@@ -56,12 +60,12 @@ newdata_list <- list(p0 = p0_dm,
 terms = c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq")
 
 # Predictions
-prev0 <- predictSUR(sur_rev, newdata = p0_dm, var.terms = terms)
-prev1 <- predictSUR(sur_rev, newdata = p1_dm, var.terms = terms)
-prev2 <- predictSUR(sur_rev, newdata = p2_dm, var.terms = terms)
-prev3 <- predictSUR(sur_rev, newdata = p3_dm, var.terms = terms)
-prev4 <- predictSUR(sur_rev, newdata = p4_dm, var.terms = terms)
-prev5 <- predictSUR(sur_rev, newdata = p5_dm, var.terms = terms)
+prev0 <- predictSUR(sur_rev, newdata = p0_dm, var.terms = terms, IV = FALSE)
+prev1 <- predictSUR(sur_rev, newdata = p1_dm, var.terms = terms, IV = FALSE)
+prev2 <- predictSUR(sur_rev, newdata = p2_dm, var.terms = terms, IV = TRUE)
+prev3 <- predictSUR(sur_rev, newdata = p3_dm, var.terms = terms, IV = TRUE)
+prev4 <- predictSUR(sur_rev, newdata = p4_dm, var.terms = terms, IV = TRUE)
+prev5 <- predictSUR(sur_rev, newdata = p5_dm, var.terms = terms, IV = TRUE)
 
 # Sum of 
 # Corn rev changes and predictions

@@ -14,6 +14,7 @@ library(lfe)
 library(doParallel)
 
 source("R/clse_systemfit.R")
+source("R/predictSUR.R")
 
 # Setup parallel for bootstrapping
 # cl <- makeCluster(14)
@@ -134,6 +135,9 @@ ten_mod$cl_se <- clse_systemfit(ten_mod, cropdat$state)
 
 saveRDS(ten_mod, "models/sur_share_model_ten.rds")
 
+# Get predictions as instrument for revenue per acre
+# pdat <- predictSUR(ten_mod, newdata = cropdat_dm, fips = cropdat$fips, 
+#                    var.terms = c("dday0_10_rm10", "dday10_30_rm10", "dday30_rm10", "prec_rm10", "prec_sq_rm10"))
 
 #-----------------------------------------------------------------------------------
 # twenty-year

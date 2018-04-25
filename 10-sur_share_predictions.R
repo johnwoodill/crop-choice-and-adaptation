@@ -175,7 +175,7 @@ ggplot(pdat, aes(temp, (sum/1000000), color = crop)) + geom_line() +
     facet_wrap(~type) 
 ggsave("figures/sur_crop_share_predictions.pdf", width = 6, height = 4)
 
-# pdat %>% group_by(temp, type) %>% summarise(nsum = sum(sum))
+pdat %>% group_by(temp, type) %>% summarise(nsum = sum(sum))
 
 # pdat <- pdat %>% 
 #   group_by(crop, type, effect) %>% 
