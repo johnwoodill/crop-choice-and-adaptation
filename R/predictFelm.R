@@ -75,10 +75,10 @@ predictFelm <- function(felm.fit, newdata = NULL, data = NULL, var.terms = NULL,
       pred$felm.se.fit <- fit.se
     }
 
-    # # Predict all terms
+    # Predict all terms
     if(is.null(var.terms) & is.null(cons.terms)){
       pred <- predict(lm.fit, newdata = newdata, se.fit = TRUE)
-      pred$felm.se.fit <- fit.se
+      # pred$felm.se.fit <- fit.se
     }
   
     # pred$res <- felm.fit$residuals
