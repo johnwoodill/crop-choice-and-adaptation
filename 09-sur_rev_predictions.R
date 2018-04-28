@@ -62,10 +62,10 @@ terms = c("dday0_10", "dday10_30", "dday30", "prec", "prec_sq")
 # Predictions
 prev0 <- predictSUR(sur_rev, newdata = p0_dm, var.terms = terms, IV = FALSE)
 prev1 <- predictSUR(sur_rev, newdata = p1_dm, var.terms = terms, IV = FALSE)
-prev2 <- predictSUR(sur_rev, newdata = p2_dm, var.terms = terms, IV = TRUE)
-prev3 <- predictSUR(sur_rev, newdata = p3_dm, var.terms = terms, IV = TRUE)
-prev4 <- predictSUR(sur_rev, newdata = p4_dm, var.terms = terms, IV = TRUE)
-prev5 <- predictSUR(sur_rev, newdata = p5_dm, var.terms = terms, IV = TRUE)
+prev2 <- predictSUR(sur_rev, newdata = p2_dm, var.terms = terms, IV = FALSE)
+prev3 <- predictSUR(sur_rev, newdata = p3_dm, var.terms = terms, IV = FALSE)
+prev4 <- predictSUR(sur_rev, newdata = p4_dm, var.terms = terms, IV = FALSE)
+prev5 <- predictSUR(sur_rev, newdata = p5_dm, var.terms = terms, IV = FALSE)
 
 # Sum of 
 # Corn rev changes and predictions

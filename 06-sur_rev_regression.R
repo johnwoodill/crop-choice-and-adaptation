@@ -205,7 +205,7 @@ mod$bs_se <- structure(list(`apply(d, 2, sd)` = c(6.21686620327522e-05, 3.092949
 
 
 # Clustered s.e.
-mod$cl_se <- clse_systemfit(mod, cropdat$state)
+# mod$cl_se <- clse_systemfit(mod, cropdat$state)
 
 saveRDS(mod, "models/sur_rev_model.rds")
 

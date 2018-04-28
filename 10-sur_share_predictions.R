@@ -88,7 +88,7 @@ cten <- predictSUR.clean(mod = sur_ten,
                          fips = cropdat$fips,
                          newdata_list = newdata_list_dm,
                          var.terms = ten_climate_terms_v,
-                         # cons.terms = terms,
+                         cons.terms = terms,
                          type = "10-year", 
                          effect = "Climate-effect")
 
@@ -117,7 +117,7 @@ ctwenty <- predictSUR.clean(mod = sur_twenty,
                             fips = cropdat$fips,
                             newdata_list = newdata_list_dm, 
                             var.terms = twenty_climate_terms_v,
-                            # cons.terms = terms,
+                            cons.terms = terms,
                             type = "11-year", 
                             effect = "Climate-effect")
 
@@ -134,7 +134,7 @@ cthirty <- predictSUR.clean(mod = sur_thirty,
                             fips = cropdat$fips,
                             newdata_list = newdata_list_dm,
                             var.terms = thirty_climate_terms_v,
-                            # cons.terms = terms,
+                            cons.terms = terms,
                             type = "12-year", 
                             effect = "Climate-effect")
 

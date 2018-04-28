@@ -44,28 +44,28 @@ cropdat_dm <- demeanlist(dmdat, fl = list(fips = factor(cropdat$fips)))
 cropdat_means <- demeanlist(dmdat, fl = list(fips = factor(cropdat$fips)), means = TRUE)
 
 
-mod1 <- z_corn_a ~ 
+mod1 <- z_corn_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
   dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
   trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
 
 
-mod2 <- z_cotton_a ~   
+mod2 <- z_cotton_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +  
   dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
   trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
 
 
-mod3 <- z_hay_a ~  
+mod3 <- z_hay_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
   dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
   trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
 
 
-mod4 <- z_soybean_a ~  
+mod4 <- z_soybean_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
   dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
   trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
 
 
 
-mod5 <- z_wheat_a ~  
+mod5 <- z_wheat_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
   dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
   trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
 
@@ -152,26 +152,26 @@ cropdat_dm <- demeanlist(dmdat, fl = list(fips = factor(cropdat$fips)))
 cropdat_means <- demeanlist(dmdat, fl = list(fips = factor(cropdat$fips)), means = TRUE)
 
 
-mod1 <- z_corn_a ~  
+mod1 <- z_corn_a ~  dday0_10 + dday10_30 + dday30 + prec + prec_sq +
   dday0_10_rm11 + dday10_30_rm11 + dday30_rm11 + prec_rm11 + prec_sq_rm11 +
   trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
 
 
-mod2 <- z_cotton_a ~  
+mod2 <- z_cotton_a ~  dday0_10 + dday10_30 + dday30 + prec + prec_sq +
   dday0_10_rm11 + dday10_30_rm11 + dday30_rm11 + prec_rm11 + prec_sq_rm11 +
   trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
 
 
-mod3 <- z_hay_a ~   
+mod3 <- z_hay_a ~   dday0_10 + dday10_30 + dday30 + prec + prec_sq +
   dday0_10_rm11 + dday10_30_rm11 + dday30_rm11 + prec_rm11 + prec_sq_rm11 +
   trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
 
 
-mod4 <- z_soybean_a ~   
+mod4 <- z_soybean_a ~   dday0_10 + dday10_30 + dday30 + prec + prec_sq +
   dday0_10_rm11 + dday10_30_rm11 + dday30_rm11 + prec_rm11 + prec_sq_rm11 +
   trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
 
-mod5 <- z_wheat_a ~  
+mod5 <- z_wheat_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
   dday0_10_rm11 + dday10_30_rm11 + dday30_rm11 + prec_rm11 + prec_sq_rm11 +
   trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
 
@@ -255,26 +255,26 @@ cropdat_dm <- demeanlist(dmdat, fl = list(fips = factor(cropdat$fips)))
 cropdat_means <- demeanlist(dmdat, fl = list(fips = factor(cropdat$fips)), means = TRUE)
 
 
-mod1 <- z_corn_a ~  
+mod1 <- z_corn_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
   dday0_10_rm12 + dday10_30_rm12 + dday30_rm12 + prec_rm12 + prec_sq_rm12 +
   trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
 
 
-mod2 <- z_cotton_a ~   
+mod2 <- z_cotton_a ~  dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
   dday0_10_rm12 + dday10_30_rm12 + dday30_rm12 + prec_rm12 + prec_sq_rm12 +
   trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
 
 
-mod3 <- z_hay_a ~  
+mod3 <- z_hay_a ~  dday0_10 + dday10_30 + dday30 + prec + prec_sq +
   dday0_10_rm12 + dday10_30_rm12 + dday30_rm12 + prec_rm12 + prec_sq_rm12 +
   trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
 
 
-mod4 <- z_soybean_a ~  
+mod4 <- z_soybean_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
   dday0_10_rm12 + dday10_30_rm12 + dday30_rm12 + prec_rm12 + prec_sq_rm12 +
   trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
 
-mod5 <- z_wheat_a ~  
+mod5 <- z_wheat_a ~  dday0_10 + dday10_30 + dday30 + prec + prec_sq +
   dday0_10_rm12 + dday10_30_rm12 + dday30_rm12 + prec_rm12 + prec_sq_rm12 +
   trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
 
