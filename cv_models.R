@@ -387,7 +387,10 @@ d <- foreach(i = 1:2, .combine = rbind, .packages = c("dplyr", "systemfit", "lfe
 
   dmse[i, ]  
 }
+
+
 stopCluster(cl)
+
 
 # Results
  rep                disagg_base 

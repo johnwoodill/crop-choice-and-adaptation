@@ -5,6 +5,7 @@ library(ggthemes)
 
 setwd("/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/")
 
+
 source("R/predictSUR.R")
 source("R/predictSUR.clean.R")
 
