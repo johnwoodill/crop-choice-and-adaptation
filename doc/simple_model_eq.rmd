@@ -195,7 +195,9 @@ R_{it,  \text{wheat}} =  f(weather)
 
 **Disaggregate Revenue Results (Model 1 and 2)**
 
-\hspace{10mm} Weather-climate effect: $\frac{TR_{cit} = f(weather)}{P(A_{idc}) = f(climate)} = R_{it} = f(weather, climate)$
+$R_{it} = \frac{TR_{cit}}{A_{cit}} = \frac{\text{Fig 1}}{\text{Fig 2}}$ \hspace{15mm} $TR_{cit} = R_{cit}*A_{cit}$
+
+\hspace{10mm} Weather-climate effect: $R_{idt} = \sum_{c=1}^5 R_{cidt} = \frac{TR_{cit} = f(weather)}{P(A_{cid}) = f(climate)} = f(weather, \overline{climate})$
 
 \hspace{15mm} Allow weather to vary across individual crop revenue per acre and climate 
 
@@ -203,7 +205,7 @@ R_{it,  \text{wheat}} =  f(weather)
 
 \vspace{5mm}
 
-\hspace{10mm} Weather-effect: $\sum_{c=1}^5 R_{cit} = f(weather)$
+\hspace{10mm} Weather-effect: $R_{it} = \sum_{c=1}^5 R_{cit} = f(weather)$
 
 \hspace{15mm} Allow weather to vary across individual crop revenue models and sum results.
 
@@ -211,7 +213,7 @@ R_{it,  \text{wheat}} =  f(weather)
 
 **Aggregate Revenue Results (Model 3)**
 
-\hspace{10mm} Weather-climate effect: $R_{it} = f(weather, climate)$
+\hspace{10mm} Weather-climate effect: $R_{it} = f(weather, \overline{climate})$
 
 \hspace{15mm} Allow weather and climate to vary across counties.
 
