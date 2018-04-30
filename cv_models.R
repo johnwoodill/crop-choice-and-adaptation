@@ -161,7 +161,6 @@ for(i in 1:1000){
 
 saveRDS(mse, "data/rep_cv_model.rds")
 mse <- readRDS("data/rep_cv_model.rds")
-fmse <- function(x) mean(sqrt(x))
 mse_func <- apply(mse, 2, mean)
 mse_func
 
