@@ -1,15 +1,24 @@
 library(tidyverse)
 library(RcppRoll)
+library(lfe)
 
 # Load data
 regdat <- readRDS("data/full_weather_data.rds")
 regdat <- regdat %>% 
   group_by(fips) %>% 
   arrange(-year) %>% 
-  mutate(dday0_10_lag1 = lag(dday0_10),
-         dday10_30_lag1 = lag(dday10_30),
-         dday30_lag1 = lag(dday30))
-         
+  mutate(dday0_10_lag1 = lag(dday0_10, 1),
+         dday10_30_lag1 = lag(dday10_30, 1),
+         dday30_lag1 = lag(dday30, 1))
+
+# Trend variables
+regdat$trend <- regdat$year - (min(regdat$year) - 1)
+regdat$trend_sq <- regdat$trend^2
+regdat$trend_lat <- regdat$trend*regdat$lat
+regdat$trend_long <- regdat$trend*regdat$long
+regdat$trend_sq_long <- regdat$trend_sq*regdat$long
+regdat$trend_sq_lat <- regdat$trend_sq*regdat$lat
+
 # View(regdat)
 # Loop through 1 to 50 year right rolling mean
 for (i in 1:50){
@@ -23,14 +32,27 @@ for (i in 1:50){
   regdat <- regdat %>%
       group_by(fips) %>%
       arrange(year) %>%
-      mutate(!!lab1 := roll_mean(dday0_10_lag1, i, align = "right", fill = "NA"),
-             !!lab2 := roll_mean(dday10_30_lag1, i, align = "right", fill = "NA"),
-             !!lab3 := roll_mean(dday30_lag1, i, align = "right", fill = "NA")) %>% 
+      mutate(!!lab1 := roll_mean(dday0_10_lag1, i, align = "left", fill = "NA"),
+             !!lab2 := roll_mean(dday10_30_lag1, i, align = "left", fill = "NA"),
+             !!lab3 := roll_mean(dday30_lag1, i, align = "left", fill = "NA")) %>% 
     ungroup()
   
   # Progress bar for loop
   print(i)
 }
+
+outdat <- data.frame(window = c(1:50), 
+                        rmse = 0)
+for (i in 1:50){
+  form <- as.formula(paste0('dday30 ~ dday30_rm_', i))
+  mod <- lm(form, data = regdat)
+  outdat$rmse[i] = sqrt(mean(mod$residuals^2))
+  print(i)
+}
+
+plot(outdat$window, outdat$rmse)
+saveRDS(outdat, "doc/outdat_left.rds")
+
 
 # Create data.frame for calculating sd
 outdat <- data.frame(rollmean = rep(seq(1,50, 1), each = 3),
@@ -45,6 +67,8 @@ for (j in seq(20, 169, 3)){
   outdat[j + 2 - 19, 3] <- sd((regdat$dday30 - regdat[, j + 2]), na.rm = TRUE)  
   
 }
+
+
 head(outdat)
 # Find 5 lowest sd after 10 year lag
 sorder <- outdat %>% 
