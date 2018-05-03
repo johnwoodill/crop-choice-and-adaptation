@@ -66,7 +66,7 @@ star1 <- stargazer(mod1, mod2, mod3, mod4, mod5, mod6,
                   omit = c("fips", "year", "state", "trend"),
                   omit.stat = c("ser", "f"),
                   title = "Regression Model explaining Crop Revenue per Acre",
-                  column.labels = c("10-year", "10-year", "10-year", "10-year", "11-year", "12-year"),
+                  column.labels = c("10-year", "10-year", "10-year", "10-year", "20-year", "30-year"),
           dep.var.labels = c("Log(Crop Revenue per Acre)", "Log(Crop Revenue per Acre)", "Log(Crop Revenue per Acre)",
                              "Log(Crop Revenue per Acre)", "Log(Crop Revenue per Acre)"),
           covariate.labels = c("Degree Days (0-10C)", "Degree Days (10-30C)", "Degree Days (30C) ",
@@ -103,9 +103,14 @@ star1 <- c(star_1, "\\hline \\\\[-1.8ex]", "\\textbf{Climate-effect}\\\\", "\\\\
 
 loc <- which(star1 == "\\end{tabular} ")
 star1 <- star1[1:loc-1]
-star1notes <- paste("\\parbox{5in}{Notes: Table reports regression coefficients for log crop revenue per acre using weather (year-to-year) and climate (rolling mean) degree day and precipitation variables from 1950-2010.
-Crop revenue per acre is calculated by summing production (lbs) per acre times average crop price for corn, cotton, hay, soybean, and wheat. Climate variables are 10, 11, and 12-year 'right' rolling mean windows. Regression
+# star1notes <- paste("\\parbox{5in}{Notes: Table reports regression coefficients for log crop revenue per acre using weather (year-to-year) and climate (rolling mean) degree day and precipitation variables from 1950-2010.
+# Crop revenue per acre is calculated by summing production (lbs) per acre times average crop price for corn, cotton, hay, soybean, and wheat. Climate variables are 10, 11, and 12-year 'right' rolling mean windows. Regression
+# estimates are weighted by total county-level total acres (smoothed using a spline). Estimates in \\textbf{bold} are statistically significant at 95\\%. Coefficients have been multiplied by 100.}")
+
+star1notes <- paste("\\parbox{5in}{Notes: Table reports regression coefficients for log crop revenue per acre using weather (year-to-year) and climate (VAR instrument) degree day and precipitation variables from 1950-2010.
+Crop revenue per acre is calculated by summing production (lbs) per acre times average crop price for corn, cotton, hay, soybean, and wheat. Climate variables are 10, 20, and 30-year instruments from a vector autoregression using lag lengths 10, 20, and 30. Regression
 estimates are weighted by total county-level total acres (smoothed using a spline). Estimates in \\textbf{bold} are statistically significant at 95\\%. Coefficients have been multiplied by 100.}")
+
 
 star1 <- c(star1, "\\end{tabular}", star1notes)
 star1 <- c(star1, "\\end{table}")

@@ -12,7 +12,7 @@ cropdat$acres <- rowSums(cropdat[, c("corn_grain_a", "cotton_a", "hay_a", "soybe
 cropdat <- select(cropdat, year, fips, state, acres)
 
 # IV predictions
-acres_climate_iv <- readRDS("models/acres_climate_iv.rds")
+# acres_climate_iv <- readRDS("models/acres_climate_iv.rds")
 
 data(zip_codes)
 zip_codes <- select(zip_codes, fips, latitude, longitude)
@@ -57,7 +57,7 @@ dd_temp <- function(x, prec){
 # Lag one so current year is not included
   pdat <- pdat %>% 
     group_by(fips) %>% 
-    arrange(-year) %>% 
+    arrange(year) %>% 
     mutate(dday0_10_lag1 = lag(dday0_10),
            dday10_30_lag1 = lag(dday10_30),
            dday30_lag1 = lag(dday30),
@@ -104,8 +104,8 @@ dd_temp <- function(x, prec){
                  dday0_10_rm10, dday10_30_rm10, dday30_rm10, prec_rm10, prec_sq_rm10,
                  dday0_10_rm11, dday10_30_rm11, dday30_rm11, prec_rm11, prec_sq_rm11,
                  dday0_10_rm12, dday10_30_rm12, dday30_rm12, prec_rm12, prec_sq_rm12,
-                trend_lat, trend_sq_lat, trend_long, trend_sq_long)
-  pdat <- cbind(pdat, acres_climate_iv)
+                 trend, trend_sq, trend_lat, trend_sq_lat, trend_long, trend_sq_long)
+  # pdat <- cbind(pdat, acres_climate_iv)
   
   return(pdat)
   

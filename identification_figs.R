@@ -166,3 +166,84 @@ library(gridExtra)
 ggdraw() + draw_plot(mod7_map) + draw_plot(gghist, .14, .00, height = .2, width = .6)
 ggsave("figures/id_map_dday30.jpg", width = 6, height = 4)
 
+
+# IV Idenfication
+
+gdat <- cropdat %>% 
+  group_by(fips) %>% 
+  mutate(dday30_dm = dday30_iv10 - mean(dday30_iv10),
+         dday10_30_dm = dday10_30_iv10 - mean(dday10_30_iv10, na.rm=TRUE))
+
+
+ggdat <- gdat %>% 
+  group_by(region,  year) %>% 
+  summarise(dday30_dm_m = mean(dday30_dm),
+            dday10_30_dm_m = mean(dday10_30_dm))
+
+p1 <- ggplot(ggdat, aes(year, dday30_dm_m, color = factor(region))) + geom_line() +
+    theme_tufte(base_size = 10) +
+  geom_hline(yintercept = 0, size = .5) +
+  ylab("Demeaned Degree Day 30C \n (10-year lags)") +
+  xlab(NULL) +
+  ylim(min(ggdat$dday30_dm_m), max(ggdat$dday30_dm_m)) +
+  # ylim(-60, 60) +
+  annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
+  annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
+  scale_x_continuous(breaks = seq(1950, 2010, 10)) +
+  # theme(legend.position = "none") +
+  # geom_vline(xintercept = 1970, linetype = "dashed", color = "grey") +
+  # geom_vline(xintercept = 1980, linetype = "dashed", color = "grey") +
+    theme(legend.position = "none",
+    # legend.justification = c("right", "top"),
+    # axis.ticks.x=element_blank(),
+    # axis.text.x=element_blank(),
+    legend.box.background = element_rect(colour = "grey"),
+    legend.title = element_blank(), legend.key = element_blank())
+p1
+
+p2 <- ggplot(ggdat, aes(year, dday10_30_dm_m, color = factor(region))) + geom_line() +
+    theme_tufte(base_size = 10) +
+  geom_hline(yintercept = 0, size = .5) +
+  ylab("Demeaned Degree Day 10-30C \n (10-year lags)") +
+  xlab(NULL) +
+  ylim(min(ggdat$dday10_30_dm_m), max(ggdat$dday10_30_dm_m)) +
+  # ylim(-70, 70) +
+  annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
+  annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
+  # scale_x_continuous(breaks = seq(1950, 2010, 10)) +
+  # theme(legend.position = "none") +
+  # geom_vline(xintercept = 1970, linetype = "dashed", color = "grey") +
+  # geom_vline(xintercept = 1980, linetype = "dashed", color = "grey") +
+    theme(legend.position = "top",
+          # legend.text = element_text(size = 8),
+    axis.ticks.x=element_blank(),
+    axis.text.x=element_blank(),
+    # legend.justification = c("right", "top"),
+    legend.box.background = element_rect(colour = "grey"),
+    legend.title = element_blank(), legend.key = element_blank())
+p2
+plot_grid(p2, p1, ncol= 1)
+ggsave("figures/id_iv_region.pdf", width = 6, height = 5)
+
+p1 <- ggplot(gdat, aes(year, dday30_dm, color = factor(region), group = fips)) + geom_line() +
+    theme_tufte(base_size = 10) +
+  geom_hline(yintercept = 0, size = .5) +
+  ylab("Demeaned Degree Day 30C \n (10-year lags)") +
+  xlab(NULL) +
+  # ylim(min(ggdat$dday30_dm_m), max(ggdat$dday30_dm_m)) +
+  # ylim(-60, 60) +
+  annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
+  annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
+  scale_x_continuous(breaks = seq(1950, 2010, 10)) +
+  # theme(legend.position = "none") +
+  # geom_vline(xintercept = 1970, linetype = "dashed", color = "grey") +
+  # geom_vline(xintercept = 1980, linetype = "dashed", color = "grey") +
+    theme(legend.position = "none",
+    # legend.justification = c("right", "top"),
+    # axis.ticks.x=element_blank(),
+    # axis.text.x=element_blank(),
+    legend.box.background = element_rect(colour = "grey"),
+    legend.title = element_blank(), legend.key = element_blank()) + 
+  facet_wrap(~region, scales = 'free')
+p1
+ggsave("figures/id_iv_region_county.pdf", width = 6, height = 5)

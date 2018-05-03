@@ -37,20 +37,32 @@ p5 <- readRDS("data/degree_day_changes/panel_adapt_regression_data_5C.rds")
 #---------------------------------------------------------------------------------
 # 10-year
 # Get predictions for weather conditional on climate (restrict terms to weather)
+# felm.fit = modten
+# newdata = cropdat
+# var.terms = wcterms_ten
+# 
+# wcmodten_0p <- predictFelm(felm.fit = modten, newdata = cropdat)
+# sum(exp(wcmodten_0p$fit + wcmodten_0p$res + wcmodten_0p$effect) - 1)
+# 
+# sum(wcmodten_0p$effect);sum(wcmodten_2p$effect)
+# 
+# wcmodten_2p <- predictFelm(modten, newdata = p2, var.terms = wcterms_ten)
+# sum(exp(wcmodten_2p$fit + wcmodten_2p$res + wcmodten_2p$effect) - 1)
+
 wcmodten_0p <- predictFelm(felm.fit = modten, newdata = cropdat, var.terms = wcterms_ten)
-wcmodten_1p <- predictFelm(felm.fit = modten, newdata = p1, var.terms = wcterms_ten)
+wcmodten_1p <- predictFelm(modten, newdata = p1, var.terms = wcterms_ten)
 wcmodten_2p <- predictFelm(modten, newdata = p2, var.terms = wcterms_ten)
 wcmodten_3p <- predictFelm(modten, newdata = p3, var.terms = wcterms_ten)
 wcmodten_4p <- predictFelm(modten, newdata = p4, var.terms = wcterms_ten)
 wcmodten_5p <- predictFelm(modten, newdata = p5, var.terms = wcterms_ten)
 
 # Total predicted revenue per acre
-wcmodten_0p$sum <- sum(exp(wcmodten_0p$fit + wcmodten_0p$res + wcmodten_0p$effect) - 1)
-wcmodten_1p$sum <- sum(exp(wcmodten_1p$fit + wcmodten_1p$res + wcmodten_1p$effect) - 1)
-wcmodten_2p$sum <- sum(exp(wcmodten_2p$fit + wcmodten_2p$res + wcmodten_2p$effect) - 1) 
-wcmodten_3p$sum <- sum(exp(wcmodten_3p$fit + wcmodten_3p$res + wcmodten_3p$effect) - 1) 
-wcmodten_4p$sum <- sum(exp(wcmodten_4p$fit + wcmodten_4p$res + wcmodten_4p$effect) - 1) 
-wcmodten_5p$sum <- sum(exp(wcmodten_5p$fit + wcmodten_5p$res + wcmodten_5p$effect) - 1) 
+wcmodten_0p$sum <- sum((wcmodten_0p$fit + wcmodten_0p$res + wcmodten_0p$effect) - 1)
+wcmodten_1p$sum <- sum((wcmodten_1p$fit + wcmodten_1p$res + wcmodten_1p$effect) - 1)
+wcmodten_2p$sum <- sum((wcmodten_2p$fit + wcmodten_2p$res + wcmodten_2p$effect) - 1) 
+wcmodten_3p$sum <- sum((wcmodten_3p$fit + wcmodten_3p$res + wcmodten_3p$effect) - 1) 
+wcmodten_4p$sum <- sum((wcmodten_4p$fit + wcmodten_4p$res + wcmodten_4p$effect) - 1) 
+wcmodten_5p$sum <- sum((wcmodten_5p$fit + wcmodten_5p$res + wcmodten_5p$effect) - 1) 
 
 # Get standard errors of sum
 wcmodten_p0_ci <- sum(exp(wcmodten_0p$felm.se.fit + wcmodten_0p$res + wcmodten_0p$effect) - 1)
@@ -82,6 +94,7 @@ pdat_wcmodten <- data.frame(effect = "Weather-Climate-effect",
                    ci = c(wcmodten_p0_ci, wcmodten_p1_ci, wcmodten_p2_ci, wcmodten_p3_ci, wcmodten_p4_ci, wcmodten_p5_ci))
 head(pdat_wcmodten)
 
+ggplot(pdat_wcmodten, aes(temp, sum, color = interval)) + geom_line()
 
 #---------------------------------------------------------------------------------
 # 20-year

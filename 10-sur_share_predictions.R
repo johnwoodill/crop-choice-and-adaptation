@@ -89,7 +89,7 @@ cten <- predictSUR.clean(mod = sur_ten,
                          fips = cropdat$fips,
                          newdata_list = newdata_list_dm,
                          var.terms = ten_climate_terms_v,
-                         cons.terms = terms,
+                         # cons.terms = terms,
                          type = "10-year", 
                          effect = "Climate-effect")
 
@@ -100,8 +100,6 @@ test <- cten$agg_predictions %>%
   group_by(crop) %>% 
   mutate(change = 100*(sum - first(sum))/(first(sum)))
 test
-
-View(test)
 #  cten_rs <- rowSums(cten$predictions)
 #  length(which((cten_rs != 1) == FALSE))
 # 
@@ -118,7 +116,7 @@ ctwenty <- predictSUR.clean(mod = sur_twenty,
                             fips = cropdat$fips,
                             newdata_list = newdata_list_dm, 
                             var.terms = twenty_climate_terms_v,
-                            cons.terms = terms,
+                            # cons.terms = terms,
                             type = "11-year", 
                             effect = "Climate-effect")
 
@@ -135,7 +133,7 @@ cthirty <- predictSUR.clean(mod = sur_thirty,
                             fips = cropdat$fips,
                             newdata_list = newdata_list_dm,
                             var.terms = thirty_climate_terms_v,
-                            cons.terms = terms,
+                            # cons.terms = terms,
                             type = "12-year", 
                             effect = "Climate-effect")
 

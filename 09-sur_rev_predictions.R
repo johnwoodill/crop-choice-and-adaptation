@@ -16,7 +16,7 @@ cropdat$fips <- factor(cropdat$fips)
 
 sur_rev <- readRDS("models/sur_rev_model.rds")
 
-acres_climate_iv <- readRDS("models/acres_climate_iv.rds")
+# acres_climate_iv <- readRDS("models/acres_climate_iv.rds")
 
 # Prediction data 0C-5C
 p0 <- cropdat

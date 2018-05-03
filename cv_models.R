@@ -28,7 +28,10 @@ mse <- data.frame(rep = 1:1000,
                   agg_weather_climate_mse = 0)
 
 # Weather
-for(i in 1:1000){
+# for(i in 1:1000){
+  
+d <- foreach(i = 1:1, .combine = rbind, .packages = c("lfe", "dplyr")) %dopar% {
+  
   test_years <- sample(1950:2010, 5)
   test <- filter(regdat, year %in% test_years)
   dep_var <- test$ln_rev
@@ -155,7 +158,8 @@ for(i in 1:1000){
   mse$agg_weather_climate_mse[i] <- sqrt(mean(residuals^2))
   
 
-  print(i)
+  # print(i)
+  mse[i, ]
 }  
 
 

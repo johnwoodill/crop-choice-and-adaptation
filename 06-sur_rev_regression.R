@@ -45,69 +45,69 @@ cropdat$state <- factor(cropdat$state)
 #---------------------------------------------------------------------------------------
 # Instrument crop acreages and climate
 
-dmdat <- select(cropdat, z_corn_a, z_cotton_a, z_hay_a, z_soybean_a, z_wheat_a, 
-                dday0_10, dday10_30, dday30, prec, prec_sq, trend, trend_sq,
-                dday0_10_rm10 , dday10_30_rm10 , dday30_rm10 , prec_rm10 , prec_sq_rm10, 
-                trend_lat, trend_long, trend_sq_lat, trend_sq_long)
-
-cropdat_dm <- demeanlist(dmdat, fl = list(fips = factor(cropdat$fips)))
-
-cropdat_means <- demeanlist(dmdat, fl = list(fips = factor(cropdat$fips)), means = TRUE)
-
-
-mod1 <- z_corn_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
-  dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
-  trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
-
-
-mod2 <- z_cotton_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +  
-  dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
-  trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
-
-
-mod3 <- z_hay_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-  dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
-  trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
-
-
-mod4 <- z_soybean_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-  dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
-  trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
-
-
-
-mod5 <- z_wheat_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-  dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
-  trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
-
-ten_mod <- systemfit(list(corn = mod1, 
-                          cotton = mod2, 
-                          hay = mod3, 
-                          soybean = mod4,
-                          wheat = mod5), data = cropdat_dm, method = "SUR")
-
-summary(ten_mod)
-pdat <- predict(ten_mod)
-
-ten_mod$effects <- list(z_corn_a = cropdat_means$z_corn_a,
-                        z_cotton_a = cropdat_means$z_cotton_a,
-                        z_hay_a = cropdat_means$z_hay_a,
-                        z_soybean_a = cropdat_means$z_soybean_a,
-                        z_wheat_a = cropdat_means$z_wheat_a)
-
-pdat$corn.pred <- pdat$corn.pred + ten_mod$effects$z_corn_a 
-pdat$cotton.pred <- pdat$cotton.pred + ten_mod$effects$z_cotton_a
-pdat$hay.pred <- pdat$hay.pred + ten_mod$effects$z_hay_a
-pdat$soybean.pred <- pdat$soybean.pred + ten_mod$effects$z_soybean_a
-pdat$wheat.pred <- pdat$wheat.pred + ten_mod$effects$z_wheat_a
-
-pdat$corn.pred <- pnorm((pdat$corn.pred)*1.00101 - 0.001)
-pdat$cotton.pred <- pnorm((pdat$cotton.pred)*1.00101 - 0.001)
-pdat$hay.pred <- pnorm((pdat$hay.pred)*1.00101 - 0.001)
-pdat$soybean.pred <- pnorm((pdat$soybean.pred)*1.00101 - 0.001)
-pdat$wheat.pred <- pnorm((pdat$wheat.pred)*1.00101 - 0.001)
-
-saveRDS(pdat, "models/acres_climate_iv.rds")
+# dmdat <- select(cropdat, z_corn_a, z_cotton_a, z_hay_a, z_soybean_a, z_wheat_a, 
+#                 dday0_10, dday10_30, dday30, prec, prec_sq, trend, trend_sq,
+#                 dday0_10_rm10 , dday10_30_rm10 , dday30_rm10 , prec_rm10 , prec_sq_rm10, 
+#                 trend_lat, trend_long, trend_sq_lat, trend_sq_long)
+# 
+# cropdat_dm <- demeanlist(dmdat, fl = list(fips = factor(cropdat$fips)))
+# 
+# cropdat_means <- demeanlist(dmdat, fl = list(fips = factor(cropdat$fips)), means = TRUE)
+# 
+# 
+# mod1 <- z_corn_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
+#   dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
+#   trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
+# 
+# 
+# mod2 <- z_cotton_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +  
+#   dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
+#   trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
+# 
+# 
+# mod3 <- z_hay_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
+#   dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
+#   trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
+# 
+# 
+# mod4 <- z_soybean_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
+#   dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
+#   trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
+# 
+# 
+# 
+# mod5 <- z_wheat_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
+#   dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
+#   trend_lat + trend_long + trend_sq_lat + trend_sq_long  - 1
+# 
+# ten_mod <- systemfit(list(corn = mod1, 
+#                           cotton = mod2, 
+#                           hay = mod3, 
+#                           soybean = mod4,
+#                           wheat = mod5), data = cropdat_dm, method = "SUR")
+# 
+# summary(ten_mod)
+# pdat <- predict(ten_mod)
+# 
+# ten_mod$effects <- list(z_corn_a = cropdat_means$z_corn_a,
+#                         z_cotton_a = cropdat_means$z_cotton_a,
+#                         z_hay_a = cropdat_means$z_hay_a,
+#                         z_soybean_a = cropdat_means$z_soybean_a,
+#                         z_wheat_a = cropdat_means$z_wheat_a)
+# 
+# pdat$corn.pred <- pdat$corn.pred + ten_mod$effects$z_corn_a 
+# pdat$cotton.pred <- pdat$cotton.pred + ten_mod$effects$z_cotton_a
+# pdat$hay.pred <- pdat$hay.pred + ten_mod$effects$z_hay_a
+# pdat$soybean.pred <- pdat$soybean.pred + ten_mod$effects$z_soybean_a
+# pdat$wheat.pred <- pdat$wheat.pred + ten_mod$effects$z_wheat_a
+# 
+# pdat$corn.pred <- pnorm((pdat$corn.pred)*1.00101 - 0.001)
+# pdat$cotton.pred <- pnorm((pdat$cotton.pred)*1.00101 - 0.001)
+# pdat$hay.pred <- pnorm((pdat$hay.pred)*1.00101 - 0.001)
+# pdat$soybean.pred <- pnorm((pdat$soybean.pred)*1.00101 - 0.001)
+# pdat$wheat.pred <- pnorm((pdat$wheat.pred)*1.00101 - 0.001)
+# 
+# saveRDS(pdat, "models/acres_climate_iv.rds")
 
 # 10-year revenue per acre SUR model
 #-----------------------------------------------------------------------------------
@@ -125,24 +125,24 @@ cropdat_dm <- demeanlist(dmdat, fl = list(fips = factor(cropdat$fips)))
 cropdat_means <- demeanlist(dmdat, fl = list(fips = factor(cropdat$fips)), means = TRUE)
 
 
-mod1 <- ln_rev_corn ~ corn.pred + dday0_10 + dday10_30 + dday30 +  prec + prec_sq +
+mod1 <- ln_rev_corn ~ dday0_10 + dday10_30 + dday30 +  prec + prec_sq +
   trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
 
 
-mod2 <- ln_rev_cotton ~ cotton.pred + dday0_10 + dday10_30 + dday30 +  prec + prec_sq +
+mod2 <- ln_rev_cotton ~ dday0_10 + dday10_30 + dday30 +  prec + prec_sq +
 trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
  
 
-mod3 <- ln_rev_hay ~ hay.pred + dday0_10 + dday10_30 + dday30 + prec + prec_sq +
+mod3 <- ln_rev_hay ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
+trend_lat + trend_long + trend_sq_lat + trend_sq_long- 1
+
+
+mod4 <- ln_rev_soybean ~ dday0_10 + dday10_30 + dday30 +  prec + prec_sq +
 trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
 
 
-mod4 <- ln_rev_soybean ~ soybean.pred + dday0_10 + dday10_30 + dday30 +  prec + prec_sq +
-trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
-
-
-mod5 <- ln_rev_wheat ~ wheat.pred + dday0_10 + dday10_30 + dday30 + prec + prec_sq +
-trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
+mod5 <- ln_rev_wheat ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
+trend_lat + trend_long + trend_sq_lat + trend_sq_long- 1
 
 mod <- systemfit(list(corn = mod1, 
                        cotton = mod2, 

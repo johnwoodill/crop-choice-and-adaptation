@@ -131,7 +131,7 @@ ten_mod$bs_se <- structure(list(`apply(d, 2, sd)` = c(0.000210053668428398, 0.00
 "wheat_dday30_rm10", "wheat_prec_rm10", "wheat_prec_sq_rm10"), class = "data.frame")
 
 
-ten_mod$cl_se <- clse_systemfit(ten_mod, cropdat$state)
+# ten_mod$cl_se <- clse_systemfit(ten_mod, cropdat$state)
 
 saveRDS(ten_mod, "models/sur_share_model_ten.rds")
 

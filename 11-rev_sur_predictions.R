@@ -331,7 +331,7 @@ cdat1 <- cdat1 %>%
          soybean = soybean_rev/soybean_acres,
          wheat = wheat_rev/wheat_acres) %>% 
   select(temp, corn, cotton, hay, soybean, wheat) %>% 
-  # mutate(total = corn + cotton + soybean + wheat) %>% 
+  # mutate(total = corn + cotton + hay + wheat) %>%
   mutate(total = rowSums(.[2:6], na.rm = TRUE)) %>%
   left_join(filter(bs_se_pdat3, interval == "10-year"), by = "temp") %>% 
   mutate(change = 100*(total - first(total))/first(total),
@@ -352,7 +352,7 @@ cdat2 <- cdat2 %>%
          wheat = wheat_rev/wheat_acres) %>% 
   select(temp, corn, cotton, hay, soybean, wheat) %>% 
   mutate(total = rowSums(.[2:6])) %>%
-  # mutate(total = corn + cotton + soybean + wheat) %>% 
+  # mutate(total = corn + cotton + hay + wheat) %>%
   left_join(filter(bs_se_pdat3, interval == "11-year"), by = "temp") %>% 
   mutate(change = 100*(total - first(total))/first(total),
          change_max = 100*((total + se*1.96)/first(total) - 1),
@@ -371,7 +371,7 @@ cdat3 <- cdat3 %>%
          soybean = soybean_rev/soybean_acres,
          wheat = wheat_rev/wheat_acres) %>% 
   select(temp, corn, cotton, hay, soybean, wheat) %>% 
-  # mutate(total = corn + cotton + soybean + wheat) %>% 
+  # mutate(total = corn + cotton + hay + wheat) %>%
   mutate(total = rowSums(.[2:6])) %>%
   left_join(filter(bs_se_pdat3, interval == "12-year"), by = "temp") %>% 
   mutate(change = 100*(total - first(total))/first(total),
@@ -415,7 +415,7 @@ ggplot(pdat, aes(temp, change, color = effect)) + geom_line() +
   geom_text(data = filter(pdat, temp == 3 & effect == "Weather-effect" & panel == 2), aes(label = effect), 
             vjust = 3, size = 2) + 
   scale_x_continuous(breaks = 0:5, labels = c("+0C", "+1C", "+2C", "+3C", "+4C", "+5C")) +
-  ylim(-60, 60) +
+  # ylim(-60, 60) +
   #guides(color = guide_legend(keywidth = 1.5, keyheight = 1,
   #                              override.aes = list(linetype = c(1, 1),
   #                                                  size = 1.5,
