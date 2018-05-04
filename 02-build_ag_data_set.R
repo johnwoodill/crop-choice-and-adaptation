@@ -229,72 +229,68 @@ extract_d_county <- function(x){
 # # Merge historical Haines data
 # hdat <- read_dta("data/DustBowl_All_base1910.dta")
 # hdat <- select(hdat, year, fips, corn_grain_a, corn_grain_y, cotton_a, cotton_y, hay_a, hay_y, wheat_a, wheat_y)
-
-#hains_dat <- select(hains_dat, year, fips, cropland_harvested)
+# 
+# #hains_dat <- select(hains_dat, year, fips, cropland_harvested)
 # hdat$year <- as.integer(hdat$year)
 # hdat$fips <- as.integer(hdat$fips)
 # 
 # # expand grid data
 # fips <- unique(cropdat$fips)
 # years <- 1910:2012
-# 
 # mdat <- expand.grid(years, fips)
 # names(mdat) <- c("year", "fips")
 # 
-# 
-# 
 # # Merge historical with current census data
-# mdat <- left_join(mdat, hdat, by = c("fips", "year"))
-# head(mdat)
+#  mdat <- left_join(mdat, hdat, by = c("fips", "year"))
+#  head(mdat)
 # 
-# names(mdat)[3:10] <- c("corn_grain_a", "corn_grain_p", "cotton_a", "cotton_p", "hay_a", "hay_p", "wheat_a", "wheat_p")
+#  names(mdat)[3:10] <- c("corn_grain_a", "corn_grain_p", "cotton_a", "cotton_p", "hay_a", "hay_p", "wheat_a", "wheat_p")
 # 
 # 
-# mdat <- mdat %>%
-#   group_by(fips) %>%
-#   arrange(year) %>%
-#   mutate(corn_grain_a = na.approx(corn_grain_a, na.rm = FALSE),
-#          corn_grain_p = na.approx(corn_grain_p, na.rm = FALSE),
-#          cotton_a = na.approx(cotton_a, na.rm = FALSE),
-#          cotton_p= na.approx(cotton_p, na.rm = FALSE),
-#          hay_a = na.approx(hay_a, na.rm = FALSE),
-#          hay_p = na.approx(hay_p, na.rm = FALSE),
-#          wheat_a = na.approx(wheat_a, na.rm = FALSE),
-#          wheat_p = na.approx(wheat_p, na.rm = FALSE)) %>%
-#    ungroup()
-# head(mdat)
+#  mdat <- mdat %>%
+#    group_by(fips) %>%
+#    arrange(year) %>%
+#    mutate(corn_grain_a = na.approx(corn_grain_a, na.rm = FALSE),
+#         corn_grain_p = na.approx(corn_grain_p, na.rm = FALSE),
+#           cotton_a = na.approx(cotton_a, na.rm = FALSE),
+#           cotton_p= na.approx(cotton_p, na.rm = FALSE),
+#           hay_a = na.approx(hay_a, na.rm = FALSE),
+#         hay_p = na.approx(hay_p, na.rm = FALSE),
+#           wheat_a = na.approx(wheat_a, na.rm = FALSE),
+#           wheat_p = na.approx(wheat_p, na.rm = FALSE)) %>%
+#     ungroup()
+#  head(mdat)
 # 
 # cropdat <- left_join(cropdat, mdat, by = c("fips", "year")) %>%
-#   mutate(corn_grain_a = ifelse(is.na(corn_grain_a.x), corn_grain_a.y, corn_grain_a.x),
-#          corn_grain_p = ifelse(is.na(corn_grain_p.x), corn_grain_p.y, corn_grain_p.x),
-#          cotton_a = ifelse(is.na(cotton_a.x), cotton_a.y, cotton_a.x),
-#          cotton_p = ifelse(is.na(cotton_p.x), cotton_p.y, cotton_p.x),
-#          hay_a = ifelse(is.na(hay_a.x), hay_a.y, hay_a.x),
-#          hay_p = ifelse(is.na(hay_p.x), hay_p.y, hay_p.x),
-#          wheat_a = ifelse(is.na(wheat_a.x), wheat_a.y, wheat_a.x),
-#          wheat_p = ifelse(is.na(wheat_p.x), wheat_p.y, wheat_p.x)) %>%
-#   select(-corn_grain_a.x, -corn_grain_a.y, -corn_grain_p.x, -corn_grain_p.y,
-#          -cotton_a.x, -cotton_a.y, -cotton_p.x, -cotton_p.y,
-#          -hay_a.x, -hay_a.y, -hay_p.x, -hay_p.y,
-#          -wheat_a.x, -wheat_a.y, -wheat_p.x, -wheat_p.y)
-# head(cropdat)
-# 
-# # Interpolated historical data and new data
-# cropdat <- cropdat %>%
-#   group_by(fips) %>%
-#   arrange(year) %>%
-#   mutate(corn_grain_a = na.approx(corn_grain_a, na.rm = FALSE),
-#          corn_grain_p = na.approx(corn_grain_p, na.rm = FALSE),
-#          cotton_a = na.approx(cotton_a, na.rm = FALSE),
-#          cotton_p= na.approx(cotton_p, na.rm = FALSE),
-#          hay_a = na.approx(hay_a, na.rm = FALSE),
-#          hay_p = na.approx(hay_p, na.rm = FALSE),
-#          wheat_a = na.approx(wheat_a, na.rm = FALSE),
-#          wheat_p = na.approx(wheat_p, na.rm = FALSE),
-#          soybean_a = na.approx(soybean_a, na.rm = FALSE),
-#          soybean_p = na.approx(soybean_p, na.rm = FALSE)) %>%
-#    ungroup()
-# head(cropdat)
+#    mutate(corn_grain_a = ifelse(is.na(corn_grain_a.x), corn_grain_a.y, corn_grain_a.x),
+#           corn_grain_p = ifelse(is.na(corn_grain_p.x), corn_grain_p.y, corn_grain_p.x),
+#           cotton_a = ifelse(is.na(cotton_a.x), cotton_a.y, cotton_a.x),
+#           cotton_p = ifelse(is.na(cotton_p.x), cotton_p.y, cotton_p.x),
+#           hay_a = ifelse(is.na(hay_a.x), hay_a.y, hay_a.x),
+#           hay_p = ifelse(is.na(hay_p.x), hay_p.y, hay_p.x),
+#           wheat_a = ifelse(is.na(wheat_a.x), wheat_a.y, wheat_a.x),
+#           wheat_p = ifelse(is.na(wheat_p.x), wheat_p.y, wheat_p.x)) %>%
+#    select(-corn_grain_a.x, -corn_grain_a.y, -corn_grain_p.x, -corn_grain_p.y,
+#           -cotton_a.x, -cotton_a.y, -cotton_p.x, -cotton_p.y,
+#           -hay_a.x, -hay_a.y, -hay_p.x, -hay_p.y,
+#           -wheat_a.x, -wheat_a.y, -wheat_p.x, -wheat_p.y)
+#  head(cropdat)
+# # # Interpolated historical data and new data
+#  cropdat <- cropdat %>%
+#    group_by(fips) %>%
+#    arrange(year) %>%
+#    mutate(corn_grain_a = na.approx(corn_grain_a, na.rm = FALSE),
+#           corn_grain_p = na.approx(corn_grain_p, na.rm = FALSE),
+#           cotton_a = na.approx(cotton_a, na.rm = FALSE),
+#           cotton_p= na.approx(cotton_p, na.rm = FALSE),
+#           hay_a = na.approx(hay_a, na.rm = FALSE),
+#           hay_p = na.approx(hay_p, na.rm = FALSE),
+#           wheat_a = na.approx(wheat_a, na.rm = FALSE),
+#           wheat_p = na.approx(wheat_p, na.rm = FALSE),
+#           soybean_a = na.approx(soybean_a, na.rm = FALSE),
+#           soybean_p = na.approx(soybean_p, na.rm = FALSE)) %>%
+#     ungroup()
+#  head(cropdat)
 #-----------------------------------------------------
 
 # Aggregate county-level degree days -----------------------------------------------
@@ -310,7 +306,7 @@ prec <- read_csv("/run/media/john/1TB/SpiderOak/Projects/adaptation-along-the-en
  dd$year <- as.integer(dd$year)
  dd$fips <- as.integer(dd$fips)
  dd_dat <- left_join(dd, prec, by = c("fips", "year", "month"))
- dd_dat <- filter(dd_dat, month >= 3 & month <= 10)
+ dd_dat <- filter(dd_dat, month >= 3 & month <= 9)
 
  dd_dat$X1 <- NULL
  
@@ -390,28 +386,45 @@ dd_dat <- dd_dat %>%
          dday10_30_rm12 = roll_mean(dday10_30_lag1, 12, align = "right", fill = "NA"),
          dday30_rm12 = roll_mean(dday30_lag1, 12, align = "right", fill = "NA"),
          prec_rm12 = roll_mean(prec_lag1, 12, align = "right", fill = "NA"),
-         prec_sq_rm12 = prec_rm12^2) %>% 
+         prec_sq_rm12 = prec_rm12^2,
+         
+         dday0_10_rm = roll_mean(dday0_10_lag1, 21, align = "right", fill = "NA"),
+         dday10_30_rm = roll_mean(dday10_30_lag1, 27, align = "right", fill = "NA"),
+         dday30_rm = roll_mean(dday30_lag1, 20, align = "right", fill = "NA"),
+         prec_rm = roll_mean(prec_lag1, 16, align = "right", fill = "NA"),
+         prec_sq_rm = prec_rm12^2) %>%  
+  
   ungroup()
 
 # Lag variables
-for (n in 1:30){
-  lab1 <- paste0("dday0_10_lag", n)
-  lab2 <- paste0("dday10_30_lag", n)
-  lab3 <- paste0("dday30_lag", n)
-  lab4 <- paste0("prec_lag", n)
-  lab5 <- paste0("prec_sq_lag", n)
-  
-  
-  dd_dat <- dd_dat %>% 
-    group_by(fips) %>% 
-    arrange(year) %>% 
-    mutate(!!lab1 := lag(dday0_10, n),
-           !!lab2 := lag(dday10_30, n),
-           !!lab3 := lag(dday30, n),
-           !!lab4 := lag(prec, n),
-           !!lab5 := lag(prec, n)^2)
-}
+# for (n in 1:30){
+#   lab1 <- paste0("dday0_10_lag", n)
+#   lab2 <- paste0("dday10_30_lag", n)
+#   lab3 <- paste0("dday30_lag", n)
+#   lab4 <- paste0("prec_lag", n)
+#   lab5 <- paste0("prec_sq_lag", n)
+#   
+#   
+#   dd_dat <- dd_dat %>% 
+#     group_by(fips) %>% 
+#     arrange(year) %>% 
+#     mutate(!!lab1 := lag(dday0_10, n),
+#            !!lab2 := lag(dday10_30, n),
+#            !!lab3 := lag(dday30, n),
+#            !!lab4 := lag(prec, n),
+#            !!lab5 := lag(prec, n)^2)
+# }
 
+# Decade averages
+dd_dat$ten <- dd_dat$year - (dd_dat$year %% 10)
+
+dd_dat <- dd_dat %>% 
+  group_by(fips, ten) %>% 
+  mutate(dday0_10_davg = mean(dday0_10, na.rm = TRUE),
+         dday10_30_davg = mean(dday10_30, na.rm = TRUE),
+         dday30_davg = mean(dday30, na.rm = TRUE),
+         prec_davg = mean(prec, na.rm = TRUE),
+         prec_sq_davg = prec_davg^2)
 
 # Merge ag prices, ag crop data, and degree day data ----------------------
 
@@ -438,7 +451,7 @@ fulldat$wheat_yield <- ifelse(is.na(fulldat$wheat_yield), 0, fulldat$wheat_yield
 
 # Real mean revenue per acre constant price
 fulldat$corn_mrev <- (fulldat$corn_grain_p*mean(fulldat$corn_rprice, na.rm = TRUE))/fulldat$corn_grain_a
-fulldat$cotton_mrev <- (fulldat$cotton_p*480*mean(fulldat$cotton_rprice, na.rm = TRUE))/fulldat$cotton_a
+fulldat$cotton_mrev <- (fulldat$cotton_p*480)*mean(fulldat$cotton_rprice, na.rm = TRUE)/fulldat$cotton_a
 fulldat$hay_mrev <- (fulldat$hay_p*mean(fulldat$hay_rprice, na.rm = TRUE))/fulldat$hay_a
 fulldat$wheat_mrev <- (fulldat$wheat_p*mean(fulldat$wheat_rprice, na.rm = TRUE))/fulldat$wheat_a
 fulldat$soybean_mrev <- (fulldat$soybean_p*mean(fulldat$soybean_rprice, na.rm = TRUE))/fulldat$soybean_a
@@ -477,6 +490,12 @@ data <- filter(data, year >= unique(check$year))
 
 # Build data set for regression estimates
 cropdat <- filter(data, year <= 2010)
+
+cropdat$corn_mrev <- ifelse(is.na(cropdat$corn_mrev), 0, cropdat$corn_mrev)
+cropdat$cotton_mrev <- ifelse(is.na(cropdat$cotton_mrev), 0, cropdat$cotton_mrev)
+cropdat$hay_mrev <- ifelse(is.na(cropdat$hay_mrev), 0, cropdat$hay_mrev)
+cropdat$soybean_mrev <- ifelse(is.na(cropdat$soybean_mrev), 0, cropdat$soybean_mrev)
+cropdat$wheat_mrev <- ifelse(is.na(cropdat$wheat_mrev), 0, cropdat$wheat_mrev)
 
 # Log crop revenue
 cropdat$ln_rev_corn <- log(1 + cropdat$corn_mrev)
@@ -564,44 +583,55 @@ cropdat <- filter(cropdat, abs(long) <= 100 )
 cropdat$state <- factor(cropdat$state)
 
 # Instrument variable weather using climate
-source('R/iv_temp.R')
-  
-dday0_10_fit_10 <- iv_temp('dday0_10', 10, cropdat)
-dday10_30_fit_10 <- iv_temp('dday10_30', 10, cropdat)
-dday30_fit_10 <- iv_temp('dday30', 10, cropdat)
-prec_fit_10 <- iv_temp('prec', 10, cropdat)
-
-dday0_10_fit_20 <- iv_temp('dday0_10', 20, cropdat)
-dday10_30_fit_20 <- iv_temp('dday10_30', 20, cropdat)
-dday30_fit_20 <- iv_temp('dday30', 20, cropdat)
-prec_fit_20 <- iv_temp('prec', 20, cropdat)
-
-dday0_10_fit_30 <- iv_temp('dday0_10', 30, cropdat)
-dday10_30_fit_30 <- iv_temp('dday10_30', 30, cropdat)
-dday30_fit_30 <- iv_temp('dday30', 30, cropdat)
-prec_fit_30 <- iv_temp('prec', 30, cropdat)
+# source('R/iv_temp.R')
+# 
+# dday0_10_fit_iv <- iv_temp('dday0_10', 27, cropdat)
+# dday10_30_fit_iv <- iv_temp('dday10_30', 21, cropdat)
+# dday30_fit_iv <- iv_temp('dday30', 20, cropdat)
+# prec_fit_iv <- iv_temp('prec', 16, cropdat)
+#   
+# dday0_10_fit_10 <- iv_temp('dday0_10', 10, cropdat)
+# dday10_30_fit_10 <- iv_temp('dday10_30', 10, cropdat)
+# dday30_fit_10 <- iv_temp('dday30', 10, cropdat)
+# prec_fit_10 <- iv_temp('prec', 10, cropdat)
+# 
+# dday0_10_fit_20 <- iv_temp('dday0_10', 20, cropdat)
+# dday10_30_fit_20 <- iv_temp('dday10_30', 20, cropdat)
+# dday30_fit_20 <- iv_temp('dday30', 20, cropdat)
+# prec_fit_20 <- iv_temp('prec', 20, cropdat)
+# 
+# dday0_10_fit_30 <- iv_temp('dday0_10', 30, cropdat)
+# dday10_30_fit_30 <- iv_temp('dday10_30', 30, cropdat)
+# dday30_fit_30 <- iv_temp('dday30', 30, cropdat)
+# prec_fit_30 <- iv_temp('prec', 30, cropdat)
 
 # Add IV to data.frame
-cropdat$dday0_10_iv10 <- dday0_10_fit_10
-cropdat$dday10_30_iv10 <- dday10_30_fit_10
-cropdat$dday30_iv10 <- dday30_fit_10
-cropdat$prec_iv10 <- prec_fit_10
-cropdat$prec_sq_iv10 <- prec_fit_10^2
-
-cropdat$dday0_10_iv20 <- dday0_10_fit_20
-cropdat$dday10_30_iv20 <- dday10_30_fit_20
-cropdat$dday30_iv20 <- dday30_fit_20
-cropdat$prec_iv20 <- prec_fit_20
-cropdat$prec_sq_iv20 <- prec_fit_20^2
-
-cropdat$dday0_10_iv30 <- dday0_10_fit_30
-cropdat$dday10_30_iv30 <- dday10_30_fit_30
-cropdat$dday30_iv30 <- dday30_fit_30
-cropdat$prec_iv30 <- prec_fit_30
-cropdat$prec_sq_iv30 <- prec_fit_30^2
+# cropdat$dday0_10_iv <- dday0_10_fit_iv
+# cropdat$dday10_30_iv <- dday10_30_fit_iv
+# cropdat$dday30_iv <- dday30_fit_iv
+# cropdat$prec_iv <- prec_fit_iv
+# cropdat$prec_sq_iv <- prec_fit_iv^2
+# 
+# cropdat$dday0_10_iv10 <- dday0_10_fit_10
+# cropdat$dday10_30_iv10 <- dday10_30_fit_10
+# cropdat$dday30_iv10 <- dday30_fit_10
+# cropdat$prec_iv10 <- prec_fit_10
+# cropdat$prec_sq_iv10 <- prec_fit_10^2
+# 
+# cropdat$dday0_10_iv20 <- dday0_10_fit_20
+# cropdat$dday10_30_iv20 <- dday10_30_fit_20
+# cropdat$dday30_iv20 <- dday30_fit_20
+# cropdat$prec_iv20 <- prec_fit_20
+# cropdat$prec_sq_iv20 <- prec_fit_20^2
+# 
+# cropdat$dday0_10_iv30 <- dday0_10_fit_30
+# cropdat$dday10_30_iv30 <- dday10_30_fit_30
+# cropdat$dday30_iv30 <- dday30_fit_30
+# cropdat$prec_iv30 <- prec_fit_30
+# cropdat$prec_sq_iv30 <- prec_fit_30^2
 
 # Remove lag columns
-cropdat <- cropdat[, -grep('lag', colnames(cropdat))]
+# cropdat <- cropdat[, -grep('lag', colnames(cropdat))]
 
 # Fix outliers
 cropdat$cotton_yield[which((cropdat$cotton_yield)>3000)] <- 366
@@ -609,14 +639,29 @@ cropdat$cotton_yield[which((cropdat$cotton_yield)>3000)] <- 366
 saveRDS(cropdat, "data/full_ag_data.rds")
 fulldat <- readRDS("data/full_ag_data.rds")
 
+cropdat <- fulldat
 
 fit<- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-             # dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
-             dday0_10_iv10 + dday10_30_iv10 + dday30_iv10 + prec_iv10 + prec_sq_iv10 +
-             trend_lat + trend_long + trend_sq_lat + trend_sq_long 
-           | fips | 0 | state, data = cropdat, weights = cropdat$w)
+             dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
+             trend_lat + trend_long + trend_sq_lat + trend_sq_long
+           | fips | 0 | state, data = cropdat, weights = cropdat$acres)
 summary(fit)
 
 sqrt(mean(fit$residuals^2))
 
 ggplot(fulldat, aes(factor(year), ln_rev)) + geom_boxplot()
+
+test <- filter(cropdat, ln_rev > 0 )
+
+fit<- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
+             dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
+             trend_lat + trend_long + trend_sq_lat + trend_sq_long
+           | fips | 0 | state, data = cropdat, weights = cropdat$w)
+summary(fit)
+
+test2 <- test %>% 
+  group_by(fips) %>% 
+  mutate(dday30_rm10 - mean(dday30_rm10, na.rm = TRUE))
+
+ggplot(test2, aes(y=ln_rev, x=dday30_rm10)) + geom_point() + geom_smooth(method  = 'lm')
+

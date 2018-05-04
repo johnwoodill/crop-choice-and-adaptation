@@ -99,7 +99,7 @@ predictFelm <- function(felm.fit, newdata = NULL, data = NULL, var.terms = NULL,
 
       # Get each fixed effect and merge
       for (j in names(felm.fit$fe)){
-        eff.dat[, `j`] <- unique(felm.fit$fe[[j]])
+        eff.dat[, `j`] <- felm.fit$fe[[j]]
         fename <- as.character(j)
         mergedat <- filter(fe, fe == j) %>%
                  dplyr::select(1, 5) %>%

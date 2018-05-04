@@ -67,22 +67,28 @@ dd_temp <- function(x, prec){
     group_by(fips) %>% 
     arrange(year) %>% 
     mutate(dday0_10_rm10 = roll_mean(dday0_10_lag1, 10, align = "right", fill = "NA"),
-           dday10_30_rm10 = roll_mean(dday10_30_lag1, 10, align = "right", fill = "NA"),
-           dday30_rm10 = roll_mean(dday30_lag1, 10, align = "right", fill = "NA"),
-           prec_rm10 = roll_mean(prec_lag1, 10, align = "right", fill = "NA"),
-           prec_sq_rm10 = prec_rm10^2,
-           
-           dday0_10_rm11 = roll_mean(dday0_10_lag1, 11, align = "right", fill = "NA"),
-           dday10_30_rm11 = roll_mean(dday10_30_lag1, 11, align = "right", fill = "NA"),
-           dday30_rm11 = roll_mean(dday30_lag1, 11, align = "right", fill = "NA"),
-           prec_rm11 = roll_mean(prec_lag1, 11, align = "right", fill = "NA"),
-           prec_sq_rm11 = prec_rm11^2,
-           
-           dday0_10_rm12 = roll_mean(dday0_10_lag1, 12, align = "right", fill = "NA"),
-           dday10_30_rm12 = roll_mean(dday10_30_lag1, 12, align = "right", fill = "NA"),
-           dday30_rm12 = roll_mean(dday30_lag1, 12, align = "right", fill = "NA"),
-           prec_rm12 = roll_mean(prec_lag1, 12, align = "right", fill = "NA"),
-           prec_sq_rm12 = prec_rm12^2) %>% 
+         dday10_30_rm10 = roll_mean(dday10_30_lag1, 10, align = "right", fill = "NA"),
+         dday30_rm10 = roll_mean(dday30_lag1, 10, align = "right", fill = "NA"),
+         prec_rm10 = roll_mean(prec_lag1, 10, align = "right", fill = "NA"),
+         prec_sq_rm10 = prec_rm10^2,
+         
+         dday0_10_rm11 = roll_mean(dday0_10_lag1, 11, align = "right", fill = "NA"),
+         dday10_30_rm11 = roll_mean(dday10_30_lag1, 11, align = "right", fill = "NA"),
+         dday30_rm11 = roll_mean(dday30_lag1, 11, align = "right", fill = "NA"),
+         prec_rm11 = roll_mean(prec_lag1, 11, align = "right", fill = "NA"),
+         prec_sq_rm11 = prec_rm11^2,
+         
+         dday0_10_rm12 = roll_mean(dday0_10_lag1, 12, align = "right", fill = "NA"),
+         dday10_30_rm12 = roll_mean(dday10_30_lag1, 12, align = "right", fill = "NA"),
+         dday30_rm12 = roll_mean(dday30_lag1, 12, align = "right", fill = "NA"),
+         prec_rm12 = roll_mean(prec_lag1, 12, align = "right", fill = "NA"),
+         prec_sq_rm12 = prec_rm12^2,
+         
+         dday0_10_rm = roll_mean(dday0_10_lag1, 21, align = "right", fill = "NA"),
+         dday10_30_rm = roll_mean(dday10_30_lag1, 27, align = "right", fill = "NA"),
+         dday30_rm = roll_mean(dday30_lag1, 20, align = "right", fill = "NA"),
+         prec_rm = roll_mean(prec_lag1, 16, align = "right", fill = "NA"),
+         prec_sq_rm = prec_rm12^2) %>%  
     ungroup()
 
 
@@ -101,6 +107,7 @@ dd_temp <- function(x, prec){
   # Select columns
   pdat <- select(pdat, fips, year, z_corn_a, z_cotton_a, z_hay_a, z_soybean_a, z_wheat_a,
                  dday0_10, dday10_30, dday30, prec, prec_sq, 
+                 dday0_10_rm, dday10_30_rm, dday30_rm, prec_rm, prec_sq_rm,
                  dday0_10_rm10, dday10_30_rm10, dday30_rm10, prec_rm10, prec_sq_rm10,
                  dday0_10_rm11, dday10_30_rm11, dday30_rm11, prec_rm11, prec_sq_rm11,
                  dday0_10_rm12, dday10_30_rm12, dday30_rm12, prec_rm12, prec_sq_rm12,

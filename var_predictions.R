@@ -116,7 +116,8 @@ dd <- d %>%
   group_by(dep, lag) %>% 
   summarise(mean_rmse = mean(rmse))
    
-ddd <- dd %>% group_by(dep) %>% top_n(n = 5, -mean_rmse) %>% arrange(mean_rmse)
+ddd <- dd %>% group_by(dep) %>% top_n(n = 1, -mean_rmse) %>% arrange(mean_rmse)
+ddd
 
 head(dd)
 
