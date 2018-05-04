@@ -574,8 +574,11 @@ cropdat <- as.data.frame(cropdat)
 
 cropdat$trend_lat <- cropdat$trend*cropdat$lat
 cropdat$trend_long <- cropdat$trend*cropdat$long
-cropdat$trend_sq_long <- cropdat$trend_sq*cropdat$long
-cropdat$trend_sq_lat <- cropdat$trend_sq*cropdat$lat
+cropdat$trend_sq_long <- cropdat$trend_lat^2
+cropdat$trend_sq_lat <- cropdat$trend_long^2
+
+cropdat$trend_lat_long <- cropdat$trend*(cropdat$lat*cropdat$long)
+cropdat$trend_sq_lat_long <- cropdat$trend_lat_long^2
 
 # Save cropdat
 
@@ -643,7 +646,7 @@ cropdat <- fulldat
 
 fit<- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
              dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
-             trend_lat + trend_long + trend_sq_lat + trend_sq_long
+             trend_lat_long + trend_sq_lat_long
            | fips | 0 | state, data = cropdat, weights = cropdat$acres)
 summary(fit)
 
@@ -655,13 +658,15 @@ test <- filter(cropdat, ln_rev > 0 )
 
 fit<- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
              dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
-             trend_lat + trend_long + trend_sq_lat + trend_sq_long
+             trend_lat_long 
            | fips | 0 | state, data = cropdat, weights = cropdat$w)
 summary(fit)
 
 test2 <- test %>% 
   group_by(fips) %>% 
   mutate(dday30_rm10 - mean(dday30_rm10, na.rm = TRUE))
+fit2 <- felm(ln_rev ~ trend_lat + trend_long + trend_sq_lat + trend_sq_long | fips, data = cropdat)
+fit3 <- cropdat$ln_rev - fit2$residuals
 
-ggplot(test2, aes(y=ln_rev, x=dday30_rm10)) + geom_point() + geom_smooth(method  = 'lm')
+ggplot(cropdat, aes(y=fit3, x=dday30_rm10)) + geom_point() + geom_smooth(method  = 'lm')
 
