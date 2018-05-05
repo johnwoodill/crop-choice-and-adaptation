@@ -388,32 +388,32 @@ dd_dat <- dd_dat %>%
          prec_rm12 = roll_mean(prec_lag1, 12, align = "right", fill = "NA"),
          prec_sq_rm12 = prec_rm12^2,
          
-         dday0_10_rm = roll_mean(dday0_10_lag1, 21, align = "right", fill = "NA"),
-         dday10_30_rm = roll_mean(dday10_30_lag1, 27, align = "right", fill = "NA"),
-         dday30_rm = roll_mean(dday30_lag1, 20, align = "right", fill = "NA"),
-         prec_rm = roll_mean(prec_lag1, 16, align = "right", fill = "NA"),
+         dday0_10_rm = roll_mean(dday0_10_lag1, 30, align = "right", fill = "NA"),
+         dday10_30_rm = roll_mean(dday10_30_lag1, 10, align = "right", fill = "NA"),
+         dday30_rm = roll_mean(dday30_lag1, 7, align = "right", fill = "NA"),
+         prec_rm = roll_mean(prec_lag1, 9, align = "right", fill = "NA"),
          prec_sq_rm = prec_rm12^2) %>%  
   
   ungroup()
 
 # Lag variables
-# for (n in 1:30){
-#   lab1 <- paste0("dday0_10_lag", n)
-#   lab2 <- paste0("dday10_30_lag", n)
-#   lab3 <- paste0("dday30_lag", n)
-#   lab4 <- paste0("prec_lag", n)
-#   lab5 <- paste0("prec_sq_lag", n)
-#   
-#   
-#   dd_dat <- dd_dat %>% 
-#     group_by(fips) %>% 
-#     arrange(year) %>% 
-#     mutate(!!lab1 := lag(dday0_10, n),
-#            !!lab2 := lag(dday10_30, n),
-#            !!lab3 := lag(dday30, n),
-#            !!lab4 := lag(prec, n),
-#            !!lab5 := lag(prec, n)^2)
-# }
+for (n in 1:30){
+  lab1 <- paste0("dday0_10_lag", n)
+  lab2 <- paste0("dday10_30_lag", n)
+  lab3 <- paste0("dday30_lag", n)
+  lab4 <- paste0("prec_lag", n)
+  lab5 <- paste0("prec_sq_lag", n)
+
+
+  dd_dat <- dd_dat %>%
+    group_by(fips) %>%
+    arrange(year) %>%
+    mutate(!!lab1 := lag(dday0_10, n),
+           !!lab2 := lag(dday10_30, n),
+           !!lab3 := lag(dday30, n),
+           !!lab4 := lag(prec, n),
+           !!lab5 := lag(prec, n)^2)
+}
 
 # Decade averages
 dd_dat$ten <- dd_dat$year - (dd_dat$year %% 10)
@@ -522,10 +522,10 @@ is.na(cropdat) <- do.call(cbind, lapply(cropdat, is.infinite))
 
 # Rolling mean through acres to smooth out weights
 cropdat <- cropdat %>% 
-  arrange(year) %>% 
   group_by(fips) %>% 
-  mutate(w = rollmean(acres, k = 3, fill = acres),
-         w = abs(w))
+  arrange(year) %>% 
+  # mutate(w = mean(rev, na.rm = TRUE))
+  mutate(w = rollapply(acres, 2, mean, partial = TRUE))
 
 # Build trends
 cropdat$trend <- cropdat$year - (min(cropdat$year) - 1)
@@ -574,11 +574,8 @@ cropdat <- as.data.frame(cropdat)
 
 cropdat$trend_lat <- cropdat$trend*cropdat$lat
 cropdat$trend_long <- cropdat$trend*cropdat$long
-cropdat$trend_sq_long <- cropdat$trend_lat^2
-cropdat$trend_sq_lat <- cropdat$trend_long^2
-
-cropdat$trend_lat_long <- cropdat$trend*(cropdat$lat*cropdat$long)
-cropdat$trend_sq_lat_long <- cropdat$trend_lat_long^2
+cropdat$trend_sq_long <- cropdat$trend_long^2
+cropdat$trend_sq_lat <- cropdat$trend_lat^2
 
 # Save cropdat
 
@@ -586,81 +583,106 @@ cropdat <- filter(cropdat, abs(long) <= 100 )
 cropdat$state <- factor(cropdat$state)
 
 # Instrument variable weather using climate
-# source('R/iv_temp.R')
-# 
-# dday0_10_fit_iv <- iv_temp('dday0_10', 27, cropdat)
-# dday10_30_fit_iv <- iv_temp('dday10_30', 21, cropdat)
-# dday30_fit_iv <- iv_temp('dday30', 20, cropdat)
-# prec_fit_iv <- iv_temp('prec', 16, cropdat)
-#   
-# dday0_10_fit_10 <- iv_temp('dday0_10', 10, cropdat)
-# dday10_30_fit_10 <- iv_temp('dday10_30', 10, cropdat)
-# dday30_fit_10 <- iv_temp('dday30', 10, cropdat)
-# prec_fit_10 <- iv_temp('prec', 10, cropdat)
-# 
-# dday0_10_fit_20 <- iv_temp('dday0_10', 20, cropdat)
-# dday10_30_fit_20 <- iv_temp('dday10_30', 20, cropdat)
-# dday30_fit_20 <- iv_temp('dday30', 20, cropdat)
-# prec_fit_20 <- iv_temp('prec', 20, cropdat)
-# 
-# dday0_10_fit_30 <- iv_temp('dday0_10', 30, cropdat)
-# dday10_30_fit_30 <- iv_temp('dday10_30', 30, cropdat)
-# dday30_fit_30 <- iv_temp('dday30', 30, cropdat)
-# prec_fit_30 <- iv_temp('prec', 30, cropdat)
+source('R/iv_temp.R')
+
+dday0_10_fit_iv <- iv_temp('dday0_10', 27, cropdat)
+dday10_30_fit_iv <- iv_temp('dday10_30', 21, cropdat)
+dday30_fit_iv <- iv_temp('dday30', 20, cropdat)
+prec_fit_iv <- iv_temp('prec', 16, cropdat)
+
+dday0_10_fit_10 <- iv_temp('dday0_10', 10, cropdat)
+dday10_30_fit_10 <- iv_temp('dday10_30', 10, cropdat)
+dday30_fit_10 <- iv_temp('dday30', 10, cropdat)
+prec_fit_10 <- iv_temp('prec', 10, cropdat)
+
+dday0_10_fit_20 <- iv_temp('dday0_10', 20, cropdat)
+dday10_30_fit_20 <- iv_temp('dday10_30', 20, cropdat)
+dday30_fit_20 <- iv_temp('dday30', 20, cropdat)
+prec_fit_20 <- iv_temp('prec', 20, cropdat)
+
+dday0_10_fit_30 <- iv_temp('dday0_10', 30, cropdat)
+dday10_30_fit_30 <- iv_temp('dday10_30', 30, cropdat)
+dday30_fit_30 <- iv_temp('dday30', 30, cropdat)
+prec_fit_30 <- iv_temp('prec', 30, cropdat)
 
 # Add IV to data.frame
-# cropdat$dday0_10_iv <- dday0_10_fit_iv
-# cropdat$dday10_30_iv <- dday10_30_fit_iv
-# cropdat$dday30_iv <- dday30_fit_iv
-# cropdat$prec_iv <- prec_fit_iv
-# cropdat$prec_sq_iv <- prec_fit_iv^2
-# 
-# cropdat$dday0_10_iv10 <- dday0_10_fit_10
-# cropdat$dday10_30_iv10 <- dday10_30_fit_10
-# cropdat$dday30_iv10 <- dday30_fit_10
-# cropdat$prec_iv10 <- prec_fit_10
-# cropdat$prec_sq_iv10 <- prec_fit_10^2
-# 
-# cropdat$dday0_10_iv20 <- dday0_10_fit_20
-# cropdat$dday10_30_iv20 <- dday10_30_fit_20
-# cropdat$dday30_iv20 <- dday30_fit_20
-# cropdat$prec_iv20 <- prec_fit_20
-# cropdat$prec_sq_iv20 <- prec_fit_20^2
-# 
-# cropdat$dday0_10_iv30 <- dday0_10_fit_30
-# cropdat$dday10_30_iv30 <- dday10_30_fit_30
-# cropdat$dday30_iv30 <- dday30_fit_30
-# cropdat$prec_iv30 <- prec_fit_30
-# cropdat$prec_sq_iv30 <- prec_fit_30^2
+cropdat$dday0_10_iv <- dday0_10_fit_iv
+cropdat$dday10_30_iv <- dday10_30_fit_iv
+cropdat$dday30_iv <- dday30_fit_iv
+cropdat$prec_iv <- prec_fit_iv
+cropdat$prec_sq_iv <- prec_fit_iv^2
+
+cropdat$dday0_10_iv10 <- dday0_10_fit_10
+cropdat$dday10_30_iv10 <- dday10_30_fit_10
+cropdat$dday30_iv10 <- dday30_fit_10
+cropdat$prec_iv10 <- prec_fit_10
+cropdat$prec_sq_iv10 <- prec_fit_10^2
+
+cropdat$dday0_10_iv20 <- dday0_10_fit_20
+cropdat$dday10_30_iv20 <- dday10_30_fit_20
+cropdat$dday30_iv20 <- dday30_fit_20
+cropdat$prec_iv20 <- prec_fit_20
+cropdat$prec_sq_iv20 <- prec_fit_20^2
+
+cropdat$dday0_10_iv30 <- dday0_10_fit_30
+cropdat$dday10_30_iv30 <- dday10_30_fit_30
+cropdat$dday30_iv30 <- dday30_fit_30
+cropdat$prec_iv30 <- prec_fit_30
+cropdat$prec_sq_iv30 <- prec_fit_30^2
 
 # Remove lag columns
-# cropdat <- cropdat[, -grep('lag', colnames(cropdat))]
+cropdat <- cropdat[, -grep('lag', colnames(cropdat))]
 
 # Fix outliers
 cropdat$cotton_yield[which((cropdat$cotton_yield)>3000)] <- 366
+
+# Quadratic State-by-year time trends
+# Linear
+state_trends <- as.data.frame(dummyCreator(cropdat$state, "trend1"))
+state_trends$trend <- cropdat$trend
+state_trends <- state_trends[, 1:length(state_trends)]*state_trends$trend
+state_trends$trend <- NULL
+
+# Quadratic
+state_trends_sq <- as.data.frame(dummyCreator(cropdat$state, "trend2"))
+state_trends_sq$trend_sq <- cropdat$trend^2
+state_trends_sq <- state_trends_sq[, 1:length(state_trends_sq)]*state_trends_sq$trend_sq
+state_trends_sq$trend_sq <- NULL
+
+cropdat <- cbind(cropdat, state_trends, state_trends_sq)
+
+trends <- cropdat[, c(grep("trend1", names(cropdat)), grep("trend2", names(cropdat)))]        
+
+paste(names(trends), collapse = " + ")
+
+cropdat <- cropdat %>%
+  group_by(year) %>%
+  mutate(acres_w = acres/mean(acres, na.rm = TRUE))
+
+cropdat$dday0_10w <- cropdat$dday0_10_rm*cropdat$acres_w
+cropdat$dday10_30w <- cropdat$dday10_30_rm*cropdat$acres_w
+cropdat$dday30w <- cropdat$dday30_rm*cropdat$acres_w
+
+cropdat$dday0_10_rmw <- cropdat$dday0_10_rm*cropdat$acres_w
+cropdat$dday10_30_rmw <- cropdat$dday10_30_rm*cropdat$acres_w
+cropdat$dday30_rmw <- cropdat$dday30_rm*cropdat$acres_w
 
 saveRDS(cropdat, "data/full_ag_data.rds")
 fulldat <- readRDS("data/full_ag_data.rds")
 
 cropdat <- fulldat
 
-fit<- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-             dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
-             trend_lat_long + trend_sq_lat_long
-           | fips | 0 | state, data = cropdat, weights = cropdat$acres)
+
+
+
+fit <- felm(ln_rev ~ dday0_10w + dday10_30w + dday30w + prec + prec_sq + 
+              state:trend +
+             dday0_10_rmw + dday10_30_rmw + dday30_rmw + prec_rm + prec_sq_rm
+           | fips | 0 | state, data = cropdat)
 summary(fit)
 
 sqrt(mean(fit$residuals^2))
 
-ggplot(fulldat, aes(factor(year), ln_rev)) + geom_boxplot()
-
-test <- filter(cropdat, ln_rev > 0 )
-
-fit<- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-             dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
-             trend_lat_long 
-           | fips | 0 | state, data = cropdat, weights = cropdat$w)
-summary(fit)
 
 test2 <- test %>% 
   group_by(fips) %>% 

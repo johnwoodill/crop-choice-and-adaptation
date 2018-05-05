@@ -75,14 +75,14 @@ for (j in 1:6){
   test <- filter(data, year %in% test_years)
   train <- filter(data, year %!in% test_years)
   
-  form1 <- as.formula(paste0(dep_var, "~ trend_lat + trend_long + trend_sq_lat + trend_sq_long  | fips | 0 | 0"))
+  form1 <- as.formula(paste0(dep_var, "~ trend + trend_sq  | fips | 0 | 0"))
   form2 <- as.formula(paste0(dep_var, "~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-                trend_lat + trend_long + trend_sq_lat + trend_sq_long  | fips | 0 | 0"))
-  form3 <- as.formula(paste0(dep_var, "~   dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 + 
-                trend_lat + trend_long + trend_sq_lat + trend_sq_long  | fips | 0 | 0"))
+                trend + trend_sq  | fips | 0 | 0"))
+  form3 <- as.formula(paste0(dep_var, "~   dday0_10_rm + dday10_30_rm + dday30_rm + prec_rm + prec_sq_rm + 
+                trend + trend_sq  | fips | 0 | 0"))
   form4 <- as.formula(paste0(dep_var, "~  dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-                    dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
-                trend_lat + trend_long + trend_sq_lat + trend_sq_long  | fips | 0 | 0"))
+                    dday0_10_rm + dday10_30_rm + dday30_rm + prec_rm + prec_sq_rm +
+                trend + trend_sq  | fips | 0 | 0"))
   
   # Baseline
   mod1 <- felm(form1, data = train)
@@ -207,14 +207,14 @@ for (j in 1:6){
   # dep_var <- test$ln_corn_mrev
   train <- filter(data, year %!in% test_years)
   
-  form1 <- as.formula(paste0(dep_var, "~ trend_lat + trend_long + trend_sq_lat + trend_sq_long  | fips | 0 | 0"))
+  form1 <- as.formula(paste0(dep_var, "~ trend + trend_sq  | fips | 0 | 0"))
   form2 <- as.formula(paste0(dep_var, "~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-                trend_lat + trend_long + trend_sq_lat + trend_sq_long  | fips | 0 | 0"))
+                trend + trend_sq  | fips | 0 | 0"))
   form3 <- as.formula(paste0(dep_var, "~   dday0_10_iv + dday10_30_iv + dday30_iv + prec_iv + prec_sq_iv + 
-                trend_lat + trend_long + trend_sq_lat + trend_sq_long  | fips | 0 | 0"))
+                trend + trend_sq  | fips | 0 | 0"))
   form4 <- as.formula(paste0(dep_var, "~  dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
                     dday0_10_iv + dday10_30_iv + dday30_iv + prec_iv + prec_sq_iv +
-                trend_lat + trend_long + trend_sq_lat + trend_sq_long  | fips | 0 | 0"))
+                trend + trend_sq  | fips | 0 | 0"))
   
   # Baseline
   mod1 <- felm(form1, data = train)
@@ -339,14 +339,14 @@ for (j in 1:6){
   test <- filter(data, year %in% test_years)
   train <- filter(data, year %!in% test_years)
   
-  form1 <- as.formula(paste0(dep_var, "~ trend_lat + trend_long + trend_sq_lat + trend_sq_long  | fips | 0 | 0"))
+  form1 <- as.formula(paste0(dep_var, "~ trend + trend_sq  | fips | 0 | 0"))
   form2 <- as.formula(paste0(dep_var, "~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-                trend_lat + trend_long + trend_sq_lat + trend_sq_long  | fips | 0 | 0"))
+                trend + trend_sq  | fips | 0 | 0"))
   form3 <- as.formula(paste0(dep_var, "~ dday0_10_davg + dday10_30_davg + dday30_davg + prec_davg + prec_sq_davg + 
-                trend_lat + trend_long + trend_sq_lat + trend_sq_long  | fips | 0 | 0"))
+                trend + trend_sq  | fips | 0 | 0"))
   form4 <- as.formula(paste0(dep_var, "~  dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
                     dday0_10_davg + dday10_30_davg + dday30_davg + prec_davg + prec_sq_davg +
-                trend_lat + trend_long + trend_sq_lat + trend_sq_long  | fips | 0 | 0"))
+                trend + trend_sq  | fips | 0 | 0"))
   
   # Baseline
   mod1 <- felm(form1, data = train)
@@ -602,23 +602,23 @@ ggplot(test2, aes(dep_var, abs(change), fill = climate_var)) +
 #   
 #   # Climate
 #   
-#   mod1 <- ln_rev_corn ~ dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
+#   mod1 <- ln_rev_corn ~ dday0_10_rm + dday10_30_rm + dday30_rm + prec_rm + prec_sq_rm +
 #     trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
 #   
 #   
-#   mod2 <- ln_rev_cotton ~ dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
+#   mod2 <- ln_rev_cotton ~ dday0_10_rm + dday10_30_rm + dday30_rm + prec_rm + prec_sq_rm +
 #   trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
 #    
 #   
-#   mod3 <- ln_rev_hay ~ dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
+#   mod3 <- ln_rev_hay ~ dday0_10_rm + dday10_30_rm + dday30_rm + prec_rm + prec_sq_rm +
 #   trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
 #   
 #   
-#   mod4 <- ln_rev_soybean ~ dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
+#   mod4 <- ln_rev_soybean ~ dday0_10_rm + dday10_30_rm + dday30_rm + prec_rm + prec_sq_rm +
 #   trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
 #   
 #   
-#   mod5 <- ln_rev_wheat ~ dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
+#   mod5 <- ln_rev_wheat ~ dday0_10_rm + dday10_30_rm + dday30_rm + prec_rm + prec_sq_rm +
 #   trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
 #   
 #     climate <- systemfit(list(corn = mod1, 
@@ -630,27 +630,27 @@ ggplot(test2, aes(dep_var, abs(change), fill = climate_var)) +
 #   # Weather and Climate
 #   
 #   mod1 <- ln_rev_corn ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
-#     dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
+#     dday0_10_rm + dday10_30_rm + dday30_rm + prec_rm + prec_sq_rm +
 #     trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
 #   
 #   
 #   mod2 <- ln_rev_cotton ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
-#     dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
+#     dday0_10_rm + dday10_30_rm + dday30_rm + prec_rm + prec_sq_rm +
 #   trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
 #    
 #   
 #   mod3 <- ln_rev_hay ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
-#     dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
+#     dday0_10_rm + dday10_30_rm + dday30_rm + prec_rm + prec_sq_rm +
 #   trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
 #   
 #   
 #   mod4 <- ln_rev_soybean ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
-#     dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
+#     dday0_10_rm + dday10_30_rm + dday30_rm + prec_rm + prec_sq_rm +
 #   trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
 #   
 #   
 #   mod5 <- ln_rev_wheat ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
-#     dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
+#     dday0_10_rm + dday10_30_rm + dday30_rm + prec_rm + prec_sq_rm +
 #   trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
 #   
 #     weather_climate <- systemfit(list(corn = mod1, 

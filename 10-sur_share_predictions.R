@@ -30,6 +30,7 @@ p3 <- readRDS("data/degree_day_changes/panel_adapt_regression_data_3C.rds")
 p4 <- readRDS("data/degree_day_changes/panel_adapt_regression_data_4C.rds")
 p5 <- readRDS("data/degree_day_changes/panel_adapt_regression_data_5C.rds")
 
+
 # Get exact colnames
 p0 <- select(p0, names(p1))
 
@@ -60,8 +61,8 @@ newdata_list_dm <- list(p0 = p0_dm,
                      p5 = p5_dm)
 
 
-ten_climate_terms_v = c("dday0_10_rm10", "dday10_30_rm10", "dday30_rm10", 
-                        "prec_rm10", "prec_sq_rm10")
+ten_climate_terms_v = c("dday0_10_rmw", "dday10_30_rmw", "dday30_rmw", 
+                        "prec_rm", "prec_sq_rm")
 twenty_climate_terms_v = c("dday0_10_rm11", "dday10_30_rm11", "dday30_rm11", 
                            "prec_rm11", "prec_sq_rm11")
 thirty_climate_terms_v = c("dday0_10_rm12", "dday10_30_rm12", "dday30_rm12", 

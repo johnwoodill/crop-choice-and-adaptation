@@ -5,12 +5,27 @@ library(noncensus)
 library(RcppRoll)
 setwd("/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/")
 
+dummyCreator <- function(invec, prefix = NULL) {
+     L <- length(invec)
+     ColNames <- sort(unique(invec))
+     M <- matrix(0L, ncol = length(ColNames), nrow = L,
+                 dimnames = list(NULL, ColNames))
+     M[cbind(seq_len(L), match(invec, ColNames))] <- 1L
+     if (!is.null(prefix)) colnames(M) <- paste(prefix, colnames(M), sep = "_")
+     M
+}
+
+
 # Crop data
 cropdat <- readRDS("data/full_ag_data.rds")
 depvar <- cropdat[, c("z_corn_a", "z_cotton_a", "z_hay_a", "z_soybean_a", "z_wheat_a")]
 cropdat$acres <- rowSums(cropdat[, c("corn_grain_a", "cotton_a", "hay_a", "soybean_a", "wheat_a")], na.rm = TRUE)
 cropdat <- select(cropdat, year, fips, state, acres)
 
+cropdat <- cropdat %>%
+  group_by(year) %>%
+  mutate(acres_w = acres/mean(acres, na.rm = TRUE))
+  
 # IV predictions
 # acres_climate_iv <- readRDS("models/acres_climate_iv.rds")
 
@@ -91,7 +106,13 @@ dd_temp <- function(x, prec){
          prec_sq_rm = prec_rm12^2) %>%  
     ungroup()
 
-
+  pdat$dday0_10_rmw <- pdat$dday0_10_rm*pdat$acres_w
+  pdat$dday10_30_rmw <- pdat$dday10_30_rm*pdat$acres_w
+  pdat$dday30_rmw <- pdat$dday30_rm*pdat$acres_w
+  
+  pdat$dday0_10w <- pdat$dday0_10_rm*pdat$acres_w
+  pdat$dday10_30w <- pdat$dday10_30_rm*pdat$acres_w
+  pdat$dday30w <- pdat$dday30_rm*pdat$acres_w
 
   pdat <- filter(pdat, year >= 1950 & year <= 2010)
   pdat$trend <- pdat$year - (min(pdat$year) - 1)
@@ -105,13 +126,33 @@ dd_temp <- function(x, prec){
   pdat <- cbind(pdat, depvar)
   
   # Select columns
-  pdat <- select(pdat, fips, year, z_corn_a, z_cotton_a, z_hay_a, z_soybean_a, z_wheat_a,
+  pdat <- select(pdat, state, fips, year, z_corn_a, z_cotton_a, z_hay_a, z_soybean_a, z_wheat_a,
                  dday0_10, dday10_30, dday30, prec, prec_sq, 
                  dday0_10_rm, dday10_30_rm, dday30_rm, prec_rm, prec_sq_rm,
+                 dday0_10_rmw, dday10_30_rmw, dday30_rmw,
+                 dday0_10w, dday10_30w, dday30w,
                  dday0_10_rm10, dday10_30_rm10, dday30_rm10, prec_rm10, prec_sq_rm10,
                  dday0_10_rm11, dday10_30_rm11, dday30_rm11, prec_rm11, prec_sq_rm11,
                  dday0_10_rm12, dday10_30_rm12, dday30_rm12, prec_rm12, prec_sq_rm12,
                  trend, trend_sq, trend_lat, trend_sq_lat, trend_long, trend_sq_long)
+  
+  # Quadratic State-by-year time trends
+  # Linear
+  state_trends <- as.data.frame(dummyCreator(pdat$state, "trend1"))
+  state_trends$trend <- pdat$trend
+  state_trends <- state_trends[, 1:length(state_trends)]*state_trends$trend
+  state_trends$trend <- NULL
+  
+  # Quadratic
+  state_trends_sq <- as.data.frame(dummyCreator(pdat$state, "trend2"))
+  state_trends_sq$trend_sq <- pdat$trend^2
+  state_trends_sq <- state_trends_sq[, 1:length(state_trends_sq)]*state_trends_sq$trend_sq
+  state_trends_sq$trend_sq <- NULL
+  
+  pdat <- cbind(pdat, state_trends, state_trends_sq)
+  
+  pdat$state <- NULL
+
   # pdat <- cbind(pdat, acres_climate_iv)
   
   return(pdat)

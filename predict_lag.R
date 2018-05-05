@@ -5,6 +5,7 @@ library(ggthemes)
 
 # Load data
 regdat <- readRDS("data/full_weather_data.rds")
+regdat <- readRDS("data/full_ag_data.rds")
 regdat <- regdat %>% 
   group_by(fips) %>% 
   arrange(year) %>% 
@@ -23,7 +24,7 @@ regdat$trend_sq_lat <- regdat$trend_sq*regdat$lat
 
 # View(regdat)
 # Loop through 1 to 50 year right rolling mean
-for (i in 1:50){
+for (i in 1:30){
   
   # Create custom col labels
   lab1 <- paste0("dday0_10_rm_", i)
@@ -48,11 +49,11 @@ for (i in 1:50){
 # data.frame to store RMSE
 # outdat <- data.frame(window = c(1:50), rmse = 0, coef =0 )
 outdat <- data.frame()
-for (i in 1:50){ # Formula
-  form1 <- as.formula(paste0("dday0_10 ~ dday0_10_rm_", i, " | fips | 0 | fips")) # Regression
-  form2 <- as.formula(paste0("dday10_30 ~ dday10_30_rm_", i, " | fips | 0 | fips")) # Regression
-  form3 <- as.formula(paste0("dday30 ~ dday30_rm_", i, " | fips | 0 | fips")) # Regression
-  form4 <- as.formula(paste0("prec ~ prec_rm_", i, " | fips | 0 | fips")) # Regression
+for (i in 1:30){ # Formula
+  form1 <- as.formula(paste0("dday0_10 ~ dday0_10_rm_", i, " + state:trend  | fips | 0 | fips")) # Regression
+  form2 <- as.formula(paste0("dday10_30 ~ dday10_30_rm_", i, "+ state:trend  | fips | 0 | fips")) # Regression
+  form3 <- as.formula(paste0("dday30 ~ dday30_rm_", i, "+ state:trend | fips | 0 | fips")) # Regression
+  form4 <- as.formula(paste0("prec ~ prec_rm_", i, "+ state:trend | fips | 0 | fips")) # Regression
   
   
   #  form <- as.formula(paste0('I(dday30 - dday30_rm_', i,") ~ -1 | fips")) # Regression
@@ -69,10 +70,10 @@ for (i in 1:50){ # Formula
                                sqrt(mean(mod2$residuals^2)),
                                sqrt(mean(mod3$residuals^2)),
                                sqrt(mean(mod4$residuals^2))),
-                      coef = c(mod1$coefficients,
-                               c(mod2$coefficients),
-                               c(mod3$coefficients),
-                               c(mod4$coefficients)),
+                      coef = c(mod1$coefficients[1],
+                               c(mod2$coefficients[1]),
+                               c(mod3$coefficients[1]),
+                               c(mod4$coefficients[1])),
                       se = c(mod1$cse,
                              mod2$cse,
                              mod3$cse,
@@ -99,6 +100,8 @@ ggplot(outdat, aes(window, rmse)) +
   facet_wrap(~var, scales = "free")
 ggsave("figures/predict_lag_rmse.pdf", width = 6, height = 4)
 
+outdat %>% group_by(var) %>% arrange(rmse) %>% slice(1)
+
 ggplot(outdat, aes(window, coef)) + 
   geom_point(size = .8) +
   geom_errorbar(aes(ymin = (coef - se*1.96), ymax = (coef + se*1.96)), width = 0.1, alpha = 0.5) +
@@ -117,7 +120,7 @@ ggsave("figures/predict_lag_coef.pdf", width = 6, height = 4)
 
 # Differences
 outdat <- data.frame()
-for (i in 1:50){ # Formula
+for (i in 1:30){ # Formula
   form1 <- as.formula(paste0("I(dday0_10 - dday0_10_rm_", i,") ~ -1 | fips | 0 | fips")) # Regression
   form2 <- as.formula(paste0("I(dday10_30 - dday10_30_rm_", i,") ~ -1 | fips | 0 | fips")) # Regression
   form3 <- as.formula(paste0("I(dday30 - dday30_rm_", i, ") ~ -1 | fips | 0 | fips")) # Regression

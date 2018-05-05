@@ -1,3 +1,8 @@
+
+
+
+
+
 # install.packages("dplyr")
 # install.packages("tidyr")
 #
@@ -36,7 +41,7 @@ source("R/main_plot_bs.R")
 cropdat <- readRDS("data/full_ag_data.rds")
 
 # Aggregate revenue per acre (Total-effect)
-rev_crop_pred <- readRDS("data/rev_crop_predictions.rds")
+rev_crop_pred <- readRDS("data/rev_crop_perc_change.rds")
 
 # SUR Crop (Individual Crop revenue effect)
 sur_rev <- readRDS("data/sur_rev_predictions.rds")
@@ -72,10 +77,10 @@ sur_rev$wheat_rev <- ifelse(sur_rev$wheat_rev < 0, 0, sur_rev$wheat_rev)
 
 #----------------------------------------------------------------------------------------------
 #Aggregate revenue per acre as.character
-rev_crop_pred$fips <- cropdat$fips
-
-rev_crop_pred$rev_max <- rev_crop_pred$rev.pred + 1.96*rev_crop_pred$rev.se
-rev_crop_pred$rev_min <- rev_crop_pred$rev.pred - 1.96*rev_crop_pred$rev.se
+# rev_crop_pred$fips <- cropdat$fips
+# 
+# rev_crop_pred$rev_max <- rev_crop_pred$rev.pred + 1.96*rev_crop_pred$rev.se
+# rev_crop_pred$rev_min <- rev_crop_pred$rev.pred - 1.96*rev_crop_pred$rev.se
 
 # Bootstrap standard errors
 # a <- bs_pdat1(rev_crop_pred, 
@@ -108,27 +113,27 @@ bs_se_pdat1 <- structure(list(temp = c(0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 2,
 
 
 
-pdat1 <- rev_crop_pred %>% 
-  group_by(fips, effect, interval, temp) %>%
-  summarise_all(mean) %>% 
-  group_by(effect, interval, temp) %>% 
-  summarise_all(mean) %>%
-  left_join(bs_se_pdat1, by = c("effect", "interval", "temp")) %>% 
-  mutate(rev_max = rev.pred + 1.96*se,
-         rev_min = rev.pred - 1.96*se) %>% 
-  group_by(effect, interval) %>%
-  mutate(change = 100*(rev.pred - first(rev.pred))/first(rev.pred),
-         change_max = 100*(rev_max - first(rev.pred))/first(rev.pred),
-         change_min = 100*(rev_min - first(rev.pred))/first(rev.pred)) %>% 
-  select(temp, interval, effect, change, change_min, change_max) %>% 
-  ungroup()
+# pdat1 <- rev_crop_pred %>% 
+#   group_by(fips, effect, interval, temp) %>%
+#   summarise_all(mean) %>% 
+#   group_by(effect, interval, temp) %>% 
+#   summarise_all(mean) %>%
+#   left_join(bs_se_pdat1, by = c("effect", "interval", "temp")) %>% 
+#   mutate(rev_max = rev.pred + 1.96*se,
+#          rev_min = rev.pred - 1.96*se) %>% 
+#   group_by(effect, interval) %>%
+#   mutate(change = 100*(rev.pred - first(rev.pred))/first(rev.pred),
+#          change_max = 100*(rev_max - first(rev.pred))/first(rev.pred),
+#          change_min = 100*(rev_min - first(rev.pred))/first(rev.pred)) %>% 
+#   select(temp, interval, effect, change, change_min, change_max) %>% 
+#   ungroup()
+# 
+# head(pdat1)
 
-head(pdat1)
 
-
-
+pdat1 <- rev_crop_pred
 ggplot(pdat1, aes(temp, change, group = effect)) + 
-  geom_ribbon(aes(ymax = change_max, ymin = change_min, x = temp), fill = "#C0CCD9", alpha = 0.5 ) +
+  # geom_ribbon(aes(ymax = change_max, ymin = change_min, x = temp), fill = "#C0CCD9", alpha = 0.5 ) +
   geom_line(aes(color = effect)) +
   geom_point(aes(color = effect), size = 0.5) +
   theme_tufte(base_size = 10) +
@@ -192,7 +197,8 @@ pdat2_1 <- pdat2; pdat2_1$interval = "10-year"
 pdat2_2 <- pdat2; pdat2_2$interval = "11-year"
 pdat2_3 <- pdat2; pdat2_3$interval = "12-year"
 
-pdat2 <- rbind(pdat2_1, pdat2_2, pdat2_3)
+# pdat2 <- rbind(pdat2_1, pdat2_2, pdat2_3)
+pdat2 <- pdat2_1
 pdat2 <- select(pdat2, temp, interval, effect, change, change_min, change_max)
 
 ggplot(pdat2, aes(temp, change, color = interval)) + geom_line() 
@@ -382,84 +388,55 @@ cdat3 <- cdat3 %>%
   select(temp, interval, effect, change, change_min, change_max) %>% 
   ungroup()
 
-pdat3 <- rbind(cdat1, cdat2, cdat3)
-
+# pdat3 <- rbind(cdat1, cdat2, cdat3)
+pdat3 <- cdat1
 
 
 ggplot(pdat3, aes(temp, change, color = interval)) + geom_line()
 
+pdat1 <- rev_crop_pred
+pdat1 <- ungroup(select(pdat1, temp, interval, effect, change))
+pdat1$effect <- factor(pdat1$effect, levels = c("Weather-Climate-effect", "Weather-effect"),
+                       labels = c("Weather-climate-effect", "Weather-effect"))
+pdat2 <- select(pdat2, temp, interval, effect, change)
+pdat3 <- select(pdat3, temp, interval, effect, change)
+
 pdat1$panel = 2
 pdat2$panel = 1
 pdat3$panel = 1
-
 pdat <- rbind(pdat1, pdat2, pdat3)
+
+pdat <- filter(pdat, interval == "10-year")
 
 # pdat$
 
 ggplot(pdat, aes(temp, change, color = effect)) + geom_line() + 
-  geom_point(aes(color = effect), size = 0.25) +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "grey", alpha = 0.5) +
-  # geom_ribbon(aes(ymax = change_max, ymin = change_min, x = temp, linetype = NA), fill = "#C0CCD9", alpha = 0.5) +
-  theme_tufte(base_size = 10) +
-  ylab("% Change in Revenue/Acre") +
-  xlab("Change in Temperature (C)") +
-  annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
-  annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
-  #annotate("text", x = 3, y = 30, label = "asdf") +
-  geom_text(data = filter(pdat, temp == 3 & effect == "Weather-climate-effect" & panel == 1), aes(label = effect), 
-            vjust = -3, size = 2) + 
-  geom_text(data = filter(pdat, temp == 3 & effect == "Weather-effect" & panel == 1), aes(label = effect), 
-            vjust = 3, size = 2) + 
-  geom_text(data = filter(pdat, temp == 3 & effect == "Weather-climate-effect" & panel == 2), aes(label = effect), 
-            vjust = -1.5, size = 2, hjust = .3) + 
-  geom_text(data = filter(pdat, temp == 3 & effect == "Weather-effect" & panel == 2), aes(label = effect), 
-            vjust = 3, size = 2) + 
-  scale_x_continuous(breaks = 0:5, labels = c("+0C", "+1C", "+2C", "+3C", "+4C", "+5C")) +
-  # ylim(-60, 60) +
-  #guides(color = guide_legend(keywidth = 1.5, keyheight = 1,
-  #                              override.aes = list(linetype = c(1, 1),
-  #                                                  size = 1.5,
-  #                                                  shape = c(NA, NA)))) +
-    facet_wrap(panel~interval, labeller = labeller(
-      panel = c('1' = 'Disaggregate Revenue', '2' = 'Aggregate Revenue')), scales = "free") +
-    theme(legend.position = "none",
-        legend.box.background = element_rect(colour = "grey"),
-        legend.title = element_blank(),
-        legend.key = element_rect(fill = NA, color = NA),
-        legend.text=element_text(size=8))
-
-
-
-pddat <- rbind(pdat1, pdat2, pdat3)
-
-pddat <- filter(pdat, interval == "10-year")
-pddat <- filter
-ggplot(pddat, aes(temp, change, color = effect)) + geom_line() + 
   # geom_point(aes(color = effect), size = 0.25) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey", alpha = 0.5) +
   # geom_ribbon(aes(ymax = change_max, ymin = change_min, x = temp, linetype = NA), fill = "#C0CCD9", alpha = 0.5) +
-  theme_tufte(base_size = 10) +
+  theme_tufte(base_size = 12) +
   ylab("% Change in Revenue/Acre") +
   xlab("Change in Temperature (C)") +
   annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
   annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
   #annotate("text", x = 3, y = 30, label = "asdf") +
-  # geom_text(data = filter(pdat, temp == 3 & effect == "Weather-climate-effect" & panel == 1), aes(label = effect), 
-  #           vjust = -3, size = 2) + 
-  # geom_text(data = filter(pdat, temp == 3 & effect == "Weather-effect" & panel == 1), aes(label = effect), 
-  #           vjust = 3, size = 2) + 
-  # geom_text(data = filter(pdat, temp == 3 & effect == "Weather-climate-effect" & panel == 2), aes(label = effect), 
-  #           vjust = -1.5, size = 2, hjust = .3) + 
-  # geom_text(data = filter(pdat, temp == 3 & effect == "Weather-effect" & panel == 2), aes(label = effect), 
-  #           vjust = 3, size = 2) + 
+  geom_text(data = filter(pdat, temp == 4 & effect == "Weather-climate-effect" & panel == 1), aes(label = effect),
+            vjust = -7, size = 2.5) +
+  geom_text(data = filter(pdat, temp == 3 & effect == "Weather-effect" & panel == 1), aes(label = effect),
+            vjust = 8, size = 2.5) +
+  geom_text(data = filter(pdat, temp == 3 & effect == "Weather-climate-effect" & panel == 2), aes(label = effect),
+            vjust = -3.5, size = 2.5, hjust = .3) +
+  geom_text(data = filter(pdat, temp == 1 & effect == "Weather-effect" & panel == 2), aes(label = effect),
+            vjust = 6, size = 2.5) +
   scale_x_continuous(breaks = 0:5, labels = c("+0C", "+1C", "+2C", "+3C", "+4C", "+5C")) +
+  facet_wrap(~panel) +
   # ylim(-60, 60) +
   #guides(color = guide_legend(keywidth = 1.5, keyheight = 1,
   #                              override.aes = list(linetype = c(1, 1),
   #                                                  size = 1.5,
   #                                                  shape = c(NA, NA)))) +
-    # facet_wrap(panel~interval, labeller = labeller(
-      # panel = c('1' = 'Disaggregate Revenue', '2' = 'Aggregate Revenue')), scales = "free") +
+    facet_wrap(~panel, labeller = labeller(
+      panel = c('1' = 'Disaggregate Revenue', '2' = 'Aggregate Revenue'))) +
     theme(legend.position = "none",
         legend.box.background = element_rect(colour = "grey"),
         legend.title = element_blank(),
