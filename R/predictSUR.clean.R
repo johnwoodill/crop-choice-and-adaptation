@@ -114,12 +114,12 @@ predictSUR.clean <- function(mod, newdata_list, acres, fips, var.terms = NULL, c
   temp4[, 2:6] <- apply(temp4[, 2:6], 2, function(x) ifelse(x > 1, 1, x))
   temp5[, 2:6] <- apply(temp5[, 2:6], 2, function(x) ifelse(x > 1, 1, x))
 
-  temp0[, 2:6] <- temp0[, 2:6] / rowSums(temp0[, 2:6])
-  temp1[, 2:6] <- temp1[, 2:6] / rowSums(temp1[, 2:6])
-  temp2[, 2:6] <- temp2[, 2:6] / rowSums(temp2[, 2:6])
-  temp3[, 2:6] <- temp3[, 2:6] / rowSums(temp3[, 2:6])
-  temp4[, 2:6] <- temp4[, 2:6] / rowSums(temp4[, 2:6])
-  temp5[, 2:6] <- temp5[, 2:6] / rowSums(temp5[, 2:6])
+  # temp0[, 2:6] <- temp0[, 2:6] / rowSums(temp0[, 2:6])
+  # temp1[, 2:6] <- temp1[, 2:6] / rowSums(temp1[, 2:6])
+  # temp2[, 2:6] <- temp2[, 2:6] / rowSums(temp2[, 2:6])
+  # temp3[, 2:6] <- temp3[, 2:6] / rowSums(temp3[, 2:6])
+  # temp4[, 2:6] <- temp4[, 2:6] / rowSums(temp4[, 2:6])
+  # temp5[, 2:6] <- temp5[, 2:6] / rowSums(temp5[, 2:6])
 
   temp0[, 2:6] <- apply(temp0[, 2:6], 2, function(x) ifelse(is.na(x), 0, x))
   temp1[, 2:6] <- apply(temp1[, 2:6], 2, function(x) ifelse(is.na(x), 0, x))

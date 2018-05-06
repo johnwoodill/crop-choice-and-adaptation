@@ -103,16 +103,20 @@ dd_temp <- function(x, prec){
          dday10_30_rm = roll_mean(dday10_30_lag1, 27, align = "right", fill = "NA"),
          dday30_rm = roll_mean(dday30_lag1, 20, align = "right", fill = "NA"),
          prec_rm = roll_mean(prec_lag1, 16, align = "right", fill = "NA"),
-         prec_sq_rm = prec_rm12^2) %>%  
+         prec_sq_rm = prec_rm^2) %>%  
     ungroup()
 
   pdat$dday0_10_rmw <- pdat$dday0_10_rm*pdat$acres_w
   pdat$dday10_30_rmw <- pdat$dday10_30_rm*pdat$acres_w
   pdat$dday30_rmw <- pdat$dday30_rm*pdat$acres_w
+  pdat$prec_rmw <- pdat$prec_rm*pdat$acres_w
+  pdat$prec_sq_rmw <- pdat$prec_rmw^2
   
   pdat$dday0_10w <- pdat$dday0_10_rm*pdat$acres_w
   pdat$dday10_30w <- pdat$dday10_30_rm*pdat$acres_w
   pdat$dday30w <- pdat$dday30_rm*pdat$acres_w
+  pdat$precw <- pdat$prec*pdat$acres_w
+  pdat$prec_sqw <- pdat$precw^2
 
   pdat <- filter(pdat, year >= 1950 & year <= 2010)
   pdat$trend <- pdat$year - (min(pdat$year) - 1)
@@ -129,8 +133,8 @@ dd_temp <- function(x, prec){
   pdat <- select(pdat, state, fips, year, z_corn_a, z_cotton_a, z_hay_a, z_soybean_a, z_wheat_a,
                  dday0_10, dday10_30, dday30, prec, prec_sq, 
                  dday0_10_rm, dday10_30_rm, dday30_rm, prec_rm, prec_sq_rm,
-                 dday0_10_rmw, dday10_30_rmw, dday30_rmw,
-                 dday0_10w, dday10_30w, dday30w,
+                 dday0_10_rmw, dday10_30_rmw, dday30_rmw, prec_rmw, prec_sq_rmw,
+                 dday0_10w, dday10_30w, dday30w, precw, prec_sqw,
                  dday0_10_rm10, dday10_30_rm10, dday30_rm10, prec_rm10, prec_sq_rm10,
                  dday0_10_rm11, dday10_30_rm11, dday30_rm11, prec_rm11, prec_sq_rm11,
                  dday0_10_rm12, dday10_30_rm12, dday30_rm12, prec_rm12, prec_sq_rm12,

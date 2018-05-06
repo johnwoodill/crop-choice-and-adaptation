@@ -52,18 +52,24 @@ saveRDS(modthirty_1, "models/rev_crop_modthirty.rds")
 # Build up regression
 
 mod_base_1 <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
-              dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10,
+              dday0_10_rm + dday10_30_rm + dday30_rm + prec_rm + prec_sq_rm,
             data = regdat, weights = regdat$w)
 
 mod_base_2 <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
-              dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 | fips | 0 | 0,
+              dday0_10_rm + dday10_30_rm + dday30_rm + prec_rm + prec_sq_rm | fips | 0 | 0,
             data = regdat, weights = regdat$w)
 
 mod_base_3 <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
-              dday0_10_rm10 + dday10_30_rm10 + dday30_rm10 + prec_rm10 + prec_sq_rm10 +
+              dday0_10_rm + dday10_30_rm + dday30_rm + prec_rm + prec_sq_rm +
+                trend  | fips | 0 | 0,
+            data = regdat, weights = regdat$w)
+
+mod_base_4 <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
+              dday0_10_rm + dday10_30_rm + dday30_rm + prec_rm + prec_sq_rm +
                 trend + trend_sq | fips | 0 | 0,
             data = regdat, weights = regdat$w)
 
 saveRDS(mod_base_1, "models/rev_crop_mod_base_1.rds")
 saveRDS(mod_base_2, "models/rev_crop_mod_base_2.rds")
 saveRDS(mod_base_3, "models/rev_crop_mod_base_3.rds")
+saveRDS(mod_base_4, "models/rev_crop_mod_base_4.rds")

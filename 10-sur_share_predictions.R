@@ -62,7 +62,7 @@ newdata_list_dm <- list(p0 = p0_dm,
 
 
 ten_climate_terms_v = c("dday0_10_rmw", "dday10_30_rmw", "dday30_rmw", 
-                        "prec_rm", "prec_sq_rm")
+                        "prec_rmw", "prec_sq_rmw")
 twenty_climate_terms_v = c("dday0_10_rm11", "dday10_30_rm11", "dday30_rm11", 
                            "prec_rm11", "prec_sq_rm11")
 thirty_climate_terms_v = c("dday0_10_rm12", "dday10_30_rm12", "dday30_rm12", 
@@ -154,6 +154,8 @@ pdat <- rbind(cten$agg_predictions, ctwenty$agg_predictions, cthirty$agg_predict
 
 head(pdat)
 
+pdat <- filter(pdat, type == "10-year")
+pdat$type <- NULL
 ggplot(pdat, aes(temp, (sum/1000000), color = crop)) + geom_line() + 
   # geom_hline(yintercept = 12073232296/1000000, linetype = "dashed", color = "grey") +
   theme_tufte(base_size = 10) +
@@ -171,41 +173,41 @@ ggplot(pdat, aes(temp, (sum/1000000), color = crop)) + geom_line() +
   #     legend.justification = c("left", "top"), 
   #     legend.box.background = element_rect(colour = "grey"), 
   #     legend.title = element_blank(), legend.key = element_blank()) +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "grey") +
-    facet_wrap(~type) 
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey") 
+    # facet_wrap(~type) 
 ggsave("figures/sur_crop_share_predictions.pdf", width = 6, height = 4)
 
-pdat %>% group_by(temp, type) %>% summarise(nsum = sum(sum))
+pdat %>% group_by(temp) %>% summarise(nsum = sum(sum))
 
-# pdat <- pdat %>% 
-#   group_by(crop, type, effect) %>% 
-#   mutate(change = (sum - first(sum))/first(sum))
+pdat <- pdat %>%
+  group_by(crop, effect) %>%
+  mutate(change = (sum - first(sum))/first(sum))
 # pdat
-# pdat$change <- 100*pdat$change
+pdat$change <- 100*pdat$change
 # 
 # saveRDS(pdat, "data/sur_predictions.rds")
 # # 
-# ggplot(pdat, aes(temp, change)) +
-#   geom_line() +
-#   geom_point(size = .5) +
-#   # geom_errorbar(aes(ymax = change_max, ymin = change_min, color = effect), width = .1) +
-#   theme_tufte(base_size = 10) +
-#   ylab("% Change in Proportion of Crop Acres") +
-#   xlab("Change in Temperature (C)") +
-#   annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
-#   annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
-#   scale_x_continuous(breaks = 0:5, labels = c("+0C", "+1C", "+2C", "+3C", "+4C", "+5C")) +
-#   theme(legend.position = "top",
-#        #legend.justification = c("left", "top"),
-#        legend.box.background = element_rect(colour = "grey"),
-#        legend.title = element_blank(), legend.key = element_blank(),
-#        axis.text.x = element_text(angle = 45, hjust = 1)) +
-#   #theme(legend.position = c(.85,1),
-#   #     legend.justification = c("left", "top"),
-#   #     legend.box.background = element_rect(colour = "grey"),
-#   #     legend.title = element_blank(), legend.key = element_blank()) +
-#   facet_wrap(type~crop, ncol = 5, scales = "free") +
-#   geom_hline(yintercept = 0, linetype = "dashed", color = "grey")
+ggplot(pdat, aes(temp, change)) +
+  geom_line() +
+  geom_point(size = .5) +
+  # geom_errorbar(aes(ymax = change_max, ymin = change_min, color = effect), width = .1) +
+  theme_tufte(base_size = 10) +
+  ylab("% Change in Proportion of Crop Acres") +
+  xlab("Change in Temperature (C)") +
+  annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
+  annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
+  scale_x_continuous(breaks = 0:5, labels = c("+0C", "+1C", "+2C", "+3C", "+4C", "+5C")) +
+  theme(legend.position = "top",
+       #legend.justification = c("left", "top"),
+       legend.box.background = element_rect(colour = "grey"),
+       legend.title = element_blank(), legend.key = element_blank(),
+       axis.text.x = element_text(angle = 45, hjust = 1)) +
+  #theme(legend.position = c(.85,1),
+  #     legend.justification = c("left", "top"),
+  #     legend.box.background = element_rect(colour = "grey"),
+  #     legend.title = element_blank(), legend.key = element_blank()) +
+  facet_wrap(~crop, ncol = 5, scales = "free") +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey")
 # 
 # ggsave("figures/sur_crop_share_predictions.pdf", width = 6, height = 5)
 # # 

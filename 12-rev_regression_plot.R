@@ -35,12 +35,14 @@ rownames(pdat2) <- NULL
 
 pdat <- rbind(pdat1, pdat2)
 
+pdat <- filter(pdat, interval == "10-year")
+pdat$interval <- NULL
 ggplot(pdat, aes(y = 100*coef, x = var)) + 
-  theme_tufte(base_size = 10) +
+  theme_tufte(base_size = 12) +
   geom_point() + 
   geom_errorbar(aes(ymin = 100*(coef - cse*1.96), ymax = 100*(coef + cse*1.96)), width = 0.1, alpha = 0.5) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey") +
-  facet_wrap(effect~interval) +
+  facet_wrap(~effect) +
   ylim(100*min(pdat$coef - pdat$cse*1.96), 100*max(pdat$coef + pdat$cse*1.96)) +
   theme(legend.position = "none",
         panel.border = element_rect(fill = NA),

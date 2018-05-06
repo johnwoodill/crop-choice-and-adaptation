@@ -34,7 +34,7 @@ ggdat <- gdat %>%
 p1 <- ggplot(ggdat, aes(year, dday30_dm_m, color = factor(region))) + geom_line() +
     theme_tufte(base_size = 10) +
   geom_hline(yintercept = 0, size = .5) +
-  ylab("Demeaned Degree Day 30C \n (10-year rolling mean)") +
+  ylab("Demeaned Degree Day 30C \n (Rolling Mean)") +
   xlab(NULL) +
   ylim(min(ggdat$dday30_dm_m), max(ggdat$dday30_dm_m)) +
   # ylim(-60, 60) +
@@ -54,7 +54,7 @@ p1
 p2 <- ggplot(ggdat, aes(year, dday10_30_dm_m, color = factor(region))) + geom_line() +
     theme_tufte(base_size = 10) +
   geom_hline(yintercept = 0, size = .5) +
-  ylab("Demeaned Degree Day 10-30C \n (10-year rolling mean)") +
+  ylab("Demeaned Degree Day 10-30C \n (Rolling Mean)") +
   xlab(NULL) +
   ylim(min(ggdat$dday10_30_dm_m), max(ggdat$dday10_30_dm_m)) +
   # ylim(-70, 70) +

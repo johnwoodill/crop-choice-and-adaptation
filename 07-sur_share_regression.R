@@ -37,7 +37,7 @@ cropdat$state <- factor(cropdat$state)
 dmdat <- select(cropdat, z_corn_a, z_cotton_a, z_hay_a, z_soybean_a, z_wheat_a, 
                 dday0_10, dday10_30, dday30, prec, prec_sq, trend, trend_sq,
                 dday0_10_rm , dday10_30_rm , dday30_rm , prec_rm , prec_sq_rm, 
-                dday0_10_rmw , dday10_30_rmw , dday30_rmw , prec_rm , prec_sq_rm,
+                dday0_10_rmw , dday10_30_rmw , dday30_rmw , prec_rmw , prec_sq_rmw,
                 trend_lat, trend_long, trend_sq_lat, trend_sq_long, trend1_al , trend1_ar , trend1_de , trend1_ga , trend1_ia , trend1_il ,
   trend1_in , trend1_ks , trend1_ky , trend1_md , trend1_mi , trend1_mn ,
   trend1_mo , trend1_ms , trend1_nc , trend1_nd , trend1_ne , trend1_oh ,
@@ -50,7 +50,7 @@ cropdat_means <- demeanlist(dmdat, fl = list(fips = factor(cropdat$fips)), means
 
 
 mod1 <- z_corn_a ~ 
-  dday0_10_rmw + dday10_30_rmw + dday30_rmw + prec_rm + prec_sq_rm +
+  dday0_10_rmw + dday10_30_rmw + dday30_rmw + prec_rmw + prec_sq_rmw +
     trend1_al + trend1_ar + trend1_de + trend1_ga + trend1_ia + trend1_il +
   trend1_in + trend1_ks + trend1_ky + trend1_md + trend1_mi + trend1_mn +
   trend1_mo + trend1_ms + trend1_nc + trend1_nd + trend1_ne + trend1_oh +
@@ -59,7 +59,7 @@ mod1 <- z_corn_a ~
 
 
 mod2 <- z_cotton_a ~   
-  dday0_10_rmw + dday10_30_rmw + dday30_rmw + prec_rm + prec_sq_rm +
+  dday0_10_rmw + dday10_30_rmw + dday30_rmw + prec_rmw + prec_sq_rmw +
     trend1_al + trend1_ar + trend1_de + trend1_ga + trend1_ia + trend1_il +
   trend1_in + trend1_ks + trend1_ky + trend1_md + trend1_mi + trend1_mn +
   trend1_mo + trend1_ms + trend1_nc + trend1_nd + trend1_ne + trend1_oh +
@@ -68,7 +68,7 @@ mod2 <- z_cotton_a ~
 
 
 mod3 <- z_hay_a ~  
-  dday0_10_rmw + dday10_30_rmw + dday30_rmw + prec_rm + prec_sq_rm +
+  dday0_10_rmw + dday10_30_rmw + dday30_rmw + prec_rmw + prec_sq_rmw +
     trend1_al + trend1_ar + trend1_de + trend1_ga + trend1_ia + trend1_il +
   trend1_in + trend1_ks + trend1_ky + trend1_md + trend1_mi + trend1_mn +
   trend1_mo + trend1_ms + trend1_nc + trend1_nd + trend1_ne + trend1_oh +
@@ -77,7 +77,7 @@ mod3 <- z_hay_a ~
 
 
 mod4 <- z_soybean_a ~  
-  dday0_10_rmw + dday10_30_rmw + dday30_rmw + prec_rm + prec_sq_rm +
+  dday0_10_rmw + dday10_30_rmw + dday30_rmw + prec_rmw + prec_sq_rmw +
     trend1_al + trend1_ar + trend1_de + trend1_ga + trend1_ia + trend1_il +
   trend1_in + trend1_ks + trend1_ky + trend1_md + trend1_mi + trend1_mn +
   trend1_mo + trend1_ms + trend1_nc + trend1_nd + trend1_ne + trend1_oh +
@@ -87,7 +87,7 @@ mod4 <- z_soybean_a ~
 
 
 mod5 <- z_wheat_a ~  
-  dday0_10_rmw + dday10_30_rmw + dday30_rmw + prec_rm + prec_sq_rm +
+  dday0_10_rmw + dday10_30_rmw + dday30_rmw + prec_rmw + prec_sq_rmw +
     trend1_al + trend1_ar + trend1_de + trend1_ga + trend1_ia + trend1_il +
   trend1_in + trend1_ks + trend1_ky + trend1_md + trend1_mi + trend1_mn +
   trend1_mo + trend1_ms + trend1_nc + trend1_nd + trend1_ne + trend1_oh +
@@ -137,23 +137,23 @@ ten_mod$effects <- list(corn.effect = cropdat_means$z_corn_a,
 
 
 # From parallel run
-ten_mod$bs_se <- structure(list(`apply(d, 2, sd)` = c(0.000210053668428398, 0.000107530699104682, 
-0.000397022695507217, 0.0102568110764039, 0.000165599333645509, 
-0.000104969425904618, 6.64406137620295e-05, 0.000314516531319913, 
-0.00811069924659747, 0.000132947721802708, 0.000454872867061025, 
-0.00012692268319596, 0.000370290745404606, 0.0105870162002529, 
-0.000166387808780784, 0.000145279593843557, 7.57207015703651e-05, 
-0.000307839141863906, 0.00839506994054773, 0.000138631062933204, 
-0.000368774360036379, 0.000101345408309346, 0.000338149177903847, 
-0.00875299228715998, 0.000135284361482097)), .Names = "apply(d, 2, sd)", row.names = c("corn_dday0_10_rm10", 
-"corn_dday10_30_rm10", "corn_dday30_rm10", "corn_prec_rm10", 
-"corn_prec_sq_rm10", "cotton_dday0_10_rm10", "cotton_dday10_30_rm10", 
-"cotton_dday30_rm10", "cotton_prec_rm10", "cotton_prec_sq_rm10", 
-"hay_dday0_10_rm10", "hay_dday10_30_rm10", "hay_dday30_rm10", 
-"hay_prec_rm10", "hay_prec_sq_rm10", "soybean_dday0_10_rm10", 
-"soybean_dday10_30_rm10", "soybean_dday30_rm10", "soybean_prec_rm10", 
-"soybean_prec_sq_rm10", "wheat_dday0_10_rm10", "wheat_dday10_30_rm10", 
-"wheat_dday30_rm10", "wheat_prec_rm10", "wheat_prec_sq_rm10"), class = "data.frame")
+ten_mod$bs_se <- structure(list(`apply(d, 2, sd)` = c(2.93752880989405e-05, 3.08952587280093e-05, 
+0.000167409621264533, 0.00344925220382294, 7.43682255908992e-05, 
+1.88848534119212e-05, 2.31150560218998e-05, 0.000145642725520432, 
+0.00235467336924008, 5.17607790571533e-05, 3.65795063613085e-05, 
+3.58062695075569e-05, 0.000215576351823288, 0.00331192780899509, 
+6.65022151972393e-05, 2.68515052211383e-05, 2.82079062388829e-05, 
+0.000202460004772095, 0.00291003204108845, 6.27452291565573e-05, 
+3.0374254006745e-05, 3.01550535326968e-05, 0.000192265774646814, 
+0.00262537644969374, 5.47322485947707e-05)), .Names = "apply(d, 2, sd)", row.names = c("corn_dday0_10_rmw", 
+"corn_dday10_30_rmw", "corn_dday30_rmw", "corn_prec_rm", "corn_prec_sq_rm", 
+"cotton_dday0_10_rmw", "cotton_dday10_30_rmw", "cotton_dday30_rmw", 
+"cotton_prec_rm", "cotton_prec_sq_rm", "hay_dday0_10_rmw", "hay_dday10_30_rmw", 
+"hay_dday30_rmw", "hay_prec_rm", "hay_prec_sq_rm", "soybean_dday0_10_rmw", 
+"soybean_dday10_30_rmw", "soybean_dday30_rmw", "soybean_prec_rm", 
+"soybean_prec_sq_rm", "wheat_dday0_10_rmw", "wheat_dday10_30_rmw", 
+"wheat_dday30_rmw", "wheat_prec_rm", "wheat_prec_sq_rm"), class = "data.frame")
+
 
 
 # ten_mod$cl_se <- clse_systemfit(ten_mod, cropdat$state)

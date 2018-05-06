@@ -93,7 +93,7 @@ outdat$dep_var <- factor(outdat$dep_var,
 
 outdat$climate_var <- factor(outdat$climate_var,
                          levels = c("rm", "davg", "iv"),
-                         labels = c("Rolling Mean (10-year)", "Decade Average", "Inst. Variable"))
+                         labels = c("Rolling Mean", "Decade Average", "Inst. Variable"))
 
 outdat2 <- filter(outdat, measure == "Weather")
 
