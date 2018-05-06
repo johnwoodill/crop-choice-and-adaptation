@@ -306,7 +306,7 @@ prec <- read_csv("/run/media/john/1TB/SpiderOak/Projects/adaptation-along-the-en
  dd$year <- as.integer(dd$year)
  dd$fips <- as.integer(dd$fips)
  dd_dat <- left_join(dd, prec, by = c("fips", "year", "month"))
- dd_dat <- filter(dd_dat, month >= 3 & month <= 9)
+ dd_dat <- filter(dd_dat, month >= 3 & month <= 10)
 
  dd_dat$X1 <- NULL
  

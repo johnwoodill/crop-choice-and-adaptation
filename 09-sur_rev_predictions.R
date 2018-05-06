@@ -3,6 +3,26 @@ library(lfe)
 library(systemfit)
 library(ggthemes)
 
+
+#####################################################
+#####################################################
+#####################################################
+#####################################################
+
+# NEED TO FIX PREDICTIONS BECAUSE THEY ARE NOT PREDICTING CORRECTLY
+# AFTER WEIGHTING REGRESSION
+# NEED:
+# PREDICTION + MEAN + FIXED-EFFECT + RESIDUALS
+# PREDICTION FROM PREDICTSUR
+# NEED TO INCLUDE MEAN FOR DEPENDENT VARIABLE (MEAN)
+# FIXED-EFFECT FROM FELM WHICH IS THE SAME AS SUR
+# CAN'T FIND RESIDUALS = (LN_REV_CORN - (PREDICTION + MEAN + FIXED-EFFECT))
+
+#####################################################
+#####################################################
+#####################################################
+#####################################################
+
 setwd("/run/media/john/1TB/SpiderOak/Projects/crop-choice-and-adaptation/")
 
 source("R/predictSUR.R")
