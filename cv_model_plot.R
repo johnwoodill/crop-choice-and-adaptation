@@ -80,6 +80,7 @@ structure(list(dep_var = structure(c(1L, 1L, 1L, 1L, 1L, 1L,
 "tbl", "data.frame"), .Names = c("dep_var", "climate_var", "measure", 
 "value", "change"), row.names = c(NA, -72L))
 
+
 outdat <- filter(outdat, measure %in% c("agg_weather_mse", "agg_weather_climate_mse"))
 outdat$measure <- factor(outdat$measure)
 outdat$measure <- factor(outdat$measure, levels = c("agg_weather_mse", "agg_weather_climate_mse"),
@@ -144,4 +145,86 @@ plot_grid(p1, p2, ncol = 1)
 
 ggsave("figures/cv_model_plot.pdf", width = 6, height = 6 )
 
+
+############################ DO NOT USE ###################################
+
+outdat <- readRDS("data/cv_model_outdat_thirtyyear.rds")
+outdat$n <- NULL
+outdat$rep <- NULL
+outdat <- gather(outdat, key = measure, value = value, -dep_var, -climate_var)
+outdat <- filter(outdat, climate_var != 'n')
+
+outdat <- filter(outdat, measure %in% c("agg_weather_mse", "agg_weather_climate_mse"))
+outdat$measure <- factor(outdat$measure)
+outdat$measure <- factor(outdat$measure, levels = c("agg_weather_mse", "agg_weather_climate_mse"),
+                         labels = c("Weather", "Weather-Climate"))
+
+outdat$climate_var <- factor(outdat$climate_var,
+                         levels = c("rm", "thirty", "iv"),
+                         labels = c("Rolling Mean", "30-year Average", "Inst. Variable"))
+outdat$dep_var <- factor(outdat$dep_var, 
+                         levels = c("ln_corn_mrev", "ln_soybean_mrev", "ln_hay_mrev",
+                                            "ln_cotton_mrev", "ln_wheat_mrev", "ln_rev"),
+                         labels = c("Corn Rev.", "Soybean Rev.", "Hay Rev.", 
+                                    "Cotton Rev.", "Wheat Rev.", "Agg. Rev."))
+
+outdat <- outdat %>% 
+  group_by(dep_var, climate_var, measure) %>% 
+  summarise(value = mean(value)) %>% 
+  group_by(dep_var, climate_var) %>% 
+  mutate(change = 100*(value - first(value))/first(value)) %>% 
+  ungroup()
+
+dput(outdat2)
+outdat2 <- filter(outdat, measure == "Weather")
+
+p1 <- ggplot(outdat2, aes(dep_var, abs(change))) + 
+  geom_bar(stat = "identity", position="dodge", width = .5) +
+  theme_tufte(base_size = 10) +
+  ylab("Percentage Reduction in RMSE") +
+  xlab(NULL) +
+  ylim(0, 15) +
+  annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
+  annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
+  # scale_x_continuous(breaks = 0:5, labels = c("+0C", "+1C", "+2C", "+3C", "+4C", "+5C")) +
+  # ylim(-60, 60) +
+  #guides(color = guide_legend(keywidth = 1.5, keyheight = 1,
+  #                              override.aes = list(linetype = c(1, 1),
+  #                                                  size = 1.5,
+  #                                                  shape = c(NA, NA)))) +
+    theme(legend.position = c(.9,.9),
+        legend.box.background = element_rect(colour = "grey"),
+        legend.title = element_blank(),
+        legend.key = element_rect(fill = NA, color = NA),
+        legend.text=element_text(size=4)) 
+  # facet_wrap(~measure)
+p1
+p2 <- ggplot(filter(outdat, measure == "Weather-Climate"), aes(dep_var, abs(change), fill = climate_var)) + 
+  geom_bar(stat = "identity", position="dodge") +
+  theme_tufte(base_size = 10) +
+  # ylab(NULL) +
+  ylab("Percentage Reduction in RMSE") +
+  xlab(NULL) +
+  ylim(0, 15) +
+  annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
+  annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
+  # scale_x_continuous(breaks = 0:5, labels = c("+0C", "+1C", "+2C", "+3C", "+4C", "+5C")) +
+  # ylim(-60, 60) +
+  #guides(color = guide_legend(keywidth = 1.5, keyheight = 1,
+  #                              override.aes = list(linetype = c(1, 1),
+  #                                                  size = 1.5,
+  #                                                  shape = c(NA, NA)))) +
+    theme(legend.position = c(.85,.8),
+        legend.box.background = element_rect(colour = "grey"),
+        legend.title = element_blank(),
+        legend.key = element_rect(fill = NA, color = NA),
+        legend.text=element_text(size=7)) +
+  facet_wrap(~measure)
+p2
+plot_grid(p1, p2, ncol = 1)
+
+ggsave("figures/cv_model_plot.pdf", width = 6, height = 6 )
+plot_grid(p1, p2, ncol = 1)
+
+ggsave("figures/cv_model_plot.pdf", width = 6, height = 6 )
 

@@ -342,10 +342,10 @@ for (j in 1:6){
   form1 <- as.formula(paste0(dep_var, "~ trend + trend_sq  | fips | 0 | 0"))
   form2 <- as.formula(paste0(dep_var, "~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
                 trend + trend_sq  | fips | 0 | 0"))
-  form3 <- as.formula(paste0(dep_var, "~ dday0_10_davg + dday10_30_davg + dday30_davg + prec_davg + prec_sq_davg + 
+  form3 <- as.formula(paste0(dep_var, "~ dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty + 
                 trend + trend_sq  | fips | 0 | 0"))
   form4 <- as.formula(paste0(dep_var, "~  dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-                    dday0_10_davg + dday10_30_davg + dday30_davg + prec_davg + prec_sq_davg +
+                    dday0_10_thirty + dday10_30_thirty + dday30_thirty + prec_thirty + prec_sq_thirty +
                 trend + trend_sq  | fips | 0 | 0"))
   
   # Baseline
@@ -458,7 +458,7 @@ for (j in 1:6){
   residuals <- test[`dep_var`] - pdat$pred
   mse$agg_weather_climate_mse[1] <- sqrt(mean(residuals^2, na.rm = TRUE))
   
-  mse$climate_var[1] <- "davg"
+  mse$climate_var[1] <- "thirty"
   # print(i)
   mse[1, ]
   
@@ -467,7 +467,7 @@ for (j in 1:6){
   outdat <- rbind(outdat, d, dd, ddd)
 }
 
-outdat <- readRDS("/home/john/Dropbox/Apps/Remote Link/cv_model_outdat.rds")
+outdat <- readRDS("/home/john/Dropbox/Apps/Remote Link/cv_model_outdat_thirtyyear.rds")
 
 outdat$n <- NULL
 outdat$rep <- NULL
@@ -486,247 +486,3 @@ dput(test2)
 ggplot(test2, aes(dep_var, abs(change), fill = climate_var)) + 
   geom_bar(stat = "identity",position="dodge")
 
-
-# 
-# 
-# 
-# saveRDS(mse, "data/rep_cv_model.rds")
-# mse <- readRDS("data/rep_cv_model.rds")
-# mse_func <- apply(mse, 2, mean)
-# mse_func
-# 
-# #---------------------------------------------------------------------------------------------------
-# # Disaggregate Revenue/Acre
-# 
-# dmse <- data.frame(rep = 1:1000,
-#                   disagg_base = 0,
-#                   disagg_t_fe = 0,
-#                   disagg_weather_mse = 0,
-#                   disagg_climate_mse = 0,                 
-#                   disagg_weather_climate_mse = 0)
-# 
-# # for (i in 1:1){  
-# 
-# d <- foreach(i = 1:2, .combine = rbind, .packages = c("dplyr", "systemfit", "lfe")) %dopar% {
-#   test_years <- sample(1950:2010, 5)
-#   test <- filter(regdat, year %in% test_years)
-#   dep_var <- rowSums(test[, c("ln_rev_corn", "ln_rev_cotton", "ln_rev_hay", "ln_rev_soybean", "ln_rev_wheat")])
-#   # dep_var <- test$ln_rev
-#   train <- filter(regdat, year %!in% test_years)
-#   
-#   train_dm <- demeanlist(train, fl = list(fips = factor(train$fips)))
-#   test_dm <- demeanlist(test, fl = list(fips = factor(test$fips)))
-#   
-#   train_means <- demeanlist(train, fl = list(fips = factor(train$fips)), means = TRUE)
-#   test_means <- demeanlist(test, fl = list(fips = factor(test$fips)), means = TRUE)
-# 
-#   
-#   
-# 
-#   # Baseline
-#   
-#   mod1 <- ln_rev_corn ~  1
-#   
-#   
-#   mod2 <- ln_rev_cotton ~  1
-#    
-#   
-#   mod3 <- ln_rev_hay ~ 1
-#   
-#   
-#   mod4 <- ln_rev_soybean ~  1
-#   
-#   
-#   mod5 <- ln_rev_wheat ~ 1
-#   
-#   baseline <- systemfit(list(corn = mod1, 
-#                          cotton = mod2, 
-#                          hay = mod3, 
-#                          soybean = mod4,
-#                          wheat = mod5), data = train, method = "SUR")
-#   
-#   
-#   # Trend and Fixed-effect
-#   
-#   mod1 <- ln_rev_corn ~
-#     trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
-#   
-#   
-#   mod2 <- ln_rev_cotton ~
-#   trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
-#    
-#   
-#   mod3 <- ln_rev_hay ~
-#   trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
-#   
-#   
-#   mod4 <- ln_rev_soybean ~
-#   trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
-#   
-#   
-#   mod5 <- ln_rev_wheat ~
-#   trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
-#   
-#     trend_fe <- systemfit(list(corn = mod1, 
-#                          cotton = mod2, 
-#                          hay = mod3, 
-#                          soybean = mod4,
-#                          wheat = mod5), data = train_dm, method = "SUR")
-#   
-#   # Weather
-#   
-#   mod1 <- ln_rev_corn ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
-#     trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
-#   
-#   
-#   mod2 <- ln_rev_cotton ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-#   trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
-#    
-#   
-#   mod3 <- ln_rev_hay ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
-#   trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
-#   
-#   
-#   mod4 <- ln_rev_soybean ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
-#   trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
-#   
-#   
-#   mod5 <- ln_rev_wheat ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
-#   trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
-#   
-#     weather <- systemfit(list(corn = mod1, 
-#                          cotton = mod2, 
-#                          hay = mod3, 
-#                          soybean = mod4,
-#                          wheat = mod5), data = train_dm, method = "SUR")
-#   
-#   # Climate
-#   
-#   mod1 <- ln_rev_corn ~ dday0_10_rm + dday10_30_rm + dday30_rm + prec_rm + prec_sq_rm +
-#     trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
-#   
-#   
-#   mod2 <- ln_rev_cotton ~ dday0_10_rm + dday10_30_rm + dday30_rm + prec_rm + prec_sq_rm +
-#   trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
-#    
-#   
-#   mod3 <- ln_rev_hay ~ dday0_10_rm + dday10_30_rm + dday30_rm + prec_rm + prec_sq_rm +
-#   trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
-#   
-#   
-#   mod4 <- ln_rev_soybean ~ dday0_10_rm + dday10_30_rm + dday30_rm + prec_rm + prec_sq_rm +
-#   trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
-#   
-#   
-#   mod5 <- ln_rev_wheat ~ dday0_10_rm + dday10_30_rm + dday30_rm + prec_rm + prec_sq_rm +
-#   trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
-#   
-#     climate <- systemfit(list(corn = mod1, 
-#                          cotton = mod2, 
-#                          hay = mod3, 
-#                          soybean = mod4,
-#                          wheat = mod5), data = train_dm, method = "SUR")
-#   
-#   # Weather and Climate
-#   
-#   mod1 <- ln_rev_corn ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
-#     dday0_10_rm + dday10_30_rm + dday30_rm + prec_rm + prec_sq_rm +
-#     trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
-#   
-#   
-#   mod2 <- ln_rev_cotton ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
-#     dday0_10_rm + dday10_30_rm + dday30_rm + prec_rm + prec_sq_rm +
-#   trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
-#    
-#   
-#   mod3 <- ln_rev_hay ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
-#     dday0_10_rm + dday10_30_rm + dday30_rm + prec_rm + prec_sq_rm +
-#   trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
-#   
-#   
-#   mod4 <- ln_rev_soybean ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
-#     dday0_10_rm + dday10_30_rm + dday30_rm + prec_rm + prec_sq_rm +
-#   trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
-#   
-#   
-#   mod5 <- ln_rev_wheat ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
-#     dday0_10_rm + dday10_30_rm + dday30_rm + prec_rm + prec_sq_rm +
-#   trend_lat + trend_long + trend_sq_lat + trend_sq_long - 1
-#   
-#     weather_climate <- systemfit(list(corn = mod1, 
-#                                       cotton = mod2, 
-#                                       hay = mod3, 
-#                                       soybean = mod4,
-#                                       wheat = mod5), data = train_dm, method = "SUR")
-# 
-#   # Baseline RMS
-#   a <- predict(baseline, test)
-#   a <- rowSums(a) - dep_var
-#   b <- dep_var - a
-#   head(b)
-#   dmse$disagg_base[i] <- sqrt(mean(b^2))
-#   
-#   
-#   # Trends and Fixed-effect RMS
-#   fit <- predict(trend_fe, test_dm)
-#   fit$corn.pred <- fit$corn.pred + test_means$ln_rev_corn
-#   fit$cotton.pred <- fit$cotton.pred + test_means$ln_rev_cotton
-#   fit$hay.pred <- fit$hay.pred + test_means$ln_rev_hay
-#   fit$soybean.pred <- fit$soybean.pred + test_means$ln_rev_soybean
-#   fit$wheat.pred <- fit$wheat.pred + test_means$ln_rev_wheat
-# 
-#   fit <- rowSums(fit[1:5])
-#   residuals <- dep_var - fit
-#   dmse$disagg_t_fe[i] <- sqrt(mean(residuals^2))
-#   
-#   # Weather RMS
-#   fit <- predict(weather, test_dm)
-#   fit$corn.pred <- fit$corn.pred + test_means$ln_rev_corn
-#   fit$cotton.pred <- fit$cotton.pred + test_means$ln_rev_cotton
-#   fit$hay.pred <- fit$hay.pred + test_means$ln_rev_hay
-#   fit$soybean.pred <- fit$soybean.pred + test_means$ln_rev_soybean
-#   fit$wheat.pred <- fit$wheat.pred + test_means$ln_rev_wheat
-# 
-#   fit <- rowSums(fit[1:5])
-#   residuals <- dep_var - fit
-#   dmse$disagg_weather_mse[i] <- sqrt(mean(residuals^2))
-#   
-#   # Climate RMS
-#   fit <- predict(climate, test_dm)
-#   fit$corn.pred <- fit$corn.pred + test_means$ln_rev_corn
-#   fit$cotton.pred <- fit$cotton.pred + test_means$ln_rev_cotton
-#   fit$hay.pred <- fit$hay.pred + test_means$ln_rev_hay
-#   fit$soybean.pred <- fit$soybean.pred + test_means$ln_rev_soybean
-#   fit$wheat.pred <- fit$wheat.pred + test_means$ln_rev_wheat
-# 
-#   fit <- rowSums(fit[1:5])
-#   residuals <- dep_var - fit
-#   dmse$disagg_climate_mse[i] <- sqrt(mean(residuals^2))
-#   
-#   # Weather and Climate RMS
-#   fit <- predict(weather_climate, test_dm)
-#   fit$corn.pred <- fit$corn.pred + test_means$ln_rev_corn
-#   fit$cotton.pred <- fit$cotton.pred + test_means$ln_rev_cotton
-#   fit$hay.pred <- fit$hay.pred + test_means$ln_rev_hay
-#   fit$soybean.pred <- fit$soybean.pred + test_means$ln_rev_soybean
-#   fit$wheat.pred <- fit$wheat.pred + test_means$ln_rev_wheat
-# 
-#   fit <- rowSums(fit[1:5])
-#   residuals <- dep_var - fit
-#   dmse$disagg_weather_climate_mse[i] <- sqrt(mean(residuals^2))
-# 
-#   dmse[i, ]  
-# }
-# 
-# 
-# stopCluster(cl)
-# 
-# 
-# # Results
-#  rep                disagg_base 
-#                 500.500000                  17.160132 
-#                disagg_t_fe         disagg_weather_mse 
-#                   2.625683                   2.621718 
-#         disagg_climate_mse disagg_weather_climate_mse 
-#                   2.622624                   2.619858
-#   
