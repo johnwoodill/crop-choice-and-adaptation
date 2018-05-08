@@ -44,6 +44,10 @@ dmdat <- select(cropdat, z_corn_a, z_cotton_a, z_hay_a, z_soybean_a, z_wheat_a,
   trend1_ok , trend1_sc , trend1_sd , trend1_tn , trend1_va , trend1_wi ,
   trend1_wv)
 
+# Weight data from acres
+# w <- sqrt(1 + cropdat$w)
+# dmdat <- dmdat*w
+
 cropdat_dm <- demeanlist(dmdat, fl = list(fips = factor(cropdat$fips)))
 
 cropdat_means <- demeanlist(dmdat, fl = list(fips = factor(cropdat$fips)), means = TRUE)
