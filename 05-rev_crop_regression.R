@@ -21,10 +21,10 @@ regdat <- readRDS("data/full_ag_data.rds")
 modten_1 <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
               dday0_10_rm + dday10_30_rm + dday30_rm + prec_rm + prec_sq_rm +
               trend1_al + trend1_ar + trend1_de + trend1_ga + trend1_ia + trend1_il +
-  trend1_in + trend1_ks + trend1_ky + trend1_md + trend1_mi + trend1_mn +
-  trend1_mo + trend1_ms + trend1_nc + trend1_nd + trend1_ne + trend1_oh +
-  trend1_ok + trend1_sc + trend1_sd + trend1_tn + trend1_va + trend1_wi +
-  trend1_wv   | fips  | 0 | state, 
+              trend1_in + trend1_ks + trend1_ky + trend1_md + trend1_mi + trend1_mn +
+              trend1_mo + trend1_ms + trend1_nc + trend1_nd + trend1_ne + trend1_oh +
+              trend1_ok + trend1_sc + trend1_sd + trend1_tn + trend1_va + trend1_wi +
+              trend1_wv   | fips  | 0 | state, 
             data = regdat, weights = regdat$w, psdef = FALSE)
 summary(modten_1)
 saveRDS(modten_1, "models/rev_crop_modten.rds")

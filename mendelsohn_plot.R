@@ -3,6 +3,8 @@ library(tidyverse)
 library(ggthemes)
 library(latex2exp)
 
+cropdat <- readRDS("data/full_ag_data.rds")
+
 x <- -40:40
 x
 
@@ -53,7 +55,7 @@ p1 <- ggplot(NULL) + geom_line(data = wheat, aes(temp, y), color = 'grey') +
   annotate("text", x = 26, y = -7000, label=TeX("$\\mathbf{\\Delta t}", output = "character"), parse=TRUE, color = 'blue') +
   annotate("text", x = 37, y = -7000, label=TeX("$\\mathbf{\\Delta t}", output = "character"), parse=TRUE, color = 'blue') +
   annotate("text", x = 82, y = -7000, label=TeX("$\\mathbf{\\Delta t}", output = "character"), parse=TRUE, color = 'blue') +
-  annotate("text", x = 23, y = -700, label="df/dt", color = 'red', size = 4) +
+  # annotate("text", x = 23, y = -700, label="df/dt", color = 'red', size = 4) +
   annotate("text", x = 100, y = -7000, label="f(x*(t), t)", size = 4) +
   
   # Arrows
@@ -74,29 +76,30 @@ p1 <- ggplot(NULL) + geom_line(data = wheat, aes(temp, y), color = 'grey') +
   # geom_segment(aes(x = 30, xend = 30, y = -1380, yend = -7500), linetype = 'dashed', size = 0.25) +
   geom_point(aes(x = 30, y = -1380)) +
   
-  geom_point(aes(x = 30, y = -4200)) +
+  # geom_point(aes(x = 30, y = -4200)) +
   
   # annotate("text", x = 16, y = -700, label = "A") +
-  annotate("text", x = 30, y = -1000, label = "B") +
+  annotate("text", x = 30, y = -1000, label = "A'") +
   annotate("text", x = 23, y = -1980, label = "A") +
-  annotate("text", x = 28, y = -4200, label = "C") +
+  # annotate("text", x = 28, y = -4200, label = "A'") +
   
-  annotate("text", x = 33, y = -700, label = "D") +
+  annotate("text", x = 33, y = -700, label = "B") +
   geom_point(aes(x = 33, y = -1100)) +
   
-  annotate("text", x = 41, y = -400, label = "E") +
+  annotate("text", x = 41, y = -400, label = "B'") +
   
-  annotate("text", x = 79, y = -3000, label = "F") +
+  annotate("text", x = 79, y = -3000, label = "C") +
   geom_point(aes(x = 79, y = -3600)) +
   
-  annotate("text", x = 86, y = -4500, label = "G") +
+  annotate("text", x = 86, y = -4500, label = "C'") +
   geom_point(aes(x = 86, y = -5100)) +
   # Value of adapatation label
-  geom_segment(aes(x = 35, xend = 35, y = -1400, yend = -4100), size = 0.25) +
-  geom_segment(aes(x = 35, xend = 34, y = -1400, yend = -1400), size = 0.25) +
-  geom_segment(aes(x = 35, xend = 34, y = -4100, yend = -4100), size = 0.25) +
-  geom_segment(aes(x = 35, xend = 36, y = -2750, yend = -2750), size = 0.25) +
-  annotate("text", x = 42, y = -2800, label = "Value of \n Adaptation", size = 3) +
+  # geom_segment(aes(x = 35, xend = 35, y = -1400, yend = -2760), size = 0.25) +
+  # geom_segment(aes(x = 35, xend = 34, y = -1400, yend = -1400), size = 0.25) +
+  # geom_segment(aes(x = 35, xend = 36, y = -2080, yend = -2080), size = 0.25) +
+  # geom_segment(aes(x = 35, xend = 34, y = -4100, yend = -4100), size = 0.25) +
+  # geom_segment(aes(x = 35, xend = 34, y = -2750, yend = -2750), size = 0.25) +
+  # annotate("text", x = 42, y = -2000, label = "Value of \n Adaptation", size = 3) +
   theme(legend.position = "none",
           # axis.title.x=element_blank(),
         axis.text.x=element_blank(),

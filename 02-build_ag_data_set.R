@@ -306,7 +306,7 @@ prec <- read_csv("/run/media/john/1TB/SpiderOak/Projects/adaptation-along-the-en
  dd$year <- as.integer(dd$year)
  dd$fips <- as.integer(dd$fips)
  dd_dat <- left_join(dd, prec, by = c("fips", "year", "month"))
- dd_dat <- filter(dd_dat, month >= 3 & month <= 10)
+ dd_dat <- filter(dd_dat, month >= 3 & month <= 9)
 
  dd_dat$X1 <- NULL
  
@@ -397,23 +397,23 @@ dd_dat <- dd_dat %>%
   ungroup()
 
 # Lag variables
-for (n in 1:30){
-  lab1 <- paste0("dday0_10_lag", n)
-  lab2 <- paste0("dday10_30_lag", n)
-  lab3 <- paste0("dday30_lag", n)
-  lab4 <- paste0("prec_lag", n)
-  lab5 <- paste0("prec_sq_lag", n)
-
-
-  dd_dat <- dd_dat %>%
-    group_by(fips) %>%
-    arrange(year) %>%
-    mutate(!!lab1 := lag(dday0_10, n),
-           !!lab2 := lag(dday10_30, n),
-           !!lab3 := lag(dday30, n),
-           !!lab4 := lag(prec, n),
-           !!lab5 := lag(prec, n)^2)
-}
+# for (n in 1:30){
+#   lab1 <- paste0("dday0_10_lag", n)
+#   lab2 <- paste0("dday10_30_lag", n)
+#   lab3 <- paste0("dday30_lag", n)
+#   lab4 <- paste0("prec_lag", n)
+#   lab5 <- paste0("prec_sq_lag", n)
+# 
+# 
+#   dd_dat <- dd_dat %>%
+#     group_by(fips) %>%
+#     arrange(year) %>%
+#     mutate(!!lab1 := lag(dday0_10, n),
+#            !!lab2 := lag(dday10_30, n),
+#            !!lab3 := lag(dday30, n),
+#            !!lab4 := lag(prec, n),
+#            !!lab5 := lag(prec, n)^2)
+# }
 
 # Decade averages
 dd_dat$ten <- dd_dat$year - (dd_dat$year %% 10)
@@ -426,16 +426,6 @@ dd_dat <- dd_dat %>%
          prec_davg = mean(prec, na.rm = TRUE),
          prec_sq_davg = prec_davg^2)
 
-# 30 year intervals
-dd_dat$thirty <- dd_dat$year - (dd_dat$year %% 30)
-
-dd_dat <- dd_dat %>% 
-  group_by(fips, thirty) %>% 
-  mutate(dday0_10_thirty = mean(dday0_10, na.rm = TRUE),
-         dday10_30_thirty = mean(dday10_30, na.rm = TRUE),
-         dday30_thirty = mean(dday30, na.rm = TRUE),
-         prec_thirty = mean(prec, na.rm = TRUE),
-         prec_sq_thirty = prec_thirty^2)
 # Merge ag prices, ag crop data, and degree day data ----------------------
 
 fulldat <- right_join(cropdat, crop_prices, by = c("year", "state"))
@@ -593,55 +583,55 @@ cropdat <- filter(cropdat, abs(long) <= 100 )
 cropdat$state <- factor(cropdat$state)
 
 # Instrument variable weather using climate
-source('R/iv_temp.R')
-
-dday0_10_fit_iv <- iv_temp('dday0_10', 27, cropdat)
-dday10_30_fit_iv <- iv_temp('dday10_30', 21, cropdat)
-dday30_fit_iv <- iv_temp('dday30', 20, cropdat)
-prec_fit_iv <- iv_temp('prec', 16, cropdat)
-
-dday0_10_fit_10 <- iv_temp('dday0_10', 10, cropdat)
-dday10_30_fit_10 <- iv_temp('dday10_30', 10, cropdat)
-dday30_fit_10 <- iv_temp('dday30', 10, cropdat)
-prec_fit_10 <- iv_temp('prec', 10, cropdat)
-
-dday0_10_fit_20 <- iv_temp('dday0_10', 20, cropdat)
-dday10_30_fit_20 <- iv_temp('dday10_30', 20, cropdat)
-dday30_fit_20 <- iv_temp('dday30', 20, cropdat)
-prec_fit_20 <- iv_temp('prec', 20, cropdat)
-
-dday0_10_fit_30 <- iv_temp('dday0_10', 30, cropdat)
-dday10_30_fit_30 <- iv_temp('dday10_30', 30, cropdat)
-dday30_fit_30 <- iv_temp('dday30', 30, cropdat)
-prec_fit_30 <- iv_temp('prec', 30, cropdat)
+# source('R/iv_temp.R')
+# 
+# dday0_10_fit_iv <- iv_temp('dday0_10', 27, cropdat)
+# dday10_30_fit_iv <- iv_temp('dday10_30', 21, cropdat)
+# dday30_fit_iv <- iv_temp('dday30', 20, cropdat)
+# prec_fit_iv <- iv_temp('prec', 16, cropdat)
+# 
+# dday0_10_fit_10 <- iv_temp('dday0_10', 10, cropdat)
+# dday10_30_fit_10 <- iv_temp('dday10_30', 10, cropdat)
+# dday30_fit_10 <- iv_temp('dday30', 10, cropdat)
+# prec_fit_10 <- iv_temp('prec', 10, cropdat)
+# 
+# dday0_10_fit_20 <- iv_temp('dday0_10', 20, cropdat)
+# dday10_30_fit_20 <- iv_temp('dday10_30', 20, cropdat)
+# dday30_fit_20 <- iv_temp('dday30', 20, cropdat)
+# prec_fit_20 <- iv_temp('prec', 20, cropdat)
+# 
+# dday0_10_fit_30 <- iv_temp('dday0_10', 30, cropdat)
+# dday10_30_fit_30 <- iv_temp('dday10_30', 30, cropdat)
+# dday30_fit_30 <- iv_temp('dday30', 30, cropdat)
+# prec_fit_30 <- iv_temp('prec', 30, cropdat)
 
 # Add IV to data.frame
-cropdat$dday0_10_iv <- dday0_10_fit_iv
-cropdat$dday10_30_iv <- dday10_30_fit_iv
-cropdat$dday30_iv <- dday30_fit_iv
-cropdat$prec_iv <- prec_fit_iv
-cropdat$prec_sq_iv <- prec_fit_iv^2
-
-cropdat$dday0_10_iv10 <- dday0_10_fit_10
-cropdat$dday10_30_iv10 <- dday10_30_fit_10
-cropdat$dday30_iv10 <- dday30_fit_10
-cropdat$prec_iv10 <- prec_fit_10
-cropdat$prec_sq_iv10 <- prec_fit_10^2
-
-cropdat$dday0_10_iv20 <- dday0_10_fit_20
-cropdat$dday10_30_iv20 <- dday10_30_fit_20
-cropdat$dday30_iv20 <- dday30_fit_20
-cropdat$prec_iv20 <- prec_fit_20
-cropdat$prec_sq_iv20 <- prec_fit_20^2
-
-cropdat$dday0_10_iv30 <- dday0_10_fit_30
-cropdat$dday10_30_iv30 <- dday10_30_fit_30
-cropdat$dday30_iv30 <- dday30_fit_30
-cropdat$prec_iv30 <- prec_fit_30
-cropdat$prec_sq_iv30 <- prec_fit_30^2
+# cropdat$dday0_10_iv <- dday0_10_fit_iv
+# cropdat$dday10_30_iv <- dday10_30_fit_iv
+# cropdat$dday30_iv <- dday30_fit_iv
+# cropdat$prec_iv <- prec_fit_iv
+# cropdat$prec_sq_iv <- prec_fit_iv^2
+# 
+# cropdat$dday0_10_iv10 <- dday0_10_fit_10
+# cropdat$dday10_30_iv10 <- dday10_30_fit_10
+# cropdat$dday30_iv10 <- dday30_fit_10
+# cropdat$prec_iv10 <- prec_fit_10
+# cropdat$prec_sq_iv10 <- prec_fit_10^2
+# 
+# cropdat$dday0_10_iv20 <- dday0_10_fit_20
+# cropdat$dday10_30_iv20 <- dday10_30_fit_20
+# cropdat$dday30_iv20 <- dday30_fit_20
+# cropdat$prec_iv20 <- prec_fit_20
+# cropdat$prec_sq_iv20 <- prec_fit_20^2
+# 
+# cropdat$dday0_10_iv30 <- dday0_10_fit_30
+# cropdat$dday10_30_iv30 <- dday10_30_fit_30
+# cropdat$dday30_iv30 <- dday30_fit_30
+# cropdat$prec_iv30 <- prec_fit_30
+# cropdat$prec_sq_iv30 <- prec_fit_30^2
 
 # Remove lag columns
-cropdat <- cropdat[, -grep('lag', colnames(cropdat))]
+# cropdat <- cropdat[, -grep('lag', colnames(cropdat))]
 
 # Fix outliers
 cropdat$cotton_yield[which((cropdat$cotton_yield)>3000)] <- 366
@@ -705,4 +695,3 @@ fit2 <- felm(ln_rev ~ trend_lat + trend_long + trend_sq_lat + trend_sq_long | fi
 fit3 <- cropdat$ln_rev - fit2$residuals
 
 ggplot(cropdat, aes(y=fit3, x=dday30_rm10)) + geom_point() + geom_smooth(method  = 'lm')
-
