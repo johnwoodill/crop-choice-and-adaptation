@@ -297,7 +297,7 @@ extract_d_county <- function(x){
 
 # Full data
 # dd <- read_csv("/run/media/john/1TB/SpiderOak/Projects/adaptation-along-the-envelope/data/fips_degree_days_1900-2013.csv")
-# dd <- dplyr::select(dd, fips, year, month, dday0C, dday10C, dday30C, tavg) 
+# dd <- dplyr::select(dd, fips, year, month, dday0C, dday10C, dday30C, tavg)
 
 dd <- readRDS('data/sub_fips_degree_days_1900-2013.rds')
 
@@ -309,7 +309,7 @@ prec <- read_csv("/run/media/john/1TB/SpiderOak/Projects/adaptation-along-the-en
  dd_dat <- filter(dd_dat, month >= 3 & month <= 9)
 
  dd_dat$X1 <- NULL
- 
+
  dd_dat <- dd_dat %>%
    group_by(year, fips) %>%
    summarise(dday0C = sum(dday0C),
@@ -336,7 +336,7 @@ prec <- read_csv("/run/media/john/1TB/SpiderOak/Projects/adaptation-along-the-en
  
  
  # Schlenker data 1900-2016
- # dd_dat <- readRDS("data/wolfram_full_degree_days.rds")
+ # dd_dat <- read_dta("data/FULL_ddayByYearandFips_cropAreaWeighted.dta")
  #  dd_dat$year <- as.integer(dd_dat$year)
  #  dd_dat$fips <- as.integer(dd_dat$fips)
  #  dd_dat <- dd_dat %>%
@@ -346,7 +346,7 @@ prec <- read_csv("/run/media/john/1TB/SpiderOak/Projects/adaptation-along-the-en
  #              dday30C = sum(dday30C),
  #              prec = sum(prec),
  #              tavg = mean(tavg))
- # 
+ # # 
 
 dd_dat$dday0_10 <- dd_dat$dday0C - dd_dat$dday10C
 dd_dat$dday10_30 <- dd_dat$dday10C - dd_dat$dday30C
