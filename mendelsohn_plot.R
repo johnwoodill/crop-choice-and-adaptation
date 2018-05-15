@@ -39,29 +39,19 @@ p1 <- ggplot(NULL) + geom_line(data = wheat, aes(temp, y), color = 'grey') +
   annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
   annotate("text", x = 8, y = 200, label = "Wheat") +
   annotate("text", x = 50, y = -650, label = "Corn") +
-  annotate("text", x = 70, y = -1800, label = "Cotton") +
-  
-  # Derivative lines
-  
-  # Point C derivative
-  # annotate("segment", x=23, xend=35, y=-2380, yend=-300, color = "red") +
-  # annotate("segment", x=23, xend=11, y=-2380, yend=-4460, color = "red") +
-  
-  # PointB past derivative
-  # annotate("segment", x=20, xend=, y=-1300, yend=-300, color = "red") +
-  # annotate("segment", x=23, xend=11, y=-2380, yend=-4460, color = "red") +
+  annotate("text", x = 62, y = -1500, label = "Cotton") +
   
   # Delta
-  annotate("text", x = 26, y = -7000, label=TeX("$\\mathbf{\\Delta t}", output = "character"), parse=TRUE, color = 'blue') +
-  annotate("text", x = 37, y = -7000, label=TeX("$\\mathbf{\\Delta t}", output = "character"), parse=TRUE, color = 'blue') +
-  annotate("text", x = 82, y = -7000, label=TeX("$\\mathbf{\\Delta t}", output = "character"), parse=TRUE, color = 'blue') +
+  annotate("text", x = 25, y = -7200, label=TeX("$\\mathbf{\\Delta t}", output = "character"), parse=TRUE, color = 'black') +
+  annotate("text", x = 35, y = -7200, label=TeX("$\\mathbf{\\Delta t}", output = "character"), parse=TRUE, color = 'black') +
+  annotate("text", x = 72, y = -7200, label=TeX("$\\mathbf{\\Delta t}", output = "character"), parse=TRUE, color = 'black') +
   # annotate("text", x = 23, y = -700, label="df/dt", color = 'red', size = 4) +
   annotate("text", x = 100, y = -7000, label="f(x*(t), t)", size = 4) +
   
   # Arrows
-  annotate("segment", x = 24, xend = 28, y = -7500, yend = -7500, colour = "blue", size=1, arrow=arrow(length = unit(0.1, "cm"), type = "closed")) +
-  annotate("segment", x = 35, xend = 39, y = -7500, yend = -7500, colour = "blue", size=1, arrow=arrow(length = unit(0.1, "cm"), type = "closed")) +
-  annotate("segment", x = 80, xend = 85, y = -7500, yend = -7500, colour = "blue", size=1, arrow=arrow(length = unit(0.1, "cm"), type = "closed")) +
+  annotate("segment", x = 24, xend = 28, y = -7500, yend = -7500, colour = "black", size=1, arrow=arrow(length = unit(0.1, "cm"), type = "closed")) +
+  annotate("segment", x = 34, xend = 38, y = -7500, yend = -7500, colour = "black", size=1, arrow=arrow(length = unit(0.1, "cm"), type = "closed")) +
+  annotate("segment", x = 71, xend = 75, y = -7500, yend = -7500, colour = "black", size=1, arrow=arrow(length = unit(0.1, "cm"), type = "closed")) +
   
   # Wheat
   # geom_segment(aes(x = 16, xend = 16, y = -1100, yend = -7500), linetype = 'dashed', size = 0.25) +
@@ -69,30 +59,56 @@ p1 <- ggplot(NULL) + geom_line(data = wheat, aes(temp, y), color = 'grey') +
   
   # Corn
   # geom_segment(aes(x = 23, xend = 23, y = -2350, yend = -7500), linetype = 'dashed', size = 0.25) +
-  geom_point(aes(x = 23, y = -2380)) +
-  geom_point(aes(x = 41, y =-800)) +
+  # geom_point(aes(x = 23, y = -2380)) +
+  # geom_point(aes(x = 41, y =-800)) +
   
   # Cotton
   # geom_segment(aes(x = 30, xend = 30, y = -1380, yend = -7500), linetype = 'dashed', size = 0.25) +
-  geom_point(aes(x = 30, y = -1380)) +
   
-  # geom_point(aes(x = 30, y = -4200)) +
   
-  # annotate("text", x = 16, y = -700, label = "A") +
-  annotate("text", x = 30, y = -1000, label = "A'") +
-  annotate("text", x = 23, y = -1980, label = "A") +
-  # annotate("text", x = 28, y = -4200, label = "A'") +
+  
+  annotate("text", x = 23, y = -1880, label = "A") +
+  annotate("text", x = 27, y = -1400, label = "A'") +
+  geom_point(aes(x = 23, y =-2370)) +
+  geom_point(aes(x = 27, y = -1780)) +
   
   annotate("text", x = 33, y = -700, label = "B") +
+  annotate("text", x = 39, y = -400, label = "B'") +
   geom_point(aes(x = 33, y = -1100)) +
+  geom_point(aes(x = 39, y = -800)) +
   
-  annotate("text", x = 41, y = -400, label = "B'") +
+  annotate("text", x = 70, y = -2000, label = "C") +
+  geom_point(aes(x = 70, y = -2400)) +
   
-  annotate("text", x = 79, y = -3000, label = "C") +
-  geom_point(aes(x = 79, y = -3600)) +
+  annotate("text", x = 74, y = -3500, label = "C'") +
+  geom_point(aes(x = 76, y = -3130)) +
   
-  annotate("text", x = 86, y = -4500, label = "C'") +
-  geom_point(aes(x = 86, y = -5100)) +
+  # Point A derivative
+  annotate("segment", x=20, xend = 26, y=-1710, yend=-3050, color = "red") +
+  
+  # Point B derivative
+  annotate("segment", x=28, xend=38, y=-1500, yend=-700, color = "red") +
+  
+  # Point C derivative
+  annotate("segment", x=64, xend=76, y=-1900, yend=-2900, color = "red") +
+
+  # Point B past derivative
+  # annotate("segment", x=20, xend=, y=-1300, yend=-300, color = "red") +
+  # annotate("segment", x=23, xend=11, y=-2380, yend=-4460, color = "red") +
+  
+  # \partial y / \partial t Label
+  # geom_segment(aes(x = 77, xend = 78, y = -2900, yend = -2900), size = 0.25) +
+  
+  # Adaptation Label
+  geom_segment(aes(x = 77, xend = 78, y = -2400, yend = -2400), size = 0.25) +
+  geom_segment(aes(x = 78, xend = 78, y = -2400, yend = -3100), size = 0.25) +
+  geom_segment(aes(x = 77, xend = 78, y = -3100, yend = -3100), size = 0.25) +
+  geom_segment(aes(x = 78, xend = 78.5, y = -2750, yend = -2750), size = 0.25) +
+  annotate("text", x = 90, y = -2750, label = TeX("Adaptation = $\\frac{\\partial y}{\\partial t} \\Delta t - ", output = "character"), parse=TRUE, size = 3) +
+  annotate("text", x = 103, y = -2750, label = TeX("$\\frac{\\partial f}{\\partial t} \\Delta t", output = "character"),parse=TRUE, size = 3, color = "red") +
+  # annotate("text", x = 100, y = -2750, label = TeX("-"), parse=TRUE, size = 5) +
+  
+  
   # Value of adapatation label
   # geom_segment(aes(x = 35, xend = 35, y = -1400, yend = -2760), size = 0.25) +
   # geom_segment(aes(x = 35, xend = 34, y = -1400, yend = -1400), size = 0.25) +
@@ -141,7 +157,7 @@ dens_plot <- ggplot(cropdat, aes(tavg)) +
   # geom_segment(aes(x = 15.2, xend = 15.2, y = 0, yend = .15), linetype = 'dashed', size = .25) +
   annotate("text", x = 22.5, y = .10, label=TeX("$\\mathbf{\\phi}", output = "character"), parse=TRUE, size = 4) +
   annotate("text", x = 22.7, y = .10, label=c("(t)"), parse=TRUE, size = 3) +
-  scale_x_continuous(breaks = c(15.23, 16.2, 20.6), labels = c(expression(t[1]), expression(t[2]), expression(t[3])), limits = c(13, 23)) 
+  scale_x_continuous(breaks = c(15.23, 16.2, 19.75), labels = c(expression(t[1]), expression(t[2]), expression(t[3])), limits = c(13, 23)) 
   
 dens_plot
 
