@@ -3,8 +3,10 @@ library(tidyverse)
 library(ggthemes)
 library(latex2exp)
 
+# Load data
 cropdat <- readRDS("data/full_ag_data.rds")
 
+# Estimate production fn's
 x <- -40:40
 x
 
@@ -24,6 +26,7 @@ wheat_outline <- filter(wheat, temp < 23)
 corn_outline <- filter(corn, temp > 21 & temp < 64)
 cotton_outline <- filter(cotton, temp > 62)
 
+# Plot sine functions
 p1 <- ggplot(NULL) + geom_line(data = wheat, aes(temp, y), color = 'grey') +
   geom_line(data = corn, aes(temp, y), color = 'grey')  +
   geom_line(data = cotton, aes(temp, y), color = 'grey') +
