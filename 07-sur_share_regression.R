@@ -44,17 +44,19 @@ dmdat <- select(cropdat, z_corn_a, z_cotton_a, z_hay_a, z_soybean_a, z_wheat_a,
   trend1_ok , trend1_sc , trend1_sd , trend1_tn , trend1_va , trend1_wi ,
   trend1_wv)
 
-# Weight data from acres
-# w <- sqrt(1 + cropdat$w)
-# dmdat <- dmdat*w
+
 
 cropdat_dm <- demeanlist(dmdat, fl = list(fips = factor(cropdat$fips)))
 
 cropdat_means <- demeanlist(dmdat, fl = list(fips = factor(cropdat$fips)), means = TRUE)
 
+# Weight data from acres
+w <- sqrt(cropdat$w)
+dmdat <- dmdat*w
 
-mod1 <- z_corn_a ~ 
-  dday0_10_rmw + dday10_30_rmw + dday30_rmw + prec_rmw + prec_sq_rmw +
+
+mod1 <- z_corn_a ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq +
+  dday0_10_rm + dday10_30_rm + dday30_rm + prec_rm + prec_sq_rm +
     trend1_al + trend1_ar + trend1_de + trend1_ga + trend1_ia + trend1_il +
   trend1_in + trend1_ks + trend1_ky + trend1_md + trend1_mi + trend1_mn +
   trend1_mo + trend1_ms + trend1_nc + trend1_nd + trend1_ne + trend1_oh +
@@ -62,8 +64,8 @@ mod1 <- z_corn_a ~
   trend1_wv - 1
 
 
-mod2 <- z_cotton_a ~   
-  dday0_10_rmw + dday10_30_rmw + dday30_rmw + prec_rmw + prec_sq_rmw +
+mod2 <- z_cotton_a ~   dday0_10 + dday10_30 + dday30 + prec + prec_sq +
+  dday0_10_rm + dday10_30_rm + dday30_rm + prec_rm + prec_sq_rm +
     trend1_al + trend1_ar + trend1_de + trend1_ga + trend1_ia + trend1_il +
   trend1_in + trend1_ks + trend1_ky + trend1_md + trend1_mi + trend1_mn +
   trend1_mo + trend1_ms + trend1_nc + trend1_nd + trend1_ne + trend1_oh +
@@ -71,8 +73,8 @@ mod2 <- z_cotton_a ~
   trend1_wv  - 1
 
 
-mod3 <- z_hay_a ~  
-  dday0_10_rmw + dday10_30_rmw + dday30_rmw + prec_rmw + prec_sq_rmw +
+mod3 <- z_hay_a ~  dday0_10 + dday10_30 + dday30 + prec + prec_sq +
+  dday0_10_rm + dday10_30_rm + dday30_rm + prec_rm + prec_sq_rm +
     trend1_al + trend1_ar + trend1_de + trend1_ga + trend1_ia + trend1_il +
   trend1_in + trend1_ks + trend1_ky + trend1_md + trend1_mi + trend1_mn +
   trend1_mo + trend1_ms + trend1_nc + trend1_nd + trend1_ne + trend1_oh +
@@ -80,8 +82,8 @@ mod3 <- z_hay_a ~
   trend1_wv  - 1
 
 
-mod4 <- z_soybean_a ~  
-  dday0_10_rmw + dday10_30_rmw + dday30_rmw + prec_rmw + prec_sq_rmw +
+mod4 <- z_soybean_a ~  dday0_10 + dday10_30 + dday30 + prec + prec_sq +
+  dday0_10_rm + dday10_30_rm + dday30_rm + prec_rm + prec_sq_rm +
     trend1_al + trend1_ar + trend1_de + trend1_ga + trend1_ia + trend1_il +
   trend1_in + trend1_ks + trend1_ky + trend1_md + trend1_mi + trend1_mn +
   trend1_mo + trend1_ms + trend1_nc + trend1_nd + trend1_ne + trend1_oh +
@@ -90,8 +92,8 @@ mod4 <- z_soybean_a ~
 
 
 
-mod5 <- z_wheat_a ~  
-  dday0_10_rmw + dday10_30_rmw + dday30_rmw + prec_rmw + prec_sq_rmw +
+mod5 <- z_wheat_a ~  dday0_10 + dday10_30 + dday30 + prec + prec_sq +
+  dday0_10_rm + dday10_30_rm + dday30_rm + prec_rm + prec_sq_rm +
     trend1_al + trend1_ar + trend1_de + trend1_ga + trend1_ia + trend1_il +
   trend1_in + trend1_ks + trend1_ky + trend1_md + trend1_mi + trend1_mn +
   trend1_mo + trend1_ms + trend1_nc + trend1_nd + trend1_ne + trend1_oh +

@@ -23,7 +23,7 @@ regdat$trend_sq_long <- regdat$trend_sq*regdat$long
 regdat$trend_sq_lat <- regdat$trend_sq*regdat$lat
 
 # View(regdat)
-# Loop through 1 to 50 year right rolling mean
+# Loop through 1 to 30 year right rolling mean
 for (i in 1:30){
   
   # Create custom col labels
@@ -47,7 +47,7 @@ for (i in 1:30){
 }
 
 # data.frame to store RMSE
-# outdat <- data.frame(window = c(1:50), rmse = 0, coef =0 )
+# outdat <- data.frame(window = c(1:50), rmse = 0, coef = 0)
 outdat <- data.frame()
 for (i in 1:30){ # Formula
   form1 <- as.formula(paste0("dday0_10 ~ dday0_10_rm_", i, " + state:trend  | fips | 0 | fips")) # Regression
@@ -81,6 +81,7 @@ for (i in 1:30){ # Formula
   outdat <- rbind(outdat, indat)  
   print(i)
 }
+
 
 ggplot(outdat, aes(window, rmse)) + 
   geom_point(size = .8) +

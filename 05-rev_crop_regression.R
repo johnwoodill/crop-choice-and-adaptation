@@ -31,23 +31,23 @@ saveRDS(modten_1, "models/rev_crop_modten.rds")
 
 summary(fit)
 # Twenty year differences 1950-1980 & 1980-2010
-modtwenty_1 <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-              dday0_10_rm11 + dday10_30_rm11 + dday30_rm11 + prec_rm11 + prec_sq_rm11 +
-              trend_lat + trend_long + trend_sq_lat + trend_sq_long | fips | 0 | state, 
-            data = regdat, weights = regdat$w, psdef = FALSE)
-summary(modtwenty_1)
-
-saveRDS(modtwenty_1, "models/rev_crop_modtwenty.rds")
-
-# Thirty year differences 1950-1980 & 1980-2010
-
-modthirty_1 <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
-              dday0_10_rm12 + dday10_30_rm12 + dday30_rm12 + prec_rm12 + prec_sq_rm12 +
-              trend_lat + trend_long + trend_sq_lat + trend_sq_long | fips | 0 | state, 
-            data = regdat, weights = regdat$w, psdef = FALSE)
-summary(modthirty_1)
-
-saveRDS(modthirty_1, "models/rev_crop_modthirty.rds")
+# modtwenty_1 <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
+#               dday0_10_rm11 + dday10_30_rm11 + dday30_rm11 + prec_rm11 + prec_sq_rm11 +
+#               trend_lat + trend_long + trend_sq_lat + trend_sq_long | fips | 0 | state, 
+#             data = regdat, weights = regdat$w, psdef = FALSE)
+# summary(modtwenty_1)
+# 
+# saveRDS(modtwenty_1, "models/rev_crop_modtwenty.rds")
+# 
+# # Thirty year differences 1950-1980 & 1980-2010
+# 
+# modthirty_1 <- felm(ln_rev ~ dday0_10 + dday10_30 + dday30 + prec + prec_sq + 
+#               dday0_10_rm12 + dday10_30_rm12 + dday30_rm12 + prec_rm12 + prec_sq_rm12 +
+#               trend_lat + trend_long + trend_sq_lat + trend_sq_long | fips | 0 | state, 
+#             data = regdat, weights = regdat$w, psdef = FALSE)
+# summary(modthirty_1)
+# 
+# saveRDS(modthirty_1, "models/rev_crop_modthirty.rds")
 
 # Build up regression
 
